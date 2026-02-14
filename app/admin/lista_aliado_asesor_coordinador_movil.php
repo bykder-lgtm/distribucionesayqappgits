@@ -1145,6 +1145,9 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     <!-- Header -->
     <div class="page-header animate-in">
         <h1><i class="fa-solid fa-users"></i> Mis Aliados</h1>
+        <?php if (!empty($nombre_asesor)): ?>
+        <p><i class="fa-solid fa-user-tie"></i> <strong>Asesor:</strong> <?php echo ucwords(strtolower($nombre_asesor)); ?></p>
+        <?php endif; ?>
         <p>Gestiona tu red de aliados estratégicos</p>
         <div class="header-stats">
             <div class="header-stat">

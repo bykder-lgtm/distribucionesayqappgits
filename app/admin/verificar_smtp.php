@@ -37,41 +37,31 @@ echo "<table>";
 echo "<tr><th>Parámetro</th><th>Valor</th><th>Estado</th></tr>";
 
 // Verificar Host
-$host_status = !empty($Host) ? "✅ OK" : "❌ Vacío";
-$host_class = !empty($Host) ? "success" : "error";
-echo "<tr><td><strong>Host SMTP</strong></td><td><code>" . htmlspecialchars($Host ?? '') . "</code></td><td class='$host_class'>$host_status</td></tr>";
-
+if (isset($Host)) { $host_value = $Host; } else { $host_value = ''; }
+if (!empty($Host)) { $host_status = 'OK'; $host_class = 'success'; } else { $host_status = 'Vacio'; $host_class = 'error'; }
+echo "<tr><td><strong>Host SMTP</strong></td><td><code>" . htmlspecialchars($host_value) . "</code></td><td class='$host_class'>$host_status</td></tr>";
 // Verificar Puerto
-$port_status = !empty($Port) ? "✅ OK" : "❌ Vacío";
-$port_class = !empty($Port) ? "success" : "error";
-echo "<tr><td><strong>Puerto</strong></td><td><code>" . htmlspecialchars($Port ?? '') . "</code></td><td class='$port_class'>$port_status</td></tr>";
-
+if (isset($Port)) { $port_value = $Port; } else { $port_value = ''; }
+if (!empty($Port)) { $port_status = 'OK'; $port_class = 'success'; } else { $port_status = 'Vacio'; $port_class = 'error'; }
+echo "<tr><td><strong>Puerto</strong></td><td><code>" . htmlspecialchars($port_value) . "</code></td><td class='$port_class'>$port_status</td></tr>";
 // Verificar Username
-$user_status = !empty($Username) ? "✅ OK" : "❌ Vacío";
-$user_class = !empty($Username) ? "success" : "error";
-echo "<tr><td><strong>Usuario</strong></td><td><code>" . htmlspecialchars($Username ?? '') . "</code></td><td class='$user_class'>$user_status</td></tr>";
-
+if (isset($Username)) { $user_value = $Username; } else { $user_value = ''; }
+if (!empty($Username)) { $user_status = 'OK'; $user_class = 'success';} else { $user_status = 'Vacio'; $user_class = 'error'; }
+echo "<tr><td><strong>Usuario</strong></td><td><code>" . htmlspecialchars($user_value) . "</code></td><td class='$user_class'>$user_status</td></tr>";
 // Verificar Password
-$pass_status = !empty($Password) ? "✅ OK" : "❌ Vacío";
-$pass_class = !empty($Password) ? "success" : "error";
-$pass_display = !empty($Password) ? str_repeat('*', min(strlen($Password), 20)) : '';
-echo "<tr><td><strong>Contraseña</strong></td><td><code>$pass_display</code></td><td class='$pass_class'>$pass_status</td></tr>";
-
+if (!empty($Password)) { $pass_status = 'OK'; $pass_class = 'success'; $pass_display = str_repeat('*', min(strlen($Password), 20)); } else { $pass_status = 'Vacio'; $pass_class = 'error'; $pass_display = ''; }
+echo "<tr><td><strong>Contrasena</strong></td><td><code>$pass_display</code></td><td class='$pass_class'>$pass_status</td></tr>";
 // Verificar SMTPSecure
-$secure_status = !empty($SMTPSecure) ? "✅ OK" : "⚠️ Sin definir";
-$secure_class = !empty($SMTPSecure) ? "success" : "warning";
-echo "<tr><td><strong>Seguridad</strong></td><td><code>" . htmlspecialchars($SMTPSecure ?? 'none') . "</code></td><td class='$secure_class'>$secure_status</td></tr>";
-
+if (isset($SMTPSecure)) { $secure_value = $SMTPSecure; } else { $secure_value = 'none'; }
+if (!empty($SMTPSecure)) { $secure_status = 'OK'; $secure_class = 'success'; } else { $secure_status = 'Sin definir'; $secure_class = 'warning'; }
+echo "<tr><td><strong>Seguridad</strong></td><td><code>" . htmlspecialchars($secure_value) . "</code></td><td class='$secure_class'>$secure_status</td></tr>";
 // Verificar SMTPAuth
-$auth_display = ($SMTPAuth == '1' || $SMTPAuth === true || strtolower($SMTPAuth) == 'true') ? 'Sí' : 'No';
-$auth_status = ($SMTPAuth == '1' || $SMTPAuth === true || strtolower($SMTPAuth) == 'true') ? "✅ OK" : "⚠️ Desactivado";
-$auth_class = ($SMTPAuth == '1' || $SMTPAuth === true || strtolower($SMTPAuth) == 'true') ? "success" : "warning";
-echo "<tr><td><strong>Autenticación</strong></td><td><code>$auth_display</code></td><td class='$auth_class'>$auth_status</td></tr>";
-
+if ($SMTPAuth == '1' || $SMTPAuth === true || strtolower($SMTPAuth) == 'true') { $auth_display = 'Si'; $auth_status = 'OK'; $auth_class = 'success'; } else { $auth_display = 'No'; $auth_status = 'Desactivado'; $auth_class = 'warning'; }
+echo "<tr><td><strong>Autenticacion</strong></td><td><code>$auth_display</code></td><td class='$auth_class'>$auth_status</td></tr>";
 echo "</table>";
-
 // Verificación general
-$configuracion_completa = !empty($Host) && !empty($Port) && !empty($Username) && !empty($Password);
+$configuracion_completa = false;
+if (!empty($Host) && !empty($Port) && !empty($Username) && !empty($Password)) { $configuracion_completa = true; }
 
 if ($configuracion_completa) {
     echo "<div class='success'>";
@@ -128,8 +118,8 @@ echo "<h2>📦 Verificación de Dependencias</h2>";
 $phpmailer_path = '../PHPMailer/class.phpmailer.php';
 $smtp_path = '../PHPMailer/class.smtp.php';
 
-if (file_exists($phpmailer_path)) { echo "<div class='success'>✅ PHPMailer encontrado: <code>$phpmailer_path</code></div>"; } else { echo "<div class='error'>❌ PHPMailer NO encontrado: <code>$phpmailer_path</code></div>"; }
-if (file_exists($smtp_path)) { echo "<div class='success'>✅ SMTP class encontrada: <code>$smtp_path</code></div>"; } else { echo "<div class='error'>❌ SMTP class NO encontrada: <code>$smtp_path</code></div>"; }
+if (file_exists($phpmailer_path)) { echo "<div class='success'>PHPMailer encontrado: <code>$phpmailer_path</code></div>"; } else { echo "<div class='error'>PHPMailer NO encontrado: <code>$phpmailer_path</code></div>"; }
+if (file_exists($smtp_path)) { echo "<div class='success'>SMTP class encontrada: <code>$smtp_path</code></div>"; } else { echo "<div class='error'>SMTP class NO encontrada: <code>$smtp_path</code></div>"; }
 echo "<a href='lista_aliado_coordinador_movil.php' class='btn'>← Volver a Aliados</a>";
 echo "</div>
 </body>
