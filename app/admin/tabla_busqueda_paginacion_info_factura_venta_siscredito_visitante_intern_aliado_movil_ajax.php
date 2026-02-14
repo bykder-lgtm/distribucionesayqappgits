@@ -644,7 +644,7 @@ include_once('../admin/paginacion_ajax_buscador_sistecredito.php'); //include pa
                     <div class="row mt-2">
                         <?php if ($cod_vendedor == '0' || $cod_vendedor == '' || empty($cod_vendedor)) { ?>
                         <div class="col-6">
-                            <button id="btn_asignar_vendedor" class="btn btn-primary btn-sm btn-block btn-asignar-vendedor" data-cod_info_factura_venta="<?php echo $cod_info_factura_venta; ?>" data-cod_vendedor="<?php echo $cod_vendedor; ?>">Asignar vendedor</button>
+                            <button id="btn_asignar_vendedor" class="btn btn-primary btn-sm btn-block btn-asignar-vendedor" data-cod_info_factura_venta="<?php echo $cod_info_factura_venta; ?>" data-cod_vendedor="<?php echo $cod_vendedor; ?>" data-cod_tienda="<?php echo $cod_tienda; ?>">Asignar vendedor</button>
                         </div>
                         <?php } ?>
                         <?php if ($cod_banco_cuenta == '0' || $cod_banco_cuenta == '' || empty($cod_banco_cuenta)) { ?>
@@ -963,9 +963,15 @@ estilo_hologram - Holograma
                 <form id="formAsignarVendedor">
                     <input type="hidden" id="AsignarVendedorCodInfoFactura" name="cod_info_factura_venta">
                     <input type="hidden" id="AsignarVendedorCodActual" name="cod_vendedor_actual">
+                    <input type="hidden" id="AsignarVendedorCodTienda" name="cod_tienda">
             
                     <div class="mb-3">
-                        <label for="AsignarVendedorSelect" style="color: #a0aec0; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Seleccionar Vendedor</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label for="AsignarVendedorSelect" style="color: #a0aec0; font-size: 0.85rem; margin: 0;">Seleccionar Vendedor</label>
+                            <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalRegistrarVendedor" data-bs-toggle="modal" data-bs-target="#modalRegistrarVendedor" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: none; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                                <i class="fa fa-user-plus"></i> Nuevo Vendedor
+                            </button>
+                        </div>
                         <select id="AsignarVendedorSelect" name="cod_vendedor" class="form-control" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem; height: auto; min-height: 45px; line-height: 1.5; font-size: 1rem;" required>
                             <option value="" style="color: #000;">Cargando vendedores...</option>
                         </select>
@@ -988,35 +994,65 @@ estilo_hologram - Holograma
         <div class="modal-content" style="background: linear-gradient(135deg, #0a0e27 0%, #1a1d3a 100%); color: white; border-radius: 15px; border: none;">
             <div class="modal-header" style="border-bottom: 1px solid rgba(102, 126, 234, 0.3); padding: 1.5rem;">
                 <h5 class="modal-title" id="modalRegistrarVendedorLabel" style="font-weight: 700; color: #00d4ff;">
-                    <i class="fa fa-plus" style="margin-right: 8px;"></i>Registrar Nuevo Vendedor
+                    <i class="fa fa-user-plus" style="margin-right: 8px;"></i>Registrar Nuevo Vendedor
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" style="background: none; border: none; color: white; font-size: 1.5rem; opacity: 0.7;">×</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" data-dismiss="modal" aria-label="Cerrar" style="background: none; border: none; color: white; font-size: 1.5rem; opacity: 0.7;">×</button>
             </div>
             <div class="modal-body" style="padding: 1.5rem;">
-                <form id="formRegistrarVendedor">
-                    <input type="hidden" id="registrarVendedorCodInfoFactura" name="cod_info_factura_venta">
-
-                    <div class="mb-3">
-                        <label for="registrarVendedorCedula" style="color: #a0aec0; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Documento * </label>
-                        <input type="number" id="registrarVendedorCedula" name="cedula" class="form-control" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
-                    </div>
-
-                    <div class="row mb-3">
+                <div id="result_vendedor"></div>
+                <form id="formRegistroVendedor">
+                    <div class="row">
                         <div class="col-md-6">
-                            <label for="registrarVendedorNombres" style="color: #a0aec0; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Nombres *</label>
-                            <input type="text" id="registrarVendedorNombres" name="nombres" class="form-control" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;" required>
+                            <div class="form-group mb-3">
+                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Nombres y Apellidos *</label>
+                                <input type="text" name="nombres_apellidos_tercero" id="vend_nombres" class="form-control" required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
+                            </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="registrarVendedorApellidos" style="color: #a0aec0; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Apellidos *</label>
-                            <input type="text" id="registrarVendedorApellidos" name="apellidos" class="form-control" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;" required>
+                            <div class="form-group mb-3">
+                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Identificación (CC) *</label>
+                                <input type="text" name="identificacion_tercero" id="vend_identificacion" class="form-control" required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
+                            </div>
                         </div>
                     </div>
-                    <div class="alert" id="alertRegistrarVendedor" style="display: none; border-radius: 8px; padding: 0.75rem; margin-top: 1rem;"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Teléfono *</label>
+                                <input type="text" name="telefono1_tercero" id="vend_telefono" class="form-control" required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Correo Electrónico *</label>
+                                <input type="email" name="correo_tercero" id="vend_correo" class="form-control" required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group mb-3">
+                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Dirección</label>
+                                <input type="text" name="direccion_tercero" id="vend_direccion" class="form-control" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; margin-bottom: 0;">
+                                <i class="fa fa-info-circle"></i> <strong>Información:</strong> El usuario y contraseña se generarán automáticamente.
+                                <br><small>Usuario: identificacion-codigo | Contraseña: identificación</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" name="cod_tienda" value="">
+                    <input type="hidden" name="cod_administrador" value="<?php echo $cod_administrador; ?>">
                 </form>
             </div>
             <div class="modal-footer" style="border-top: 1px solid rgba(102, 126, 234, 0.3); padding: 1rem; gap: 0.5rem;">
-                <button type="button" id="btnCancelarRegistrarVendedor" class="btn" style="background: #6c757d; color: white; border-radius: 8px; padding: 0.6rem 1.5rem; font-weight: 600;">Cancelar</button>
-                <button type="button" id="btnGuardarRegistrarVendedor" class="btn" style="background: linear-gradient(90deg, #10b981, #059669); color: white; border-radius: 8px; padding: 0.6rem 1.5rem; font-weight: 600;">Registrar Vendedor</button>
+                <button type="button" class="btn" data-bs-dismiss="modal" data-dismiss="modal" style="background: rgba(255,255,255,0.1); color: white; border: none; border-radius: 8px; padding: 0.6rem 1.5rem; font-weight: 600;">Cancelar</button>
+                <button type="button" id="btn_guardar_vendedor" class="btn" style="background: linear-gradient(90deg, #10b981, #059669); color: white; border-radius: 8px; padding: 0.6rem 1.5rem; font-weight: 600;"><i class="fa fa-save"></i> Guardar Vendedor</button>
             </div>
         </div>
     </div>
@@ -3169,14 +3205,31 @@ $(document).on('click', '.btn-asignar-vendedor', function(e) {
     e.preventDefault();
     var codInfo = $(this).data('cod_info_factura_venta');
     var codVendedor = $(this).data('cod_vendedor') || '';
+    var codTienda = $(this).data('cod_tienda') || '';
 
     // Llenar el campo oculto de la nueva modal y cargar vendedores en el select correspondiente
     $('#AsignarVendedorCodInfoFactura').val(codInfo);
+    $('#AsignarVendedorCodTienda').val(codTienda);
     cargarVendedores(codInfo, codVendedor, 'AsignarVendedorSelect');
     // Mostrar la modal duplicada
     setTimeout(function() {
         $('#modalAsignarVendedor').modal('show');
     }, 200);
+});
+
+// Capturar evento cuando se abre el modal de registrar vendedor desde el botón "Nuevo Vendedor"
+$(document).on('click', '[data-target="#modalRegistrarVendedor"], [data-bs-target="#modalRegistrarVendedor"]', function(e) {
+    // Obtener el cod_tienda almacenado en el modal de asignar
+    const codTienda = $('#AsignarVendedorCodTienda').val() || '';
+    
+    // Asignarlo al formulario de registro
+    const formRegistro = document.getElementById('formRegistroVendedor');
+    if (formRegistro) {
+        const inputTienda = formRegistro.querySelector('input[name="cod_tienda"]');
+        if (inputTienda) {
+            inputTienda.value = codTienda;
+        }
+    }
 });
 
 // ==================== FUNCIONES PARA BANCO CUENTA ====================
@@ -3646,6 +3699,117 @@ $(document).on('click', '#btnGuardarRegistrarVendedor', function(e) {
             alertDiv.show();
         }
     });
+});
+
+// ==================== NUEVO HANDLER PARA REGISTRAR VENDEDOR ====================
+// Manejador para el botón de guardar vendedor (nuevo modal mejorado)
+$(document).on('click', '#btn_guardar_vendedor', function(e) {
+    e.preventDefault();
+    
+    const form = document.getElementById('formRegistroVendedor');
+    
+    // Validar campos requeridos
+    const nombres = document.getElementById('vend_nombres').value.trim();
+    const identificacion = document.getElementById('vend_identificacion').value.trim();
+    const telefono = document.getElementById('vend_telefono').value.trim();
+    const correo = document.getElementById('vend_correo').value.trim();
+    
+    if (!nombres || !identificacion || !telefono || !correo) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Campos incompletos',
+            text: 'Por favor completa todos los campos obligatorios',
+            confirmButtonColor: '#667eea'
+        });
+        return;
+    }
+    
+    // Validar correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(correo)) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Correo inválido',
+            text: 'Por favor ingresa un correo electrónico válido',
+            confirmButtonColor: '#667eea'
+        });
+        return;
+    }
+    
+    const formData = new FormData(form);
+    
+    const btnOriginal = this.innerHTML;
+    this.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
+    this.disabled = true;
+    
+    fetch('../admin/registrar_vendedor_tienda_ajax.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Vendedor Registrado!',
+                text: data.message || 'El vendedor ha sido registrado exitosamente',
+                confirmButtonColor: '#10b981'
+            }).then(() => {
+                // Limpiar formulario
+                form.reset();
+                
+                // Cerrar modal de registro
+                $('#modalRegistrarVendedor').modal('hide');
+                
+                // Actualizar el select de vendedores en el modal de asignar
+                if (data.cod_administrador) {
+                    const selectVendedor = document.getElementById('AsignarVendedorSelect');
+                    if (selectVendedor) {
+                        // Agregar la nueva opción al select
+                        const option = document.createElement('option');
+                        option.value = data.cod_administrador;
+                        option.textContent = nombres;
+                        option.selected = true;
+                        selectVendedor.appendChild(option);
+                    }
+                }
+                
+                // Re-abrir el modal de asignar vendedor
+                setTimeout(() => {
+                    $('#modalAsignarVendedor').modal('show');
+                }, 500);
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'No se pudo registrar el vendedor',
+                confirmButtonColor: '#ef4444'
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo procesar la solicitud',
+            confirmButtonColor: '#ef4444'
+        });
+    })
+    .finally(() => {
+        this.innerHTML = btnOriginal;
+        this.disabled = false;
+    });
+});
+
+// Limpiar formulario al cerrar modal de vendedor
+$('#modalRegistrarVendedor').on('hidden.bs.modal', function() {
+    const form = document.getElementById('formRegistroVendedor');
+    if (form) form.reset();
+    
+    const result = document.getElementById('result_vendedor');
+    if (result) result.innerHTML = '';
 });
 
 // ==================== BOTONES CANCELAR MODALES BANCO CUENTA ====================

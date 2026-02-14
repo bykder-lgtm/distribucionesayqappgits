@@ -1267,7 +1267,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Ingrese el NIT de la razón social</small>
                 </div>
 
-                <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Administrador</label>
+                <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
                 <div class="form-group">
                     <label class="form-label">Identificación *</label>
                     <input type="number" class="form-input" id="identificacion_tercero" name="identificacion_tercero" required>
@@ -1519,7 +1519,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
 
                 <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
-                    <i class="fa-solid fa-building-columns"></i> Datos del Administrador
+                    <i class="fa-solid fa-building-columns"></i> Datos del Representante Legal
                 </label>
 
                 <div class="form-group">

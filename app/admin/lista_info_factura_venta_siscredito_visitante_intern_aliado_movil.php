@@ -37,7 +37,11 @@ $cod_base_caja          = "1";
 <meta name="twitter:image"             content="<?php echo ($url_pag) ?>/<?php echo ($nombre_carpeta_pagina) ?>/imagenes/quienes_somos.jpg">
 
 <?php include_once("../admin/03_modulo_css_visitante_intern_movil.php"); ?>
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="../js/jquery-3.2.1.min_visitante.js"></script>
+<!-- SweetAlert2 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
 /* Estilos para los botones de navegación */

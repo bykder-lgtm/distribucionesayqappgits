@@ -1102,14 +1102,14 @@ if (!empty($cod_asesor)) {
 
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.cod_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE (a.cod_asesor = '$cod_asesor' AND a.cod_seguridad = '23')";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE (a.cod_asesor = '$cod_asesor' AND a.cod_seguridad = '23')";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 $sql .= " ORDER BY a.cod_administrador DESC";
 $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
-    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.cod_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE (a.cod_asesor = '$cod_asesor' AND a.cod_seguridad = '23')";
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE (a.cod_asesor = '$cod_asesor' AND a.cod_seguridad = '23')";
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
     $sql .= " ORDER BY a.cod_administrador DESC";
     $resultado = mysqli_query($conectar, $sql);
@@ -1134,7 +1134,7 @@ $res_entidades = mysqli_query($conectar, $sql_entidades);
 $sql_bancos = "SELECT cod_banco, nombre_banco FROM tbl15_banco WHERE cod_estado = '1' ORDER BY cod_posicion ASC";
 $res_bancos = mysqli_query($conectar, $sql_bancos);
 // Consulta de tipos de cliente
-$sql_tipo_cliente = "SELECT cod_tipo_cliente, nombre_tipo_cliente FROM tbl15_tipo_cliente WHERE cod_estado = '1' ORDER BY cod_tipo_cliente ASC";
+$sql_tipo_cliente = "SELECT nombre_tipo_cliente, nombre_tipo_cliente FROM tbl15_tipo_cliente WHERE cod_estado = '1' ORDER BY nombre_tipo_cliente ASC";
 $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
@@ -1243,17 +1243,18 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <input type="hidden" name="tabla" value="tbl15_administrador">
                 <input type="hidden" name="cod_seguridad" value="25">
                 <input type="hidden" name="cod_administrador" value="<?php echo $cod_administrador; ?>">
+                <input type="hidden" name="cod_asesor" value="<?php echo $cod_asesor; ?>">
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Tipo de Cliente *</label>
-                        <select class="form-select" id="cod_tipo_cliente" name="cod_tipo_cliente" required onchange="cambiarTipoCliente()">
+                        <select class="form-select" id="nombre_tipo_cliente" name="nombre_tipo_cliente" required onchange="cambiarTipoCliente()">
                             <option value="" data-nombre="">Seleccione...</option>
                             <?php 
                             mysqli_data_seek($res_tipo_cliente, 0);
                             while ($tipo_cliente = mysqli_fetch_assoc($res_tipo_cliente)): 
                             ?>
-                            <option value="<?php echo $tipo_cliente['cod_tipo_cliente']; ?>" data-nombre="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
+                            <option value="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>" data-nombre="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
                             <?php endwhile; ?>
                         </select>
                         <input type="hidden" id="nombre_tipo_cliente" name="nombre_tipo_cliente">
@@ -1499,13 +1500,13 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Tipo de Cliente *</label>
-                        <select class="form-select" id="edit_cod_tipo_cliente" name="cod_tipo_cliente" required onchange="cambiarTipoClienteEdit()">
+                        <select class="form-select" id="edit_nombre_tipo_cliente" name="nombre_tipo_cliente" required onchange="cambiarTipoClienteEdit()">
                             <option value="" data-nombre="">Seleccione...</option>
                             <?php 
                             mysqli_data_seek($res_tipo_cliente, 0);
                             while ($tipo_cliente = mysqli_fetch_assoc($res_tipo_cliente)): 
                             ?>
-                            <option value="<?php echo $tipo_cliente['cod_tipo_cliente']; ?>" data-nombre="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
+                            <option value="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>" data-nombre="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
                             <?php endwhile; ?>
                         </select>
                         <input type="hidden" id="edit_nombre_tipo_cliente" name="nombre_tipo_cliente">
@@ -2373,7 +2374,7 @@ $(document).ready(function() {
 
 // Función para cambiar tipo de cliente (Registro)
 function cambiarTipoCliente() {
-    var select = document.getElementById('cod_tipo_cliente');
+    var select = document.getElementById('nombre_tipo_cliente');
     var selectedOption = select.options[select.selectedIndex];
     var nombreTipoCliente = selectedOption.getAttribute('data-nombre');
     var containerNit = document.getElementById('container_nit_razon_social');
@@ -2401,7 +2402,7 @@ function cambiarTipoCliente() {
 
 // Función para cambiar tipo de cliente (Edición)
 function cambiarTipoClienteEdit() {
-    var select = document.getElementById('edit_cod_tipo_cliente');
+    var select = document.getElementById('edit_nombre_tipo_cliente');
     var selectedOption = select.options[select.selectedIndex];
     // Verificar si hay opción seleccionada
     var nombreTipoCliente = '';
@@ -2508,7 +2509,7 @@ function abrirModalEditar(data) {
     document.getElementById('edit_cod_asesor_hidden').value = data.cod_asesor || '';
     
     // Nuevos campos: Tipo de Cliente y Sector
-    document.getElementById('edit_cod_tipo_cliente').value = data.cod_tipo_cliente || '';
+    document.getElementById('edit_nombre_tipo_cliente').value = data.nombre_tipo_cliente || '';
     document.getElementById('edit_nombre_tipo_cliente').value = data.nombre_tipo_cliente || '';
     document.getElementById('edit_cod_tipo_sector').value = data.cod_tipo_sector || '';
     document.getElementById('edit_nit_razon_social').value = data.nit_razon_social || '';
@@ -3024,64 +3025,26 @@ function guardarTiendaEditada(codTienda) {
     }
     
     if (nitTienda === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El NIT/Documento no puede estar vacío', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El NIT/Documento no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     if (telefonoTienda === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El teléfono no puede estar vacío', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El teléfono no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     if (correoTienda === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El correo no puede estar vacío', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El correo no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
-    Swal.fire({
-        title: 'Guardando...',
-        didOpen: () => { Swal.showLoading() },
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
         url: '../admin/actualizar_tienda_insitu_ajax.php',
         type: 'POST',
-        data: {
-            cod_tienda: codTienda,
-            nombre1_tercero: nombreTienda,
-            identificacion_tercero: nitTienda,
-            telefono1_tercero: telefonoTienda,
-            correo_tercero: correoTienda,
-            direccion_tercero: direccionTienda,
-            cod_departamento: departamentoTienda,
-            cod_municipio: municipioTienda,
-            cod_estado: estadoTienda
-        },
+        data: { cod_tienda: codTienda, nombre1_tercero: nombreTienda, identificacion_tercero: nitTienda, telefono1_tercero: telefonoTienda, correo_tercero: correoTienda, direccion_tercero: direccionTienda, cod_departamento: departamentoTienda, cod_municipio: municipioTienda, cod_estado: estadoTienda },
         dataType: 'json',
         success: function(response) {
             Swal.close();
@@ -3100,14 +3063,7 @@ function guardarTiendaEditada(codTienda) {
                     cargarTiendasAliado(currentCodAdministradorTienda);
                 });
             } else {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Error', 
-                    text: response.mensaje || 'No se pudo actualizar la tienda', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo actualizar la tienda', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
@@ -3874,17 +3830,7 @@ function compartirDocWhatsApp() {
     var nombreAliado = document.getElementById('doc_nombre_aliado').textContent;
     var telefono = document.getElementById('doc_telefono_aliado').value.replace(/\D/g, '');
     
-    if (!codAliadoCryp) { 
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error', 
-            text: 'No se encontró el código del aliado', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
-        return; 
-    }
+    if (!codAliadoCryp) { Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró el código del aliado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }); return; }
     
     var enlace = getEnlaceDocumentacion();
     var mensaje = '¡Hola ' + nombreAliado + '! Por favor sube tu documentación legal (RUT y Cámara de Comercio) en el siguiente enlace: ' + enlace;

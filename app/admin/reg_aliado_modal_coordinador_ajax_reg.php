@@ -31,7 +31,6 @@ $cod_estado_activacion_usuario                                      = "2"; // Pe
 $fecha                                                              = date("Y-m-d");
 $fecha_hora                                                         = date("H:i:s");
 $creador                                                            = $cuenta_actual;
-$cod_asesor                                                         = ($_SESSION['cod_administrador']);
 //---------------------------------------------------------------------------------------------------------------------------------//
 if (isset($_POST['identificacion_tercero'])) {
 	$identificacion_tercero                                         = addslashes($_POST['identificacion_tercero']);
@@ -40,6 +39,7 @@ if (isset($_POST['identificacion_tercero'])) {
 	$telefono1_tercero                                              = trim(addslashes($_POST['telefono1_tercero']));
 	$correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
 	$nombres_apellidos_tercero                                      = trim(addslashes($_POST['nombres_apellidos_tercero']));
+	$cod_asesor                                                     = intval($_POST['cod_asesor']);
 	$direccion_tercero                                              = '';
 	// Nuevos campos de tipo de cliente y sector
 	$nombre_tipo_cliente                                            = isset($_POST['nombre_tipo_cliente']) ? addslashes($_POST['nombre_tipo_cliente']) : 1;
