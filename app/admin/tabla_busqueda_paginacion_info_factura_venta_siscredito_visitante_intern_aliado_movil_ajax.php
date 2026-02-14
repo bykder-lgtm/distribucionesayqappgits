@@ -1107,7 +1107,12 @@ estilo_hologram - Holograma
                     <input type="hidden" id="AsignarBancoCuentaCodActual" name="cod_banco_cuenta_actual">
                     
                     <div class="mb-3">
-                        <label for="AsignarBancoCuentaSelect" style="color: #a0aec0; font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Seleccionar Cuenta Bancaria</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <label for="AsignarBancoCuentaSelect" style="color: #a0aec0; font-size: 0.85rem; margin: 0;">Seleccionar Cuenta Bancaria</label>
+                            <button type="button" id="btnNuevoBancoCuentaDesdeAsignar" class="btn btn-sm" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: none; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                                <i class="fa fa-plus-circle"></i> Nuevo Banco Cuenta
+                            </button>
+                        </div>
                         <select id="AsignarBancoCuentaSelect" name="cod_banco_cuenta" class="form-control" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem; height: auto; min-height: 45px; line-height: 1.5; font-size: 1rem;" required>
                             <option value="" style="color: #000;">Cargando cuentas bancarias...</option>
                         </select>
@@ -3278,8 +3283,9 @@ function abrirModalRegistrarBancoCuenta(codInfoFacturaVenta) {
     // Ocultar el modal de detalle de crédito antes de abrir el nuevo modal
     $('#modalDetalleCredito').modal('hide');
     
-    // Almacenar el código de factura
+    // Almacenar el código de factura y limpiar flag de reabrir modal asignar
     document.getElementById('registrarBancoCuentaCodInfoFactura').value = codInfoFacturaVenta;
+    $('#registrarBancoCuentaCodInfoFactura').data('abrir-modal-asignar', false);
     
     // Limpiar el formulario
     document.getElementById('formRegistrarBancoCuenta').reset();
@@ -3914,6 +3920,37 @@ $(document).on('click', '#btnCancelarAsignarBancoCuenta', function(e) {
     });
 });
 
+// Botón para abrir modal de registro desde modal de asignación banco cuenta
+$(document).on('click', '#btnNuevoBancoCuentaDesdeAsignar', function(e) {
+    e.preventDefault();
+    console.log('Botón Nuevo Banco Cuenta Desde Asignar clickeado');
+    
+    // Capturar el cod_info_factura_venta del modal de asignación
+    const codInfoFactura = $('#AsignarBancoCuentaCodInfoFactura').val();
+    
+    // Cerrar modal de asignación
+    $('#modalAsignarBancoCuenta').modal('hide');
+    
+    // Esperar a que se cierre y abrir modal de registro
+    $('#modalAsignarBancoCuenta').on('hidden.bs.modal', function(e) {
+        $(this).off('hidden.bs.modal');
+        
+        // Establecer el cod_info_factura_venta y flag para reabrir modal de asignación
+        $('#registrarBancoCuentaCodInfoFactura').val(codInfoFactura);
+        $('#registrarBancoCuentaCodInfoFactura').data('abrir-modal-asignar', true);
+        
+        // Limpiar formulario
+        $('#formRegistrarBancoCuenta')[0].reset();
+        $('#registrarBancoCuentaCodInfoFactura').val(codInfoFactura);
+        $('#alertRegistrarBancoCuenta').hide();
+        
+        // Abrir modal de registro
+        setTimeout(function() {
+            $('#modalRegistrarBancoCuenta').modal('show');
+        }, 200);
+    });
+});
+
 // Botón para guardar asignación desde la modal duplicada de banco cuenta
 $(document).on('click', '#btnGuardarAsignarBancoCuenta', function(e) {
     e.preventDefault();
@@ -4004,9 +4041,28 @@ $(document).on('click', '#btnGuardarRegistrarBancoCuenta', function(e) {
                 
                 // Obtener el código de factura
                 const codInfoFactura = $('#registrarBancoCuentaCodInfoFactura').val();
+                const abrirModalAsignar = $('#registrarBancoCuentaCodInfoFactura').data('abrir-modal-asignar');
                 
-                // Si hay un código de factura y un código de banco cuenta, actualizar la cuenta en la factura
-                if (codInfoFactura && response.cod_banco_cuenta) {
+                // Si se debe reabrir el modal de asignación
+                if (abrirModalAsignar && codInfoFactura) {
+                    // Construir el nombre completo de la cuenta para agregar al select
+                    const nombreCuentaBanco = nombreBanco + ' | ' + numeroCuenta;
+                    const codBancoCuenta = response.cod_banco_cuenta;
+                    
+                    // Agregar la nueva opción al select de asignación y seleccionarla
+                    const selectAsignar = $('#AsignarBancoCuentaSelect');
+                    selectAsignar.append(`<option value="${codBancoCuenta}" selected>${nombreCuentaBanco}</option>`);
+                    
+                    // Cerrar modal de registro y reabrir modal de asignación
+                    setTimeout(function() {
+                        $('#modalRegistrarBancoCuenta').modal('hide');
+                        $('#modalRegistrarBancoCuenta').on('hidden.bs.modal', function(e) {
+                            $(this).off('hidden.bs.modal');
+                            $('#modalAsignarBancoCuenta').modal('show');
+                        });
+                    }, 1000);
+                } else if (codInfoFactura && response.cod_banco_cuenta) {
+                    // Flujo original: actualizar la cuenta en la factura
                     $.ajax({
                         url: '../admin/cambiar_banco_cuenta_modal_factura_ajax.php',
                         type: 'POST',
