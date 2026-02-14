@@ -1232,15 +1232,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div class="form-group">
                         <label class="form-label">Tipo de Cliente *</label>
                         <select class="form-select" id="nombre_tipo_cliente" name="nombre_tipo_cliente" required onchange="cambiarTipoCliente()">
-                            <option value="" data-nombre="">Seleccione...</option>
+                            <option value="">Seleccione...</option>
                             <?php 
                             mysqli_data_seek($res_tipo_cliente, 0);
                             while ($tipo_cliente = mysqli_fetch_assoc($res_tipo_cliente)): 
                             ?>
-                            <option value="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>" data-nombre="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
+                            <option value="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
                             <?php endwhile; ?>
                         </select>
-                        <input type="hidden" id="nombre_tipo_cliente" name="nombre_tipo_cliente">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Tipo de Sector *</label>
@@ -1485,15 +1484,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div class="form-group">
                         <label class="form-label">Tipo de Cliente *</label>
                         <select class="form-select" id="edit_nombre_tipo_cliente" name="nombre_tipo_cliente" required onchange="cambiarTipoClienteEdit()">
-                            <option value="" data-nombre="">Seleccione...</option>
+                            <option value="">Seleccione...</option>
                             <?php 
                             mysqli_data_seek($res_tipo_cliente, 0);
                             while ($tipo_cliente = mysqli_fetch_assoc($res_tipo_cliente)): 
                             ?>
-                            <option value="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>" data-nombre="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
+                            <option value="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
                             <?php endwhile; ?>
                         </select>
-                        <input type="hidden" id="edit_nombre_tipo_cliente" name="nombre_tipo_cliente">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Tipo de Sector *</label>
@@ -2438,19 +2436,7 @@ function abrirModalEditar(data) {
 
     // Cargar nuevos campos: Tipo Cliente, Sector, Nit Razón Social
     if(document.getElementById('edit_nombre_tipo_cliente')) {
-        // En el objeto data, si viene nombre_tipo_cliente usarlo, sino tratar de encontrarlo por nombre
-        var codCliente = data.nombre_tipo_cliente || '';
-        // Si no hay codigo pero hay nombre, intentar seleccionar por texto (aunque el select espera value=id)
-        // Para esto iteramos las opciones
-        if (!codCliente && data.nombre_tipo_cliente) {
-             $('#edit_nombre_tipo_cliente option').each(function() {
-                 if ($(this).attr('data-nombre') == data.nombre_tipo_cliente) {
-                     codCliente = $(this).val();
-                     return false;
-                 }
-             });
-        }
-        document.getElementById('edit_nombre_tipo_cliente').value = codCliente;
+        document.getElementById('edit_nombre_tipo_cliente').value = data.nombre_tipo_cliente || '';
     }
     if(document.getElementById('edit_cod_tipo_sector')) {
         document.getElementById('edit_cod_tipo_sector').value = data.cod_tipo_sector || '';
@@ -2459,8 +2445,8 @@ function abrirModalEditar(data) {
         document.getElementById('edit_nit_razon_social').value = data.nit_razon_social || '';
     }
     
-    // Mostrar/Ocultar Nit Razón Social al cargar
-    cambiarTipoClienteEdit();
+    // Mostrar/Ocultar Nit Razón Social al cargar (sin limpiar el valor)
+    cambiarTipoClienteEdit(false);
     
     // Cargar documentación legal si existe
     var editRutActual = document.getElementById('edit_rut_actual');
@@ -4463,54 +4449,42 @@ function enviarEmail() {
 
 // Función para manejar el cambio en el select tipo_cliente (Registro)
 function cambiarTipoCliente() {
-    var select = document.getElementById('nombre_tipo_cliente');
-    var tipo = '';
-    if (select.selectedIndex >= 0) { tipo = select.options[select.selectedIndex].getAttribute('data-nombre') || ''; }
-    document.getElementById('nombre_tipo_cliente').value = tipo; // Actualizar hidden input
+    var tipoCliente = document.getElementById('nombre_tipo_cliente');
+    var labelNombreComercial = document.getElementById('label_nombre_comercial');
+    var containerNit = document.getElementById('container_nit_razon_social');
+    var inputNit = document.getElementById('nit_razon_social');
     
-    var divNit = document.getElementById('container_nit_razon_social');
-    var labelNombre = document.getElementById('label_nombre_comercial');
-    
-    // Normalizar texto para comparación robusta
-    var tipoNorm = tipo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    
-    if (tipoNorm === 'empresa' || tipoNorm === 'persona juridica') {
-        divNit.style.display = 'block';
-        document.getElementById('nit_razon_social').required = true;
-        labelNombre.innerHTML = 'Razón Social *';
-    } else {
-        divNit.style.display = 'none';
-        document.getElementById('nit_razon_social').required = false;
-        document.getElementById('nit_razon_social').value = '';
-        labelNombre.innerHTML = 'Nombre Comercial *';
+    if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
+        labelNombreComercial.textContent = 'Razón Social *';
+        containerNit.style.display = 'block';
+        inputNit.required = true;
+    } else { // PERSONA_NATURAL u otro
+        labelNombreComercial.textContent = 'Nombre Comercial *';
+        containerNit.style.display = 'none';
+        inputNit.required = false;
+        inputNit.value = '';
     }
 }
 
 // Función para manejar el cambio en el select tipo_cliente (Editar)
-function cambiarTipoClienteEdit() {
-    var select = document.getElementById('edit_nombre_tipo_cliente');
-    var tipo = '';
-    if (select.selectedIndex >= 0) {
-        tipo = select.options[select.selectedIndex].getAttribute('data-nombre') || '';
-    }
-    document.getElementById('edit_nombre_tipo_cliente').value = tipo; // Actualizar hidden input
-
-    var divNit = document.getElementById('edit_container_nit_razon_social');
-    var labelNombre = document.getElementById('edit_label_nombre_comercial');
+function cambiarTipoClienteEdit(limpiarNit) {
+    var tipoCliente = document.getElementById('edit_nombre_tipo_cliente');
+    var labelNombreComercial = document.getElementById('edit_label_nombre_comercial');
+    var containerNit = document.getElementById('edit_container_nit_razon_social');
+    var inputNit = document.getElementById('edit_nit_razon_social');
     
-    // Normalizar texto para comparación robusta
-    var tipoNorm = tipo.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    
-    if (tipoNorm === 'empresa' || tipoNorm === 'persona juridica') {
-        divNit.style.display = 'block';
-        if(document.getElementById('edit_nit_razon_social')) document.getElementById('edit_nit_razon_social').required = true;
-        labelNombre.innerHTML = 'Razón Social *';
-    } else {
-        divNit.style.display = 'none';
-        if(document.getElementById('edit_nit_razon_social')) {
-            document.getElementById('edit_nit_razon_social').required = false;
+    if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
+        labelNombreComercial.textContent = 'Razón Social *';
+        containerNit.style.display = 'block';
+        inputNit.required = true;
+    } else { // PERSONA_NATURAL u otro
+        labelNombreComercial.textContent = 'Nombre Comercial *';
+        containerNit.style.display = 'none';
+        inputNit.required = false;
+        // Solo limpiar el NIT si se indica explícitamente (cuando el usuario cambia manualmente)
+        if (limpiarNit !== false) {
+            inputNit.value = '';
         }
-        labelNombre.innerHTML = 'Nombre Comercial *';
     }
 }
 
