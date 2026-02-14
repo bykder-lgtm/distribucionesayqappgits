@@ -1,0 +1,109 @@
+/*
+*{
+	margin:0;
+	padding:0;
+	box-sizing: border-box;
+}
+*/
+/*
+body{
+	background: #f2f2f2;
+	font-family: 'Raleway', sans-serif;
+}
+*/
+/*
+header{
+	width: 100%;
+	height:600px;
+	background: url('Skewed.png');
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+}
+*/
+.flex{
+	width: 100%;
+	height:100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.textos{
+	padding:300px;
+	color:#fff;
+	text-align: center;
+}
+
+h1{
+	font-size: 40px;
+	margin-bottom:20px;
+}
+
+.modal_principal{
+	display: none;
+	position: fixed;
+	z-index:1;
+	overflow: auto;
+	left: 0;
+	top:0;
+	width: 100%;
+	height:100%;
+	background: rgba(0, 0, 0, 0.452);
+}
+
+.modal_contenido{
+	position: relative;
+	background-color: #cccccc;
+	margin: auto;
+	width: 30%;
+	box-shadow: 0 0 6px 0 rgba(0, 0, 0, .4);
+	animation-name: modal;
+	animation-duration: 1s;
+}
+@keyframes modal{
+	from{top:-330px; opacity:0;}
+	to{top:0; opacity:1;}
+}
+.modal_cerrar{
+	color: #f2f2f2;
+	font-size:30px;
+	font-weight: bold;
+}
+.modal_cerrar:hover{
+	color:#7f8c8d;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.modal-header, .footer{
+	padding: 5px 16px;
+	background: #34495e;
+	color:#f2f2f2;
+	margin:0;
+	/*padding:0;*/
+	box-sizing: border-box;
+}
+
+p{
+	text-align: justify;
+}
+
+.modal_cuerpo{
+	padding: 20px 16px;
+}
+
+@media screen and (max-width:900px){
+	.modal_contenido{
+		width: 70%;
+	}
+	.textos{
+		padding: 150px;
+	}
+}
+
+@media screen and (max-width:500px){
+	.textos{
+		padding:50px;
+	}
+}

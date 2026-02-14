@@ -1,0 +1,436 @@
+/**
+ * ============================================
+ * ESTILOS: Modal Detalle Crédito - Aliado Móvil
+ * ============================================
+ * Estilos para el modal principal de detalles del crédito
+ * y componentes relacionados.
+ */
+
+/* ==================== MODAL DETALLE CRÉDITO ==================== */
+.modal-detalle-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 10px 10px 0 0;
+    border: none;
+    position: relative;
+}
+
+.modal-detalle-header .close {
+    color: white;
+    opacity: 1;
+    text-shadow: none;
+    font-size: 2rem;
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-detalle-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.detalle-section {
+    background: #f7fafc;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.detalle-info-box {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.detalle-info-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.detalle-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.detalle-label i {
+    margin-right: 0.5rem;
+    color: #667eea;
+}
+
+.detalle-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+}
+
+.detalle-value-large {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin: 0;
+}
+
+/* ==================== BOTONES DE ACCIÓN ==================== */
+.btn-detalle-action {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-detalle-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-detalle-action i {
+    font-size: 1rem;
+}
+
+/* ==================== DIVISOR DE SECCIÓN ==================== */
+.section-divider-detalle {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0 1rem 0;
+}
+
+.section-divider-detalle::before,
+.section-divider-detalle::after {
+    content: '';
+    flex: 1;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.section-divider-detalle span {
+    padding: 0 1rem;
+    color: #667eea;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==================== BADGES DE ESTADO ==================== */
+.estado-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* ==================== GRID DE IMÁGENES ==================== */
+.imagenes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.imagen-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.imagen-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* ==================== SCROLL UNIFICADO ==================== */
+.modal-detalle-wrapper {
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar personalizado - Webkit */
+.modal-detalle-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-detalle-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.modal-detalle-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+}
+
+.modal-detalle-wrapper::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes pulse-alert {
+    0% {
+        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7);
+        transform: scale(0.95);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(229, 62, 62, 0);
+        transform: scale(1);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
+        transform: scale(0.95);
+    }
+}
+
+/* ==================== ESTILOS RESPONSIVOS ==================== */
+@media (max-width: 768px) {
+    .modal-detalle-wrapper {
+        max-height: 85vh;
+    }
+    
+    .detalle-info-box {
+        margin-bottom: 0.75rem;
+    }
+    
+    .section-divider-detalle {
+        margin: 1rem 0 0.75rem 0;
+    }
+    
+    .detalle-section {
+        padding: 1rem;
+    }
+    
+    .modal-detalle-header {
+        padding: 1rem;
+    }
+    
+    .modal-detalle-header h4 {
+        font-size: 1.3rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .modal-lg {
+        max-width: 95%;
+        margin: 0.5rem auto;
+    }
+    
+    .modal-detalle-wrapper {
+        max-height: 80vh;
+    }
+    
+    .detalle-value-large {
+        font-size: 1.2rem;
+    }
+    
+    .detalle-value {
+        font-size: 0.95rem;
+    }
+    
+    /* Mantener dos columnas incluso en pantallas pequeñas */
+    .row > [class*="col-md-6"] {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+    
+    .row > [class*="col-md-4"] {
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+    
+    .row > [class*="col-md-8"] {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+    
+    /* Ajustar padding de las cajas para que se vean mejor en dos columnas */
+    .detalle-info-box {
+        padding: 0.75rem 0.5rem;
+    }
+    
+    .detalle-label {
+        font-size: 0.65rem;
+    }
+    
+    .btn-detalle-action {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.75rem;
+    }
+}
+
+/* ==================== ESTILOS DE ESTADOS ESPECIALES ==================== */
+
+/* Efecto neón pulsante */
+.estilo_neon_pulse {
+    animation: neon-pulse 2s infinite;
+}
+
+@keyframes neon-pulse {
+    0%, 100% { box-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff; }
+    50% { box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff; }
+}
+
+/* Alerta de fuego */
+.estilo_fire_alert {
+    background: linear-gradient(45deg, #ff4500, #ff6347);
+    animation: fire-shake 0.5s ease infinite;
+}
+
+@keyframes fire-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+/* Azul eléctrico */
+.estilo_electric_blue {
+    background: linear-gradient(135deg, #0066ff 0%, #00ccff 100%);
+    box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+}
+
+/* Brillo arcoíris */
+.estilo_rainbow_shine {
+    background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+    background-size: 400% 400%;
+    animation: rainbow-flow 3s ease infinite;
+}
+
+@keyframes rainbow-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Verde cibernético */
+.estilo_cyber_green {
+    background: #00ff00;
+    color: #000;
+    text-shadow: 0 0 10px #00ff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+/* Advertencia atardecer */
+.estilo_sunset_warning {
+    background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+}
+
+/* Púrpura galaxia */
+.estilo_galaxy_purple {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f64f59 100%);
+    background-size: 200% 200%;
+    animation: galaxy-shift 4s ease infinite;
+}
+
+@keyframes galaxy-shift {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+/* Código Matrix */
+.estilo_matrix_code {
+    background: #000;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+/* Atardecer tropical */
+.estilo_tropical_sunset {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fad0c4 100%);
+}
+
+/* Hielo cristal */
+.estilo_crystal_ice {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    box-shadow: 0 4px 15px rgba(168, 237, 234, 0.3);
+}
+
+/* Flujo de lava */
+.estilo_lava_flow {
+    background: linear-gradient(135deg, #f12711 0%, #f5af19 100%);
+    animation: lava-pulse 2s ease infinite;
+}
+
+@keyframes lava-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* Holograma */
+.estilo_hologram {
+    background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.3) 50%, transparent 70%);
+    background-size: 200% 200%;
+    animation: hologram-scan 3s linear infinite;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+}
+
+@keyframes hologram-scan {
+    0% { background-position: -100% -100%; }
+    100% { background-position: 100% 100%; }
+}
+
+/* ==================== TOAST/NOTIFICACIONES ==================== */
+.toast-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    z-index: 10000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.toast-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.toast-error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.toast-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.toast-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}

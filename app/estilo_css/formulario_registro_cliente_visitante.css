@@ -1,0 +1,70 @@
+/*------------------------------------------------------------------*/
+/*------------------------------------------------------------------*/
+#parent_registro_cliente {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 8px;
+}
+#div3_registro_cliente { grid-row-start: 2; }
+#div4_registro_cliente { grid-row-start: 2; }
+#div5_registro_cliente { grid-row-start: 3; }
+#div6_registro_cliente { grid-row-start: 3; }
+#div7_registro_cliente { grid-row-start: 4; }
+#div8_registro_cliente { grid-row-start: 4; }
+#div9_registro_cliente { grid-row-start: 5; }
+#div10_registro_cliente { grid-row-start: 5; }
+#div11_registro_cliente { grid-row-start: 6; }
+#div12_registro_cliente { grid-row-start: 6; }
+#div_boton_registro_cliente { grid-column: span 2 / span 2; grid-row-start: 7; }
+/*------------------------------------------------------------------*/
+/*------------------------------------------------------------------*/
+#parent_entidad_crediticia {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    gap: 8px;
+}
+#div4_entidad_crediticia { grid-row-start: 2; }
+#div5_entidad_crediticia { grid-row-start: 2; }
+#div6_entidad_crediticia { grid-row-start: 2; }
+#div7_entidad_crediticia { grid-column: span 3 / span 3; grid-row-start: 3; }
+/*------------------------------------------------------------------*/
+/*------------------------------------------------------------------*/
+#parent_simulflag {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    gap: 8px;
+}
+#div1_simulflag { grid-column: span 3 / span 3; }
+#div2_simulflag { grid-row-start: 2; }
+#div3_simulflag { grid-row-start: 2; }
+#div4_simulflag { grid-row-start: 2; }
+#div5_simulflag { grid-column: span 3 / span 3; grid-row-start: 3; }
+/*------------------------------------------------------------------*/
+/*------------------------------------------------------------------*/  
+#parent_registro_tercero_cliente {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    gap: 8px;
+}
+#div5_registro_tercero_cliente { grid-row-start: 2; }
+#div6_registro_tercero_cliente { grid-row-start: 2; }
+#div7_registro_tercero_cliente { grid-row-start: 2; }
+#div8_registro_tercero_cliente { grid-row-start: 2; }
+#div9_registro_tercero_cliente { grid-row-start: 3; }
+#div10_registro_tercero_cliente { grid-row-start: 3; }
+#div11_registro_tercero_cliente { grid-row-start: 3; }
+#div12_registro_tercero_cliente { grid-row-start: 3; }
+#div13_registro_tercero_cliente { grid-row-start: 4; }
+#div14_registro_tercero_cliente { grid-row-start: 4; }
+#div15_registro_tercero_cliente { grid-row-start: 4; }
+#div16_registro_tercero_cliente { grid-row-start: 4; }
+#div17_registro_tercero_cliente { grid-row-start: 5; }
+#div18_registro_tercero_cliente { grid-row-start: 5; }
+#div19_registro_tercero_cliente { grid-row-start: 5; }
+#div20_registro_tercero_cliente { grid-row-start: 5; }
+/*------------------------------------------------------------------*/
+/*------------------------------------------------------------------*/  

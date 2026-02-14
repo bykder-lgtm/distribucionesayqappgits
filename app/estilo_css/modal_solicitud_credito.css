@@ -1,0 +1,297 @@
+/* ========================================
+   MODAL DE SOLICITUD DE CRÉDITO
+   ======================================== */
+
+/* Backdrop del modal con tema oscuro */
+.modal-backdrop.show {
+  opacity: 0.85;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1d3a 100%);
+}
+
+/* Contenedor del modal */
+.modal-solicitud-credito {
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1d3a 100%);
+  border: 2px solid rgba(102, 126, 234, 0.5);
+  border-radius: 20px;
+  box-shadow: 
+    0 0 60px rgba(102, 126, 234, 0.3),
+    0 0 100px rgba(118, 75, 162, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: white;
+  overflow: hidden;
+}
+
+/* Header del modal */
+.modal-header-solicitud {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: 2px solid #00d4ff;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 18px 18px 0 0;
+}
+
+.modal-title-solicitud {
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.modal-title-solicitud i {
+  color: #00d4ff;
+  font-size: 1.4rem;
+}
+
+.close-modal-solicitud {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4) !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+.close-modal-solicitud i {
+  color: white !important;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  display: block !important;
+  position: relative !important;
+  z-index: 11 !important;
+}
+
+.close-modal-solicitud:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: #00d4ff !important;
+  transform: rotate(90deg) !important;
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.7) !important;
+}
+
+.close-modal-solicitud:hover i {
+  color: #00d4ff !important;
+}
+
+.close-modal-solicitud:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.3) !important;
+}
+
+/* Body del modal */
+.modal-body-solicitud {
+  padding: 1.5rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Scrollbar personalizado para el modal */
+.modal-body-solicitud::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body-solicitud::-webkit-scrollbar-track {
+  background: rgba(26, 29, 58, 0.5);
+  border-radius: 10px;
+}
+
+.modal-body-solicitud::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 10px;
+}
+
+.modal-body-solicitud::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5b7ce6, #667eea);
+}
+
+/* Labels del formulario */
+.label-form-solicitud {
+  color: #00d4ff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.label-form-solicitud i {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Inputs y selects del formulario */
+.form-control-solicitud {
+  background: rgba(26, 29, 58, 0.8);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: white;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.form-control-solicitud::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.form-control-solicitud:focus {
+  background: rgba(26, 29, 58, 0.95);
+  border-color: #00d4ff;
+  outline: none;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.form-control-solicitud:hover {
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
+/* Resumen del crédito en el modal */
+.credito-resumen-modal-solicitud {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.1));
+  border: 2px solid rgba(102, 126, 234, 0.4);
+  border-radius: 15px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.resumen-item-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: rgba(26, 29, 58, 0.6);
+  border-radius: 8px;
+}
+
+.resumen-item-modal.full-width {
+  grid-column: 1 / -1;
+}
+
+.resumen-label-modal {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resumen-valor-modal {
+  color: #00d4ff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Footer del modal */
+.modal-footer-solicitud {
+  background: rgba(10, 14, 39, 0.5);
+  border-top: 2px solid rgba(102, 126, 234, 0.3);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 0 0 18px 18px;
+}
+
+.btn-cancelar-solicitud,
+.btn-enviar-solicitud {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.btn-cancelar-solicitud {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.btn-cancelar-solicitud:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn-enviar-solicitud {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.btn-enviar-solicitud:hover {
+  background: linear-gradient(135deg, #5b7ce6, #667eea);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 0.5rem;
+    max-width: calc(100% - 1rem);
+  }
+  
+  .modal-header-solicitud {
+    padding: 1rem;
+  }
+  
+  .modal-title-solicitud {
+    font-size: 1.1rem;
+  }
+  
+  .modal-body-solicitud {
+    padding: 1rem;
+    max-height: 60vh;
+  }
+  
+  .credito-resumen-modal-solicitud {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .modal-footer-solicitud {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .btn-cancelar-solicitud,
+  .btn-enviar-solicitud {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .credito-resumen-modal-solicitud {
+    grid-template-columns: 1fr;
+  }
+}

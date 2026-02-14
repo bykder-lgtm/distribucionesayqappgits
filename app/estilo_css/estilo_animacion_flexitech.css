@@ -1,0 +1,439 @@
+/* Reset y configuración base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    background: linear-gradient(135deg, #0a1428 0%, #1e3a5f 50%, #2c5282 100%);
+    position: relative;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* Partículas de fondo */
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    background: #00d4ff;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: floatParticle 6s infinite linear;
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Logo Container */
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 80px;
+    animation: logoFadeIn 2s ease-out;
+}
+
+@keyframes logoFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Logo Symbol */
+.logo-symbol {
+    position: relative;
+    width: 120px;
+    height: 80px;
+    margin-bottom: 20px;
+    animation: symbolGlow 3s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.6));
+}
+
+/* Placeholder temporal del logo */
+.logo-placeholder {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.logo-curve-1,
+.logo-curve-2 {
+    position: absolute;
+    border-radius: 50px;
+    background: linear-gradient(45deg, #00d4ff, #33e0ff);
+}
+
+.logo-curve-1 {
+    width: 80px;
+    height: 25px;
+    top: 15px;
+    left: 20px;
+    transform: rotate(-20deg);
+    border-radius: 50px 50px 20px 20px;
+    animation: curve1Float 4s ease-in-out infinite;
+}
+
+.logo-curve-2 {
+    width: 60px;
+    height: 20px;
+    top: 35px;
+    left: 30px;
+    transform: rotate(-35deg);
+    border-radius: 30px 30px 15px 15px;
+    animation: curve2Float 4s ease-in-out infinite 0.5s;
+    opacity: 0.8;
+}
+
+@keyframes curve1Float {
+    0%, 100% {
+        transform: rotate(-20deg) scale(1);
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+    }
+    50% {
+        transform: rotate(-25deg) scale(1.05);
+        box-shadow: 0 0 25px rgba(0, 212, 255, 0.9);
+    }
+}
+
+@keyframes curve2Float {
+    0%, 100% {
+        transform: rotate(-35deg) scale(1);
+        box-shadow: 0 0 10px rgba(51, 224, 255, 0.6);
+    }
+    50% {
+        transform: rotate(-30deg) scale(1.1);
+        box-shadow: 0 0 20px rgba(51, 224, 255, 0.8);
+    }
+}
+
+/* Estilos para cuando uses la imagen real */
+.logo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: logoImageAnimation 4s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+.logo-image:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2) drop-shadow(0 0 25px rgba(0, 212, 255, 0.8));
+}
+
+@keyframes logoImageAnimation {
+    0%, 100% {
+        transform: scale(1);
+        filter: brightness(1) drop-shadow(0 0 15px rgba(0, 212, 255, 0.6));
+    }
+    50% {
+        transform: scale(1.05);
+        filter: brightness(1.1) drop-shadow(0 0 25px rgba(0, 212, 255, 0.9));
+    }
+}
+
+@keyframes symbolGlow {
+    0% {
+        filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.6));
+    }
+    100% {
+        filter: drop-shadow(0 0 25px rgba(0, 212, 255, 0.9));
+    }
+}
+
+/* Logo Text */
+.logo-text {
+    font-size: 32px;
+    font-weight: bold;
+    color: #00d4ff;
+    letter-spacing: 8px;
+    text-shadow: 
+        0 0 10px rgba(0, 212, 255, 0.8),
+        0 0 20px rgba(0, 212, 255, 0.6),
+        0 0 30px rgba(0, 212, 255, 0.4);
+    animation: logoTextGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes logoTextGlow {
+    0% {
+        text-shadow: 
+            0 0 10px rgba(0, 212, 255, 0.8),
+            0 0 20px rgba(0, 212, 255, 0.6),
+            0 0 30px rgba(0, 212, 255, 0.4);
+    }
+    100% {
+        text-shadow: 
+            0 0 20px rgba(0, 212, 255, 1),
+            0 0 30px rgba(0, 212, 255, 0.8),
+            0 0 40px rgba(0, 212, 255, 0.6);
+    }
+}
+
+/* Texto Bienvenida */
+.welcome-text {
+    font-size: 120px;
+    font-weight: bold;
+    color: #00d4ff;
+    margin-bottom: 100px;
+    text-shadow: 
+        0 0 20px rgba(0, 212, 255, 0.8),
+        0 0 40px rgba(0, 212, 255, 0.6),
+        0 0 60px rgba(0, 212, 255, 0.4);
+    animation: welcomeTextAppear 3s ease-out 1s both;
+}
+
+.letter {
+    display: inline-block;
+    animation: letterFloat 3s ease-in-out infinite;
+}
+
+.letter:nth-child(1) { animation-delay: 0.1s; }
+.letter:nth-child(2) { animation-delay: 0.2s; }
+.letter:nth-child(3) { animation-delay: 0.3s; }
+.letter:nth-child(4) { animation-delay: 0.4s; }
+.letter:nth-child(5) { animation-delay: 0.5s; }
+.letter:nth-child(6) { animation-delay: 0.6s; }
+.letter:nth-child(7) { animation-delay: 0.7s; }
+.letter:nth-child(8) { animation-delay: 0.8s; }
+.letter:nth-child(9) { animation-delay: 0.9s; }
+.letter:nth-child(10) { animation-delay: 1s; }
+
+@keyframes welcomeTextAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes letterFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Botón */
+.button-container {
+    position: relative;
+    animation: buttonAppear 2s ease-out 3s both;
+}
+
+@keyframes buttonAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.start-button {
+    position: relative;
+    padding: 20px 50px;
+    background: transparent;
+    border: 2px solid #00d4ff;
+    border-radius: 50px;
+    color: #00d4ff;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 
+        0 0 20px rgba(0, 212, 255, 0.3),
+        inset 0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+.start-button:hover {
+    background: rgba(0, 212, 255, 0.1);
+    box-shadow: 
+        0 0 30px rgba(0, 212, 255, 0.6),
+        inset 0 0 30px rgba(0, 212, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.start-button:active {
+    transform: scale(0.98);
+}
+
+.button-text {
+    position: relative;
+    z-index: 2;
+}
+
+.button-glow {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+    animation: buttonGlowSweep 3s ease-in-out infinite;
+}
+
+@keyframes buttonGlowSweep {
+    0% {
+        left: -100%;
+    }
+    50% {
+        left: 100%;
+    }
+    100% {
+        left: -100%;
+    }
+}
+
+/* Efectos de luz */
+.light-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.light-1 {
+    width: 300px;
+    height: 300px;
+    top: 10%;
+    left: 10%;
+    animation: lightFloat1 8s ease-in-out infinite;
+}
+
+.light-2 {
+    width: 200px;
+    height: 200px;
+    top: 60%;
+    right: 15%;
+    animation: lightFloat2 6s ease-in-out infinite;
+}
+
+.light-3 {
+    width: 150px;
+    height: 150px;
+    bottom: 20%;
+    left: 20%;
+    animation: lightFloat3 10s ease-in-out infinite;
+}
+
+@keyframes lightFloat1 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translate(50px, -30px) scale(1.2);
+        opacity: 0.6;
+    }
+}
+
+@keyframes lightFloat2 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.2;
+    }
+    50% {
+        transform: translate(-40px, 20px) scale(1.3);
+        opacity: 0.5;
+    }
+}
+
+@keyframes lightFloat3 {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translate(30px, -50px) scale(1.1);
+        opacity: 0.7;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .logo-text {
+        font-size: 24px;
+        letter-spacing: 4px;
+    }
+    
+    .welcome-text {
+        font-size: 60px;
+        margin-bottom: 60px;
+    }
+    
+    .start-button {
+        padding: 15px 30px;
+        font-size: 18px;
+    }
+    
+    .logo-symbol {
+        width: 90px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-text {
+        font-size: 40px;
+    }
+    
+    .start-button {
+        padding: 12px 25px;
+        font-size: 16px;
+    }
+    
+    .logo-symbol {
+        width: 70px;
+        height: 45px;
+    }
+}

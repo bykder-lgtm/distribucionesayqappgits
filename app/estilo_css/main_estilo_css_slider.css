@@ -1,0 +1,151 @@
+/***** BASE CSS *****/
+/*************************
+*******Home Page******
+**************************/
+#main-slider_css_slider {
+position: relative;
+}
+.no-margin_css_slider {
+margin: 0;
+padding: 0;
+}
+#main-slider_css_slider .carousel .carousel-content {
+margin-top: 5px;
+}
+#main-slider_css_slider .carousel .slide-margin{
+margin-top: 5px;
+}
+#main-slider_css_slider .carousel h2 {
+color: #fff;
+}
+#main-slider_css_slider .carousel .btn-slide {
+padding: 8px 20px;
+background: #8B008B;
+color: #fff;
+border-radius: 4px;
+margin-top: 25px;
+display: inline-block;
+}
+#main-slider_css_slider .carousel .slider-img{
+text-align: right;
+position: absolute;
+}
+#main-slider_css_slider .carousel .item {
+background-position: 50%;
+background-repeat: no-repeat;
+background-size: cover;
+left: 0 !important;
+opacity: 0;
+top: 0;
+position: absolute;
+width: 100%;
+display: block !important;
+height: 730px;
+-webkit-transition: opacity ease-in-out 500ms;
+-moz-transition: opacity ease-in-out 500ms;
+-o-transition: opacity ease-in-out 500ms;
+transition: opacity ease-in-out 500ms;
+}
+#main-slider_css_slider .carousel .item:first-child {
+top: auto;
+position: relative;
+}
+#main-slider_css_slider .carousel .item.active {
+opacity: 1;
+-webkit-transition: opacity ease-in-out 500ms;
+-moz-transition: opacity ease-in-out 500ms;
+-o-transition: opacity ease-in-out 500ms;
+transition: opacity ease-in-out 500ms;
+z-index: 1;
+}
+#main-slider_css_slider .prev,
+#main-slider_css_slider .next {
+position: absolute;
+top: 50%;
+background-color: #8B008B;
+color: #fff;
+display: inline-block;
+margin-top: -25px;
+height: 40px;
+line-height: 40px;
+width: 40px;
+line-height: 40px;
+text-align: center;
+border-radius: 4px;
+z-index: 5;
+}
+#main-slider_css_slider .prev:hover,
+#main-slider_css_slider .next:hover {
+background-color: #000;
+}
+#main-slider_css_slider .prev {
+left: 10px;
+}
+#main-slider_css_slider .next {
+right: 10px;
+}
+#main-slider_css_slider .carousel-indicators li {
+width: 20px;
+height: 20px;
+background-color: #fff;
+margin: 0 15px 0 0;
+position: relative;
+}
+#main-slider_css_slider .carousel-indicators li:after {
+position: absolute;
+content: "";
+width: 24px;
+height: 24px;
+border-radius: 100%;
+background: rgba(0, 0, 0, 0);
+border: 1px solid #FFF;
+left: -3px;
+top: -3px;
+}
+#main-slider_css_slider .carousel-indicators .active{
+width: 20px;
+height: 20px;
+background-color: #8B008B;
+margin: 0 15px 0 0;
+border: 1px solid #8B008B;
+position: relative;
+}
+#main-slider_css_slider .carousel-indicators .active:after {
+position: absolute;
+content: "";
+width: 24px;
+height: 24px;
+border-radius: 100%;
+background: #8B008B;
+border: 1px solid #8B008B;
+left: -3px;
+top: -3px;
+}
+#main-slider_css_slider .active .animation.animated-item-1 {
+-webkit-animation: fadeInUp 300ms linear 300ms both;
+-moz-animation: fadeInUp 300ms linear 300ms both;
+-o-animation: fadeInUp 300ms linear 300ms both;
+-ms-animation: fadeInUp 300ms linear 300ms both;
+animation: fadeInUp 300ms linear 300ms both;
+}
+#main-slider_css_slider .active .animation.animated-item-2 {
+-webkit-animation: fadeInUp 300ms linear 600ms both;
+-moz-animation: fadeInUp 300ms linear 600ms both;
+-o-animation: fadeInUp 300ms linear 600ms both;
+-ms-animation: fadeInUp 300ms linear 600ms both;
+animation: fadeInUp 300ms linear 600ms both;
+}
+#main-slider_css_slider .active .animation.animated-item-3 {
+-webkit-animation: fadeInUp 300ms linear 900ms both;
+-moz-animation: fadeInUp 300ms linear 900ms both;
+-o-animation: fadeInUp 300ms linear 900ms both;
+-ms-animation: fadeInUp 300ms linear 900ms both;
+animation: fadeInUp 300ms linear 900ms both;
+}
+#main-slider_css_slider .active .animation.animated-item-4 {
+-webkit-animation: fadeInUp 300ms linear 1200ms both;
+-moz-animation: fadeInUp 300ms linear 1200ms both;
+-o-animation: fadeInUp 300ms linear 1200ms both;
+-ms-animation: fadeInUp 300ms linear 1200ms both;
+animation: fadeInUp 300ms linear 1200ms both;
+}

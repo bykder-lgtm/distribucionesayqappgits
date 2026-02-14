@@ -1,0 +1,410 @@
+﻿/* ===================================================================================================
+   PALETA DE COLORES BASADA EN LA IMAGEN - DISTRIBUCIONES A&Q
+   ==================================================================================================
+   Colores principales:
+   - Azul oscuro base: #393942, #393942 (fondos principales)
+   - Azul primario: #6258AC (botones, enlaces principales)
+   - P�rpura/Azul claro: #6258AC, #6258AC (gradientes, acentos)
+   - Azul medio: #393942 (sustituto de #2A3F54 original)
+   =================================================================================================== */
+
+:root {
+    --color-primary: #6258AC;
+    --color-primary-dark: #393942;
+    --color-primary-light: #6258AC;
+    --color-secondary: #6258AC;
+    --color-gradient: linear-gradient(135deg, #6258AC 0%, #6258AC 100%);
+    --color-gradient-dark: linear-gradient(135deg, #393942 0%, #393942 100%);
+    --color-bg-main: #393942;
+    --color-accent: #6258AC;
+}
+
+/* ===================================================================================================
+   BODY Y CONTENEDOR PRINCIPAL
+   =================================================================================================== */
+body {
+    background: var(--color-gradient-dark) !important;
+}
+
+.container.body {
+    background: var(--color-gradient-dark) !important;
+}
+
+/* ===================================================================================================
+   COLUMNA IZQUIERDA - MEN� LATERAL
+   =================================================================================================== */
+.left_col {
+    background: linear-gradient(180deg, #393942 0%, #393942 100%) !important;
+}
+
+/* T�tulo del sitio */
+.navbar-brand,
+.site_title {
+    background: transparent !important;
+    color: #ECF0F1 !important;
+}
+
+.nav_title {
+    background: linear-gradient(135deg, #393942 0%, #393942 100%) !important;
+}
+
+/* ===================================================================================================
+   MEN� LATERAL - SIDE MENU
+   =================================================================================================== */
+.nav.side-menu > li > a {
+    color: #E7E7E7 !important;
+    transition: all 0.3s ease !important;
+}
+
+.nav.side-menu > li > a:hover {
+    color: #ffffff !important;
+    background: rgba(98, 88, 172, 0.15) !important;
+    padding-left: 20px !important;
+}
+
+/* Items activos del men� */
+.nav.side-menu > li.active,
+.nav.side-menu > li.current-page {
+    background: rgba(98, 88, 172, 0.1) !important;
+    border-right: 5px solid #6258AC !important;
+}
+
+.nav.side-menu > li.active > a {
+    background: linear-gradient(135deg, #6258AC 0%, #6258AC 100%) !important;
+    color: #ffffff !important;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0 !important;
+}
+
+/* ===================================================================================================
+   NAVEGACI�N SUPERIOR - TOP NAV
+   =================================================================================================== */
+.nav_menu {
+    background: #EDEDED !important;
+    border-bottom: 2px solid #6258AC !important;
+}
+
+.navbar-header {
+    background: var(--color-primary-dark) !important;
+}
+
+.top_nav .navbar-right li > a:hover {
+    background: rgba(98, 88, 172, 0.1) !important;
+}
+
+.user-profile {
+    transition: all 0.3s ease !important;
+}
+
+.user-profile:hover {
+    background: rgba(98, 88, 172, 0.1) !important;
+}
+
+.dropdown-menu.dropdown-usermenu li a:hover {
+    background: rgba(98, 88, 172, 0.1) !important;
+    color: #6258AC !important;
+}
+
+.nav.toggle a {
+    color: #6258AC !important;
+}
+
+.nav.toggle a:hover {
+    background: rgba(98, 88, 172, 0.1) !important;
+}
+
+/* ===================================================================================================
+   CONTENIDO PRINCIPAL - RIGHT COL
+   =================================================================================================== */
+.right_col {
+    background: #F7F7F7 !important;
+}
+
+/* ===================================================================================================
+   BOTONES
+   =================================================================================================== */
+.btn-primary {
+    background: var(--color-gradient) !important;
+    border: 1px solid var(--color-primary) !important;
+    color: #fff !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background: linear-gradient(135deg, #6258AC 0%, #6258AC 100%) !important;
+    border-color: var(--color-secondary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(98, 88, 172, 0.4) !important;
+}
+
+.btn-success {
+    background: var(--color-primary) !important;
+    border: 1px solid var(--color-primary) !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+    background: var(--color-primary-light) !important;
+    border-color: var(--color-primary-light) !important;
+}
+
+.btn-default {
+    background: var(--color-primary) !important;
+    border: 1px solid var(--color-primary) !important;
+    color: #fff !important;
+}
+
+.btn-default:hover,
+.btn-default:focus {
+    background: var(--color-primary-light) !important;
+    border-color: var(--color-primary-light) !important;
+}
+
+/* ===================================================================================================
+   ENLACES
+   =================================================================================================== */
+a {
+    color: var(--color-primary) !important;
+}
+
+a:hover,
+a:focus {
+    color: var(--color-primary-light) !important;
+}
+
+/* ===================================================================================================
+   PANELES Y TARJETAS - X_PANEL
+   =================================================================================================== */
+.x_panel {
+    background: #fff !important;
+    border: 1px solid #E6E9ED !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.x_title {
+    border-bottom: 2px solid var(--color-primary) !important;
+}
+
+.x_title h2 {
+    color: var(--color-primary-dark) !important;
+}
+
+/* ===================================================================================================
+   INPUTS Y FORMULARIOS
+   =================================================================================================== */
+.form-control:focus {
+    border-color: var(--color-primary-light) !important;
+    box-shadow: 0 0 0 0.2rem rgba(98, 88, 172, 0.25) !important;
+}
+
+/* ===================================================================================================
+   TABLAS
+   =================================================================================================== */
+table.jambo_table thead {
+    background: var(--color-gradient) !important;
+    color: #ECF0F1 !important;
+}
+
+table.jambo_table tbody tr:hover td {
+    background: rgba(98, 88, 172, 0.07) !important;
+    border-top: 1px solid rgba(98, 88, 172, 0.11) !important;
+    border-bottom: 1px solid rgba(98, 88, 172, 0.11) !important;
+}
+
+table.jambo_table tbody tr.selected {
+    background: rgba(98, 88, 172, 0.16) !important;
+}
+
+table.jambo_table tbody tr.selected td {
+    border-top: 1px solid rgba(98, 88, 172, 0.4) !important;
+    border-bottom: 1px solid rgba(98, 88, 172, 0.4) !important;
+}
+
+/* ===================================================================================================
+   PROFILE
+   =================================================================================================== */
+.img-circle.profile_img {
+    border: 2px solid #6258AC !important;
+}
+
+.profile_info span {
+    color: #BAB8B8 !important;
+}
+
+.profile_info h2 {
+    color: #ECF0F1 !important;
+}
+
+/* ===================================================================================================
+   SCROLLBAR PERSONALIZADA (WEBKIT)
+   =================================================================================================== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-gradient);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #6258AC 0%, #6258AC 100%);
+}
+
+/* ===================================================================================================
+   MODALES - ESTILOS PERSONALIZADOS
+   =================================================================================================== */
+.abrir_modal_edit .modal-content,
+.abrir_modal_registrar .modal-content {
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+.abrir_modal_edit .modal-header,
+.abrir_modal_registrar .modal-header {
+    background: linear-gradient(135deg, #6258AC 0%, #6258AC 100%) !important;
+    color: white !important;
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: none !important;
+    padding: 20px !important;
+}
+
+.abrir_modal_edit .modal-header .close,
+.abrir_modal_registrar .modal-header .close {
+    color: white !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+    font-size: 28px !important;
+}
+
+.abrir_modal_edit .modal-header .close:hover,
+.abrir_modal_registrar .modal-header .close:hover {
+    opacity: 0.8 !important;
+}
+
+.abrir_modal_edit .modal-title,
+.abrir_modal_registrar .modal-title {
+    font-weight: 600 !important;
+    font-size: 24px !important;
+}
+
+.abrir_modal_edit .modal-title i,
+.abrir_modal_registrar .modal-title i {
+    margin-right: 10px !important;
+}
+
+.abrir_modal_edit .modal-body,
+.abrir_modal_registrar .modal-body {
+    padding: 30px !important;
+    background: #f8f9fa !important;
+}
+
+.abrir_modal_edit .form-control,
+.abrir_modal_registrar .form-control {
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 10px 15px !important;
+    transition: all 0.3s ease !important;
+}
+
+.abrir_modal_edit .form-control:focus,
+.abrir_modal_registrar .form-control:focus {
+    border-color: #6258AC !important;
+    box-shadow: 0 0 0 3px rgba(98, 88, 172, 0.1) !important;
+    background: #fff !important;
+}
+
+.abrir_modal_edit .control-label,
+.abrir_modal_registrar .control-label {
+    font-weight: 600 !important;
+    color: #2d3748 !important;
+    margin-bottom: 8px !important;
+}
+
+.abrir_modal_edit .required,
+.abrir_modal_registrar .required {
+    color: #e74c3c !important;
+    margin-left: 3px !important;
+}
+
+.abrir_modal_edit .btn-success,
+.abrir_modal_registrar .btn-success {
+    background: linear-gradient(135deg, #6258AC 0%, #6258AC 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 12px 30px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(98, 88, 172, 0.4) !important;
+}
+
+.abrir_modal_edit .btn-success:hover,
+.abrir_modal_registrar .btn-success:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(98, 88, 172, 0.6) !important;
+    background: linear-gradient(135deg, #6258AC 0%, #6258AC 100%) !important;
+}
+
+.abrir_modal_edit .btn-default,
+.abrir_modal_registrar .btn-default {
+    background: #e2e8f0 !important;
+    border: 2px solid #cbd5e0 !important;
+    color: #4a5568 !important;
+    font-weight: 600 !important;
+    padding: 10px 25px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.abrir_modal_edit .btn-default:hover,
+.abrir_modal_registrar .btn-default:hover {
+    background: #cbd5e0 !important;
+    border-color: #a0aec0 !important;
+    color: #2d3748 !important;
+}
+
+.abrir_modal_edit .modal-footer,
+.abrir_modal_registrar .modal-footer {
+    background: #f8f9fa !important;
+    border-top: 2px solid #e2e8f0 !important;
+    padding: 20px 30px !important;
+    border-radius: 0 0 10px 10px !important;
+}
+
+.abrir_modal_edit select.form-control,
+.abrir_modal_registrar select.form-control {
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 15px center !important;
+    padding-right: 40px !important;
+}
+
+#resultado_mensaje_respuesta_edit,
+#resultado_mensaje_respuesta_reg {
+    padding: 15px !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+}
+
+#resultado_mensaje_respuesta_edit .alert,
+#resultado_mensaje_respuesta_reg .alert {
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+#resultado_mensaje_respuesta_edit .alert-success,
+#resultado_mensaje_respuesta_reg .alert-success {
+    background: linear-gradient(135deg, rgba(98, 88, 172, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%) !important;
+    color: white !important;
+}

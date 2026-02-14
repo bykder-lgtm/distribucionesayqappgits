@@ -1,0 +1,66 @@
+<?php
+$directorio_certificado_seguridad        = dirname(__FILE__);
+$nombre_archivo_certificado_seguridad    = "cacert.pem";
+$ruta_certificado_seguridad_comilla      = $directorio_certificado_seguridad.'\"'.$nombre_archivo_certificado_seguridad;
+$ruta_certificado_seguridad              = str_replace('"', '', $ruta_certificado_seguridad_comilla);
+
+$url                                     = 'https://graph.facebook.com/v22.0/537918802748038/messages';
+$token                                   = 'EAAIV6SWDOcEBO9JL2nyFKW1uAnaQUbZCEFxGzDDvkySj8yo9PNIl06ERqngnO6R1A7HOtgzTcxYgcNCvI8m23FNz9Fyqk3IQMfX5K2uQ5EWZBIiRawOGOL5HkYEBu7prZAZC0YoVaB7bk9FFxgeP3FbtlqgVvc5IwQ0R8i1VxiwCPB714ZCvyE0JrKL9ZBoyVFpgZDZD';
+
+$nombre                                  = "Emanuel";
+$telefono_virgin_receptor                = "573192545831";
+$telefono_wom_receptor                   = "573028551795";
+$telefono_tigo_receptor                  = "573012910881";
+$nombre_plantilla_whatsapp               = "hello_world";
+$idioma_plantilla_whatsapp               = "en_US";
+
+$media_url = 'https://www.elboomeran.com/upload/ficheros/noticias/messi.jpg.pdf'; // Reemplaza con el enlace a la imagen
+$caption = 'Envio pdf de Messi'; // Texto del pie de foto
+
+$data = array(
+    "messaging_product" => "whatsapp",
+    "recipient_type" => "individual",
+    "to" => $telefono_wom_receptor,
+    "type" => "document",
+    "document" => array(
+        "link" => $media_url,   
+        "caption" => $caption,
+        "filename" => "messi el pdf"
+    )
+);
+
+$data_string = json_encode($data);
+
+$curl = curl_init($url);
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, TRUE); 
+curl_setopt($curl, CURLOPT_CAINFO, $ruta_certificado_seguridad);
+//curl_setopt ($curl, CURLOPT_SSL_VERIFYHOST, 0);
+//curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, 0);
+
+curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+    'Authorization: Bearer ' . $token,
+    'Content-Type: application/json',
+    'Content-Length: ' . strlen($data_string)
+));
+
+$result = curl_exec($curl);
+
+// Verificar si hubo un error
+if (curl_errno($curl)) {
+    $error_msg = curl_error($curl);
+    echo 'Error: ' . $error_msg;
+}
+
+// Obtener el código de estado HTTP
+$http_code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
+curl_close($curl);
+
+// Mostrar la respuesta y el código de estado
+echo '<br>HTTP Code: ' . $http_code . PHP_EOL;
+echo '<br>Response: ' . $result;
+
+?>

@@ -1,0 +1,1377 @@
+/* ===================================================================================================
+   PALETA DE COLORES ULTRA AGRESIVA - DISTRIBUCIONES A&Q
+   ==================================================================================================
+   Colores principales:
+   - P煤rpura ne贸n: #8b5cf6, #a855f7, #c026d3 (vibrante y llamativo)
+   - Azul el茅ctrico: #3b82f6, #2563eb, #1d4ed8 (impacto visual)
+   - Rosa/Magenta: #ec4899, #f43f5e (acentos extremos)
+   - Cyan brillante: #06b6d4, #0891b2 (contraste alto)
+   - Gradientes ne贸n: m煤ltiples combinaciones
+   =================================================================================================== */
+
+:root {
+    --color-primary: #8b5cf6;
+    --color-primary-dark: #0a0e27;
+    --color-primary-light: #a855f7;
+    --color-secondary: #ec4899;
+    --color-tertiary: #06b6d4;
+    --color-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f43f5e 100%);
+    --color-gradient-dark: linear-gradient(135deg, #0a0e27 0%, #1e1b4b 50%, #312e81 100%);
+    --color-gradient-neon: linear-gradient(135deg, #a855f7 0%, #06b6d4 50%, #8b5cf6 100%);
+    --color-gradient-fire: linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #c026d3 100%);
+    --color-bg-main: #1e1b4b;
+    --color-accent: #a855f7;
+    --neon-glow: 0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.6), 0 0 30px rgba(139, 92, 246, 0.4);
+    --neon-glow-pink: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(236, 72, 153, 0.6), 0 0 30px rgba(236, 72, 153, 0.4);
+    --neon-glow-cyan: 0 0 10px rgba(6, 182, 212, 0.8), 0 0 20px rgba(6, 182, 212, 0.6), 0 0 30px rgba(6, 182, 212, 0.4);
+}
+
+/* ===================================================================================================
+   BODY Y CONTENEDOR PRINCIPAL - GRADIENTE ANIMADO
+   =================================================================================================== */
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body {
+    background: linear-gradient(135deg, #0a0e27, #1e1b4b, #312e81, #1e1b4b, #0a0e27) !important;
+    background-size: 400% 400% !important;
+    animation: gradient-shift 15s ease infinite !important;
+}
+
+.container.body {
+    background: linear-gradient(135deg, #0a0e27, #1e1b4b, #312e81, #1e1b4b, #0a0e27) !important;
+    background-size: 400% 400% !important;
+    animation: gradient-shift 15s ease infinite !important;
+}
+
+/* ===================================================================================================
+   COLUMNA IZQUIERDA - MEN脷 LATERAL CON NE脫N
+   =================================================================================================== */
+@keyframes neon-pulse {
+    0%, 100% { box-shadow: inset 0 0 20px rgba(139, 92, 246, 0.3); }
+    50% { box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.6); }
+}
+
+.left_col {
+    background: linear-gradient(180deg, #1e1b4b 0%, #0a0e27 100%) !important;
+    border-right: 2px solid rgba(139, 92, 246, 0.5) !important;
+    animation: neon-pulse 3s ease-in-out infinite !important;
+}
+
+/* T铆tulo del sitio con gradiente de texto */
+@keyframes text-glow {
+    0%, 100% { text-shadow: 0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(236, 72, 153, 0.6); }
+    50% { text-shadow: 0 0 20px rgba(139, 92, 246, 1), 0 0 30px rgba(236, 72, 153, 0.8), 0 0 40px rgba(6, 182, 212, 0.6); }
+}
+
+.navbar-brand,
+.site_title {
+    background: transparent !important;
+    background: linear-gradient(135deg, #a855f7, #ec4899, #06b6d4) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    font-weight: 700 !important;
+    animation: text-glow 2s ease-in-out infinite !important;
+}
+
+.site_title span {
+    background: linear-gradient(135deg, #a855f7, #ec4899, #06b6d4) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.nav_title {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%) !important;
+    border-bottom: 3px solid #a855f7 !important;
+    box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4) !important;
+}
+
+/* ===================================================================================================
+   MEN脷 LATERAL - SIDE MENU CON EFECTOS NE脫N
+   =================================================================================================== */
+@keyframes menu-slide {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(8px); }
+}
+
+.nav.side-menu > li > a {
+    color: #E7E7E7 !important;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    border-left: 3px solid transparent !important;
+    position: relative !important;
+}
+
+.nav.side-menu > li > a:hover {
+    color: #ffffff !important;
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.4) 0%, rgba(236, 72, 153, 0.3) 100%) !important;
+    padding-left: 25px !important;
+    border-left: 3px solid #ec4899 !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.6), inset 0 0 15px rgba(236, 72, 153, 0.3) !important;
+    animation: menu-slide 0.6s ease-in-out !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Items activos del men煤 con efectos ne贸n */
+@keyframes active-pulse {
+    0%, 100% { 
+        box-shadow: inset 0 0 20px rgba(139, 92, 246, 0.5), 0 0 15px rgba(236, 72, 153, 0.4);
+    }
+    50% { 
+        box-shadow: inset 0 0 30px rgba(139, 92, 246, 0.8), 0 0 25px rgba(236, 72, 153, 0.7), 0 0 35px rgba(6, 182, 212, 0.4);
+    }
+}
+
+.nav.side-menu > li.active,
+.nav.side-menu > li.current-page {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.25)) !important;
+    border-right: 5px solid #ec4899 !important;
+    border-left: 3px solid #a855f7 !important;
+    animation: active-pulse 2s ease-in-out infinite !important;
+}
+
+.nav.side-menu > li.active > a {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #a855f7 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 25px rgba(6, 182, 212, 0.6) !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.7), inset 0 0 15px rgba(236, 72, 153, 0.4) !important;
+}
+
+.nav-sm .nav.side-menu li.active-sm {
+    border-right: 5px solid var(--color-primary) !important;
+}
+
+.nav-sm > .nav.side-menu > li.active-sm > a {
+    color: var(--color-primary) !important;
+}
+
+/* Child menu */
+.nav.child_menu li.active,
+.nav.child_menu li:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+.nav-md ul.nav.child_menu li:before {
+    background: var(--color-accent) !important;
+}
+
+.nav-md ul.nav.child_menu li:after {
+    border-left: 1px solid var(--color-accent) !important;
+}
+
+/* ===================================================================================================
+   NAVEGACI脫N SUPERIOR - TOP NAV CON GRADIENTE ANIMADO
+   =================================================================================================== */
+@keyframes nav-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.nav_menu {
+    background: linear-gradient(90deg, #1e1b4b, #312e81, #8b5cf6, #ec4899, #312e81, #1e1b4b) !important;
+    background-size: 300% 300% !important;
+    animation: nav-flow 10s ease infinite !important;
+    border-bottom: 4px solid #a855f7 !important;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.6), 0 0 30px rgba(236, 72, 153, 0.4) !important;
+}
+
+.navbar-header {
+    background: var(--color-primary-dark) !important;
+}
+
+.top_nav .navbar-right li > a:hover {
+    background: rgba(102, 126, 234, 0.1) !important;
+}
+
+.user-profile {
+    transition: all 0.3s ease !important;
+}
+
+.user-profile:hover {
+    background: rgba(102, 126, 234, 0.1) !important;
+}
+
+.dropdown-menu.dropdown-usermenu li a:hover {
+    background: rgba(102, 126, 234, 0.1) !important;
+    color: #4263eb !important;
+}
+
+.nav.toggle a {
+    color: #667eea !important;
+}
+
+.nav.toggle a:hover {
+    background: rgba(102, 126, 234, 0.1) !important;
+}
+
+/* ===================================================================================================
+   CONTENIDO PRINCIPAL - RIGHT COL CON GRADIENTE
+   =================================================================================================== */
+.right_col {
+    background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    box-shadow: inset 0 0 50px rgba(139, 92, 246, 0.05) !important;
+}
+
+/* ===================================================================================================
+   BOTONES CON EFECTOS NE脫N EXTREMOS
+   =================================================================================================== */
+@keyframes btn-glow-pulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 5px 25px rgba(139, 92, 246, 0.7), 0 0 35px rgba(236, 72, 153, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 8px 40px rgba(139, 92, 246, 0.9), 0 0 50px rgba(236, 72, 153, 0.8), 0 0 60px rgba(6, 182, 212, 0.5), inset 0 0 25px rgba(255, 255, 255, 0.3);
+    }
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f43f5e 100%) !important;
+    border: 2px solid #a855f7 !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    animation: btn-glow-pulse 2.5s ease-in-out infinite !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background: linear-gradient(135deg, #f43f5e 0%, #ec4899 50%, #8b5cf6 100%) !important;
+    border-color: #ec4899 !important;
+    transform: translateY(-6px) scale(1.08) !important;
+    box-shadow: 0 12px 50px rgba(139, 92, 246, 1), 0 0 60px rgba(236, 72, 153, 0.9), 0 0 80px rgba(6, 182, 212, 0.6) !important;
+    animation: none !important;
+}
+
+.btn-success {
+    background: var(--color-primary) !important;
+    border: 1px solid var(--color-primary) !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+    background: var(--color-primary-light) !important;
+    border-color: var(--color-primary-light) !important;
+}
+
+.btn-default {
+    background: var(--color-primary) !important;
+    border: 1px solid var(--color-primary) !important;
+    color: #fff !important;
+}
+
+.btn-default:hover,
+.btn-default:focus {
+    background: var(--color-primary-light) !important;
+    border-color: var(--color-primary-light) !important;
+    color: #fff !important;
+}
+
+/* ===================================================================================================
+   ENLACES
+   =================================================================================================== */
+a {
+    color: var(--color-primary) !important;
+}
+
+a:hover,
+a:focus {
+    color: var(--color-primary-light) !important;
+}
+
+/* ===================================================================================================
+   PANELES Y TARJETAS - X_PANEL CON EFECTOS NE脫N
+   =================================================================================================== */
+@keyframes panel-glow {
+    0%, 100% { box-shadow: 0 5px 20px rgba(139, 92, 246, 0.2), 0 0 15px rgba(236, 72, 153, 0.1); }
+    50% { box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4), 0 0 25px rgba(236, 72, 153, 0.2), 0 0 35px rgba(6, 182, 212, 0.15); }
+}
+
+.x_panel {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%) !important;
+    border: 2px solid rgba(139, 92, 246, 0.3) !important;
+    border-radius: 12px !important;
+    animation: panel-glow 4s ease-in-out infinite !important;
+    overflow: hidden !important;
+}
+
+.x_title {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.05)) !important;
+    border-bottom: 3px solid transparent !important;
+    border-image: linear-gradient(90deg, #8b5cf6, #ec4899, #06b6d4) 1 !important;
+    padding: 15px 20px !important;
+}
+
+.x_title h2 {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+/* ===================================================================================================
+   INPUTS Y FORMULARIOS CON EFECTOS NE脫N
+   =================================================================================================== */
+@keyframes input-focus-glow {
+    0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.5), 0 0 25px rgba(236, 72, 153, 0.3), inset 0 0 10px rgba(139, 92, 246, 0.1); }
+    50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.8), 0 0 35px rgba(236, 72, 153, 0.6), 0 0 45px rgba(6, 182, 212, 0.4), inset 0 0 15px rgba(139, 92, 246, 0.2); }
+}
+
+.form-control {
+    border: 2px solid rgba(139, 92, 246, 0.2) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control:focus {
+    border-color: #a855f7 !important;
+    background: linear-gradient(145deg, #ffffff, #faf5ff) !important;
+    animation: input-focus-glow 2s ease-in-out infinite !important;
+}
+
+/* ===================================================================================================
+   TABLAS CON EFECTOS EXTREMOS
+   =================================================================================================== */
+@keyframes table-wave {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes row-flash {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+table.jambo_table thead {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899, #f43f5e, #ec4899, #8b5cf6) !important;
+    background-size: 400% 400% !important;
+    animation: table-wave 6s ease infinite !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.6), inset 0 -3px 10px rgba(236, 72, 153, 0.4) !important;
+}
+
+table.jambo_table thead th {
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+    border-right: 2px solid rgba(255, 255, 255, 0.3) !important;
+    padding: 15px !important;
+}
+
+table.jambo_table tbody tr {
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    border-left: 3px solid transparent !important;
+}
+
+table.jambo_table tbody tr:hover td {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.1), rgba(6, 182, 212, 0.08)) !important;
+    background-size: 200% 100% !important;
+    animation: row-flash 1.5s ease infinite !important;
+    border-top: 2px solid rgba(139, 92, 246, 0.3) !important;
+    border-bottom: 2px solid rgba(236, 72, 153, 0.3) !important;
+    box-shadow: 0 3px 15px rgba(139, 92, 246, 0.2), inset 0 0 10px rgba(236, 72, 153, 0.1) !important;
+}
+
+table.jambo_table tbody tr:hover {
+    border-left: 3px solid #a855f7 !important;
+    transform: translateX(5px) scale(1.01) !important;
+}
+
+table.jambo_table tbody tr.selected {
+    background: rgba(102, 126, 234, 0.16) !important;
+}
+
+table.jambo_table tbody tr.selected td {
+    border-top: 1px solid rgba(102, 126, 234, 0.4) !important;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.4) !important;
+}
+
+/* DataTables */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--color-gradient) !important;
+    border-color: var(--color-primary) !important;
+    color: #fff !important;
+}
+
+.paging_full_numbers a.paginate_active {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   PROGRESS BARS
+   =================================================================================================== */
+.progress-bar {
+    background-color: var(--color-primary) !important;
+}
+
+.progress-bar-success {
+    background-color: var(--color-primary) !important;
+}
+
+.progress-bar-info {
+    background-color: var(--color-primary-light) !important;
+}
+
+/* ===================================================================================================
+   NPROGRESS
+   =================================================================================================== */
+#nprogress .bar {
+    background: var(--color-primary) !important;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px var(--color-primary), 0 0 5px var(--color-primary) !important;
+}
+
+#nprogress .spinner-icon {
+    border-top-color: var(--color-primary) !important;
+    border-left-color: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   BADGES Y ETIQUETAS
+   =================================================================================================== */
+.badge {
+    background-color: var(--color-primary) !important;
+}
+
+.label-primary {
+    background-color: var(--color-primary) !important;
+}
+
+.label-success {
+    background-color: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   TILES Y ESTAD脥STICAS
+   =================================================================================================== */
+.tile-stats:hover .icon i {
+    color: var(--color-primary-light) !important;
+}
+
+.dashboard-widget {
+    border-top: 5px solid var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   COLORES DE REEMPLAZO
+   =================================================================================================== */
+.green,
+.bg-green {
+    background: var(--color-primary) !important;
+    color: #fff !important;
+    border-color: var(--color-primary) !important;
+}
+
+.border-green {
+    border-color: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   PAGINACI脫N
+   =================================================================================================== */
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+}
+
+.pagination > li > a:hover {
+    background-color: var(--color-primary-light) !important;
+    border-color: var(--color-primary-light) !important;
+    color: #fff !important;
+}
+
+/* ===================================================================================================
+   MODALES
+   =================================================================================================== */
+.modal-header {
+    background: var(--color-gradient) !important;
+    color: white !important;
+    border-bottom: none !important;
+}
+
+.modal-content {
+    border-radius: 10px !important;
+    overflow: hidden !important;
+}
+
+/* ===================================================================================================
+   DROPDOWN MENU
+   =================================================================================================== */
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+    color: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   FOOTER
+   =================================================================================================== */
+.sidebar-footer {
+    background: var(--color-primary-dark) !important;
+}
+
+.sidebar-footer a {
+    background: #0a0e27 !important;
+}
+
+.sidebar-footer a:hover {
+    background: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   PRICING Y TARJETAS ESPECIALES
+   =================================================================================================== */
+.pricing .title {
+    background: var(--color-gradient) !important;
+}
+
+/* ===================================================================================================
+   TIMELINE
+   =================================================================================================== */
+.timeline .tag {
+    background: var(--color-primary) !important;
+}
+
+.timeline .tag:after {
+    border-left-color: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   TAGS INPUT
+   =================================================================================================== */
+span.tag {
+    background: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   WIZARD Y STEPS
+   =================================================================================================== */
+.wizard_horizontal ul.wizard_steps li a.selected:before,
+.wizard_verticle ul.wizard_steps li a.selected:before {
+    background: var(--color-primary-dark) !important;
+}
+
+.wizard_horizontal ul.wizard_steps li a.done .step_no,
+.wizard_horizontal ul.wizard_steps li a.done:before,
+.wizard_verticle ul.wizard_steps li a.done .step_no,
+.wizard_verticle ul.wizard_steps li a.done:before {
+    background: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   ALERTS Y NOTIFICACIONES
+   =================================================================================================== */
+.alert-success {
+    background-color: rgba(66, 99, 235, 0.88) !important;
+    border-color: rgba(66, 99, 235, 0.88) !important;
+}
+
+.alert-info {
+    background-color: rgba(102, 126, 234, 0.88) !important;
+    border-color: rgba(102, 126, 234, 0.88) !important;
+}
+
+/* ===================================================================================================
+   CALENDAR Y DATERANGEPICKER
+   =================================================================================================== */
+.daterangepicker.picker_1 .calendar-table thead tr:first-child,
+.daterangepicker.picker_3 .calendar-table thead tr:first-child {
+    background: var(--color-primary) !important;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+    background-color: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   SWITCHES Y TOGGLES
+   =================================================================================================== */
+.switchery {
+    background-color: var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   BAR TABS
+   =================================================================================================== */
+ul.bar_tabs > li.active {
+    border-right: 6px solid var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   TILE COUNT Y ESTAD脥STICAS
+   =================================================================================================== */
+.tile_count .tile_stats_count:before {
+    border-left: 2px solid var(--color-primary) !important;
+}
+
+/* ===================================================================================================
+   PROFILE
+   =================================================================================================== */
+.img-circle.profile_img {
+    border: 2px solid #667eea !important;
+}
+
+.profile_info span {
+    color: #BAB8B8 !important;
+}
+
+.profile_info h2 {
+    color: #ECF0F1 !important;
+}
+
+/* ===================================================================================================
+   FOCUS STATES
+   =================================================================================================== */
+table.dataTable td.focus,
+table.dataTable th.focus {
+    outline: var(--color-primary) solid 2px !important;
+}
+
+/* ===================================================================================================
+   RESPONSIVE - AJUSTES M脫VILES
+   =================================================================================================== */
+@media (max-width: 991px) {
+    .left_col {
+        background: var(--color-bg-main) !important;
+    }
+}
+
+/* ===================================================================================================
+   HOVER EFFECTS MEJORADOS
+   =================================================================================================== */
+.btn,
+.panel,
+.x_panel {
+    transition: all 0.3s ease !important;
+}
+
+.btn:hover {
+    transform: translateY(-2px) !important;
+}
+
+/* ===================================================================================================
+   SCROLLBAR ULTRA NE脫N CON EFECTOS EXTREMOS
+   =================================================================================================== */
+@keyframes scrollbar-mega-pulse {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.9), 
+                    0 0 30px rgba(236, 72, 153, 0.7),
+                    inset 0 0 15px rgba(139, 92, 246, 0.5);
+    }
+    50% { 
+        box-shadow: 0 0 40px rgba(139, 92, 246, 1), 
+                    0 0 60px rgba(236, 72, 153, 1), 
+                    0 0 80px rgba(6, 182, 212, 0.8),
+                    inset 0 0 25px rgba(236, 72, 153, 0.7);
+    }
+}
+
+@keyframes scrollbar-shimmer {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 0% 100%; }
+}
+
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: linear-gradient(180deg, #0a0e27, #1e1b4b, #312e81, #1e1b4b, #0a0e27) !important;
+    border-radius: 10px;
+    box-shadow: inset 0 0 20px rgba(139, 92, 246, 0.4), inset 0 0 10px rgba(236, 72, 153, 0.2);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8b5cf6, #ec4899, #f43f5e, #06b6d4, #8b5cf6) !important;
+    background-size: 100% 400% !important;
+    border-radius: 10px;
+    border: 3px solid rgba(139, 92, 246, 0.5);
+    animation: scrollbar-mega-pulse 1.8s ease-in-out infinite, scrollbar-shimmer 3s linear infinite;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #06b6d4, #8b5cf6, #ec4899, #f43f5e, #06b6d4) !important;
+    box-shadow: 0 0 40px rgba(139, 92, 246, 1), 
+                0 0 60px rgba(236, 72, 153, 1), 
+                0 0 80px rgba(6, 182, 212, 0.9),
+                inset 0 0 20px rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+    border-color: rgba(236, 72, 153, 0.8);
+}
+
+/* ===================================================================================================
+   MODALES - ESTILOS PERSONALIZADOS
+   =================================================================================================== */
+/* Modal de Edici贸n de Producto */
+.abrir_modal_edit .modal-content {
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+@keyframes modal-header-shine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.abrir_modal_edit .modal-header {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899, #f43f5e, #ec4899, #8b5cf6) !important;
+    background-size: 300% 300% !important;
+    animation: modal-header-shine 5s ease infinite !important;
+    color: white !important;
+    border-radius: 15px 15px 0 0 !important;
+    border-bottom: 4px solid #06b6d4 !important;
+    padding: 25px !important;
+    box-shadow: 0 5px 25px rgba(139, 92, 246, 0.6), inset 0 -3px 15px rgba(236, 72, 153, 0.4) !important;
+}
+
+.abrir_modal_edit .modal-header .close {
+    color: white !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+    font-size: 28px !important;
+}
+
+.abrir_modal_edit .modal-header .close:hover {
+    opacity: 0.8 !important;
+}
+
+@keyframes title-glow {
+    0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(6, 182, 212, 0.6); }
+    50% { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(6, 182, 212, 0.8), 0 0 40px rgba(236, 72, 153, 0.6); }
+}
+
+.abrir_modal_edit .modal-title {
+    font-weight: 700 !important;
+    font-size: 28px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    animation: title-glow 2s ease-in-out infinite !important;
+}
+
+.abrir_modal_edit .modal-title i {
+    margin-right: 10px !important;
+}
+
+.abrir_modal_edit .modal-body {
+    padding: 30px !important;
+    background: #f8f9fa !important;
+}
+
+@keyframes input-neon-pulse {
+    0%, 100% { 
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.4), inset 0 0 10px rgba(236, 72, 153, 0.1);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(139, 92, 246, 0.8), 0 0 40px rgba(236, 72, 153, 0.6), inset 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+}
+
+.abrir_modal_edit .form-control {
+    border: 2px solid rgba(139, 92, 246, 0.3) !important;
+    border-radius: 10px !important;
+    padding: 12px 18px !important;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    background: linear-gradient(145deg, #ffffff, #faf5ff) !important;
+}
+
+.abrir_modal_edit .form-control:focus {
+    border-color: #a855f7 !important;
+    background: linear-gradient(145deg, #ffffff, #f3e8ff) !important;
+    animation: input-neon-pulse 2s ease-in-out infinite !important;
+    transform: scale(1.02) !important;
+}
+
+.abrir_modal_edit .control-label {
+    font-weight: 600 !important;
+    color: #2d3748 !important;
+    margin-bottom: 8px !important;
+}
+
+.abrir_modal_edit .required {
+    color: #e74c3c !important;
+    margin-left: 3px !important;
+}
+
+.abrir_modal_edit .btn-success {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 12px 30px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+}
+
+.abrir_modal_edit .btn-success:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+}
+
+.abrir_modal_edit .btn-default {
+    background: #e2e8f0 !important;
+    border: 2px solid #cbd5e0 !important;
+    color: #4a5568 !important;
+    font-weight: 600 !important;
+    padding: 10px 25px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.abrir_modal_edit .btn-default:hover {
+    background: #cbd5e0 !important;
+    border-color: #a0aec0 !important;
+    color: #2d3748 !important;
+}
+
+.abrir_modal_edit .modal-footer {
+    background: #f8f9fa !important;
+    border-top: 2px solid #e2e8f0 !important;
+    padding: 20px 30px !important;
+    border-radius: 0 0 10px 10px !important;
+}
+
+.abrir_modal_edit .ln_solid {
+    border-top: 2px solid #e2e8f0 !important;
+    margin: 25px 0 !important;
+}
+
+.abrir_modal_edit button[type="button"]:not(.close):not(.btn-default) {
+    background: #667eea !important;
+    border: none !important;
+    color: white !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+}
+
+.abrir_modal_edit button[type="button"]:not(.close):not(.btn-default):hover {
+    background: #4263eb !important;
+    transform: scale(1.05) !important;
+}
+
+.abrir_modal_edit .form-group {
+    margin-bottom: 20px !important;
+}
+
+.abrir_modal_edit select.form-control {
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 15px center !important;
+    padding-right: 40px !important;
+}
+
+#resultado_mensaje_respuesta_edit {
+    padding: 15px !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+}
+
+#resultado_mensaje_respuesta_edit .alert {
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+#resultado_mensaje_respuesta_edit .alert-success {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%) !important;
+    color: white !important;
+}
+
+/* Modal de Registro de Producto */
+.abrir_modal_registrar .modal-content {
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+.abrir_modal_registrar .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: none !important;
+    padding: 20px !important;
+}
+
+.abrir_modal_registrar .modal-header .close {
+    color: white !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+    font-size: 28px !important;
+}
+
+.abrir_modal_registrar .modal-header .close:hover {
+    opacity: 0.8 !important;
+}
+
+.abrir_modal_registrar .modal-title {
+    font-weight: 600 !important;
+    font-size: 24px !important;
+}
+
+.abrir_modal_registrar .modal-title i {
+    margin-right: 10px !important;
+}
+
+.abrir_modal_registrar .modal-body {
+    padding: 30px !important;
+    background: #f8f9fa !important;
+}
+
+.abrir_modal_registrar .form-control {
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 10px 15px !important;
+    transition: all 0.3s ease !important;
+}
+
+.abrir_modal_registrar .form-control:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    background: #fff !important;
+}
+
+.abrir_modal_registrar .control-label {
+    font-weight: 600 !important;
+    color: #2d3748 !important;
+    margin-bottom: 8px !important;
+}
+
+.abrir_modal_registrar .required {
+    color: #e74c3c !important;
+    margin-left: 3px !important;
+}
+
+.abrir_modal_registrar .btn-success {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 12px 30px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+}
+
+.abrir_modal_registrar .btn-success:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6) !important;
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+}
+
+.abrir_modal_registrar .btn-default {
+    background: #e2e8f0 !important;
+    border: 2px solid #cbd5e0 !important;
+    color: #4a5568 !important;
+    font-weight: 600 !important;
+    padding: 10px 25px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.abrir_modal_registrar .btn-default:hover {
+    background: #cbd5e0 !important;
+    border-color: #a0aec0 !important;
+    color: #2d3748 !important;
+}
+
+.abrir_modal_registrar .modal-footer {
+    background: #f8f9fa !important;
+    border-top: 2px solid #e2e8f0 !important;
+    padding: 20px 30px !important;
+    border-radius: 0 0 10px 10px !important;
+}
+
+.abrir_modal_registrar .ln_solid {
+    border-top: 2px solid #e2e8f0 !important;
+    margin: 25px 0 !important;
+}
+
+.abrir_modal_registrar button[type="button"]:not(.close):not(.btn-default) {
+    background: #667eea !important;
+    border: none !important;
+    color: white !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+}
+
+.abrir_modal_registrar button[type="button"]:not(.close):not(.btn-default):hover {
+    background: #4263eb !important;
+    transform: scale(1.05) !important;
+}
+
+.abrir_modal_registrar .form-group {
+    margin-bottom: 20px !important;
+}
+
+.abrir_modal_registrar select.form-control {
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 15px center !important;
+    padding-right: 40px !important;
+}
+
+#resultado_mensaje_respuesta_reg {
+    padding: 15px !important;
+    border-radius: 8px !important;
+    margin-bottom: 20px !important;
+}
+
+#resultado_mensaje_respuesta_reg .alert {
+    border-radius: 8px !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+#resultado_mensaje_respuesta_reg .alert-success {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%) !important;
+    color: white !important;
+}
+
+/* ===================================================================================================
+   ESTILOS ULTRA AGRESIVOS ADICIONALES
+   =================================================================================================== */
+
+/* Page Title con efectos extremos */
+@keyframes title-float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-5px) scale(1.02); }
+}
+
+.page-title {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.05)) !important;
+    border-left: 5px solid #a855f7 !important;
+    border-radius: 10px !important;
+    padding: 20px !important;
+    margin-bottom: 25px !important;
+    box-shadow: 0 5px 20px rgba(139, 92, 246, 0.2) !important;
+    animation: title-float 3s ease-in-out infinite !important;
+}
+
+/* Bot髇 de b鷖queda con efectos ne髇 */
+@keyframes search-pulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.5); }
+    50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.8), 0 0 40px rgba(6, 182, 212, 0.6); }
+}
+
+.btn-default {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7) !important;
+    border: 2px solid #a855f7 !important;
+    color: white !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    animation: search-pulse 2s ease-in-out infinite !important;
+}
+
+.btn-default:hover,
+.btn-default:focus {
+    background: linear-gradient(135deg, #ec4899, #f43f5e) !important;
+    border-color: #ec4899 !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 0 0 35px rgba(236, 72, 153, 0.9), 0 0 50px rgba(6, 182, 212, 0.7) !important;
+    animation: none !important;
+}
+
+/* Selects con gradientes vibrantes */
+@keyframes select-glow {
+    0%, 100% { border-color: rgba(139, 92, 246, 0.5); }
+    50% { border-color: rgba(236, 72, 153, 0.8); box-shadow: 0 0 15px rgba(139, 92, 246, 0.6); }
+}
+
+select.form-control {
+    border: 2px solid rgba(139, 92, 246, 0.4) !important;
+    background: linear-gradient(145deg, #ffffff, #faf5ff) !important;
+    font-weight: 600 !important;
+    animation: select-glow 3s ease-in-out infinite !important;
+    transition: all 0.3s ease !important;
+}
+
+select.form-control:hover,
+select.form-control:focus {
+    border-color: #a855f7 !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.7), 0 0 30px rgba(236, 72, 153, 0.5) !important;
+    transform: scale(1.02) !important;
+}
+
+/* Iconos con brillo ne髇 */
+.fa, .glyphicon {
+    transition: all 0.3s ease !important;
+}
+
+.btn .fa:hover,
+.btn .glyphicon:hover {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(6, 182, 212, 0.6) !important;
+    transform: scale(1.2) rotate(5deg) !important;
+}
+
+/* Hover effects para botones dentro de tablas */
+@keyframes btn-table-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.8), 0 0 30px rgba(6, 182, 212, 0.6); }
+}
+
+table .btn {
+    animation: btn-table-glow 2s ease-in-out infinite !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+table .btn:hover {
+    transform: translateY(-3px) scale(1.1) rotate(2deg) !important;
+    animation: none !important;
+}
+
+/* Paginaci髇 con efectos extremos */
+@keyframes page-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.pagination > li > a,
+.pagination > li > span {
+    background: linear-gradient(135deg, #8b5cf6, #a855f7) !important;
+    border: 2px solid #a855f7 !important;
+    color: white !important;
+    font-weight: 700 !important;
+    margin: 0 3px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover {
+    background: linear-gradient(135deg, #ec4899, #f43f5e) !important;
+    border-color: #ec4899 !important;
+    animation: page-pulse 0.5s ease-in-out !important;
+    box-shadow: 0 0 25px rgba(236, 72, 153, 0.8), 0 0 35px rgba(6, 182, 212, 0.6) !important;
+}
+
+.pagination > .active > a,
+.pagination > .active > span {
+    background: linear-gradient(135deg, #f43f5e, #ec4899, #8b5cf6) !important;
+    border-color: #f43f5e !important;
+    box-shadow: 0 0 30px rgba(236, 72, 153, 1), 0 0 40px rgba(139, 92, 246, 0.8) !important;
+    animation: page-pulse 1s ease-in-out infinite !important;
+}
+
+/* Modal backdrop con gradiente animado */
+@keyframes backdrop-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.modal-backdrop {
+    background: linear-gradient(135deg, rgba(10, 14, 39, 0.9), rgba(30, 27, 75, 0.95), rgba(49, 46, 129, 0.9)) !important;
+    background-size: 300% 300% !important;
+    animation: backdrop-flow 8s ease infinite !important;
+}
+
+/* Alert con gradientes vibrantes */
+@keyframes alert-shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899, #06b6d4, #ec4899, #8b5cf6) !important;
+    background-size: 300% 300% !important;
+    animation: alert-shimmer 5s ease infinite !important;
+    border: 3px solid rgba(236, 72, 153, 0.6) !important;
+    border-radius: 12px !important;
+    color: white !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 5px 25px rgba(139, 92, 246, 0.6), 0 0 35px rgba(236, 72, 153, 0.5) !important;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6, #a855f7) !important;
+    border: 3px solid rgba(6, 182, 212, 0.6) !important;
+    border-radius: 12px !important;
+    color: white !important;
+    font-weight: 700 !important;
+    box-shadow: 0 5px 25px rgba(6, 182, 212, 0.6) !important;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #f43f5e, #ec4899, #8b5cf6) !important;
+    border: 3px solid rgba(244, 63, 94, 0.6) !important;
+    border-radius: 12px !important;
+    color: white !important;
+    font-weight: 700 !important;
+    box-shadow: 0 5px 25px rgba(244, 63, 94, 0.6) !important;
+}
+
+/* Loader con efectos ne髇 */
+@keyframes loader-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loader img {
+    animation: loader-spin 1s linear infinite !important;
+    filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.9)) drop-shadow(0 0 30px rgba(236, 72, 153, 0.7)) !important;
+}
+
+/* Inputs de texto con fondo gradiente */
+input[type="text"].form-control {
+    background: linear-gradient(145deg, #ffffff, #faf5ff) !important;
+    border: 2px solid rgba(139, 92, 246, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+input[type="text"].form-control:hover {
+    border-color: rgba(236, 72, 153, 0.5) !important;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4) !important;
+}
+
+/* Enlaces con efectos brillantes */
+a {
+    transition: all 0.3s ease !important;
+    position: relative !important;
+}
+
+a:hover {
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.8) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Footer con gradiente */
+.footer {
+    background: linear-gradient(135deg, #1e1b4b, #312e81, #8b5cf6) !important;
+    border-top: 3px solid #a855f7 !important;
+    box-shadow: 0 -5px 20px rgba(139, 92, 246, 0.4) !important;
+    color: white !important;
+}
+
+/* Badge con efectos ne髇 */
+@keyframes badge-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.6); }
+    50% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.9), 0 0 30px rgba(6, 182, 212, 0.7); }
+}
+
+.badge {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899) !important;
+    animation: badge-glow 2s ease-in-out infinite !important;
+    font-weight: 700 !important;
+    padding: 5px 10px !important;
+    border-radius: 12px !important;
+}
+
+/* Dropdown menu con efectos */
+.dropdown-menu {
+    background: linear-gradient(145deg, #ffffff, #faf5ff) !important;
+    border: 2px solid rgba(139, 92, 246, 0.4) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5), 0 0 30px rgba(236, 72, 153, 0.3) !important;
+}
+
+.dropdown-menu > li > a:hover {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.15)) !important;
+    color: #8b5cf6 !important;
+    font-weight: 600 !important;
+    transform: translateX(5px) !important;
+}
+
+/* Checkbox y Radio con efectos */
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899) !important;
+    border-color: #a855f7 !important;
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.7) !important;
+}
+
+/* Progress bar con gradiente animado */
+@keyframes progress-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #8b5cf6, #ec4899, #f43f5e, #06b6d4, #8b5cf6) !important;
+    background-size: 400% 400% !important;
+    animation: progress-flow 3s ease infinite !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Tooltip con efectos ne髇 */
+.tooltip-inner {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899) !important;
+    border: 2px solid rgba(236, 72, 153, 0.6) !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.8), 0 0 30px rgba(236, 72, 153, 0.6) !important;
+}
+
+/* Card con efectos vibrantes */
+.card, .panel {
+    background: linear-gradient(145deg, #ffffff, #faf5ff) !important;
+    border: 2px solid rgba(139, 92, 246, 0.3) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.3), 0 0 25px rgba(236, 72, 153, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.card:hover, .panel:hover {
+    transform: translateY(-5px) scale(1.02) !important;
+    box-shadow: 0 15px 50px rgba(139, 92, 246, 0.5), 0 0 40px rgba(236, 72, 153, 0.4) !important;
+    border-color: rgba(236, 72, 153, 0.6) !important;
+}
+
+/* Animaci髇 de aparici髇 para elementos */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.x_panel, .modal-content, table {
+    animation: fadeInUp 0.6s ease-out !important;
+}
+
+/* ===================================================================================================
+   FIN DE ESTILOS ULTRA AGRESIVOS
+   =================================================================================================== */

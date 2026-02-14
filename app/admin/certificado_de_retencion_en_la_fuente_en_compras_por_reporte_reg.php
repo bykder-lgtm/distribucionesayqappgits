@@ -1,0 +1,81 @@
+﻿<?php $serguridad_pagina = 1; ?>
+<!-- 1******************************************************* MODULO SUPERIOR *********************************************** -->
+<?php include_once('../admin/01_modulo_diseno_superior.php'); ?>
+<!-- 1******************************************************* MODULO SUPERIOR *********************************************** -->
+<!-- 1******************************************************* MODULO DE PLANTILLAS CSS *********************************************** -->
+<?php include_once('../admin/02_modulo_estilo_css.php'); ?>
+<!-- 1******************************************************* MODULO DE PLANTILLAS CSS *********************************************** -->
+</head>
+<body id="pageBody">
+<!-- 1******************************************************* MODULO MENU DE NAVEGACION *********************************************** -->
+<?php include_once('../seguridad/seguridad_diseno_plantillas.php'); ?>
+<!-- 1******************************************************* MODULO MENU DE NAVEGACION *********************************************** -->
+<?php //$pagina = addslashes($_GET['pagina']); ?>
+<div id="contentOuterSeparator"></div>
+<div class="container">
+<div class="divPanel page-content">
+
+<div class="breadcrumbs"><a href="#">Guardando...</a> <img src="../imagenes/popup_ajax_loader.gif" class="img-polaroid" alt=""></div>
+
+<div class="row-fluid">
+ <!--Edit Main Content Area here-->
+<div class="span12" id="divMain">
+<!-- ***************************************************************************************************************************** -->
+<!-- 1******************************************************* INICIO MODULO PRINCIPAL *********************************************** -->
+<!-- ***************************************************************************************************************************** -->
+<?php
+$cod_administrador                  = ($_SESSION['cod_administrador']);
+
+if (isset($_GET["cod_tercero"])) {
+
+	$fecha_ymd_venta_producto_ini                         = addslashes($_GET['fecha_ymd_venta_producto_ini']);
+	$fecha_ymd_venta_producto_fin                         = addslashes($_GET['fecha_ymd_venta_producto_fin']);
+	$cod_tercero                                          = intval($_GET['cod_tercero']);
+
+	$sql_retencion_compra = "SELECT SUM(subtotal) AS subtotal_base_retencion, SUM(total_rete_fuente) AS total_rete_fuente_valor_retenido FROM tbl15_info_factura_compra 
+	WHERE (fecha_dia BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') AND (total_rete_fuente <> '0') AND (cod_tercero = '$cod_tercero')";
+	$consulta_retencion_compra = mysqli_query($conectar, $sql_retencion_compra) or die(mysqli_error($conectar));
+	$datos_retencion_compra = mysqli_fetch_assoc($consulta_retencion_compra);
+
+	$subtotal_base_retencion                              = $datos_retencion_compra['subtotal_base_retencion'];
+	$total_rete_fuente_valor_retenido                     = $datos_retencion_compra['total_rete_fuente_valor_retenido'];
+
+	$nombre_certificado_retefuente                        = "RETENCIÓN APLICADA A COMPRAS DECLARANTES";
+	$fecha_ini_certificado_retefuente                     = $fecha_ymd_venta_producto_ini;
+	$fecha_fin_certificado_retefuente                     = $fecha_ymd_venta_producto_fin;
+	$fecha_generacion_documento_certificado_retefuente 	  = date("Y-m-d");
+	$hora_generacion_documento_certificado_retefuente     = date("H:i:s");
+	$nombre_rete_fuente_ptj 	                          = "2.5";
+	$subtotal_base_retencion 	                          = $subtotal_base_retencion;
+	$total_retefuente_valor_retenido 	                  = $total_rete_fuente_valor_retenido;
+	$fecha_creacion 		                              = date("Y-m-d H:i:s");
+	$cod_estado                                           = 0;
+
+	$sql_data = "INSERT INTO tbl15_certificado_retefuente (cod_tercero, nombre_certificado_retefuente, fecha_ini_certificado_retefuente, fecha_fin_certificado_retefuente, 
+	fecha_generacion_documento_certificado_retefuente, hora_generacion_documento_certificado_retefuente, nombre_rete_fuente_ptj, subtotal_base_retencion, 
+	total_retefuente_valor_retenido, fecha_creacion, cod_estado) 
+	VALUES ('$cod_tercero', '$nombre_certificado_retefuente', '$fecha_ini_certificado_retefuente', '$fecha_fin_certificado_retefuente', 
+	'$fecha_generacion_documento_certificado_retefuente', '$hora_generacion_documento_certificado_retefuente', '$nombre_rete_fuente_ptj', '$subtotal_base_retencion', 
+	'$total_retefuente_valor_retenido', '$fecha_creacion', '$cod_estado')";
+	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
+
+?>
+<META HTTP-EQUIV="REFRESH" CONTENT="0; ../admin/lista_certificado_retencion_en_la_fuente.php">
+<?php } ?>
+<!-- ***************************************************************************************************************************** -->
+<!-- 1******************************************************* FIN MODULO PRINCIPAL *********************************************** -->
+<!-- ***************************************************************************************************************************** -->
+</div>
+<!--End Main Content Area-->
+</div>
+<div id="footerInnerSeparator"></div>
+</div>
+</div>
+<!-- 1******************************************************* MODULO FOOTER *********************************************** -->
+<?php include_once('../admin/04_modulo_footer.php'); ?>
+<!-- 1******************************************************* MODULO FOOTER *********************************************** -->
+<!-- 1******************************************************* MODULO PLANTILLA JS *********************************************** -->
+<?php include_once('../admin/05_modulo_js.php'); ?>
+<!-- 1******************************************************* MODULO PLANTILLA JS *********************************************** -->
+</body>
+</html>

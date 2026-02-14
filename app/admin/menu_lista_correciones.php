@@ -1,0 +1,53 @@
+﻿<?php $serguridad_pagina = 1; ?>
+<!-- 1******************************************************* MODULO SUPERIOR *********************************************** -->
+<?php include_once('../admin/01_modulo_diseno_superior.php'); ?>
+<!-- 1******************************************************* MODULO SUPERIOR *********************************************** -->
+<!-- 1******************************************************* MODULO DE PLANTILLAS CSS *********************************************** -->
+<?php include_once('../admin/02_modulo_estilo_css.php'); ?>
+<!-- 1******************************************************* MODULO DE PLANTILLAS CSS *********************************************** -->
+</head>
+<body id="pageBody">
+<!-- 1******************************************************* MODULO MENU DE NAVEGACION *********************************************** -->
+<?php include_once('../seguridad/seguridad_diseno_plantillas.php'); ?>
+<!-- 1******************************************************* MODULO MENU DE NAVEGACION *********************************************** -->
+<?php //$pagina = addslashes($_GET['pagina']); ?>
+<div id="contentOuterSeparator"></div>
+<div class="container">
+<div class="divPanel page-content">
+
+<div class="breadcrumbs"><a href="#"><h4>Lista Corregir</h4></a></div>
+<hr>
+<div class="row-fluid">
+ <!--Edit Main Content Area here-->
+<div class="span12" id="divMain">
+<!-- ***************************************************************************************************************************** -->
+<!-- 1******************************************************* INICIO MODULO PRINCIPAL *********************************************** -->
+<!-- ***************************************************************************************************************************** -->
+<div class="table-responsive">
+<table class="table table-striped">
+<thead>
+<tr><td align="center"><a href="../admin/lista_historia_clinica_nombre_empresa_correcion.php"><h4>Empresar a laborar Corregir</h4></a></td></tr>
+<tr><td align="center"><a href="../admin/lista_historia_clinica_nombre_escolaridad_correcion.php"><h4>Escolaridad Corregir</h4></a></td></tr>
+<tr><td align="center"><a href="../admin/lista_historia_clinica_dat_ocupa_carg1_correcion.php"><h4>Cargo a Laborar Corregir</h4></a></td></tr>
+<tr><td align="center"><a href="../admin/lista_historia_clinica_exa_fis_interpreimc_correcion.php"><h4>Imc Corregir</h4></a></td></tr>
+<tr><td align="center"><a href="../admin/lista_historia_clinica_enf_lab_correcion.php"><h4>Enfermedad laboral</h4></a></td></tr>
+</thead>
+</table>
+</div>
+<!-- ***************************************************************************************************************************** -->
+<!-- 1******************************************************* FIN MODULO PRINCIPAL *********************************************** -->
+<!-- ***************************************************************************************************************************** -->
+</div>
+<!--End Main Content Area-->
+</div>
+<div id="footerInnerSeparator"></div>
+</div>
+</div>
+<!-- 1******************************************************* MODULO FOOTER *********************************************** -->
+<?php include_once('../admin/04_modulo_footer.php'); ?>
+<!-- 1******************************************************* MODULO FOOTER *********************************************** -->
+<!-- 1******************************************************* MODULO PLANTILLA JS *********************************************** -->
+<?php include_once('../admin/05_modulo_js.php'); ?>
+<!-- 1******************************************************* MODULO PLANTILLA JS *********************************************** -->
+</body>
+</html>

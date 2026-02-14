@@ -1,0 +1,424 @@
+/* --------------------------------- Layout ---------------------------------*/
+
+.contenedor_caja_registradora {
+    width: 500px;
+    padding: 22px;
+}
+
+/* vertically center .contenedor_caja_registradora */
+body {
+  min-height: 100%;
+  min-height: 100vh;
+  display: flex
+  align-items: center;
+}
+
+button {
+/*
+    width: 65px;
+    height: 45px;
+*/
+    font-family: 'Roboto', sans-serif;
+    border: none;
+    border-radius: 5px;
+    outline: none !important;
+    position:relative;
+    transition: all 0.1s;
+
+}
+
+button.operator-group, button#equal {
+    /*font-size: 30px !important;*/
+}
+
+button.operand-group, button#btn_borrar_todo, button#ans {
+    /*font-size: 20px !important;*/
+}
+
+button.operand-group {
+}
+button#btn_agregar_registro {
+    font-size: 30px !important;
+    text-align: center;
+    margin:15px 2px 2px 0px;
+    width: 130px;
+    height:180px;
+}
+button#btn_recibido {
+    font-size: 30px !important;
+    text-align: center;
+    margin:15px 2px 2px 0px;
+    width: 130px;
+    height:180px;
+}
+
+button#btn_guardar {
+    font-size: 30px !important;
+    text-align: center;
+    margin:15px 2px 2px 0px;
+    width: 240px;
+    height:80px;
+}
+
+
+button#btn_borrar_numero {
+    font-size: 30px !important;
+    text-align: center;
+    margin:15px 2px 2px 0px;
+    width: 210px;
+    height:80px;
+}
+button#btn_borrar_todo {
+    font-size: 30px !important;
+    text-align: center;
+    margin:15px 2px 2px 0px;
+    width: 100px;
+    height: 80px;
+}
+
+
+button#btn_numero_uno, button#btn_numero_dos, button#btn_numero_tres, button#btn_numero_cuatro, button#btn_numero_cinco, button#btn_numero_seis, button#btn_numero_siete, button#btn_numero_ocho, button#btn_numero_nueve {
+    font-size: 30px !important;
+    text-align: center;
+    margin:15px 2px 2px 0px;
+    width: 100px;
+    height: 80px;
+}
+button#btn_numero_cero {
+    font-size: 30px !important;
+    text-align: center;
+    margin:15px 2px 2px 0px;
+    width: 210px;
+    height:80px;
+}
+
+#display_superior {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400 !important;
+    font-size: 20px !important;
+    width: 450px;
+    height: 50px;
+}
+#display_inferior {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400 !important;
+    font-size: 40px !important;
+    width: 450px;
+    height: 50px;
+}
+
+
+
+
+
+.button-row_tema_caja_registradora {
+    margin-top: 12px;
+}
+
+form {
+    width: 294px;
+    border-radius: .25rem;
+}
+
+form input {
+    background-color: inherit;
+    border: none;
+    width: 294px;
+    margin: 0 auto;
+    display: block;
+}
+
+/*--------------------------- Light & Dark System ---------------------------*/
+
+/* Light Theme */
+.contenedor_caja_registradora-light {
+    background-color: #cfd8dc;/* #cfd8dc */
+    border: 1px solid #cfd8dc;/* #cfd8dc */
+}
+
+.form-light {
+    background-color: #eceff1;/* #eceff1 */
+    box-shadow: 0 0 0 0.1rem rgba(176, 190, 197, .5);
+}
+
+.form-input-light {
+    color: #263238;/* #263238 */
+}
+
+.operand-group-light {
+    background-color: #90a4ae;/* #90a4ae */
+    border-color: #90a4ae; /* #90a4ae */
+    color: black;
+    box-shadow: 0px 5px 0px #6b8694; /* 12% darker than bg *//* #6b8694 */
+}
+
+.operand-group-light:hover {
+    background-color: #78909c;/* #78909c */
+    border-color: #607d8b;/* #607d8b */
+    box-shadow: 0px 5px 0px #576b75; /* 14% darker than bg *//* #576b75 */
+}
+
+.operand-group-light:active {
+    background-color: #607d8b;/* #607d8b */
+    background-color: #607d8b;/* #607d8b */
+    box-shadow: 0px 2px 0px #495f69; /* 11% darker than bg *//* #495f69 */
+    top: 3px;
+}
+
+.operator-group-light {
+    background-color: #546e7a;/* #546e7a */
+    border-color: #546e7a;/* #546e7a */
+    color: #ffffff;/* #ffffff */
+    box-shadow: 0px 5px 0px #3f525a; /* 10% darker than bg *//* #3f525a */
+}
+
+.operator-group-light:hover {
+    background-color: #455a64;/* #455a64 */
+    border-color: #37474f;/* #37474f */
+    box-shadow: 0px 5px 0px #2a363c; /* 13% darker than bg *//* #2a363c */
+}
+
+.operator-group-light:active {
+    background-color: #37474f;/* #37474f */
+    border-color: #37474f;/* #37474f */
+    box-shadow: 0px 2px 0px #1f292d; /* 11% darker than bg *//* #1f292d */
+    top: 3px;
+}
+
+.btn_borrar_todo-light {
+    background-color: #f44336;/* #f44336 */
+    border-color: #f44336;/* #f44336 */
+    color: #ffffff;/* #ffffff */
+    box-shadow: 0px 5px 0px #c2160a;/* #c2160a */
+    color: #ffffff;/* #ffffff */
+}
+
+.btn_borrar_todo-light:hover {
+    background-color: #e53935;/* #e53935 */
+    border-color: #d32f2f;/* #d32f2f */
+    box-shadow: 0px 5px 0px #b51a17;/* #b51a17 */
+}
+
+.btn_borrar_todo-light:active {
+    background-color: #d32f2f;/* #d32f2f */
+    border-color: #d32f2f;/* #d32f2f */
+    box-shadow: 0px 2px 0px #a82424;/* #a82424 */
+    top: 3px;
+}
+
+.ans-light, .btn_borrar_numero-light {
+    background-color: #ff9800;/* #ff9800 */
+    border-color: #ff9800;/* #ff9800 */
+    color: #ffffff;/* #ffffff */
+    box-shadow: 0px 5px 0px #cc7a00;/* #cc7a00 */
+    color: #ffffff;/* #ffffff */
+}
+
+.ans-light:hover, .btn_borrar_numero-light:hover {
+    background-color: #fb8c00;/* #fb8c00 */
+    border-color: #f57c00;/* #f57c00 */
+    box-shadow: 0px 5px 0px #b36200;/* #b36200 */
+}
+
+.ans-light:active, .btn_borrar_numero-light:active {
+    background-color: #f57c00;/* #f57c00 */
+    border-color: #f57c00;/* #f57c00 */
+    box-shadow: 0px 2px 0px #b35900;/* #b35900 */
+    top: 3px;
+}
+
+.equal-light {
+    background-color: #4caf50;/* #4caf50 */
+    border-color: #4caf50;/* #4caf50 */
+    color: #ffffff;/* #ffffff */
+    box-shadow: 0px 5px 0px #3e8e41;/* #3e8e41 */
+    color: #ffffff;/* #ffffff */
+}
+
+.equal-light:hover {
+    background-color: #43a047;/* #43a047 */
+    border-color: #388e3c;/* #388e3c */
+    box-shadow: 0px 5px 0px #357e38;/* #357e38 */
+}
+
+.equal-light:active {
+    background-color: #388e3c;/* #388e3c */
+    border-color: #388e3c;/* #388e3c */
+    box-shadow: 0px 2px 0px #245b27;/* #245b27 */
+    top: 3px;
+}
+
+/* Dark Theme */
+.contenedor_caja_registradora-dark {
+    background-color: #37474f;/* #37474f */
+    border: 1px solid #37474f;/* #37474f */
+}
+
+.form-dark {
+    background-color: #263238;/* #263238 */
+    box-shadow: 0 0 0 0.1rem rgba(69, 90, 100, .5);
+}
+
+.form-input-dark {
+    color: #eceff1;/* #eceff1 */
+}
+
+.operand-group-dark {
+    background-color: #607d8b;/* #607d8b */
+    border-color: #607d8b;/* #607d8b */
+    color: #ffffff;/* #ffffff */
+    box-shadow: 0px 5px 0px #495f69;/* #495f69 */
+}
+
+.operand-group-dark:hover {
+    background-color: #546e7a;/* #546e7a */
+    border-color: #455a64;/* #455a64 */
+    box-shadow: 0px 5px 0px #3f525a;/* #3f525a */
+}
+
+.operand-group-dark:active {
+    background-color: #455a64;/* #455a64 */
+    border-color: #455a64;/* #455a64 */
+    box-shadow: 0px 2px 0px #2a363c;/* #2a363c */
+    top: 3px;
+}
+
+.operator-group-dark {
+    background-color: #b0bec5;/* #b0bec5 */
+    border-color: #b0bec5;/* #b0bec5 */
+    color: #000000;/* #000000 */
+    box-shadow: 0px 5px 0px #8a9ea8;/* #8a9ea8 */
+}
+
+.operator-group-dark:hover {
+    background-color: #90a4ae;/* #90a4ae */
+    border-color: #78909c;/* #78909c */
+    box-shadow: 0px 5px 0px #6b8694;/* #6b8694 */
+}
+
+.operator-group-dark:active {
+    background-color: #78909c;/* #78909c */
+    border-color: #78909c;/* #78909c */
+    box-shadow: 0px 2px 0px #576b75;/* #576b75 */
+    top: 3px;
+}
+
+.btn_borrar_todo-dark {
+    background-color: #f44336;/* #f44336 */
+    border-color: #f44336;/* #f44336 */
+    color: #ffffff;/* #ffffff */
+    box-shadow: 0px 5px 0px #c2160a;/* #c2160a */
+    color: #000000;/* #000000 */
+}
+
+.btn_borrar_todo-dark:hover {
+    background-color: #e53935;/* #e53935 */
+    border-color: #d32f2f;/* #d32f2f */
+    box-shadow: 0px 5px 0px #b51a17;/* #b51a17 */
+}
+
+.btn_borrar_todo-dark:active {
+    background-color: #d32f2f;/* #d32f2f */
+    border-color: #d32f2f;/* #d32f2f */
+    box-shadow: 0px 2px 0px #931f1f;/* #931f1f */
+    top: 3px;
+}
+
+.ans-dark, .btn_borrar_numero-dark {
+    background-color: #ff9800;/* #ff9800 */
+    border-color: #ff9800;/* #ff9800 */
+    color: #ffffff;/* #ffffff */
+    box-shadow: 0px 5px 0px #cc7a00;/* #cc7a00 */
+    color: #000000;/* #000000 */
+}
+
+.ans-dark:hover, .btn_borrar_numero-dark:hover {
+    background-color: #fb8c00;/* #fb8c00 */
+    border-color: #f57c00;/* #f57c00 */
+    box-shadow: 0px 5px 0px #b36200;/* #b36200 */
+}
+
+.ans-dark:active, .btn_borrar_numero-dark:active {
+    background-color: #f57c00;/* #f57c00 */
+    border-color: #f57c00;/* #f57c00 */
+    box-shadow: 0px 2px 0px #b35900;/* #b35900 */
+    top: 3px;
+}
+
+.equal-dark {
+    background-color: #4caf50;/* #4caf50 */
+    border-color: #4caf50;/* #4caf50 */
+    color: #ffffff;/* #ffffff */
+    box-shadow: 0px 5px 0px #367c39;/* #367c39 */
+    color: #000000;/* #000000 */
+}
+
+.equal-dark:hover {
+    background-color: #43a047;/* #43a047 */
+    border-color: #388e3c;/* #388e3c */
+    box-shadow: 0px 5px 0px #2d6c30;/* #2d6c30 */
+}
+
+.equal-dark:active {
+    background-color: #388e3c;/*388e3c */
+    border-color: #388e3c;/* #388e3c */
+    box-shadow: 0px 2px 0px #245b27;/* #245b27 */
+    top: 3px;
+}
+
+/*----------------------------- Rounded switch ------------------------------*/
+
+.switch_tema_caja_registradora input {
+    display: none;
+}
+
+.switch_tema_caja_registradora {
+    position: relative;
+    width: 30px;
+    height: 17px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.slider_tema_caja_registradora {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+    transition: .4s;
+    border-radius: 50px;
+    background-color: #263238;/* #263238 */
+}
+
+.slider_tema_caja_registradora:before {
+    position: absolute;
+    content: "";
+    height: 13px;
+    width: 13px;
+    left: 2px;
+    bottom: 2px;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider_tema_caja_registradora:before {
+    background-color: #263238;/* #263238 */
+}
+
+input:not(:checked) + .slider_tema_caja_registradora:before {
+    background-color: #eceff1;/* #eceff1 */
+}
+
+input:checked + .slider_tema_caja_registradora {
+  background-color: #eceff1;/* #eceff1 */
+}
+
+input:focus + .slider_tema_caja_registradora {
+  box-shadow: 0 0 1px #eceff1;/* #eceff1 */
+}
+
+input:checked + .slider_tema_caja_registradora:before {
+  transform: translateX(13px);
+}

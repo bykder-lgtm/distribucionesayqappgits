@@ -1,0 +1,669 @@
+<?php $serguridad_pagina = 1; ?>
+<!-- 1******************************************************* MODULO SUPERIOR *********************************************** -->
+<?php include_once('../admin/01_modulo_diseno_superior.php'); ?>
+<!-- 1******************************************************* MODULO SUPERIOR *********************************************** -->
+<!-- 1******************************************************* MODULO DE PLANTILLAS CSS *********************************************** -->
+<?php include_once('../admin/02_modulo_estilo_css.php'); ?>
+<!-- 1******************************************************* MODULO DE PLANTILLAS CSS *********************************************** -->
+<script src="../js/jquery.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="../estilo_css/chosen.css">
+<link rel="stylesheet" type="text/css" href="../estilo_css/area_imprimible_invisible.css">
+
+</head>
+<body id="pageBody">
+<!-- 1******************************************************* MODULO MENU DE NAVEGACION *********************************************** -->
+<?php include_once('../seguridad/seguridad_diseno_plantillas.php'); ?>
+<!-- 1******************************************************* MODULO MENU DE NAVEGACION *********************************************** -->
+<?php //$pagina = addslashes($_GET['pagina']); ?>
+<div id="contentOuterSeparator"></div>
+<div class="container">
+<div class="divPanel page-content">
+<div class="breadcrumbs">
+<a class="btn btn-primary" href="#"><h6>Reporte Ventas Por Rango de Fechas Agrupado Producto</h6></a>
+</div>
+  <script>
+  function printPageArea(areaID){
+
+  var printContent = document.getElementById(areaID);
+  $("#area_imprimible_invisible").show();
+
+  var WinPrint = window.open('', '', 'width=400,height=1000');
+  WinPrint.document.write(printContent.innerHTML);
+  WinPrint.document.close();
+  WinPrint.focus();
+  WinPrint.print();
+  WinPrint.close();
+  }
+  </script>
+<div class="row-fluid">
+ <!--Edit Main Content Area here-->
+<div class="span12" id="divMain">
+<!-- ***************************************************************************************************************************** -->
+<!-- 1******************************************************* INICIO MODULO PRINCIPAL *********************************************** -->
+<!-- ***************************************************************************************************************************** -->
+<body id="pageBody">
+<?php
+if ($cod_seguridad == '1') {
+  $condicion_inventario = 'cod_tipo_inventario = "1" OR cod_tipo_inventario = "2"';
+  $condicion_vendedor = '';
+  $condicion_vendedor_option = '<option value="0" $seleccionado >TODOS</option>';
+} else {
+if ($cod_estado_facturacion_venta_acceso_facturas_otros_user == '1') {
+  $condicion_inventario = 'cod_tipo_inventario = "1"';
+  $condicion_vendedor = '';
+  $condicion_vendedor_option = '<option value="0" $seleccionado >TODOS</option>';
+} else {
+  $condicion_inventario = 'cod_tipo_inventario = "1"';
+  $condicion_vendedor = 'WHERE cod_administrador = '.$cod_administrador;
+  $condicion_vendedor_option = '';
+}
+}
+
+if (isset($_GET['fecha_ymd_venta_producto_ini'])) {
+  $fecha_ymd_venta_producto_ini            = addslashes($_GET['fecha_ymd_venta_producto_ini']);
+  $fecha_ymd_venta_producto_fin            = addslashes($_GET['fecha_ymd_venta_producto_fin']);
+  $cod_administrador                       = intval($_GET['cod_administrador']);
+  $fecha                                   = date("Y-m-d");
+
+
+  if ($cod_estado_facturacion_venta_acceso_facturas_otros_user == '1') {
+    if ($cod_administrador==0) {
+      $filtro_consulta_vendedor = "";
+      $filtro_consulta_vendedor_rel = "";
+    } else {
+      $filtro_consulta_vendedor = "AND (cod_administrador = '$cod_administrador')";
+      $filtro_consulta_vendedor_rel = "AND (tbl15_venta_producto.cod_administrador = '$cod_administrador')";
+    }
+  } else {
+    $filtro_consulta_vendedor = "AND (cod_administrador = '$cod_administrador')";
+    $filtro_consulta_vendedor_rel = "AND (tbl15_venta_producto.cod_administrador = '$cod_administrador')";
+  }
+
+} else {
+  $fecha_ymd_venta_producto_ini            = date("Y-m-d");
+  $fecha_ymd_venta_producto_fin            = date("Y-m-d");
+  $cod_administrador                       = 0;
+  $fecha                                   = date("Y-m-d");
+
+  if ($cod_estado_facturacion_venta_acceso_facturas_otros_user == '1') {
+    if ($cod_administrador==0) {
+      $filtro_consulta_vendedor = "";
+      $filtro_consulta_vendedor_rel = "";
+    } else {
+      $filtro_consulta_vendedor = "AND (cod_administrador = '$cod_administrador')";
+      $filtro_consulta_vendedor_rel = "AND (tbl15_venta_producto.cod_administrador = '$cod_administrador')";
+    }
+  } else {
+    $filtro_consulta_vendedor = "AND (cod_administrador = '$cod_administrador')";
+    $filtro_consulta_vendedor_rel = "AND (tbl15_venta_producto.cod_administrador = '$cod_administrador')";
+  }
+}
+
+if ($cod_administrador==0) {
+  $cuenta_get                                  = 'TODOS';
+} else {
+  $sql_administrador = "SELECT cuenta FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador'";
+  $consulta_administrador = mysqli_query($conectar, $sql_administrador) or die(mysqli_error($conectar));
+  $datos_administrador = mysqli_fetch_assoc($consulta_administrador);
+
+  $cuenta_get                                  = $datos_administrador['cuenta'];
+}
+$resta                                   = 1516399999;
+$time_seg                                = time();
+$time_date_ymd                           = strtotime(date("Y-m-d"));
+$hora                                    = date("His");
+$fecha_venta_ymd                         = date("Ymd");
+$hora_venta_his                          = date("His");
+$fecha_impr                              = date("Ymd");
+$hora_impr                               = date("His");
+?>
+<form action="" id="" method="GET">
+
+<table class="table table-striped" cellspacing="0" cellpadding="20">
+  <tr>
+    <td style="text-align:right;">CUENTA: </td>
+    <td style="text-align:left;">
+        <select name="cod_administrador" id="cod_administrador" class="selectpicker" data-show-subtext="true" data-live-search="true" required>
+            <?php if (isset($cod_administrador)) { echo $condicion_vendedor_option; } else { echo $condicion_vendedor_option; }
+            $consulta2_sql = "SELECT cod_administrador, cuenta FROM tbl15_administrador $condicion_vendedor ORDER BY cod_administrador ASC";
+            $consulta2 = mysqli_query($conectar, $consulta2_sql);
+            while ($datos2 = mysqli_fetch_assoc($consulta2)) {
+            if(isset($cod_administrador) AND $cod_administrador == $datos2['cod_administrador']) {
+            $seleccionado = "selected"; } else { $seleccionado = ""; }
+            $codigo = $datos2['cod_administrador'];
+            $nombre = $datos2['cuenta'];
+            echo "<option value='".$codigo."' $seleccionado >".$nombre."</option>"; } ?>
+        </select>
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align:right;">FECHA INI: </td>
+    <td style="text-align:left;"><input class="input-block-level" name="fecha_ymd_venta_producto_ini" type="date" value="<?php echo $fecha_ymd_venta_producto_ini ?>" required/></td>
+  </tr>
+  <tr>
+    <td style="text-align:right;">FECHA FIN: </td>
+    <td style="text-align:left;"><input class="input-block-level" name="fecha_ymd_venta_producto_fin" type="date" value="<?php echo $fecha_ymd_venta_producto_fin ?>" required/></td>
+  </tr>
+  <tr>
+    <td style="text-align:right;"></td>
+    <td style="text-align:left;"><button type="submit">Ver Registros</button></td>
+  </tr>
+</table>
+</form>
+<?php
+if (isset($_GET['fecha_ymd_venta_producto_ini'])) {
+  $motivo               = 'TODOS';
+  $fecha_ymd_venta_producto_ini            = addslashes($_GET['fecha_ymd_venta_producto_ini']);
+  $fecha_ymd_venta_producto_fin            = addslashes($_GET['fecha_ymd_venta_producto_fin']);
+  $fecha                                   = date("Y/m/d");
+  $pagina                                  = $_SERVER['PHP_SELF'];
+  $contado                                 = '1';
+  $credito                                 = '2';
+/* --------------------------------------------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------------------------------------------- */
+if ($cod_administrador==0) {
+  $sql_total_venta = "SELECT SUM(total_venta_producto) AS total_suma_venta_producto, SUM(total_compra_producto) AS total_compra_producto, SUM(total_venta_producto * (comision_ptj/100)) AS total_comision, 
+  SUM(und_venta) AS total_suma_und_venta FROM tbl15_venta_producto 
+  WHERE (fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin')";
+  $consulta_total_venta = mysqli_query($conectar, $sql_total_venta) or die(mysqli_error($conectar));
+  $datos_total_venta = mysqli_fetch_assoc($consulta_total_venta);
+
+  $total_suma_venta_producto       = $datos_total_venta['total_suma_venta_producto'];
+  $total_compra_producto           = $datos_total_venta['total_compra_producto'];
+  $total_ganancia                  = $total_suma_venta_producto - $total_compra_producto;
+  $total_comision_venta            = $datos_total_venta['total_comision'];
+  $total_suma_und_venta            = $datos_total_venta['total_suma_und_venta'];
+
+  $sql_total_venta_contado = "SELECT SUM(total_venta_producto) AS total_venta_producto, SUM(total_compra_producto) AS total_compra_producto
+  FROM tbl15_venta_producto 
+  WHERE (fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') AND (cod_tipo_pago = '$contado')";
+  $consulta_total_venta_contado = mysqli_query($conectar, $sql_total_venta_contado) or die(mysqli_error($conectar));
+  $datos_total_venta_contado = mysqli_fetch_assoc($consulta_total_venta_contado);
+
+  $total_venta_producto_contado    = $datos_total_venta_contado['total_venta_producto'];
+  $total_compra_producto_contado   = $datos_total_venta_contado['total_compra_producto'];
+
+  $sql_total_venta_credito = "SELECT SUM(total_venta_producto) AS total_venta_producto, SUM(total_compra_producto) AS total_compra_producto 
+  FROM tbl15_venta_producto 
+  WHERE (fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') AND (cod_tipo_pago = '$credito')";
+  $consulta_total_venta_credito = mysqli_query($conectar, $sql_total_venta_credito) or die(mysqli_error($conectar));
+  $datos_total_venta_credito = mysqli_fetch_assoc($consulta_total_venta_credito);
+
+  $total_venta_producto_credito    = $datos_total_venta_credito['total_venta_producto'];
+  $total_compra_producto_credito   = $datos_total_venta_credito['total_compra_producto'];
+
+  $sql_total_cuenta_credito_abono = "SELECT SUM(abonado) AS total_cuenta_credito_abonado FROM tbl15_cuentas_cobrar_abonos 
+  WHERE (fecha_anyo BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin')";
+  $consulta_cuenta_credito_abono = mysqli_query($conectar, $sql_total_cuenta_credito_abono) or die(mysqli_error($conectar));
+  $datos_cuenta_credito_abono = mysqli_fetch_assoc($consulta_cuenta_credito_abono);
+
+  $total_cuenta_credito_abonado    = $datos_cuenta_credito_abono['total_cuenta_credito_abonado'];
+
+  $total_caja_venta_fisica         = $total_venta_producto_contado + $total_cuenta_credito_abonado;
+} else {
+  $sql_total_venta = "SELECT SUM(total_venta_producto) AS total_suma_venta_producto, SUM(total_compra_producto) AS total_compra_producto, SUM(total_venta_producto * (comision_ptj/100)) AS total_comision, 
+  SUM(und_venta) AS total_suma_und_venta FROM tbl15_venta_producto 
+  WHERE (fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') AND (cod_administrador = '$cod_administrador')";
+  $consulta_total_venta = mysqli_query($conectar, $sql_total_venta) or die(mysqli_error($conectar));
+  $datos_total_venta = mysqli_fetch_assoc($consulta_total_venta);
+
+  $total_suma_venta_producto       = $datos_total_venta['total_suma_venta_producto'];
+  $total_compra_producto           = $datos_total_venta['total_compra_producto'];
+  $total_ganancia                  = $total_suma_venta_producto - $total_compra_producto;
+  $total_comision_venta            = $datos_total_venta['total_comision'];
+  $total_suma_und_venta            = $datos_total_venta['total_suma_und_venta'];
+
+  $sql_total_venta_contado = "SELECT SUM(total_venta_producto) AS total_venta_producto, SUM(total_compra_producto) AS total_compra_producto 
+  FROM tbl15_venta_producto 
+  WHERE (fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') AND (cod_tipo_pago = '$contado') AND (cod_administrador = '$cod_administrador')";
+  $consulta_total_venta_contado = mysqli_query($conectar, $sql_total_venta_contado) or die(mysqli_error($conectar));
+  $datos_total_venta_contado = mysqli_fetch_assoc($consulta_total_venta_contado);
+
+  $total_venta_producto_contado    = $datos_total_venta_contado['total_venta_producto'];
+  $total_compra_producto_contado    = $datos_total_venta_contado['total_compra_producto'];
+
+  $sql_total_venta_credito = "SELECT SUM(total_venta_producto) AS total_venta_producto, SUM(total_compra_producto) AS total_compra_producto 
+  FROM tbl15_venta_producto 
+  WHERE (fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') AND (cod_tipo_pago = '$credito') AND (cod_administrador = '$cod_administrador')";
+  $consulta_total_venta_credito = mysqli_query($conectar, $sql_total_venta_credito) or die(mysqli_error($conectar));
+  $datos_total_venta_credito = mysqli_fetch_assoc($consulta_total_venta_credito);
+
+  $total_venta_producto_credito    = $datos_total_venta_credito['total_venta_producto'];
+  $total_compra_producto_credito    = $datos_total_venta_credito['total_compra_producto'];
+
+  $sql_total_cuenta_credito_abono = "SELECT SUM(abonado) AS total_cuenta_credito_abonado FROM tbl15_cuentas_cobrar_abonos 
+  WHERE (fecha_anyo BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') AND (cod_administrador = '$cod_administrador')";
+  $consulta_cuenta_credito_abono = mysqli_query($conectar, $sql_total_cuenta_credito_abono) or die(mysqli_error($conectar));
+  $datos_cuenta_credito_abono = mysqli_fetch_assoc($consulta_cuenta_credito_abono);
+
+  $total_cuenta_credito_abonado    = $datos_cuenta_credito_abono['total_cuenta_credito_abonado'];
+
+  $total_caja_venta_fisica         = $total_venta_producto_contado + $total_cuenta_credito_abonado;
+}
+/* --------------------------------------------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------------------------------------------- */
+?>
+<form action="" method="GET">
+<table class="table table-striped">
+<tr>
+<td style="text-align:center;">CUENTA: <?php echo $cuenta_get ?></td>
+</tr>
+<tr>
+<td style="text-align:center;">FECHA INI: <?php echo $fecha_ymd_venta_producto_ini ?></td>
+</tr>
+<tr>
+<td style="text-align:center;">FECHA FIN: <?php echo $fecha_ymd_venta_producto_fin ?></td>
+</tr>
+</table>
+</form> 
+
+<br>
+<div class="table-responsive">
+<table class="table table-striped">
+  <tr>
+    <th style="text-align:center;"><a href="#">Total Unidades</a></th>
+    <th style="text-align:center;"><a href="#">Total Venta</a></th>
+    <th style="text-align:center;"><a href="#">Total Venta Contado</a></th>
+    <th style="text-align:center;"><a href="#">Total Venta Credito</a></th>
+    <?php if ($cod_seguridad==1) { ?>
+    <th style="text-align:center;"><a href="#">Total Ganancia:</th>
+    <th style="text-align:center;"><a href="#">Total Comision:</th>
+    <?php } ?>
+    <th style="text-align:center;"><a href="#">Imprimir</th>
+  </tr>
+  <tr>
+    <td style="text-align:center;"><?php echo number_format($total_suma_und_venta, 0, ",", ".") ?></td>
+    <td style="text-align:center;"><?php echo number_format($total_suma_venta_producto, 0, ",", ".") ?></td>
+    <td style="text-align:center;"><?php echo number_format($total_venta_producto_contado, 0, ",", ".") ?></td>
+    <td style="text-align:center;"><?php echo number_format($total_venta_producto_credito, 0, ",", ".") ?></td>
+    <?php if ($cod_seguridad==1) { ?>
+    <td style="text-align:center;"><?php echo number_format($total_ganancia, 0, ",", ".") ?></td>
+    <td style="text-align:center;"><?php echo number_format($total_comision_venta, 0, ",", ".") ?></td>
+    <?php } ?>
+    <td style="text-align:center;"><a href="javascript:void(0);" id="foco_btn_imprimir" onclick="printPageArea('area_imprimible_invisible')"><img src="../imagenes/imprimir_directa_pos.png" alt="imprimir"></td>
+  </tr>
+</table>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th style="text-align:left"><a href="#">FORMA DE PAGO</a></th>
+      <th style="text-align:left"><a href="#">TOTAL</a></th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+if ($cod_administrador==0) {
+  $sql_total_forma_pago = "SELECT Sum(tbl15_venta_producto.total_venta_producto) AS suma_total_venta_producto, tbl15_tipo_forma_pago.nombre_tipo_forma_pago
+  FROM tbl15_tipo_forma_pago RIGHT JOIN tbl15_venta_producto ON tbl15_tipo_forma_pago.cod_tipo_forma_pago = tbl15_venta_producto.cod_tipo_forma_pago
+  WHERE (tbl15_venta_producto.fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin')
+  GROUP BY tbl15_tipo_forma_pago.cod_tipo_forma_pago";
+} else {
+  $sql_total_forma_pago = "SELECT Sum(tbl15_venta_producto.total_venta_producto) AS suma_total_venta_producto, tbl15_tipo_forma_pago.nombre_tipo_forma_pago
+  FROM tbl15_tipo_forma_pago RIGHT JOIN tbl15_venta_producto ON tbl15_tipo_forma_pago.cod_tipo_forma_pago = tbl15_venta_producto.cod_tipo_forma_pago
+  WHERE (tbl15_venta_producto.fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') AND (tbl15_venta_producto.cod_administrador = '$cod_administrador')
+  GROUP BY tbl15_tipo_forma_pago.cod_tipo_forma_pago";
+}
+$consulta_total_forma_pago = mysqli_query($conectar, $sql_total_forma_pago) or die(mysqli_error($conectar));
+while ($datos_total_forma_pago = mysqli_fetch_assoc($consulta_total_forma_pago)) {
+
+  $nombre_tipo_forma_pago        = $datos_total_forma_pago['nombre_tipo_forma_pago'];
+  $suma_total_venta_producto     = $datos_total_forma_pago['suma_total_venta_producto'];
+?>
+    <tr>
+      <td style="text-align:left"><?php echo $nombre_tipo_forma_pago?></td>
+      <td style="text-align:left"><?php echo number_format($suma_total_venta_producto, 0, ",", ".")?></td>
+    </tr>
+<?php } ?>
+  </tbody>
+</table>
+
+<br>
+<div class="table-responsive">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th style="text-align:center">Cod</th>
+      <th style="text-align:center">Concepto</th>
+      <th style="text-align:center">Unidades</th>
+      <?php if ($cod_estado_prod_precio_compra== '1') { ?><th style="text-align:center">P.Compra</th><?php } ?>
+      <th style="text-align:center">P.Venta</th>
+      <th style="text-align:center">Total Venta</th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+$total_total_venta_producto    = 0;
+$total_ganancia_venta_sum      = 0;
+
+if ($cod_administrador==0) {
+  $sql_cliente = "SELECT tbl15_venta_producto.cod_venta_producto, tbl15_venta_producto.cod_producto, tbl15_venta_producto.cod_producto_barra, 
+  tbl15_venta_producto.cod_info_factura_venta, tbl15_venta_producto.cod_factura, tbl15_venta_producto.cod_historia_clinica, tbl15_venta_producto.nombre_producto, 
+  SUM(tbl15_venta_producto.und_venta) AS und_venta, tbl15_venta_producto.precio_compra_producto, tbl15_venta_producto.total_compra_producto, tbl15_venta_producto.precio_venta_producto, 
+  SUM(tbl15_venta_producto.total_venta_producto) AS total_venta_producto, tbl15_venta_producto.nombre_tipo_producto, tbl15_venta_producto.nombre_tipo_unidad_medida, 
+  tbl15_venta_producto.nombre_tipo_presentacion, tbl15_venta_producto.nombre_via_administracion, tbl15_venta_producto.nombre_frec_duracion, 
+  tbl15_venta_producto.fecha_ymd_venta_producto, tbl15_venta_producto.fecha_hora_venta_producto, tbl15_venta_producto.cod_administrador,
+  tbl15_tercero.nombre1_tercero, tbl15_tercero.apellido1_tercero, tbl15_tercero.identificacion_tercero, tbl15_tercero.direccion_tercero, 
+  tbl15_venta_producto.cuenta, tbl15_venta_producto.cod_tipo_cobrar, tbl15_venta_producto.comision_ptj, tbl15_venta_producto.und_producto, tbl15_venta_producto.cod_estado_cava
+  FROM tbl15_tercero RIGHT JOIN (tbl15_cliente RIGHT JOIN tbl15_venta_producto ON tbl15_cliente.cod_cliente = tbl15_venta_producto.cod_cliente) 
+  ON tbl15_tercero.cod_tercero = tbl15_venta_producto.cod_tercero 
+  WHERE (tbl15_venta_producto.fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') 
+  GROUP BY tbl15_venta_producto.cod_producto_barra DESC";
+} else {
+  $sql_cliente = "SELECT tbl15_venta_producto.cod_venta_producto, tbl15_venta_producto.cod_producto, tbl15_venta_producto.cod_producto_barra, 
+  tbl15_venta_producto.cod_info_factura_venta, tbl15_venta_producto.cod_factura, tbl15_venta_producto.cod_historia_clinica, tbl15_venta_producto.nombre_producto, 
+  SUM(tbl15_venta_producto.und_venta) AS und_venta, tbl15_venta_producto.precio_compra_producto, tbl15_venta_producto.total_compra_producto, tbl15_venta_producto.precio_venta_producto, 
+  SUM(tbl15_venta_producto.total_venta_producto) AS total_venta_producto, tbl15_venta_producto.nombre_tipo_producto, tbl15_venta_producto.nombre_tipo_unidad_medida, 
+  tbl15_venta_producto.nombre_tipo_presentacion, tbl15_venta_producto.nombre_via_administracion, tbl15_venta_producto.nombre_frec_duracion, 
+  tbl15_venta_producto.fecha_ymd_venta_producto, tbl15_venta_producto.fecha_hora_venta_producto, tbl15_venta_producto.cod_administrador,
+  tbl15_tercero.nombre1_tercero, tbl15_tercero.apellido1_tercero, tbl15_tercero.identificacion_tercero, tbl15_tercero.direccion_tercero, 
+  tbl15_venta_producto.cuenta, tbl15_venta_producto.cod_tipo_cobrar, tbl15_venta_producto.comision_ptj, tbl15_venta_producto.und_producto, tbl15_venta_producto.cod_estado_cava
+  FROM tbl15_tercero RIGHT JOIN (tbl15_cliente RIGHT JOIN tbl15_venta_producto ON tbl15_cliente.cod_cliente = tbl15_venta_producto.cod_cliente) 
+  ON tbl15_tercero.cod_tercero = tbl15_venta_producto.cod_tercero 
+  WHERE (tbl15_venta_producto.fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') 
+  AND (tbl15_venta_producto.cod_administrador = '$cod_administrador')
+  GROUP BY tbl15_venta_producto.cod_producto_barra DESC";
+}
+$resultado_cliente = mysqli_query($conectar, $sql_cliente) or die(mysqli_error($conectar));
+while ($info_cliente = mysqli_fetch_assoc($resultado_cliente)) {
+
+  $cod_venta_producto            = $info_cliente['cod_venta_producto'];
+  $cod_producto                  = $info_cliente['cod_producto'];
+  $cod_producto_barra            = $info_cliente['cod_producto_barra'];
+  $cod_info_factura_venta        = $info_cliente['cod_info_factura_venta'];
+  $cod_factura                   = $info_cliente['cod_factura'];
+  $cod_historia_clinica          = $info_cliente['cod_historia_clinica'];
+  $nombre_producto               = $info_cliente['nombre_producto'];
+  $und_venta                     = $info_cliente['und_venta'];
+  $precio_compra_producto        = $info_cliente['precio_compra_producto'];
+  $total_compra_producto         = $info_cliente['total_compra_producto'];
+  $precio_venta_producto         = $info_cliente['precio_venta_producto'];
+  $total_venta_producto          = $info_cliente['total_venta_producto'];
+  $nombre_tipo_producto          = $info_cliente['nombre_tipo_producto'];
+  $nombre_tipo_unidad_medida     = $info_cliente['nombre_tipo_unidad_medida'];
+  $nombre_tipo_presentacion      = $info_cliente['nombre_tipo_presentacion'];
+  $nombre_via_administracion     = $info_cliente['nombre_via_administracion'];
+  $nombre_frec_duracion          = $info_cliente['nombre_frec_duracion'];
+  $fecha_ymd_venta_producto      = $info_cliente['fecha_ymd_venta_producto'];
+  $fecha_hora_venta_producto     = $info_cliente['fecha_hora_venta_producto'];
+  //$cuenta                        = $info_cliente['cuenta'];
+  $cod_tipo_cobrar               = $info_cliente['cod_tipo_cobrar'];
+  $cod_administrador_db          = $info_cliente['cod_administrador'];
+  $nombre_propietario            = $info_cliente['nombre1_tercero'].' '.$info_cliente['apellido1_tercero'];
+  $comision_ptj                  = $info_cliente['comision_ptj'];
+  $total_comision                = ($total_venta_producto * ($comision_ptj/100));
+  $und_producto                  = $info_cliente['und_producto'];
+
+  $sql_administrador = "SELECT cuenta FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador_db'";
+  $consulta_administrador = mysqli_query($conectar, $sql_administrador) or die(mysqli_error($conectar));
+  $datos_administrador = mysqli_fetch_assoc($consulta_administrador);
+
+  $cuenta                        = $datos_administrador['cuenta'];
+
+  $cod_estado_cava               = $info_cliente['cod_estado_cava'];
+  if ($cod_estado_cava == '1') { $img_entrega_cava = "<img src=../imagenes/sem_no_atendido_peq.png>"; $url_entrega_cava = "../admin/marcar_cava_entregada.php?cod_info_factura_venta=".$cod_info_factura_venta."&cod_venta_producto=".$cod_venta_producto; } else { $img_entrega_cava = ""; $url_entrega_cava = "#"; }
+
+  if ($total_compra_producto == '0') { $total_compra_producto = 1; } else { $total_compra_producto = $info_cliente['total_compra_producto']; }
+  if ($total_venta_producto == '0') { $total_venta_producto = 1; } else { $total_venta_producto = $info_cliente['total_venta_producto']; }
+
+  $total_ganancia_venta          = ($total_venta_producto - $total_compra_producto);
+  $total_comision                = ($total_venta_producto * ($comision_ptj/100));
+  $total_ganancia_venta_sum     += $total_ganancia_venta;
+
+  if ($cod_estado_calcular_ptjganancia_venta_ref_pcompra_pventa_global == '1') { $porcentaje_ganancia_venta = (($total_ganancia_venta / $total_compra_producto) * 100); } else { $porcentaje_ganancia_venta = (($total_ganancia_venta / $total_venta_producto) * 100); }
+?>
+    <tr>
+      <td style="text-align:center"><?php echo $cod_producto_barra?></td>
+      <td style="text-align:left"><?php echo $nombre_producto?></td>
+      <td style="text-align:center"><?php echo $und_venta?></td>
+
+      <?php if ($cod_estado_prod_precio_compra== '1') { ?><td style="text-align:right"><?php echo number_format($precio_compra_producto, 0, ",", ".")?></td><?php } ?>
+      <td style="text-align:right"><?php echo number_format($precio_venta_producto, 0, ",", ".")?></td>
+      <td style="text-align:right"><?php echo number_format($total_venta_producto, 0, ",", ".")?></td>
+    </tr>
+<?php } ?>
+  </tbody>
+</table>
+</div>
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<?php } ?>
+<!-- ***************************************************************************************************************************** -->
+<!-- 1******************************************************* FIN MODULO PRINCIPAL *********************************************** -->
+<!-- ***************************************************************************************************************************** -->
+</div>
+<!--End Main Content Area-->
+</div>
+<div id="footerInnerSeparator"></div>
+</div>
+</div>
+<!-- 1******************************************************* MODULO FOOTER *********************************************** -->
+<?php //include_once('../admin/04_modulo_footer.php'); ?>
+<!-- 1******************************************************* MODULO FOOTER *********************************************** -->
+<!-- 1******************************************************* MODULO PLANTILLA JS *********************************************** -->
+<?php include_once('../admin/05_modulo_js_sin_jquery.php'); ?>
+<!-- 1******************************************************* MODULO PLANTILLA JS *********************************************** -->
+<script src="js/chosen.jquery.js" type="text/javascript"></script>
+<script src="js/init.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
+
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<div id="wrapper" style="width: 99%;">
+
+<div id="area_imprimible_invisible" style="width: 99%;text-align: center;"><div>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+<tr>
+<td style="text-align: center; width: 99%; font-family: Courier; font-size:8pt;"><strong><?php echo $nombre_emp; ?></strong></td>
+</tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+<tr>
+<td style="text-align: center; width: 99%; font-family: Courier; font-size:8pt;"><strong><?php echo $localidad_emp; ?></strong></td>
+</tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+<tr>
+<td style="text-align: center; width: 99%; font-family: Courier; font-size:8pt;"><strong>NIT: <?php echo $nit_empresa_emp; ?></strong></td>
+</tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+<tr>
+<td style="text-align: center; width: 99%; font-family: Courier; font-size:8pt;"><strong>DIRECCION: <?php echo $direccion_emp; ?></strong></td>
+</tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+<tr>
+<td style="text-align: center; width: 99%; font-family: Courier; font-size:8pt;"><strong>TELEFONO: <?php echo $telefono_emp; ?></strong></td>
+</tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+    <td style="text-align: center;"><=======================================></td>
+  </tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+      <th style="text-align: center; width: 98%; font-family: Courier; font-size:8pt;">REPORTE DE VENTA AGRUPADO POR PRODUCTO</th>
+  </tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+    <td style="text-align: center;"><=======================================></td>
+  </tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;">FECHA INICIAL:</th>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;"><?php echo $fecha_ymd_venta_producto_ini ?></th>
+  </tr>
+  <tr>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;">FECHA FINAL:</th>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;"><?php echo $fecha_ymd_venta_producto_fin ?></th>
+  </tr>
+  <tr>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;">USUARIO:</th>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;"><?php echo $cuenta_get ?></th>
+  </tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+    <td style="text-align: center;"><=======================================></td>
+  </tr>
+</table>
+
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;">Total Unidades:</th>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;"><?php echo number_format($total_suma_und_venta, 0, ",", ".") ?></th>
+  </tr>
+  <tr>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;">Total Venta:</th>
+      <th style="text-align: left; width: 48%; font-family: Courier; font-size:8pt;"><?php echo number_format($total_suma_venta_producto, 0, ",", ".") ?></th>
+  </tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+    <td style="text-align: center;"><=======================================></td>
+  </tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <thead>
+    <tr>
+      <th style="text-align:center; font-family: Courier; font-size:8pt;">Cod</th>
+      <th style="text-align:center; font-family: Courier; font-size:8pt;">Concepto</th>
+      <th style="text-align:center; font-family: Courier; font-size:8pt;">Unidades</th>
+      <th style="text-align:center; font-family: Courier; font-size:8pt;">P.Venta</th>
+      <th style="text-align:center; font-family: Courier; font-size:8pt;">Total Venta</th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+$total_total_venta_producto    = 0;
+$total_ganancia_venta_sum      = 0;
+
+if ($cod_administrador==0) {
+$sql_cliente = "SELECT tbl15_venta_producto.cod_venta_producto, tbl15_venta_producto.cod_producto, tbl15_venta_producto.cod_producto_barra, 
+tbl15_venta_producto.cod_info_factura_venta, tbl15_venta_producto.cod_factura, tbl15_venta_producto.cod_historia_clinica, tbl15_venta_producto.nombre_producto, 
+SUM(tbl15_venta_producto.und_venta) AS und_venta, tbl15_venta_producto.precio_compra_producto, tbl15_venta_producto.total_compra_producto, tbl15_venta_producto.precio_venta_producto, 
+SUM(tbl15_venta_producto.total_venta_producto) AS total_venta_producto, tbl15_venta_producto.nombre_tipo_producto, tbl15_venta_producto.nombre_tipo_unidad_medida, 
+tbl15_venta_producto.nombre_tipo_presentacion, tbl15_venta_producto.nombre_via_administracion, tbl15_venta_producto.nombre_frec_duracion, 
+tbl15_venta_producto.fecha_ymd_venta_producto, tbl15_venta_producto.fecha_hora_venta_producto, tbl15_venta_producto.cod_administrador,
+tbl15_tercero.nombre1_tercero, tbl15_tercero.apellido1_tercero, tbl15_tercero.identificacion_tercero, tbl15_tercero.direccion_tercero, 
+tbl15_venta_producto.cuenta, tbl15_venta_producto.cod_tipo_cobrar, tbl15_venta_producto.comision_ptj, tbl15_venta_producto.und_producto, tbl15_venta_producto.cod_estado_cava
+FROM tbl15_tercero RIGHT JOIN (tbl15_cliente RIGHT JOIN tbl15_venta_producto ON tbl15_cliente.cod_cliente = tbl15_venta_producto.cod_cliente) 
+ON tbl15_tercero.cod_tercero = tbl15_venta_producto.cod_tercero 
+WHERE (tbl15_venta_producto.fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') 
+GROUP BY tbl15_venta_producto.cod_producto_barra DESC";
+} else {
+$sql_cliente = "SELECT tbl15_venta_producto.cod_venta_producto, tbl15_venta_producto.cod_producto, tbl15_venta_producto.cod_producto_barra, 
+tbl15_venta_producto.cod_info_factura_venta, tbl15_venta_producto.cod_factura, tbl15_venta_producto.cod_historia_clinica, tbl15_venta_producto.nombre_producto, 
+SUM(tbl15_venta_producto.und_venta) AS und_venta, tbl15_venta_producto.precio_compra_producto, tbl15_venta_producto.total_compra_producto, tbl15_venta_producto.precio_venta_producto, 
+SUM(tbl15_venta_producto.total_venta_producto) AS total_venta_producto, tbl15_venta_producto.nombre_tipo_producto, tbl15_venta_producto.nombre_tipo_unidad_medida, 
+tbl15_venta_producto.nombre_tipo_presentacion, tbl15_venta_producto.nombre_via_administracion, tbl15_venta_producto.nombre_frec_duracion, 
+tbl15_venta_producto.fecha_ymd_venta_producto, tbl15_venta_producto.fecha_hora_venta_producto, tbl15_venta_producto.cod_administrador,
+tbl15_tercero.nombre1_tercero, tbl15_tercero.apellido1_tercero, tbl15_tercero.identificacion_tercero, tbl15_tercero.direccion_tercero, 
+tbl15_venta_producto.cuenta, tbl15_venta_producto.cod_tipo_cobrar, tbl15_venta_producto.comision_ptj, tbl15_venta_producto.und_producto, tbl15_venta_producto.cod_estado_cava
+FROM tbl15_tercero RIGHT JOIN (tbl15_cliente RIGHT JOIN tbl15_venta_producto ON tbl15_cliente.cod_cliente = tbl15_venta_producto.cod_cliente) 
+ON tbl15_tercero.cod_tercero = tbl15_venta_producto.cod_tercero 
+WHERE (tbl15_venta_producto.fecha_ymd_venta_producto BETWEEN '$fecha_ymd_venta_producto_ini' AND '$fecha_ymd_venta_producto_fin') 
+AND (tbl15_venta_producto.cod_administrador = '$cod_administrador')
+GROUP BY tbl15_venta_producto.cod_producto_barra DESC";
+}
+$resultado_cliente = mysqli_query($conectar, $sql_cliente) or die(mysqli_error($conectar));
+while ($info_cliente = mysqli_fetch_assoc($resultado_cliente)) {
+
+  $cod_venta_producto            = $info_cliente['cod_venta_producto'];
+  $cod_producto                  = $info_cliente['cod_producto'];
+  $cod_producto_barra            = $info_cliente['cod_producto_barra'];
+  $cod_info_factura_venta        = $info_cliente['cod_info_factura_venta'];
+  $cod_factura                   = $info_cliente['cod_factura'];
+  $cod_historia_clinica          = $info_cliente['cod_historia_clinica'];
+  $nombre_producto               = $info_cliente['nombre_producto'];
+  $und_venta                     = $info_cliente['und_venta'];
+  $precio_compra_producto        = $info_cliente['precio_compra_producto'];
+  $total_compra_producto         = $info_cliente['total_compra_producto'];
+  $precio_venta_producto         = $info_cliente['precio_venta_producto'];
+  $total_venta_producto          = $info_cliente['total_venta_producto'];
+  $nombre_tipo_producto          = $info_cliente['nombre_tipo_producto'];
+  $nombre_tipo_unidad_medida     = $info_cliente['nombre_tipo_unidad_medida'];
+  $nombre_tipo_presentacion      = $info_cliente['nombre_tipo_presentacion'];
+  $nombre_via_administracion     = $info_cliente['nombre_via_administracion'];
+  $nombre_frec_duracion          = $info_cliente['nombre_frec_duracion'];
+  $fecha_ymd_venta_producto      = $info_cliente['fecha_ymd_venta_producto'];
+  $fecha_hora_venta_producto     = $info_cliente['fecha_hora_venta_producto'];
+  //$cuenta                        = $info_cliente['cuenta'];
+  $cod_tipo_cobrar               = $info_cliente['cod_tipo_cobrar'];
+  $cod_administrador_db          = $info_cliente['cod_administrador'];
+  $nombre_propietario            = $info_cliente['nombre1_tercero'].' '.$info_cliente['apellido1_tercero'];
+  $comision_ptj                  = $info_cliente['comision_ptj'];
+  $total_comision                = ($total_venta_producto * ($comision_ptj/100));
+  $und_producto                  = $info_cliente['und_producto'];
+
+  $sql_administrador = "SELECT cuenta FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador_db'";
+  $consulta_administrador = mysqli_query($conectar, $sql_administrador) or die(mysqli_error($conectar));
+  $datos_administrador = mysqli_fetch_assoc($consulta_administrador);
+
+  $cuenta                        = $datos_administrador['cuenta'];
+
+  $cod_estado_cava               = $info_cliente['cod_estado_cava'];
+  if ($cod_estado_cava == '1') { $img_entrega_cava = "<img src=../imagenes/sem_no_atendido_peq.png>"; $url_entrega_cava = "../admin/marcar_cava_entregada.php?cod_info_factura_venta=".$cod_info_factura_venta."&cod_venta_producto=".$cod_venta_producto; } else { $img_entrega_cava = ""; $url_entrega_cava = "#"; }
+
+  if ($total_compra_producto == '0') { $total_compra_producto = 1; } else { $total_compra_producto = $info_cliente['total_compra_producto']; }
+  if ($total_venta_producto == '0') { $total_venta_producto = 1; } else { $total_venta_producto = $info_cliente['total_venta_producto']; }
+
+  $total_ganancia_venta          = ($total_venta_producto - $total_compra_producto);
+  $total_comision                = ($total_venta_producto * ($comision_ptj/100));
+  $total_ganancia_venta_sum     += $total_ganancia_venta;
+
+  if ($cod_estado_calcular_ptjganancia_venta_ref_pcompra_pventa_global == '1') { $porcentaje_ganancia_venta = (($total_ganancia_venta / $total_compra_producto) * 100); } else { $porcentaje_ganancia_venta = (($total_ganancia_venta / $total_venta_producto) * 100); }
+?>
+    <tr>
+      <td style="text-align:center; font-family: Courier; font-size:8pt;"><?php echo $cod_producto_barra?></td>
+      <td style="text-align:left; font-family: Courier; font-size:8pt;"><?php echo $nombre_producto?></td>
+      <td style="text-align:center; font-family: Courier; font-size:8pt;"><?php echo $und_venta?></td>
+      <td style="text-align:right; font-family: Courier; font-size:8pt;"><?php echo number_format($precio_venta_producto, 0, ",", ".")?></td>
+      <td style="text-align:right; font-family: Courier; font-size:8pt;"><?php echo number_format($total_venta_producto, 0, ",", ".")?></td>
+    </tr>
+<?php } ?>
+  </tbody>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+    <td style="text-align: center;"><=======================================></td>
+  </tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Helvetica; font-size:8pt;">
+  <tr>
+    <th style="text-align: center; width: 98%; font-family: Helvetica; font-size:8pt;"><== Software <?php echo $titulo_emp ?> Version <?php echo $version_emp ?> ==></th>
+  </tr>
+  <tr>
+    <th style="text-align: center; width: 98%; font-family: Helvetica; font-size:8pt;"><== <?php echo $desarrollador_emp ?> : <?php echo $pag_desarrollador_emp ?> ==></th>
+  </tr>
+</table>
+
+<table border="0" width="275px" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:8pt;">
+  <tr>
+    <td style="text-align: center;"><=======================================></td>
+  </tr>
+</table>
+
+<div>

@@ -1,0 +1,88 @@
+<?php
+require_once('mpdf/mpdf.php');
+include_once('../conexiones/conexione.php');
+include_once('../admin/class_php/funcion_cryptor_descryptor_class.php');
+include_once('../evitar_mensaje_error/error.php');
+date_default_timezone_set("America/Bogota");
+//include_once('../admin/fecha_en_espanol.php');
+include_once("../session/funciones_admin.php");
+//include("../tbl15_notificacion_alerta/mostrar_noficacion_alerta.php");
+if (verificar_usuario()){
+//print "Bienvenido (a), <strong>".$_SESSION['usuario'].", </strong>al sistema.";
+  } else { header("Location:../index.php");
+}
+//-------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------------------------------------------------------------//
+$cuenta_actual           = DAXCRYPTOR::descriptardax($_SESSION['usuario_cryp']);
+
+$cod_info_factura_sticker = intval($_GET['cod_info_factura_sticker']);
+
+$sql_sum_und = "SELECT SUM(und_venta) AS sum_und_venta FROM tbl15_sticker_producto WHERE cod_info_factura_sticker = '$cod_info_factura_sticker'";
+$consulta_sum_und = mysqli_query($conectar, $sql_sum_und) or die(mysqli_error($conectar));
+$datos_sum_und = mysqli_fetch_assoc($consulta_sum_und);
+
+$sum_und_venta = $datos_sum_und['sum_und_venta'];
+$smtr = 0;
+
+$codigoHTML='<!DOCTYPE html><html lang="es"><head><title>'."Stiker_Factura_No_".$cod_info_factura_sticker.'</title><meta charset="utf-8" /></head>
+</head><body>
+<table border="0" width="100%" cellspacing="0" cellpadding="0" style="font-family: Courier; font-size:15pt;">
+<tr>';
+
+$mostrar_datos_sql = "SELECT und_venta, nombre_producto, cod_producto_barra, precio_compra_producto, precio_venta_producto, cod_tercero
+FROM tbl15_sticker_producto WHERE cod_info_factura_sticker = '$cod_info_factura_sticker' ORDER BY cod_sticker_producto ASC";
+$consulta = mysqli_query($conectar, $mostrar_datos_sql) or die(mysqli_error($conectar));
+while ($datos = mysqli_fetch_assoc($consulta)) {
+
+$und_venta                  = $datos['und_venta'];
+$nombre_producto            = substr($datos['nombre_producto'], 0, 80);
+$cod_producto_barra         = $datos['cod_producto_barra'];
+$precio_compra_producto     = intval($datos['precio_compra_producto']);
+$precio_venta_producto      = intval($datos['precio_venta_producto']);
+//$fecha_ult_compra           = $datos['fecha_ult_compra'];
+
+$sql_producto = "SELECT cod_tercero FROM tbl15_producto WHERE cod_producto_barra = '$cod_producto_barra'";
+$consulta_producto = mysqli_query($conectar, $sql_producto) or die(mysqli_error($conectar));
+$datos_producto = mysqli_fetch_assoc($consulta_producto);
+
+$cod_tercero                = $datos_producto['cod_tercero'];
+
+for ($i=0; $i < $und_venta; $i++) {
+
+$smtr++;
+
+if ($smtr%1 == 0 && $smtr <= $sum_und_venta) {
+$codigoHTML.='
+<tr>$smtr</tr>
+';
+}
+$codigoHTML.='<td style="text-align: left; font-family: Courier; font-size:30pt;">'.utf8_decode($nombre_producto).'&nbsp;&nbsp;<br>
+<barcode code="'.$cod_producto_barra.'" type="EAN128A"  size="3" height="1"/><br>
+'.$cod_producto_barra.' '.$precio_compra_producto.' '.$precio_venta_producto.' '.$cod_tercero.'
+<br>
+--------------------------------
+</td>';
+}
+}
+$codigoHTML.='</tr></table></div></body></html>';
+/*
+A4-L = horizontal
+A4 = carta
+A5 = extralarga
+A5-L = horizontal
+Letter = oficio
+*/
+$margen_izq = '4';
+$margen_der = '4';
+$margen_inf_encabezado = '4';
+$margen_sup_encabezado = '4';
+$posicion_sup_encabezado = '4';
+$posicion_inf_encabezado = '4';
+$mpdf = new mPDF('en-GB-x','legal','','',$margen_izq, $margen_der, $margen_inf_encabezado, $margen_sup_encabezado, $posicion_sup_encabezado, $posicion_inf_encabezado);
+$mpdf->mirrorMargins = 5;
+$mpdf->SetDisplayMode('fullpage');
+$mpdf->writeHTML(utf8_encode($codigoHTML));
+$nombre_archivo = 'Stiker_Barras_No_'.$cod_info_factura_sticker.'.pdf';
+$mpdf->output($nombre_archivo, 'I');
+exit;
+?>

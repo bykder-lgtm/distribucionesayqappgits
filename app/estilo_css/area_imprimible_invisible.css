@@ -1,0 +1,6 @@
+@media screen,print {
+  #area_imprimible_invisible { display:none; }
+  #area_imprimible_invisible_infopos_50x23mm { display:none; }
+  #barcodeTarget, #canvasTarget { }
+
+}

@@ -1,0 +1,53 @@
+.imagen_fondo_login {
+    background-image: url(../imagenes/fondo.jpg) ;
+
+    background-size: cover;
+    display: block;
+    filter: blur(1px) contrast(100%);
+    height: 100%;
+    width: 100%;
+    left: 0;
+    position: fixed;
+    right: 0;
+    z-index: 1;
+}
+
+.content {
+    left: 0;
+    position: fixed;
+    right: 0;
+    z-index: 2;
+}
+.content_left {
+    left: 0;
+    position: center;
+    right: 0%;
+    z-index: 2;
+}
+
+.content_right {
+    left: 0;
+    position: fixed;
+    right: 0%;
+    z-index: 2;
+}
+
+.left_cont {
+    padding-left: 0%;
+    padding-top: 1%;
+    margin-left: 1%;
+    float: left;
+    width: 40%;
+    /*position: relative;
+    height: auto;*/
+}
+
+.right_cont {
+    padding-left: 49%;
+    padding-top: 1%;
+    margin-left: 1%;
+    float: center;
+    width: 60%;
+    /*position: relative;
+    height: auto;*/
+}

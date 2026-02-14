@@ -1,0 +1,14 @@
+* { border: 0; box-sizing: content-box; color: inherit; font-family: inherit; font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; list-style: none; margin: 0; padding: 0; text-decoration: none; vertical-align: top; }
+textarea { resize: none; width:55px; }
+/* content editable */
+/* heading */
+/* table */
+/* page */
+html { overflow: auto; padding: 0.3in; }
+html { background: #999; cursor: default; }
+
+body { box-sizing: border-box; height: 11in; margin: 0 auto;  padding: 0.1in; width: 8.5in; }
+body { background: #FFF; border-radius: 1px; box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5); }
+/* header */
+header { margin: 0 0 3em; }
+header:after { clear: both; content: ""; display: table; }

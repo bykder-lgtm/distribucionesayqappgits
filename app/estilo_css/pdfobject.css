@@ -1,0 +1,5 @@
+.pdfobject-container { height: 60rem; border: 1rem solid rgba(0,0,0,.1); }
+.modal-dialog { background-color: #fff; padding: 20px 15px; }
+#cancelar_visualizacion { margin: 5px; display: block; }
+.cargando_loading { position: absolute;width: 30px;right: -40px;top: -2px; }
+.hide { display: none; }
