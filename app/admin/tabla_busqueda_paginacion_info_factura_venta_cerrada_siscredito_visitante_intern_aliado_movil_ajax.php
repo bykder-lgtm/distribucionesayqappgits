@@ -273,9 +273,9 @@ $nombre_estado_factura                       = "CERRADA";
 // escaping, additionally removing everything that could be (html/javascript-) code
      $sTable = "tbl15_tercero RIGHT JOIN tbl15_info_factura_venta ON tbl15_tercero.cod_tercero = tbl15_info_factura_venta.cod_tercero LEFT JOIN tbl15_entidad_crediticia ON tbl15_info_factura_venta.cod_entidad_crediticia = tbl15_entidad_crediticia.cod_entidad_crediticia";
 
-     $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND (tbl15_info_factura_venta.nombre_estado_factura = 'CERRADA')";
+     $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND (tbl15_info_factura_venta.nombre_estado_factura = '$nombre_estado_factura')";
     if ( $_GET['busqueda_ajax'] != "" ) {
-        $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND (tbl15_info_factura_venta.nombre_estado_factura = 'CERRADA') AND ( ";
+        $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND (tbl15_info_factura_venta.nombre_estado_factura = '$nombre_estado_factura') AND ( ";
         for ( $i=0 ; $i<count($aColumns) ; $i++ ) {
             $sWhere .= $aColumns[$i]." LIKE '$busq_aprox_der".$busqueda_ajax."$busq_aprox_izq' OR ";
         }

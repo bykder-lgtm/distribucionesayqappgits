@@ -39,12 +39,16 @@ if (isset($_POST['identificacion_tercero'])) {
 	$telefono1_tercero                                              = trim(addslashes($_POST['telefono1_tercero']));
 	$correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
 	$nombres_apellidos_tercero                                      = trim(addslashes($_POST['nombres_apellidos_tercero']));
-	$direccion_tercero                                              = '';
+	$direccion_tercero                                              = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
+	$barrio_tercero                                                 = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
+	$cod_departamento                                               = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+	$cod_municipio                                                  = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
 	// Nuevos campos de tipo de cliente y sector
 	$nombre_tipo_cliente                                            = isset($_POST['nombre_tipo_cliente']) ? addslashes($_POST['nombre_tipo_cliente']) : 'PERSONA_NATURAL';
 	$cod_tipo_sector                                                = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
 	$nit_razon_social                                               = isset($_POST['nit_razon_social']) ? trim(addslashes($_POST['nit_razon_social'])) : '';
-    if($nombre_tipo_cliente == 'PERSONA_JURIDICA') { $nombre_razon_social = $nombres_apellidos_tercero; } else { $nombre_razon_social = ''; }
+    $nombre_razon_social                                            = isset($_POST['nombre_razon_social']) ? trim(addslashes($_POST['nombre_razon_social'])) : '';
+    $cod_gestor_operador_credito                                    = isset($_POST['cod_gestor_operador_credito']) ? intval($_POST['cod_gestor_operador_credito']) : 0;
     //$cod_asesor                                                     = intval($_POST['cod_asesor']);
 	//$nombres_apellidos_tercero                                      = $nombre1_tercero.' '.$apellido1_tercero;
     $cedula                                                         = $identificacion_tercero;
@@ -86,12 +90,12 @@ if (isset($_POST['identificacion_tercero'])) {
         nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion, 
         cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, correo, telefono, cuenta, contrasena, 
         cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, 
-        cod_tipo_sector, nit_razon_social, nombre_razon_social) 
+        cod_tipo_sector, nit_razon_social, nombre_razon_social, cod_gestor_operador_credito, cod_departamento, cod_municipio) 
 		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
         UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion', 
         '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$creador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$correo', '$telefono', '$cuenta', '$contrasena', 
         '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', 
-        '$cod_tipo_sector', '$nit_razon_social', UPPER('$nombre_razon_social'))";
+        '$cod_tipo_sector', '$nit_razon_social', UPPER('$nombre_razon_social'), '$cod_gestor_operador_credito', '$cod_departamento', '$cod_municipio')";
 		$exec_data = mysqli_query($conectar, $sql_data);
         //---------------------------------------------------------------------------------------------------------------------------------//
         if ($exec_data && mysqli_affected_rows($conectar) > 0) { 
@@ -196,6 +200,27 @@ if (isset($_POST['identificacion_tercero'])) {
             }
             if ($docs_para_actualizar) { $sql_update_docs .= " WHERE cod_administrador = '$cod_administrador'"; mysqli_query($conectar, $sql_update_docs); }
             // ========================================================================================
+            // CREAR TIENDA AUTOMÁTICAMENTE SI EL CHECKBOX ESTÁ ACTIVO
+            // ========================================================================================
+            $tienda_creada = false;
+            $cod_tienda_creada = 0;
+            if (isset($_POST['crear_tienda_al_guardar']) && $_POST['crear_tienda_al_guardar'] == '1') {
+                $nombre_tienda_auto = strtoupper($nombres_apellidos_tercero);
+                $abrev_tienda_auto = 'T' . $cod_administrador . '_' . time();
+                $fecha_creacion_tienda = date("Y-m-d H:i:s");
+
+                $sql_tienda = "INSERT INTO tbl15_tienda (nombre_tienda, abrev_tienda, nombre_tipo_tercero, nombre_tipo_identificacion, identificacion_tercero, nombre1_tercero,
+                direccion_tercero, telefono1_tercero, correo_tercero, barrio_tercero, cod_pais, cod_departamento, cod_municipio, nombre_tipo_cliente, nombre_tipo_regimen, 
+                nombre_tipo_impuesto, cod_administrador, cod_aliado_estrategico, nit_razon_social, nombre_razon_social, nombre_representante, documento_representante, 
+                correo_representante, numero_comercios, cod_tipo_sector, fecha_creacion, cod_estado) 
+                VALUES ('$nombre_tienda_auto', '$abrev_tienda_auto', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', '$identificacion_tercero', UPPER('$nombre1_tercero'),
+                '$direccion_tercero', '$telefono1_tercero', '$correo_tercero', '$barrio_tercero', '1', '$cod_departamento', '$cod_municipio', '$nombre_tipo_cliente', '$nombre_tipo_regimen', 
+                '$nombre_tipo_impuesto', '$cod_administrador', '$cod_administrador', '$nit_razon_social', UPPER('$nombre_razon_social'), UPPER('$nombre1_tercero'), '$identificacion_tercero', 
+                '$correo_tercero', '1', '$cod_tipo_sector', '$fecha_creacion_tienda', '1')";
+                $exec_tienda = mysqli_query($conectar, $sql_tienda);
+                if ($exec_tienda && mysqli_affected_rows($conectar) > 0) { $tienda_creada = true; $cod_tienda_creada = mysqli_insert_id($conectar); }
+            }
+            // ========================================================================================
             // ENVIAR CORREO DE BIENVENIDA CON CREDENCIALES AL NUEVO ALIADO
             // ========================================================================================
             $correo_enviado = false;
@@ -224,12 +249,15 @@ if (isset($_POST['identificacion_tercero'])) {
         $respuesta_ajax['nombre_completo']         = $nombres_apellidos_tercero;
         $respuesta_ajax['telefono']                = $telefono1_tercero;
         $respuesta_ajax['correo']                  = $correo_tercero;
+        $respuesta_ajax['tienda_creada']            = isset($tienda_creada) ? $tienda_creada : false;
+        $respuesta_ajax['cod_tienda']               = isset($cod_tienda_creada) ? $cod_tienda_creada : 0;
         
+        $msg_tienda = (isset($tienda_creada) && $tienda_creada) ? ' También se creó la tienda automáticamente.' : '';
         if (isset($correo_enviado) && $correo_enviado) {
-            $respuesta_ajax['mensaje']             = 'Aliado registrado correctamente. Se ha enviado un correo con las credenciales de acceso.';
+            $respuesta_ajax['mensaje']             = 'Aliado registrado correctamente. Se ha enviado un correo con las credenciales de acceso.' . $msg_tienda;
             $respuesta_ajax['correo_enviado']      = true;
         } else {
-            $respuesta_ajax['mensaje']             = 'Aliado registrado correctamente. No se pudo enviar el correo de bienvenida.';
+            $respuesta_ajax['mensaje']             = 'Aliado registrado correctamente. No se pudo enviar el correo de bienvenida.' . $msg_tienda;
             $respuesta_ajax['correo_enviado']      = false;
             $respuesta_ajax['error_correo']        = $error_correo;
         }

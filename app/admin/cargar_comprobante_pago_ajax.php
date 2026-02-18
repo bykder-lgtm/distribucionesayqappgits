@@ -37,8 +37,8 @@ if (!in_array($file_type, $allowed_types)) { echo json_encode(['success' => fals
 // Obtener extensión del archivo
 $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
 // Generar nombre único para el archivo
-$fecha = date('Y-m-d_H-i-s');
-$nombre_archivo = 'comprobante_' . $cod_info_factura_venta . '_' . $fecha . '.' . $extension;
+$fecha = date('Y_m_d_H_i_s');
+$nombre_archivo = 'comprobante_' . $cod_info_factura_venta.'_'.$fecha.'.'.$extension;
 $carpeta_destino = '../archivador/documentos/comprobante_pago/';
 // Determinar carpeta de destino según el estado
 //if ($nombre_estado_factura == 'CERRADA') { $carpeta_destino = '../documentos/'; } else { $carpeta_destino = '../documentos/'; }
@@ -46,11 +46,11 @@ $carpeta_destino = '../archivador/documentos/comprobante_pago/';
 if (!file_exists($carpeta_destino)) { mkdir($carpeta_destino, 0777, true); }
 
 $ruta_completa = $carpeta_destino.$nombre_archivo;
-$url_img_orig_producto = $ruta_completa;
+$url_img_orig_producto = 'archivador/documentos/comprobante_pago/'.$nombre_archivo;
 // Mover archivo a la carpeta destino
 if (move_uploaded_file($archivo['tmp_name'], $ruta_completa)) {
     // Actualizar base de datos
-    $url_relativa = str_replace('../', '', $ruta_completa);
+    $url_relativa = $url_img_orig_producto;
     
     $sql_update = "UPDATE tbl15_info_factura_venta SET url_img_orig_producto = '$url_img_orig_producto' WHERE cod_info_factura_venta = '$cod_info_factura_venta'";
     $result_update = mysqli_query($conectar, $sql_update);

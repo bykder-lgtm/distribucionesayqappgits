@@ -25,6 +25,12 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $nombre_tipo_cliente                                                = isset($_POST['nombre_tipo_cliente']) ? trim(addslashes($_POST['nombre_tipo_cliente'])) : '';
     $cod_tipo_sector                                                    = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
     $nit_razon_social                                                   = isset($_POST['nit_razon_social']) ? trim(addslashes($_POST['nit_razon_social'])) : '';
+    $nombre_razon_social                                                = isset($_POST['nombre_razon_social']) ? trim(addslashes($_POST['nombre_razon_social'])) : '';
+    $cod_departamento                                                   = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+    $cod_municipio                                                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
+    $direccion_tercero                                                  = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
+    $barrio_tercero                                                     = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
+
     // Verificar si se debe cambiar el usuario
     $nuevo_usuario                                                      = '';
     if (isset($_POST['nuevo_usuario'])) {
@@ -43,18 +49,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     if ($cambiar_password && isset($_POST['nueva_password']) && !empty($_POST['nueva_password'])) { $nueva_password = trim(addslashes($_POST['nueva_password'])); }
     // Calculated fields
     // Usar el nombre comercial del formulario si existe, sino concatenar nombre y apellido
-    if (!empty($nombres_apellidos_tercero_form)) {
-        $nombres_apellidos_tercero                                      = $nombres_apellidos_tercero_form;
-    } else {
-        $nombres_apellidos_tercero                                      = $nombre1_tercero . ' ' . $apellido1_tercero;
-    }
-    
-    // Calcular nombre_razon_social según tipo de cliente
-    if ($nombre_tipo_cliente == 'PERSONA_JURIDICA' || $nombre_tipo_cliente == '2') {
-        $nombre_razon_social                                            = $nombres_apellidos_tercero;
-    } else {
-        $nombre_razon_social                                            = '';
-    }
+    if (!empty($nombres_apellidos_tercero_form)) { $nombres_apellidos_tercero = $nombres_apellidos_tercero_form; } else { $nombres_apellidos_tercero = $nombre1_tercero . ' ' . $apellido1_tercero; }
     
     $fecha_modificacion                                                 = date("Y-m-d");
     $fecha_hora_modificacion                                            = date("H:i:s");
@@ -67,7 +62,9 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         $sql_update = "UPDATE tbl15_administrador SET identificacion_tercero = '$identificacion_tercero',  cedula = '$identificacion_tercero', nombre1_tercero = UPPER('$nombre1_tercero'),
         nombres = UPPER('$nombre1_tercero'), apellido1_tercero = UPPER('$apellido1_tercero'), apellidos = UPPER('$apellido1_tercero'), nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'),
         telefono1_tercero = '$telefono1_tercero', telefono = '$telefono1_tercero', correo_tercero = '$correo_tercero', correo = '$correo_tercero', cod_estado_activacion_usuario = '$cod_estado_activacion_usuario',
-        nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', nombre_razon_social = UPPER('$nombre_razon_social')";
+        nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', nombre_razon_social = UPPER('$nombre_razon_social'),
+        cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio', direccion_tercero = '$direccion_tercero', barrio_tercero = '$barrio_tercero'";
+
         
         // Si se debe cambiar el usuario, agregarlo a la consulta
         if (!empty($nuevo_usuario)) { $sql_update .= ", usuario = '$nuevo_usuario'"; }
@@ -76,7 +73,6 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         
         $sql_update .= " WHERE cod_administrador = '$cod_administrador'";
         $exec_update = mysqli_query($conectar, $sql_update);
-        
         if ($exec_update) { 
             // ========================================================================================
             // PROCESAR DOCUMENTACIÓN LEGAL

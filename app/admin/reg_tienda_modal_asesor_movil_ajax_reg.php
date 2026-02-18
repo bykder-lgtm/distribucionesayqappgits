@@ -86,19 +86,24 @@ function procesarImagen($file_key, $directorio_orig, $directorio_min = null, $an
     return array('orig' => $ruta_orig, 'min' => $ruta_min);
 }
 //---------------------------------------------------------------------------------------------------------------------------------//
-if (isset($_POST['identificacion_tercero'])) {
+// Cambiar validación para requerir solo nombre de tienda y cod_aliado
+if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero']) && isset($_POST['cod_aliado_estrategico'])) {
 
-	$identificacion_tercero                                         = intval($_POST['identificacion_tercero']);
 	$nombre1_tercero                                                = trim(addslashes($_POST['nombre1_tercero']));
-	$telefono1_tercero                                              = trim(addslashes($_POST['telefono1_tercero']));
-	$correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
-	$direccion_tercero                                              = trim(addslashes($_POST['direccion_tercero']));
     $cod_aliado_estrategico                                         = intval($_POST['cod_aliado_estrategico']);
+    // Generar identificación automática si no viene (basado en timestamp + aliado)
+    $identificacion_tercero                                         = isset($_POST['identificacion_tercero']) && !empty($_POST['identificacion_tercero']) ? intval($_POST['identificacion_tercero']) : '';
+    // Campos con valores por defecto si no vienen del formulario
+	$telefono1_tercero                                              = isset($_POST['telefono1_tercero']) && !empty($_POST['telefono1_tercero']) ? trim(addslashes($_POST['telefono1_tercero'])) : '';
+	$correo_tercero                                                 = isset($_POST['correo_tercero']) && !empty($_POST['correo_tercero']) ? trim(addslashes($_POST['correo_tercero'])) : '';
+	$direccion_tercero                                              = isset($_POST['direccion_tercero']) && !empty($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
+    $barrio_tercero                                                 = isset($_POST['barrio_tercero']) && !empty($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
     $cod_departamento                                               = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
     $cod_municipio                                                  = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
-    $nombre_representante                                           = isset($_POST['nombre_representante']) ? trim(addslashes($_POST['nombre_representante'])) : '';
-    $documento_representante                                        = isset($_POST['documento_representante']) ? intval($_POST['documento_representante']) : 0;
-    $correo_representante                                           = isset($_POST['correo_representante']) ? trim(addslashes($_POST['correo_representante'])) : '';
+    // Representante legal - valores por defecto
+    $nombre_representante                                           = isset($_POST['nombre_representante']) && !empty($_POST['nombre_representante']) ? trim(addslashes($_POST['nombre_representante'])) : '';
+    $documento_representante                                        = isset($_POST['documento_representante']) && !empty($_POST['documento_representante']) ? intval($_POST['documento_representante']) : 0;
+    $correo_representante                                           = isset($_POST['correo_representante']) && !empty($_POST['correo_representante']) ? trim(addslashes($_POST['correo_representante'])) : '';
     $nombre_tipo_industria                                          = isset($_POST['nombre_tipo_industria']) ? trim(addslashes($_POST['nombre_tipo_industria'])) : '';
     $nombre_tipo_subindustria                                       = isset($_POST['nombre_tipo_subindustria']) ? trim(addslashes($_POST['nombre_tipo_subindustria'])) : '';
     $nombre_tipo_otraindustria                                      = isset($_POST['nombre_tipo_otraindustria']) ? trim(addslashes($_POST['nombre_tipo_otraindustria'])) : '';
@@ -110,10 +115,12 @@ if (isset($_POST['identificacion_tercero'])) {
     $nombre_sistema_contable                                        = isset($_POST['nombre_sistema_contable']) ? trim(addslashes($_POST['nombre_sistema_contable'])) : '';
     $cod_banco_cuenta                                               = isset($_POST['cod_banco_cuenta']) ? intval($_POST['cod_banco_cuenta']) : 0;
     $ubicacion_gps_tienda                                           = isset($_POST['ubicacion_gps_tienda']) ? trim(addslashes($_POST['ubicacion_gps_tienda'])) : '';
+    // Nuevos campos para Tipo de Cliente y Razón Social
+    $nombre_tipo_cliente                                            = isset($_POST['nombre_tipo_cliente']) && !empty($_POST['nombre_tipo_cliente']) ? trim(addslashes($_POST['nombre_tipo_cliente'])) : 'PERSONA_NATURAL';
+    $nombre_razon_social                                            = isset($_POST['nombre_razon_social']) && !empty($_POST['nombre_razon_social']) ? trim(addslashes($_POST['nombre_razon_social'])) : '';
 	//---------------------------------------------------------------------------------------------------------------------------------//
 	$nombre_tienda                                                  = $nombre1_tercero;
     $nombre_tipo_tercero                                            = 'TIENDA';
-    $nombre_tipo_cliente                                            = "PERSONA_NATURAL";
     $nombre_tipo_regimen                                            = "SIMPLE";
     $nombre_tipo_impuesto                                           = "NO_RESPONSABLE_DE_IVA";
     $cod_estado                                                     = "1";
@@ -144,31 +151,33 @@ if (isset($_POST['identificacion_tercero'])) {
     $url_img_selfieadmin_tienda                                     = procesarArchivo('url_img_selfieadmin_tienda', $directorio_imgs, 'selfie_');
     $url_img_otraopcional_tienda                                    = procesarArchivo('url_img_otraopcional_tienda', $directorio_imgs, 'otra_');
 	//---------------------------------------------------------------------------------------------------------------------------------//
-	$sql_dato_aliado = "SELECT cod_administrador FROM tbl15_administrador WHERE identificacion_tercero = '".($identificacion_tercero)."'";
+	$sql_dato_aliado = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_administrador = '".($cod_aliado_estrategico)."'";
 	$consultar_dato_aliado = mysqli_query($conectar, $sql_dato_aliado) or die(mysqli_error($conectar));
 	$info_dato_aliado = mysqli_fetch_assoc($consultar_dato_aliado);
 	$existe_dato_aliado = mysqli_num_rows(@$consultar_dato_aliado);
 	//---------------------------------------------------------------------------------------------------------------------------------//
     if($existe_dato_aliado > 0) {
-
-    } else {
-		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
+		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, 
         cod_aliado_estrategico, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
         nombre_representante, documento_representante, correo_representante, nombre_tipo_industria, nombre_tipo_subindustria, 
         nombre_tipo_otraindustria, numero_comercios, existe_rues, venta_presencial, venta_online, 
         nombre_plataforma_ecommerce, nombre_sistema_contable, cod_banco_cuenta, ubicacion_gps_tienda,
         url_img_orig_tienda, url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda,
         url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda,
-        url_img_selfieadmin_tienda, url_img_otraopcional_tienda, cod_administrador) 
-        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
+        url_img_selfieadmin_tienda, url_img_otraopcional_tienda, nombre_razon_social, cod_administrador) 
+        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', UPPER('$barrio_tercero'), 
         '$cod_aliado_estrategico', '$cod_departamento', '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
         UPPER('$nombre_representante'), '$documento_representante', '$correo_representante', UPPER('$nombre_tipo_industria'), UPPER('$nombre_tipo_subindustria'), 
         UPPER('$nombre_tipo_otraindustria'), '$numero_comercios', '$existe_rues', '$venta_presencial', '$venta_online', 
         '$nombre_plataforma_ecommerce', '$nombre_sistema_contable', '$cod_banco_cuenta', '$ubicacion_gps_tienda',
         '$url_img_orig_tienda', '$url_img_min_tienda', '$url_documentacion_rut_tienda', '$url_documentacion_camaracomercio_tienda',
         '$url_documentacion_contratofirma_tienda', '$url_documentacion_extra1_tienda', '$url_img_fachada_tienda', '$url_img_interna_tienda',
-        '$url_img_selfieadmin_tienda', '$url_img_otraopcional_tienda', '$cod_administrador')";
+        '$url_img_selfieadmin_tienda', '$url_img_otraopcional_tienda', UPPER('$nombre_razon_social'), '$cod_administrador')";
 		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode(array('success' => false, 'message' => 'El aliado estratégico seleccionado no existe.'));
+        exit;
     }
 	//---------------------------------------------------------------------------------------------------------------------------------//
 	if (mysqli_affected_rows($conectar) > 0) { $afectado = "SI"; } else { $afectado = "NO"; }

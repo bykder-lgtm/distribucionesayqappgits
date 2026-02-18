@@ -74,19 +74,50 @@ function procesarImagen($file_key, $directorio_orig, $directorio_min = null, $an
     return array('orig' => $ruta_orig, 'min' => $ruta_min);
 }
 //---------------------------------------------------------------------------------------------------------------------------------//
-if (isset($_POST['identificacion_tercero']) && !empty($_POST['identificacion_tercero'])) {
+// Cambiar validación para requerir solo nombre de tienda y cod_aliado
+if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero']) && isset($_POST['cod_aliado_estrategico'])) {
 
-	$identificacion_tercero                                         = addslashes($_POST['identificacion_tercero']);
 	$nombre1_tercero                                                = trim(addslashes($_POST['nombre1_tercero']));
-	$telefono1_tercero                                              = trim(addslashes($_POST['telefono1_tercero']));
-	$correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
-	$direccion_tercero                                              = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
     $cod_aliado_estrategico                                         = intval($_POST['cod_aliado_estrategico']);
+    
+    // Generar identificación automática si no viene (basado en timestamp + aliado)
+    $identificacion_tercero                                         = isset($_POST['identificacion_tercero']) && !empty($_POST['identificacion_tercero']) 
+                                                                      ? addslashes($_POST['identificacion_tercero']) 
+                                                                      : 'T' . time() . $cod_aliado_estrategico;
+    
+    // Campos con valores por defecto si no vienen del formulario
+	$telefono1_tercero                                              = isset($_POST['telefono1_tercero']) && !empty($_POST['telefono1_tercero'])
+                                                                      ? trim(addslashes($_POST['telefono1_tercero']))
+                                                                      : '0000000000';
+    
+	$correo_tercero                                                 = isset($_POST['correo_tercero']) && !empty($_POST['correo_tercero'])
+                                                                      ? trim(addslashes($_POST['correo_tercero']))
+                                                                      : strtolower(str_replace(' ', '', $nombre1_tercero)) . '@sinmail.com';
+    
+	$direccion_tercero                                              = isset($_POST['direccion_tercero']) && !empty($_POST['direccion_tercero'])
+                                                                      ? trim(addslashes($_POST['direccion_tercero']))
+                                                                      : 'Sin dirección';
+    
+    $barrio_tercero                                                 = isset($_POST['barrio_tercero']) && !empty($_POST['barrio_tercero'])
+                                                                      ? trim(addslashes($_POST['barrio_tercero']))
+                                                                      : '';
+    
     $cod_departamento                                               = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
     $cod_municipio                                                  = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
-    $nombre_representante                                           = isset($_POST['nombre_representante']) ? trim(addslashes($_POST['nombre_representante'])) : '';
-    $documento_representante                                        = isset($_POST['documento_representante']) ? intval($_POST['documento_representante']) : 0;
-    $correo_representante                                           = isset($_POST['correo_representante']) ? trim(addslashes($_POST['correo_representante'])) : '';
+    
+    // Representante legal - valores por defecto
+    $nombre_representante                                           = isset($_POST['nombre_representante']) && !empty($_POST['nombre_representante'])
+                                                                      ? trim(addslashes($_POST['nombre_representante']))
+                                                                      : 'Sin representante';
+    
+    $documento_representante                                        = isset($_POST['documento_representante']) && !empty($_POST['documento_representante'])
+                                                                      ? intval($_POST['documento_representante'])
+                                                                      : 0;
+    
+    $correo_representante                                           = isset($_POST['correo_representante']) && !empty($_POST['correo_representante'])
+                                                                      ? trim(addslashes($_POST['correo_representante']))
+                                                                      : '';
+    
     $nombre_tipo_industria                                          = isset($_POST['nombre_tipo_industria']) ? trim(addslashes($_POST['nombre_tipo_industria'])) : '';
     $nombre_tipo_subindustria                                       = isset($_POST['nombre_tipo_subindustria']) ? trim(addslashes($_POST['nombre_tipo_subindustria'])) : '';
     $nombre_tipo_otraindustria                                      = isset($_POST['nombre_tipo_otraindustria']) ? trim(addslashes($_POST['nombre_tipo_otraindustria'])) : '';
@@ -150,7 +181,7 @@ if (isset($_POST['identificacion_tercero']) && !empty($_POST['identificacion_ter
         echo json_encode(['success' => false, 'mensaje' => 'Ya existe una tienda registrada con ese NIT/Documento']);
         exit();
     } else {
-		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
+		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, 
         cod_aliado_estrategico, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
         nombre_representante, documento_representante, correo_representante, nombre_tipo_industria, nombre_tipo_subindustria, 
         nombre_tipo_otraindustria, numero_comercios, existe_rues, venta_presencial, venta_online, 
@@ -158,7 +189,7 @@ if (isset($_POST['identificacion_tercero']) && !empty($_POST['identificacion_ter
         url_img_orig_tienda, url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda,
         url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda,
         url_img_selfieadmin_tienda, url_img_otraopcional_tienda, cod_administrador) 
-        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
+        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', UPPER('$barrio_tercero'), 
         '$cod_aliado_estrategico', '$cod_departamento', '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
         UPPER('$nombre_representante'), '$documento_representante', '$correo_representante', UPPER('$nombre_tipo_industria'), UPPER('$nombre_tipo_subindustria'), 
         UPPER('$nombre_tipo_otraindustria'), '$numero_comercios', '$existe_rues', '$venta_presencial', '$venta_online', 

@@ -132,17 +132,7 @@ if (isset($_GET['cod_tercero'])) { $cod_tercero = intval($_GET['cod_tercero']); 
     <section class="search_bar_app_movil_enrollment">
         <div class="container py-3">
             <!-- Botones de navegación -->
-            <div class="nav-buttons-container mb-3">
-                <a href="lista_info_factura_venta_siscredito_visitante_intern_aliado_movil.php" class="btn-nav-filtro btn-nav-abierta active">
-                    <i class="fa fa-folder-open"></i> Abiertas
-                </a>
-                <a href="lista_info_factura_venta_cerrada_siscredito_visitante_intern_aliado_movil.php" class="btn-nav-filtro btn-nav-cerrada">
-                    <i class="fa fa-folder"></i> Cerradas
-                </a>
-                <a href="lista_comprobantes_pago_siscredito_visitante_intern_aliado_movil.php" class="btn-nav-filtro btn-nav-comprobantes">
-                    <i class="fa fa-receipt"></i> Comprobantes
-                </a>
-            </div>
+             <?php include_once("../admin/menu_facturas_abiertas_cerradas_comprobante_pago.php"); ?>
             
             <div class="input-group">
                 <input type="search" class="form-control" id="busqueda_ajax" onkeyup='load(1);' placeholder="Buscar por nombre, cédula o entidad...">

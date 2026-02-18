@@ -25,16 +25,14 @@ if (mysqli_num_rows($result) > 0) {
     if ($nombre_estado_factura == 'ABIERTA' && empty($url_comprobante)) {
         $sql_temporal = "SELECT url_img_orig_producto FROM tbl15_info_factura_venta_temporal WHERE cod_info_factura_venta = '$cod_info_factura_venta'";
         $result_temporal = mysqli_query($conectar, $sql_temporal);
-        
-        if (mysqli_num_rows($result_temporal) > 0) {
-            $datos_temporal = mysqli_fetch_assoc($result_temporal);
-            $url_comprobante = $datos_temporal['url_img_orig_producto'];
-        }
+        if (mysqli_num_rows($result_temporal) > 0) { $datos_temporal = mysqli_fetch_assoc($result_temporal); $url_comprobante = $datos_temporal['url_img_orig_producto']; }
     }
 }
 if (!empty($url_comprobante)) {
-    // Construir URL completa si es necesario
-    if (!preg_match('/^http/', $url_comprobante)) { /*Si la URL no comienza con http, construir la ruta completa*/ $url_comprobante = '../' . $url_comprobante; }
+    // Normalizar: quitar cualquier ../ que pudiera estar guardado en BD
+    $url_comprobante = str_replace('../', '', $url_comprobante);
+    // Construir ruta relativa correcta desde admin/
+    $url_comprobante = '../' . $url_comprobante;
     echo json_encode(['success' => true, 'url_comprobante' => $url_comprobante]);
 } else {
     echo json_encode(['success' => false, 'mensaje' => 'No hay comprobante registrado']);

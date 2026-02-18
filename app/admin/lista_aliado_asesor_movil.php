@@ -660,6 +660,7 @@ $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
+
 ?>
 
 <main class="page-container">
@@ -795,10 +796,17 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
                 </div>
 
-                <div class="form-group" id="container_nit_razon_social" style="display:none;">
-                    <label class="form-label">NIT Razón Social *</label>
-                    <input type="text" class="form-input" id="nit_razon_social" name="nit_razon_social">
+                <div class="form-row">
+                    <div class="group-group" id="container_nit_razon_social" style="display:none;">
+                        <label class="form-label">NIT Razón Social *</label>
+                        <input type="text" class="form-input" id="nit_razon_social" name="nit_razon_social">
+                    </div>
+                    <div class="form-group" id="container_nombre_razon_social" style="display:none;">
+                        <label class="form-label">Razón Social *</label>
+                        <input type="text" class="form-input" id="nombre_razon_social" name="nombre_razon_social">
+                    </div>
                 </div>
+
 
                 <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
                 <div class="form-group">
@@ -826,6 +834,32 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div class="form-group">
                         <label class="form-label">Correo *</label>
                         <input type="email" class="form-input" name="correo_tercero" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Departamento</label>
+                        <select class="form-select" id="cod_departamento" name="cod_departamento" onchange="cargarMunicipiosRegistro(this.value)">
+                            <option value="">Seleccione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio</label>
+                        <select class="form-select" id="cod_municipio" name="cod_municipio">
+                            <option value="">Primero seleccione departamento</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Barrio</label>
+                        <input type="text" class="form-input" id="barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
                     </div>
                 </div>
 
@@ -987,6 +1021,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; margin: 0;">
+                        <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #10b981; width: 20px; height: 20px; cursor: pointer;">
+                        <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #10b981; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
+                    </label>
+                    <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se creará automáticamente una tienda con los datos del aliado</small>
+                </div>
                 
                 <button type="submit" class="submit-btn" id="btnGuardar"><i class="fa-solid fa-save"></i> Guardar Aliado</button>
             </form>
@@ -1035,6 +1077,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
+
+
                 <div class="form-group">
                     <label class="form-label" id="edit_label_nombre_comercial">Nombre Comercial *</label>
                     <input type="text" class="form-input" name="nombres_apellidos_tercero" id="edit_nombres_apellidos_tercero" required>
@@ -1043,6 +1087,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="form-group" id="edit_container_nit_razon_social" style="display:none;">
                     <label class="form-label">NIT Razón Social *</label>
                     <input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
+                </div>
+
+                <div class="form-group" id="edit_container_nombre_razon_social" style="display:none;">
+                    <label class="form-label">Razón Social *</label>
+                    <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
                 </div>
 
                 <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
@@ -1073,6 +1122,32 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div class="form-group">
                         <label class="form-label">Correo *</label>
                         <input type="email" class="form-input" name="correo_tercero" id="edit_correo" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Departamento</label>
+                        <select class="form-select" id="edit_cod_departamento" name="cod_departamento" onchange="cargarMunicipiosEdicion(this.value)">
+                            <option value="">Seleccione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio</label>
+                        <select class="form-select" id="edit_cod_municipio" name="cod_municipio">
+                            <option value="">Primero seleccione departamento</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-input" id="edit_direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Barrio</label>
+                        <input type="text" class="form-input" id="edit_barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
                     </div>
                 </div>
 
@@ -1506,29 +1581,27 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Nombre de la Tienda *</label>
-                    <input type="text" class="form-input" name="nombre1_tercero" id="tienda_nombre" placeholder="Ej: Tienda El Éxito" required>
+                    <label class="form-label">Tipo de Cliente *</label>
+                    <select class="form-select" id="tienda_nombre_tipo_cliente" name="nombre_tipo_cliente" required onchange="cambiarTipoClienteTienda()">
+                        <option value="">Seleccione...</option>
+                        <?php 
+                        mysqli_data_seek($res_tipo_cliente, 0);
+                        while ($tipo_cliente = mysqli_fetch_assoc($res_tipo_cliente)): 
+                        ?>
+                        <option value="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
+                        <?php endwhile; ?>
+                    </select>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">NIT / Documento *</label>
-                        <input type="number" class="form-input" name="identificacion_tercero" id="tienda_nit" required>
+                        <label class="form-label" id="label_tienda_nombre_comercial">Nombre Comercial *</label>
+                        <input type="text" class="form-input" name="nombre1_tercero" id="tienda_nombre" placeholder="Ej: Tienda El Éxito" required>
                     </div>
-                     <div class="form-group">
-                        <label class="form-label">Teléfono *</label>
-                        <input type="tel" class="form-input" name="telefono1_tercero" id="tienda_telefono" required>
+                    <div class="form-group" id="container_tienda_nombre_razon_social" style="display:none;">
+                        <label class="form-label">Nombre Razón Social *</label>
+                        <input type="text" class="form-input" id="tienda_nombre_razon_social" name="nombre_razon_social">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Correo Electrónico *</label>
-                    <input type="email" class="form-input" name="correo_tercero" id="tienda_correo" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Dirección</label>
-                    <input type="text" class="form-input" name="direccion_tercero" id="tienda_direccion">
                 </div>
 
                 <div class="form-row">
@@ -1546,29 +1619,20 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <!-- Sección 2: Representante Legal -->
-                <div style="background: rgba(59, 130, 246, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-user-tie" style="color: #3b82f6;"></i>
-                    <span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">Representante Legal</span>
-                </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Nombre Completo</label>
-                    <input type="text" class="form-input" name="nombre_representante" id="tienda_nombre_rep">
-                </div>
-
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">CC</label>
-                        <input type="number" class="form-input" name="documento_representante" id="tienda_doc_rep">
+                        <label class="form-label">Dirección *</label>
+                        <input type="text" class="form-input" name="direccion_tercero" id="tienda_direccion" placeholder="Ej: Calle 10 # 20-30" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Correo</label>
-                        <input type="email" class="form-input" name="correo_representante" id="tienda_correo_rep">
+                        <label class="form-label">Barrio *</label>
+                        <input type="text" class="form-input" name="barrio_tercero" id="tienda_barrio" placeholder="Ej: Centro, Santa Isabel..." required>
                     </div>
                 </div>
 
-                <!-- Sección 3: Información del Negocio -->
+
+                <!-- Sección 2: Información del Negocio -->
                 <div style="background: rgba(59, 130, 246, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-briefcase" style="color: #3b82f6;"></i>
                     <span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">Información del Negocio</span>
@@ -1758,7 +1822,63 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
             </div>
             
+            <!-- Botón para Generar Documento de Firma Digital -->
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
+                <h4 style="color: #10b981; margin: 0 0 1rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-file-signature"></i> Firma Digital
+                </h4>
+                <button onclick="generarDocumentoFirma()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                    <i class="fa-solid fa-file-signature"></i> Generar Documento para Firma
+                </button>
+            </div>
+            
             <button onclick="cerrarModalDocumentacionAliado()" style="width: 100%; background: rgba(255,255,255,0.1); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600;">
+                <i class="fa-solid fa-times"></i> Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Compartir Enlace Firma Digital -->
+<div class="modal-overlay" id="modalFirmaDigital" style="z-index: 5100; align-items: center;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));">
+            <h2><i class="fa-solid fa-file-signature"></i> Documento para Firma Digital</h2>
+            <button class="modal-close" onclick="cerrarModalFirmaDigital()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="firma_cod_aliado_cryp" value="">
+            <input type="hidden" id="firma_telefono_aliado" value="">
+            <input type="hidden" id="firma_token" value="">
+            <input type="hidden" id="firma_url" value="">
+            
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);">
+                    <i class="fa-solid fa-file-signature" style="font-size: 2rem; color: white;"></i>
+                </div>
+                <h3 style="color: white; margin-bottom: 0.5rem;" id="firma_nombre_aliado"></h3>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">El documento para firma digital ha sido generado exitosamente.</p>
+            </div>
+            
+            <!-- Opciones de Compartir -->
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
+                <h4 style="color: #10b981; margin: 0 0 1rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-share-nodes"></i> Compartir Enlace para Firmado
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                    <button onclick="compartirFirmaWhatsApp()" style="background: #25D366; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Compartir por WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button onclick="compartirFirmaEmail()" style="background: #EA4335; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Compartir por Email">
+                        <i class="fa-solid fa-envelope"></i> Email
+                    </button>
+                    <button onclick="copiarEnlaceFirma()" style="background: #6366f1; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
+                        <i class="fa-solid fa-copy"></i> Copiar
+                    </button>
+                </div>
+            </div>
+            
+            <button onclick="cerrarModalFirmaDigital()" style="width: 100%; background: rgba(255,255,255,0.1); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600;">
                 <i class="fa-solid fa-times"></i> Cerrar
             </button>
         </div>
@@ -1889,6 +2009,94 @@ function abrirModal() {
     setTimeout(function() {
         $('input[name="entidades[]"]').prop('checked', true);
     }, 100);
+    // Cargar departamentos en el select del modal de registro
+    cargarDepartamentosRegistro();
+}
+
+// Cargar departamentos para el modal de registro de aliado
+function cargarDepartamentosRegistro() {
+    var $select = $('#cod_departamento');
+    $select.html('<option value="">Cargando...</option>');
+    $.ajax({
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) {
+            $select.html('<option value="">Seleccione...</option>');
+            if (response.success && response.departamentos) {
+                $.each(response.departamentos, function(i, dept) {
+                    $select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>');
+                });
+            }
+        },
+        error: function() { $select.html('<option value="">Error al cargar</option>'); }
+    });
+}
+
+// Cargar municipios según departamento seleccionado (modal registro)
+function cargarMunicipiosRegistro(codDepartamento) {
+    var $select = $('#cod_municipio');
+    if (!codDepartamento || codDepartamento === '') {
+        $select.html('<option value="">Primero seleccione departamento</option>');
+        return;
+    }
+    $select.html('<option value="">Cargando...</option>');
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php?cod_departamento=' + codDepartamento, type: 'GET', dataType: 'json',
+        success: function(response) {
+            $select.html('<option value="">Seleccione...</option>');
+            if (response.success && response.municipios) {
+                $.each(response.municipios, function(i, muni) {
+                    $select.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>');
+                });
+            }
+        },
+        error: function() { $select.html('<option value="">Error al cargar</option>'); }
+    });
+}
+
+// Cargar departamentos para el modal de edición con preselección
+function cargarDepartamentosEdicion(selectedDept, selectedMuni) {
+    var $select = $('#edit_cod_departamento');
+    $select.html('<option value="">Cargando...</option>');
+    $.ajax({
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) {
+            $select.html('<option value="">Seleccione...</option>');
+            if (response.success && response.departamentos) {
+                $.each(response.departamentos, function(i, dept) {
+                    var selected = (dept.cod_departamento == selectedDept) ? ' selected' : '';
+                    $select.append('<option value="' + dept.cod_departamento + '"' + selected + '>' + dept.nombre_departamento + '</option>');
+                });
+                // Si hay departamento preseleccionado, cargar municipios
+                if (selectedDept) {
+                    cargarMunicipiosEdicion(selectedDept, selectedMuni);
+                }
+            }
+        },
+        error: function() { $select.html('<option value="">Error al cargar</option>'); }
+    });
+}
+
+// Cargar municipios según departamento seleccionado (modal edición)
+function cargarMunicipiosEdicion(codDepartamento, selectedMuni) {
+    var $select = $('#edit_cod_municipio');
+    if (!codDepartamento || codDepartamento === '') {
+        $select.html('<option value="">Primero seleccione departamento</option>');
+        return;
+    }
+    $select.html('<option value="">Cargando...</option>');
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php?cod_departamento=' + codDepartamento, type: 'GET', dataType: 'json',
+        success: function(response) {
+            $select.html('<option value="">Seleccione...</option>');
+            if (response.success && response.municipios) {
+                $.each(response.municipios, function(i, muni) {
+                    var selected = (selectedMuni && muni.cod_municipio == selectedMuni) ? ' selected' : '';
+                    $select.append('<option value="' + muni.cod_municipio + '"' + selected + '>' + muni.nombre_municipio + '</option>');
+                });
+            }
+        },
+        error: function() { $select.html('<option value="">Error al cargar</option>'); }
+    });
 }
 function cerrarModal() { 
     document.getElementById('modalRegistro').classList.remove('show');
@@ -1948,16 +2156,23 @@ function cambiarTipoCliente() {
     var labelNombreComercial = document.getElementById('label_nombre_comercial');
     var containerNit = document.getElementById('container_nit_razon_social');
     var inputNit = document.getElementById('nit_razon_social');
+    var containerRazonSocial = document.getElementById('container_nombre_razon_social');
+    var inputRazonSocial = document.getElementById('nombre_razon_social');
     
     if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        labelNombreComercial.textContent = 'Razón Social *';
+        //labelNombreComercial.textContent = 'Razón Social *';
         containerNit.style.display = 'block';
         inputNit.required = true;
+        containerRazonSocial.style.display = 'block';
+        inputRazonSocial.required = true;
     } else { // PERSONA_NATURAL u otro
-        labelNombreComercial.textContent = 'Nombre Comercial *';
+        //labelNombreComercial.textContent = 'Nombre Comercial *';
         containerNit.style.display = 'none';
         inputNit.required = false;
         inputNit.value = '';
+        containerRazonSocial.style.display = 'none';
+        inputRazonSocial.required = false;
+        inputRazonSocial.value = '';
     }
 }
 
@@ -1966,19 +2181,45 @@ function cambiarTipoClienteEditar(limpiarNit) {
     var labelNombreComercial = document.getElementById('edit_label_nombre_comercial');
     var containerNit = document.getElementById('edit_container_nit_razon_social');
     var inputNit = document.getElementById('edit_nit_razon_social');
+    var containerRazonSocial = document.getElementById('edit_container_nombre_razon_social');
+    var inputRazonSocial = document.getElementById('edit_nombre_razon_social');
     
     if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        labelNombreComercial.textContent = 'Razón Social *';
+        //labelNombreComercial.textContent = 'Razón Social *';
         containerNit.style.display = 'block';
         inputNit.required = true;
+        containerRazonSocial.style.display = 'block';
+        inputRazonSocial.required = true;
     } else { // PERSONA_NATURAL u otro
-        labelNombreComercial.textContent = 'Nombre Comercial *';
+        //labelNombreComercial.textContent = 'Nombre Comercial *';
         containerNit.style.display = 'none';
         inputNit.required = false;
         // Solo limpiar el NIT si se indica explícitamente (cuando el usuario cambia manualmente)
         if (limpiarNit !== false) {
             inputNit.value = '';
         }
+        containerRazonSocial.style.display = 'none';
+        inputRazonSocial.required = false;
+        // Solo limpiar la Razón Social si se indica explícitamente (cuando el usuario cambia manualmente)
+        if (limpiarNit !== false) {
+            inputRazonSocial.value = '';
+        }
+    }
+}
+
+// Función para mostrar campo Nombre Razón Social cuando se selecciona PERSONA_JURIDICA en modal de Tienda
+function cambiarTipoClienteTienda() {
+    var tipoCliente = document.getElementById('tienda_nombre_tipo_cliente');
+    var containerRazonSocial = document.getElementById('container_tienda_nombre_razon_social');
+    var inputRazonSocial = document.getElementById('tienda_nombre_razon_social');
+    
+    if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
+        containerRazonSocial.style.display = 'block';
+        inputRazonSocial.required = true;
+    } else { // PERSONA_NATURAL u otro
+        containerRazonSocial.style.display = 'none';
+        inputRazonSocial.required = false;
+        inputRazonSocial.value = '';
     }
 }
 
@@ -1994,8 +2235,12 @@ function abrirModalEditar(data) {
     // Cargar Tipo de Sector
     document.getElementById('edit_cod_tipo_sector').value = data.cod_tipo_sector || '';
     
+
     // Cargar NIT primero
     document.getElementById('edit_nit_razon_social').value = data.nit_razon_social || '';
+    
+    // Cargar Razón Social
+    document.getElementById('edit_nombre_razon_social').value = data.nombre_razon_social || '';
     
     // Actualizar el label y visibilidad según tipo de cliente (sin limpiar el NIT)
     cambiarTipoClienteEditar(false);
@@ -2006,6 +2251,10 @@ function abrirModalEditar(data) {
     document.getElementById('edit_apellido').value = data.apellidos;
     document.getElementById('edit_telefono').value = data.telefono || '';
     document.getElementById('edit_correo').value = data.correo || '';
+    document.getElementById('edit_direccion_tercero').value = data.direccion_tercero || '';
+    document.getElementById('edit_barrio_tercero').value = data.barrio_tercero || '';
+    // Cargar departamentos y preseleccionar departamento/municipio
+    cargarDepartamentosEdicion(data.cod_departamento || '', data.cod_municipio || '');
     document.getElementById('edit_cod_asesor').value = data.cod_asesor || '';
     document.getElementById('edit_cod_asesor_hidden').value = data.cod_asesor || '';
     document.getElementById('edit_estado').value = data.cod_estado_activacion_usuario;
@@ -3441,6 +3690,210 @@ function copiarEnlaceDocFallback(enlace) {
     document.body.removeChild(textArea);
 }
 
+// ============================================
+// FUNCIONES PARA FIRMA DIGITAL
+// ============================================
+
+function generarDocumentoFirma() {
+    var codAliadoCryp = document.getElementById('doc_cod_aliado_cryp').value;
+    var nombreAliado = document.getElementById('doc_nombre_aliado').textContent;
+    var telefono = document.getElementById('doc_telefono_aliado').value;
+    
+    if (!codAliadoCryp) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se encontró el código del aliado',
+            background: '#1a1f2e',
+            color: 'white',
+            customClass: { container: 'swal-high-zindex' }
+        });
+        return;
+    }
+    
+    // Mostrar loading
+    Swal.fire({
+        title: 'Generando documento...',
+        html: 'Por favor espere mientras se genera el documento para firma digital.',
+        background: '#1a1f2e',
+        color: 'white',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        },
+        customClass: { container: 'swal-high-zindex' }
+    });
+    
+    // Llamar al PHP para generar el registro
+    $.ajax({
+        url: '../ajax/generar_firma_digital.php',
+        type: 'POST',
+        data: {
+            cod_aliado_estrategico: codAliadoCryp
+        },
+        dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            
+            if (response.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.error,
+                    background: '#1a1f2e',
+                    color: 'white',
+                    customClass: { container: 'swal-high-zindex' }
+                });
+                return;
+            }
+            
+            if (response.success) {
+                // Guardar datos en el modal de firma
+                document.getElementById('firma_cod_aliado_cryp').value = codAliadoCryp;
+                document.getElementById('firma_nombre_aliado').textContent = nombreAliado;
+                document.getElementById('firma_telefono_aliado').value = telefono;
+                document.getElementById('firma_token').value = response.token;
+                document.getElementById('firma_url').value = response.url;
+                
+                // Cerrar modal de documentación y abrir modal de firma
+                document.getElementById('modalDocumentacionAliado').classList.remove('show');
+                document.getElementById('modalFirmaDigital').classList.add('show');
+            }
+        },
+        error: function(xhr, status, error) {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error al generar el documento: ' + error,
+                background: '#1a1f2e',
+                color: 'white',
+                customClass: { container: 'swal-high-zindex' }
+            });
+        }
+    });
+}
+
+function cerrarModalFirmaDigital() {
+    document.getElementById('modalFirmaDigital').classList.remove('show');
+    // Volver a abrir el modal de documentación o recargar
+    location.reload();
+}
+
+function compartirFirmaWhatsApp() {
+    var nombreAliado = document.getElementById('firma_nombre_aliado').textContent;
+    var telefono = document.getElementById('firma_telefono_aliado').value.replace(/\D/g, '');
+    var enlace = document.getElementById('firma_url').value;
+    
+    if (!enlace) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se encontró el enlace del documento',
+            background: '#1a1f2e',
+            color: 'white',
+            customClass: { container: 'swal-high-zindex' }
+        });
+        return;
+    }
+    
+    var mensaje = '¡Hola ' + nombreAliado + '! Por favor firma el siguiente documento digital: ' + enlace;
+    var urlWhatsApp = 'https://wa.me/' + (telefono ? '57' + telefono : '') + '?text=' + encodeURIComponent(mensaje);
+    
+    window.open(urlWhatsApp, '_blank');
+}
+
+function compartirFirmaEmail() {
+    var nombreAliado = document.getElementById('firma_nombre_aliado').textContent;
+    var enlace = document.getElementById('firma_url').value;
+    
+    if (!enlace) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se encontró el enlace del documento',
+            background: '#1a1f2e',
+            color: 'white',
+            customClass: { container: 'swal-high-zindex' }
+        });
+        return;
+    }
+    
+    var asunto = encodeURIComponent('Documento para Firma Digital - ' + nombreAliado);
+    var cuerpo = encodeURIComponent('Hola ' + nombreAliado + ',\n\nPor favor firma el siguiente documento digital:\n\n' + enlace + '\n\nGracias.');
+    
+    window.open('mailto:?subject=' + asunto + '&body=' + cuerpo, '_blank');
+}
+
+function copiarEnlaceFirma() {
+    var enlace = document.getElementById('firma_url').value;
+    
+    if (!enlace) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se encontró el enlace del documento',
+            background: '#1a1f2e',
+            color: 'white',
+            customClass: { container: 'swal-high-zindex' }
+        });
+        return;
+    }
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(enlace).then(function() {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Copiado!',
+                text: 'El enlace ha sido copiado al portapapeles',
+                timer: 2000,
+                showConfirmButton: false,
+                background: '#1a1f2e',
+                color: 'white',
+                customClass: { container: 'swal-high-zindex' }
+            });
+        }).catch(function() {
+            copiarEnlaceFirmaFallback(enlace);
+        });
+    } else {
+        copiarEnlaceFirmaFallback(enlace);
+    }
+}
+
+function copiarEnlaceFirmaFallback(enlace) {
+    var textArea = document.createElement('textarea');
+    textArea.value = enlace;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+    
+    try {
+        document.execCommand('copy');
+        Swal.fire({
+            icon: 'success',
+            title: '¡Copiado!',
+            text: 'El enlace ha sido copiado al portapapeles',
+            timer: 2000,
+            showConfirmButton: false,
+            background: '#1a1f2e',
+            color: 'white',
+            customClass: { container: 'swal-high-zindex' }
+        });
+    } catch (err) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo copiar el enlace. Por favor cópialo manualmente: ' + enlace,
+            background: '#1a1f2e',
+            color: 'white',
+            customClass: { container: 'swal-high-zindex' }
+        });
+    }
+    
+    document.body.removeChild(textArea);
+}
+
 // Cerrar modales al hacer clic fuera
 document.getElementById('modalConfirmacionRegistro').addEventListener('click', function(e) { 
     if (e.target === this) { 
@@ -3453,6 +3906,13 @@ document.getElementById('modalDocumentacionAliado').addEventListener('click', fu
         cerrarModalDocumentacionAliado(); 
     } 
 });
+
+document.getElementById('modalFirmaDigital').addEventListener('click', function(e) { 
+    if (e.target === this) { 
+        cerrarModalFirmaDigital(); 
+    } 
+});
+
 // ===== FIN FUNCIONES PARA MODAL DE CONFIRMACIÓN Y DOCUMENTACIÓN =====
 
 // Funciones para agregar nueva entidad

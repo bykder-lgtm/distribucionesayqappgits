@@ -200,7 +200,8 @@ if ($action == 'ajax') {
     tbl15_info_factura_venta.numero_cuota, 
     tbl15_info_factura_venta.cod_estado_dilig_todo, tbl15_info_factura_venta.cod_estado_dilig_infocliente, tbl15_info_factura_venta.cod_estado_dilig_infoproducto, 
     tbl15_info_factura_venta.cod_estado_dilig_infocreditval, tbl15_info_factura_venta.cod_estado_dilig_infoequipogest, tbl15_info_factura_venta.cod_estado_dilig_infocomercial, 
-    tbl15_info_factura_venta.cod_estado_dilig_infodocumentfoto, tbl15_info_factura_venta.fecha_ymdhis
+    tbl15_info_factura_venta.cod_estado_dilig_infodocumentfoto, tbl15_info_factura_venta.fecha_ymdhis,
+    tbl15_info_factura_venta.url_img_orig_producto
     FROM $sTable $sWhere LIMIT $registro_inicio, $numero_registro_por_pagina";
                 $consulta_datos_cuenta_cobrar = mysqli_query($conectar, $calcular_datos_cuenta_cobrar) or die(mysqli_error($conectar));
                 while ($datos_cuenta_cobrar = mysqli_fetch_assoc($consulta_datos_cuenta_cobrar)) {
@@ -248,6 +249,7 @@ if ($action == 'ajax') {
                     $cod_estado_dilig_infocomercial            = $datos_cuenta_cobrar['cod_estado_dilig_infocomercial'];
                     $cod_estado_dilig_infodocumentfoto         = $datos_cuenta_cobrar['cod_estado_dilig_infodocumentfoto'];
                     $fecha_ymdhis                              = $datos_cuenta_cobrar['fecha_ymdhis'];
+                    $url_comprobante_pago                      = $datos_cuenta_cobrar['url_img_orig_producto'];
                     /* ----------------------------------------------------------------------------------------------------------/ */
                     $sql_administrador_lider = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_lider')";
                     $consulta_administrador_lider = mysqli_query($conectar, $sql_administrador_lider) or die(mysqli_error($conectar));
@@ -838,7 +840,13 @@ if ($action == 'ajax') {
                         <td style="text-align:center; cursor:pointer;"><span class="badge" style="background-color: <?php echo $estilo_css_estado_factura; ?>;"><?php echo $nombre_estado_facturacion; ?></span> </td>
                         <!--<td style="text-align:center; cursor:pointer;" onclick='verificarEstadoYAbrirModal(<?php echo json_encode($cod_info_factura_venta); ?>, <?php echo json_encode($codigo_estado_facturacion); ?>, <?php echo json_encode($cod_tercero); ?>, <?php echo json_encode($nombres_apellidos); ?>, <?php echo json_encode($codigo_tipo_estado_cargue_documentacion); ?>)'><span class="badge" style="background-color: <?php echo $estilo_css_estado_factura; ?>;"><?php echo $nombre_estado_facturacion; ?></span></td>-->
                         <!--<td style="text-align:center; cursor:pointer;" onclick='verificarEstadoYAbrirModal(<?php echo json_encode($cod_info_factura_venta); ?>, <?php echo json_encode($codigo_estado_facturacion); ?>, <?php echo json_encode($cod_tercero); ?>, <?php echo json_encode($nombres_apellidos); ?>, <?php echo json_encode($codigo_tipo_estado_cargue_documentacion); ?>, <?php echo json_encode("multiple_seleccion"); ?>)'><span class="badge" style="background-color: <?php echo $estilo_css_estado_factura; ?>;"><?php echo $nombre_estado_facturacion; ?></span></td>-->
-                        <td style="text-align:center; cursor:pointer;" onclick="abrirModalComprobanteRevisor('<?php echo $cod_info_factura_venta; ?>')"><i class="fa fa-file-image-o" style="font-size:22px; color:#FFD700; text-shadow: 0 0 5px rgba(255,215,0,0.5);"></i></td>
+                        <td style="text-align:center; cursor:pointer;" title="<?php echo ($url_comprobante_pago != '') ? 'Comprobante cargado - Clic para ver/reemplazar' : 'Sin comprobante - Clic para cargar'; ?>" onclick="abrirModalComprobanteRevisor('<?php echo $cod_info_factura_venta; ?>')">
+                            <?php if ($url_comprobante_pago != ''): ?>
+                                <i class="fa fa-check-circle" id="iconoComprobante_<?php echo $cod_info_factura_venta; ?>" style="font-size:22px; color:#10b981; text-shadow: 0 0 6px rgba(16,185,129,0.6);"></i>
+                            <?php else: ?>
+                                <i class="fa fa-file-image-o" id="iconoComprobante_<?php echo $cod_info_factura_venta; ?>" style="font-size:22px; color:#FFD700; text-shadow: 0 0 5px rgba(255,215,0,0.5);"></i>
+                            <?php endif; ?>
+                        </td>
                         <td style="text-align:center; cursor:pointer;" id="crear_nueva_notificacion" onclick="abrirModalCrearNotificacion('<?php echo $cod_info_factura_venta; ?>', 'tabla')"><i class="fa fa-bell" style="font-size:20px; color:#1E90FF;"></i></td>
                         <?php if ($nombre_estado_factura == 'CERRADA' || $nombre_estado_factura == 'CARRADA'): ?>
                         <td style="text-align:center; cursor:not-allowed; opacity:0.5;" id="validar_datos_revisor" title="No se puede validar una factura cerrada"><i class="fa fa-check-circle" style="font-size:20px; color:#999;"></i></td>
@@ -7072,453 +7080,83 @@ if ($action == 'ajax') {
     // ==================== FIN FUNCIONES VALIDAR DATOS ESTADO FACTURACIÓN ====================
 
     // ==================== FUNCIONES COMPROBANTE DE PAGO REVISOR ====================
-    
-    // Función para cargar el comprobante actual
-    function cargarComprobanteActualRevisor(codInfoFacturaVenta) {
-        console.log('Cargando comprobante de pago para cod_info_factura_venta:', codInfoFacturaVenta);
-        
-        // Guardar el código del crédito para uso posterior
-        $('#codCreditoComprobanteRevisor').val(codInfoFacturaVenta);
-        
-        $.ajax({
-            url: '../admin/obtener_comprobante_pago_ajax.php',
-            type: 'POST',
-            data: { cod_info_factura_venta: codInfoFacturaVenta },
-            dataType: 'json',
-            success: function(response) {
-                if (response.success && response.url_comprobante) {
-                    // Hay comprobante registrado
-                    $('#linkComprobanteActualRevisor').attr('href', response.url_comprobante);
-                    $('#comprobanteActualRevisor').show();
-                } else {
-                    // No hay comprobante registrado
-                    $('#comprobanteActualRevisor').hide();
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error cargando comprobante:', error);
-                $('#comprobanteActualRevisor').hide();
-            }
-        });
-    }
 
-    // Función para previsualizar el archivo seleccionado
-    function previsualizarComprobanteRevisor(input) {
-        if (input.files && input.files[0]) {
-            var file = input.files[0];
-            var fileName = file.name;
-            var fileSize = (file.size / 1024 / 1024).toFixed(2);
-            
-            // Validar tamaño (máximo 10MB)
-            if (file.size > 10 * 1024 * 1024) {
-                if (typeof swal !== 'undefined') {
-                    swal('Error', 'El archivo no debe superar los 10MB', 'error');
-                } else {
-                    showToast('error', 'Archivo muy grande', 'El archivo no debe superar los 10MB');
-                }
-                input.value = '';
-                return;
-            }
-            
-            // Validar tipo de archivo
-            var allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-            if (!allowedTypes.includes(file.type)) {
-                if (typeof swal !== 'undefined') {
-                    swal('Error', 'Solo se permiten imágenes (JPG, PNG) y documentos (PDF, DOC, DOCX)', 'error');
-                } else {
-                    showToast('error', 'Tipo de archivo no válido', 'Solo se permiten imágenes (JPG, PNG) y documentos (PDF, DOC, DOCX)');
-                }
-                input.value = '';
-                return;
-            }
-            
-            // Mostrar preview
-            $('#nombreArchivoComprobanteRevisor').text(fileName);
-            $('#tamanoArchivoComprobanteRevisor').text(fileSize + ' MB');
-            $('#previewComprobanteRevisor').show();
-        }
-    }
-
-    // Función para cargar el comprobante
-    function cargarComprobanteRevisor() {
-        var input = document.getElementById('inputComprobanteRevisor');
-        var codCredito = $('#codCreditoComprobanteRevisor').val();
-        
-        console.log('cargarComprobanteRevisor - codCredito:', codCredito);
-        
-        // Validar que hay un código de crédito
-        if (!codCredito || codCredito == '' || codCredito == '0') {
-            if (typeof swal !== 'undefined') {
-                swal({
-                    type: 'error',
-                    title: 'Error',
-                    text: 'No se pudo identificar el crédito. Por favor cierre el modal y vuelva a abrirlo.',
-                    background: '#1a1f2e',
-                    confirmButtonColor: '#10b981'
-                });
-            }
-            return;
-        }
-        
-        if (!input.files || !input.files[0]) {
-            if (typeof swal !== 'undefined') {
-                swal({
-                    type: 'warning',
-                    title: 'Sin archivo',
-                    text: 'Por favor seleccione un archivo para cargar',
-                    background: '#1a1f2e',
-                    confirmButtonColor: '#10b981'
-                });
-            } else {
-                showToast('warning', 'Sin archivo', 'Por favor seleccione un archivo para cargar');
-            }
-            return;
-        }
-        
-        // Mostrar loading
-        if (typeof swal !== 'undefined') {
-            swal({
-                title: 'Cargando comprobante...',
-                text: 'Por favor espere...',
-                html: '<i class="fa fa-spinner fa-spin" style="font-size: 2rem; color: #f59e0b;"></i><p style="margin-top: 1rem;">Por favor espere...</p>',
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                background: '#1a1f2e',
-                confirmButtonColor: '#10b981'
-            });
-        }
-        
-        // Preparar FormData
-        var formData = new FormData();
-        formData.append('comprobante', input.files[0]);
-        formData.append('cod_info_factura_venta', codCredito);
-        
-        console.log('Enviando comprobante - cod_info_factura_venta:', codCredito, 'archivo:', input.files[0].name);
-        
-        // Enviar archivo
-        $.ajax({
-            url: '../admin/cargar_comprobante_pago_ajax.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
-            success: function(response) {
-                // if (typeof swal !== 'undefined') { swal.close(); } // Cannot close without specific call in v5 depending on context
-                if (response.success) {
-                    if (typeof swal !== 'undefined') {
-                        swal({
-                            type: 'success',
-                            title: '¡Cargado!',
-                            text: response.mensaje || 'Comprobante de pago cargado correctamente',
-                            background: '#1a1f2e',
-                            confirmButtonColor: '#10b981',
-                            timer: 2000
-                        }).then(function() {
-                            cancelarComprobanteRevisor();
-                            cargarComprobanteActualRevisor(codCredito);
-                        });
-                        // Fallback immediate execution
-                        cancelarComprobanteRevisor();
-                        cargarComprobanteActualRevisor(codCredito);
-                    } else {
-                        showToast('success', '¡Cargado!', 'Comprobante de pago cargado correctamente');
-                        cancelarComprobanteRevisor();
-                        cargarComprobanteActualRevisor(codCredito);
-                    }
-                } else {
-                    if (typeof swal !== 'undefined') {
-                        swal({
-                            type: 'error',
-                            title: 'Error',
-                            text: response.mensaje || 'No se pudo cargar el comprobante',
-                            background: '#1a1f2e',
-                            confirmButtonColor: '#10b981'
-                        });
-                    } else {
-                        showToast('error', 'Error', response.mensaje || 'No se pudo cargar el comprobante');
-                    }
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', status, error);
-                console.error('Respuesta:', xhr.responseText);
-                if (typeof swal !== 'undefined') {
-                    swal({
-                        type: 'error',
-                        title: 'Error de conexión',
-                        text: 'No se pudo cargar el comprobante. Intente nuevamente.',
-                        background: '#1a1f2e',
-                        confirmButtonColor: '#10b981'
-                    });
-                } else {
-                    showToast('error', 'Error de conexión', 'No se pudo cargar el comprobante. Intente nuevamente.');
-                }
-            }
-        });
-    }
-
-    // Función para cancelar la carga del comprobante
-    function cancelarComprobanteRevisor() {
-        $('#inputComprobanteRevisor').val('');
-        $('#previewComprobanteRevisor').hide();
-        $('#nombreArchivoComprobanteRevisor').text('');
-        $('#tamanoArchivoComprobanteRevisor').text('');
-    }
-
-    // Función para abrir modal de comprobante desde tabla principal
     function abrirModalComprobanteRevisor(codInfoFacturaVenta) {
-        // Mostrar modal con overlay
-        const modalHTML = `
-            <div id="modalComprobanteRevisorOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9998; display: flex; align-items: center; justify-content: center;">
-                <div style="background: #1a1f2e; border: 1px solid #2d3748; border-radius: 16px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
-                    <!-- Encabezado -->
-                    <div style="background: linear-gradient(135deg, #0E112B 0%, #1a1f2e 100%); padding: 1.5rem; border-radius: 16px 16px 0 0; position: relative; border-bottom: 2px solid #81e6d9;">
-                        <h4 style="color: #81e6d9; margin: 0; font-size: 1.5rem; font-weight: 700; text-align: center;">
-                            <i class="fa fa-file-image-o" style="margin-right: 0.5rem;"></i>
-                            Comprobante de Pago
-                        </h4>
-                        <button onclick="cerrarModalComprobanteRevisor()" style="position: absolute; top: 1rem; right: 1rem; background: rgba(129, 230, 217, 0.1); border: 1px solid #81e6d9; color: #81e6d9; font-size: 1.5rem; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='rgba(129, 230, 217, 0.2)'" onmouseout="this.style.background='rgba(129, 230, 217, 0.1)'">
-                            <i class="fa fa-times"></i>
-                        </button>
-                    </div>
-                    
-                    <!-- Contenido -->
-                    <div style="padding: 2rem;">
-                        <!-- Área de comprobante actual -->
-                        <div id="areaComprobanteActualModal" style="margin-bottom: 1.5rem;">
-                            <div style="text-align: center; padding: 1rem;">
-                                <i class="fa fa-spinner fa-spin" style="font-size: 2rem; color: #81e6d9;"></i>
-                                <p style="color: #81e6d9; margin-top: 0.5rem;">Cargando comprobante...</p>
-                            </div>
-                        </div>
-                        
-                        <!-- Formulario de carga -->
-                        <div style="background: #0E112B; border: 2px dashed #81e6d9; border-radius: 12px; padding: 1.5rem; text-align: center;">
-                            <label for="inputComprobanteModal" style="cursor: pointer; display: block;">
-                                <i class="fa fa-cloud-upload" style="font-size: 3rem; color: #81e6d9; margin-bottom: 1rem;"></i>
-                                <p style="color: #81e6d9; font-size: 1rem; margin: 0;">Arrastra tu archivo aquí o haz clic para seleccionar</p>
-                                <p style="color: #a0aec0; font-size: 0.85rem; margin-top: 0.5rem;">Máximo 10MB - Imágenes o documentos</p>
-                            </label>
-                            <input type="file" id="inputComprobanteModal" accept="image/*,.pdf,.doc,.docx" style="display: none;" onchange="previsualizarComprobanteModal(this)">
-                        </div>
-                        
-                        <!-- Preview -->
-                        <div id="previewComprobanteModal" style="display: none; margin-top: 1.5rem; text-align: center;">
-                            <img id="imgPreviewModal" src="" style="max-width: 100%; max-height: 300px; border-radius: 8px; margin-bottom: 1rem;">
-                            <div style="color: #fff;">
-                                <p style="margin: 0.5rem 0;"><strong>Archivo:</strong> <span id="nombreArchivoModal"></span></p>
-                                <p style="margin: 0.5rem 0;"><strong>Tamaño:</strong> <span id="tamanoArchivoModal"></span></p>
-                            </div>
-                        </div>
-                        
-                        <!-- Botones -->
-                        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                            <button onclick="cargarComprobanteModal()" style="flex: 1; background: #81e6d9; color: #0E112B; border: none; padding: 0.75rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#a0f0e3'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#81e6d9'; this.style.transform='translateY(0)'">
-                                <i class="fa fa-upload"></i> Cargar Comprobante
-                            </button>
-                            <button onclick="cancelarComprobanteModal()" style="flex: 1; background: #2d3748; color: #81e6d9; border: 1px solid #4a5568; padding: 0.75rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.background='#4a5568'" onmouseout="this.style.background='#2d3748'">
-                                <i class="fa fa-times"></i> Cancelar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        $('body').append(modalHTML);
-        window.modalCodInfoFacturaVentaTemp = codInfoFacturaVenta;
-        
-        // Cargar comprobante actual
-        cargarComprobanteActualModal(codInfoFacturaVenta);
-    }
-
-    function cerrarModalComprobanteRevisor() {
         $('#modalComprobanteRevisorOverlay').remove();
-    }
-
-    function cargarComprobanteActualModal(codInfoFacturaVenta) {
+        var modalHTML = '<div id="modalComprobanteRevisorOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9998;display:flex;align-items:center;justify-content:center;">' +
+            '<div style="background:#1a1f2e;border:1px solid #2d3748;border-radius:16px;max-width:550px;width:90%;max-height:90vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.5);">' +
+                '<div style="background:linear-gradient(135deg,#0E112B 0%,#1a1f2e 100%);padding:1.5rem;border-radius:16px 16px 0 0;position:relative;border-bottom:2px solid #81e6d9;">' +
+                    '<h4 style="color:#81e6d9;margin:0;font-size:1.4rem;font-weight:700;text-align:center;"><i class="fa fa-file-image-o" style="margin-right:0.5rem;"></i> Comprobante de Pago</h4>' +
+                    '<button onclick="cerrarModalComprobanteRevisor()" style="position:absolute;top:1rem;right:1rem;background:rgba(129,230,217,0.1);border:1px solid #81e6d9;color:#81e6d9;font-size:1.5rem;width:35px;height:35px;border-radius:50%;cursor:pointer;">&times;</button>' +
+                '</div>' +
+                '<div style="padding:1.5rem;">' +
+                    '<div id="areaComprobanteActualModal" style="margin-bottom:1.5rem;text-align:center;padding:1rem;"><i class="fa fa-spinner fa-spin" style="font-size:2rem;color:#81e6d9;"></i><p style="color:#81e6d9;margin-top:0.5rem;">Cargando comprobante...</p></div>' +
+                    '<div style="background:#0E112B;border:2px dashed #81e6d9;border-radius:12px;padding:1.5rem;text-align:center;">' +
+                        '<label for="inputComprobanteModal" style="cursor:pointer;display:block;"><i class="fa fa-cloud-upload" style="font-size:3rem;color:#81e6d9;margin-bottom:0.5rem;"></i><p style="color:#81e6d9;font-size:1rem;margin:0;">Haz clic para seleccionar un archivo</p><p style="color:#a0aec0;font-size:0.85rem;margin-top:0.5rem;">Maximo 10MB - Imagenes, PDF o Word</p></label>' +
+                        '<input type="file" id="inputComprobanteModal" accept="image/*,.pdf,.doc,.docx" style="display:none;" onchange="previsualizarComprobanteModal(this)">' +
+                    '</div>' +
+                    '<div id="previewComprobanteModal" style="display:none;margin-top:1rem;background:#0E112B;border:1px solid #2d3748;border-radius:8px;padding:1rem;text-align:center;"><p style="color:#81e6d9;margin:0 0 0.5rem 0;"><i class="fa fa-paperclip"></i> <span id="nombreArchivoModal"></span> (<span id="tamanoArchivoModal"></span>)</p></div>' +
+                    '<div style="display:flex;gap:1rem;margin-top:1.5rem;">' +
+                        '<button onclick="cargarComprobanteModal(\'' + codInfoFacturaVenta + '\')" style="flex:1;background:#81e6d9;color:#0E112B;border:none;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;"><i class="fa fa-upload"></i> Cargar</button>' +
+                        '<button onclick="cerrarModalComprobanteRevisor()" style="flex:1;background:#2d3748;color:#81e6d9;border:1px solid #4a5568;padding:0.75rem;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;"><i class="fa fa-times"></i> Cerrar</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+        $('body').append(modalHTML);
         $.ajax({
-            url: '../admin/obtener_comprobante_pago_ajax.php',
-            type: 'POST',
-            data: { cod_info_factura_venta: codInfoFacturaVenta },
-            dataType: 'json',
+            url: '../admin/obtener_comprobante_pago_ajax.php', type: 'POST',
+            data: { cod_info_factura_venta: codInfoFacturaVenta }, dataType: 'json',
             success: function(response) {
                 if (response.success && response.url_comprobante) {
-                    $('#areaComprobanteActualModal').html(`
-                        <div style="background: #0E112B; border: 2px solid #10b981; padding: 1rem; border-radius: 8px; text-align: center;">
-                            <i class="fa fa-check-circle" style="font-size: 2rem; color: #10b981; margin-bottom: 0.5rem;"></i>
-                            <p style="color: #81e6d9; margin: 0 0 0.75rem 0; font-size: 1rem; font-weight: 600;">Comprobante registrado</p>
-                            <a href="${response.url_comprobante}" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #81e6d9; color: #0E112B; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-size: 0.9rem; font-weight: 700; transition: all 0.3s;">
-                                <i class="fa fa-eye"></i> Ver comprobante
-                            </a>
-                        </div>
-                    `);
+                    $('#areaComprobanteActualModal').html('<div style="background:#0E112B;border:2px solid #10b981;padding:1rem;border-radius:8px;text-align:center;"><i class="fa fa-check-circle" style="font-size:2rem;color:#10b981;margin-bottom:0.5rem;"></i><p style="color:#81e6d9;margin:0 0 0.75rem 0;font-size:1rem;font-weight:600;">Comprobante registrado</p><a href="' + response.url_comprobante + '" target="_blank" style="display:inline-flex;align-items:center;gap:0.5rem;background:#81e6d9;color:#0E112B;padding:0.5rem 1rem;border-radius:8px;text-decoration:none;font-size:0.9rem;font-weight:700;"><i class="fa fa-eye"></i> Ver comprobante</a></div>');
                 } else {
-                    $('#areaComprobanteActualModal').html(`
-                        <div style="background: #0E112B; border: 2px solid #f59e0b; padding: 1rem; border-radius: 8px; text-align: center;">
-                            <i class="fa fa-exclamation-triangle" style="font-size: 2rem; color: #f59e0b; opacity: 0.8; margin-bottom: 0.5rem;"></i>
-                            <p style="color: #81e6d9; margin: 0; font-size: 0.9rem; font-weight: 600;">Sin comprobante registrado</p>
-                        </div>
-                    `);
+                    $('#areaComprobanteActualModal').html('<div style="background:#0E112B;border:2px solid #f59e0b;padding:1rem;border-radius:8px;text-align:center;"><i class="fa fa-exclamation-triangle" style="font-size:2rem;color:#f59e0b;opacity:0.8;margin-bottom:0.5rem;"></i><p style="color:#81e6d9;margin:0;font-size:0.9rem;font-weight:600;">Sin comprobante registrado</p></div>');
                 }
             },
             error: function() {
-                $('#areaComprobanteActualModal').html(`
-                    <div style="background: #0E112B; border: 2px solid #ef4444; padding: 1rem; border-radius: 8px; text-align: center;">
-                        <i class="fa fa-exclamation-triangle" style="font-size: 2rem; color: #ef4444;"></i>
-                        <p style="color: #81e6d9; margin: 0.5rem 0 0 0;">Error al cargar comprobante</p>
-                    </div>
-                `);
+                $('#areaComprobanteActualModal').html('<div style="background:#0E112B;border:2px solid #ef4444;padding:1rem;border-radius:8px;text-align:center;"><i class="fa fa-exclamation-triangle" style="font-size:2rem;color:#ef4444;"></i><p style="color:#81e6d9;margin:0.5rem 0 0 0;">Error al consultar comprobante</p></div>');
             }
         });
     }
-
+    function cerrarModalComprobanteRevisor() { $('#modalComprobanteRevisorOverlay').remove(); }
     function previsualizarComprobanteModal(input) {
         if (input.files && input.files[0]) {
-            const archivo = input.files[0];
-            const tamanoMB = archivo.size / (1024 * 1024);
-            
-            if (tamanoMB > 10) {
-                if (typeof swal !== 'undefined') {
-                    swal('Error', 'El archivo no debe superar los 10MB', 'error');
-                } else {
-                    alert('El archivo no debe superar los 10MB');
-                }
-                input.value = '';
-                return;
-            }
-            
-            const tiposPermitidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-            if (!tiposPermitidos.includes(archivo.type)) {
-                if (typeof swal !== 'undefined') {
-                    swal('Error', 'Solo se permiten imágenes, PDF o documentos de Word', 'error');
-                } else {
-                    alert('Solo se permiten imágenes, PDF o documentos de Word');
-                }
-                input.value = '';
-                return;
-            }
-            
-            $('#nombreArchivoModal').text(archivo.name);
-            $('#tamanoArchivoModal').text(tamanoMB.toFixed(2) + ' MB');
-            
-            if (archivo.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#imgPreviewModal').attr('src', e.target.result);
-                    $('#previewComprobanteModal').show();
-                };
-                reader.readAsDataURL(archivo);
-            } else {
-                $('#imgPreviewModal').attr('src', '');
-                $('#previewComprobanteModal').show();
-            }
+            var archivo = input.files[0]; var tamanoMB = (archivo.size / (1024 * 1024)).toFixed(2);
+            if (archivo.size > 10 * 1024 * 1024) { if (typeof swal !== 'undefined') { swal('Error', 'El archivo no debe superar los 10MB', 'error'); } else { alert('El archivo no debe superar los 10MB'); } input.value = ''; return; }
+            var tiposPermitidos = ['image/jpeg','image/jpg','image/png','image/gif','application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!tiposPermitidos.includes(archivo.type)) { if (typeof swal !== 'undefined') { swal('Error', 'Solo se permiten imagenes, PDF o documentos Word', 'error'); } else { alert('Tipo de archivo no permitido'); } input.value = ''; return; }
+            $('#nombreArchivoModal').text(archivo.name); $('#tamanoArchivoModal').text(tamanoMB + ' MB'); $('#previewComprobanteModal').show();
         }
     }
-
-    function cargarComprobanteModal() {
-        const input = document.getElementById('inputComprobanteModal');
-        if (!input.files || !input.files[0]) {
-            if (typeof swal !== 'undefined') {
-                swal('Advertencia', 'Por favor selecciona un archivo', 'warning');
-            } else {
-                alert('Por favor selecciona un archivo');
-            }
-            return;
-        }
-        
-        const codCredito = window.modalCodInfoFacturaVentaTemp;
-        console.log('cargarComprobanteModal - codCredito:', codCredito);
-        
-        if (!codCredito || codCredito == '' || codCredito == '0') {
-            if (typeof swal !== 'undefined') {
-                swal('Error', 'No se pudo identificar el crédito. Por favor cierre el modal y vuelva a abrirlo.', 'error');
-            }
-            return;
-        }
-        
-        const formData = new FormData();
+    function cargarComprobanteModal(codInfoFacturaVenta) {
+        var input = document.getElementById('inputComprobanteModal');
+        if (!input || !input.files || !input.files[0]) { if (typeof swal !== 'undefined') { swal('Advertencia', 'Por favor selecciona un archivo primero', 'warning'); } else { alert('Por favor selecciona un archivo'); } return; }
+        if (typeof swal !== 'undefined') { swal({ title: 'Cargando comprobante...', html: '<i class="fa fa-spinner fa-spin" style="font-size:2rem;color:#f59e0b;"></i><p style="margin-top:1rem;">Por favor espere...</p>', showConfirmButton: false, allowOutsideClick: false, background: '#1a1f2e' }); }
+        var formData = new FormData();
         formData.append('comprobante', input.files[0]);
-        formData.append('cod_info_factura_venta', codCredito);
-        
-        console.log('Enviando comprobante modal - cod_info_factura_venta:', codCredito, 'archivo:', input.files[0].name);
-        
-        // Mostrar loading
-        if (typeof swal !== 'undefined') {
-            swal({
-                title: 'Cargando comprobante...',
-                text: 'Por favor espere...',
-                html: '<i class="fa fa-spinner fa-spin" style="font-size: 2rem; color: #f59e0b;"></i><p style="margin-top: 1rem;">Por favor espere...</p>',
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                background: '#1a1f2e',
-                confirmButtonColor: '#10b981'
-            });
-        }
-        
+        formData.append('cod_info_factura_venta', codInfoFacturaVenta);
         $.ajax({
-            url: '../admin/cargar_comprobante_pago_ajax.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
+            url: '../admin/cargar_comprobante_pago_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    if (typeof swal !== 'undefined') {
-                        swal({
-                            type: 'success',
-                            title: '¡Cargado!',
-                            text: response.mensaje || 'Comprobante cargado correctamente',
-                            background: '#1a1f2e',
-                            confirmButtonColor: '#10b981',
-                            timer: 2000
-                        });
-                    } else {
-                        alert('Comprobante cargado correctamente');
-                    }
+                    var icono = document.getElementById('iconoComprobante_' + codInfoFacturaVenta);
+                    if (icono) { icono.className = 'fa fa-check-circle'; icono.style.color = '#10b981'; icono.style.textShadow = '0 0 6px rgba(16,185,129,0.6)'; icono.closest('td').title = 'Comprobante cargado - Clic para ver/reemplazar'; }
                     cerrarModalComprobanteRevisor();
+                    if (typeof swal !== 'undefined') { swal({ type: 'success', title: 'Cargado!', text: response.mensaje || 'Comprobante cargado correctamente', background: '#1a1f2e', confirmButtonColor: '#10b981', timer: 2000 }).catch(function(){}); }
                 } else {
-                    if (typeof swal !== 'undefined') {
-                        swal({
-                            type: 'error',
-                            title: 'Error',
-                            text: response.mensaje || response.message || 'Error al cargar el comprobante',
-                            background: '#1a1f2e',
-                            confirmButtonColor: '#e53e3e'
-                        });
-                    } else {
-                        alert(response.mensaje || response.message || 'Error al cargar el comprobante');
-                    }
+                    if (typeof swal !== 'undefined') { swal({ type: 'error', title: 'Error', text: response.mensaje || 'No se pudo cargar el comprobante', background: '#1a1f2e', confirmButtonColor: '#e53e3e' }); } else { alert(response.mensaje || 'Error al cargar'); }
                 }
             },
-            error: function(xhr, status, error) {
-                console.error('Error AJAX:', status, error);
-                if (typeof swal !== 'undefined') {
-                    swal({
-                        type: 'error',
-                        title: 'Error de conexión',
-                        text: 'No se pudo conectar con el servidor',
-                        background: '#1a1f2e',
-                        confirmButtonColor: '#e53e3e'
-                    });
-                } else {
-                    alert('Error en la conexión');
-                }
+            error: function() {
+                if (typeof swal !== 'undefined') { swal({ type: 'error', title: 'Error de conexion', text: 'No se pudo conectar con el servidor', background: '#1a1f2e', confirmButtonColor: '#e53e3e' }); } else { alert('Error de conexion'); }
             }
         });
-    }
-
-    function cancelarComprobanteModal() {
-        $('#inputComprobanteModal').val('');
-        $('#previewComprobanteModal').hide();
-        $('#nombreArchivoModal').text('');
-        $('#tamanoArchivoModal').text('');
     }
 
     // ==================== FIN FUNCIONES COMPROBANTE DE PAGO REVISOR ====================
 </script>
+
 
 <style>
     /* Estilos para el botón Ver Factura PDF */
