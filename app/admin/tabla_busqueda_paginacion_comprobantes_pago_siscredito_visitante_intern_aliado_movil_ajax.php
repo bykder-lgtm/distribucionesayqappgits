@@ -56,7 +56,7 @@ if($action == 'ajax') {
         tbl15_info_factura_venta.cod_info_factura_venta, tbl15_info_factura_venta.cod_factura, tbl15_info_factura_venta.monto_deuda, tbl15_info_factura_venta.subtotal_sin_interes, tbl15_info_factura_venta.nombre_estado_factura,
         tbl15_info_factura_venta.url_img_orig_producto, tbl15_info_factura_venta.url_img_min_producto, tbl15_info_factura_venta.fecha_creacion, tbl15_info_factura_venta.fecha_hora,
         tbl15_tercero.nombres_apellidos_tercero, tbl15_tercero.identificacion_tercero
-        FROM $sTable $sWhere LIMIT $registro_inicio, $numero_registro_por_pagina";
+        FROM $sTable $sWhere LIMIT $registro_inicio, $per_page";
         $consulta_comprobantes = mysqli_query($conectar, $sql_comprobantes) or die(mysqli_error($conectar));
         while ($datos = mysqli_fetch_assoc($consulta_comprobantes)) {
 
@@ -77,32 +77,17 @@ if($action == 'ajax') {
             // Determinar color del badge según estado
             $badge_color = ($nombre_estado_factura == 'CERRADA') ? '#3b82f6' : '#10b981';
 ?>
-        <div class="card-comprobante">
-            <div class="comprobante-header">
-                <div class="comprobante-info">
-                    <h6><?php echo htmlspecialchars($nombres_apellidos_tercero); ?></h6>
-                    <p><strong>CC:</strong> <?php echo htmlspecialchars($identificacion_tercero); ?> | <strong>ID:</strong> <?php echo $cod_info_factura_venta; ?></p>
-                </div>
-                <span class="comprobante-badge" style="background: <?php echo $badge_color; ?>;"><?php echo $nombre_estado_factura; ?></span>
+        <div class="card-comprobante" onclick="abrirModalComprobantePago('<?php echo $cod_info_factura_venta; ?>', '<?php echo $url_img_orig_producto; ?>')">
+            <div class="comprobante-icono">
+                <i class="fa fa-file-image-o"></i>
             </div>
-            
-            <div class="comprobante-imagen-container" onclick="abrirModalComprobantePago('<?php echo $cod_info_factura_venta; ?>', '<?php echo $url_img_orig_producto; ?>')">
-                <img src="<?php echo $url_img_min_producto; ?>" alt="Comprobante de Pago" onerror="this.src='../imagenes/no-image.png';">
-                <div class="comprobante-overlay">
-                    <i class="fa fa-search-plus"></i>
-                </div>
+            <div class="comprobante-info">
+                <h6><?php echo htmlspecialchars($nombres_apellidos_tercero); ?></h6>
+                <p><span class="comprobante-meta">CC: <?php echo htmlspecialchars($identificacion_tercero); ?></span> <span class="comprobante-meta"><i class="fa fa-calendar"></i> <?php echo $fecha_formateada; ?></span><?php if ($subtotal_sin_interes > 0) { ?> <span class="comprobante-monto">$<?php echo number_format($subtotal_sin_interes, 0, ',', '.'); ?></span><?php } ?></p>
             </div>
-            
-            <div class="comprobante-footer">
-                <div class="comprobante-fecha">
-                    <i class="fa fa-calendar"></i> <?php echo $fecha_formateada; ?> <?php echo $hora_formateada; ?>
-                    <?php if ($subtotal_sin_interes > 0) { ?>
-                    <span style="margin-left: 10px; color: #9333ea; font-weight: 600;">$<?php echo number_format($subtotal_sin_interes, 0, ',', '.'); ?></span>
-                    <?php } ?>
-                </div>
-                <button class="btn-ver-comprobante" onclick="abrirModalComprobantePago('<?php echo $cod_info_factura_venta; ?>', '<?php echo $url_img_orig_producto; ?>')">
-                    <i class="fa fa-eye"></i> Ver
-                </button>
+            <span class="comprobante-badge" style="background: <?php echo $badge_color; ?>;"><?php echo $nombre_estado_factura; ?></span>
+            <div class="comprobante-ver-btn">
+                <i class="fa fa-eye"></i>
             </div>
         </div>
 <?php
@@ -120,120 +105,105 @@ if($action == 'ajax') {
 ?>
 
 <style>
-/* Estilos para tarjetas de comprobante */
+/* Tarjeta compacta horizontal */
 .card-comprobante {
     background: linear-gradient(135deg, #1a1d3a 0%, #0a0e27 100%);
-    border-radius: 15px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(147, 51, 234, 0.2);
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(147, 51, 234, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
 }
 
 .card-comprobante:hover {
     border-color: rgba(147, 51, 234, 0.5);
-    box-shadow: 0 6px 20px rgba(147, 51, 234, 0.2);
+    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+    transform: translateX(3px);
 }
 
-.comprobante-header {
+.comprobante-icono {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(147, 51, 234, 0.15);
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.75rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.comprobante-icono i {
+    font-size: 1.2rem;
+    color: #9333ea;
+}
+
+.comprobante-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .comprobante-info h6 {
     color: #fff;
-    font-weight: 700;
-    font-size: 1rem;
-    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .comprobante-info p {
-    color: #a0aec0;
-    font-size: 0.85rem;
-    margin: 0;
+    color: #718096;
+    font-size: 0.75rem;
+    margin: 0.15rem 0 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.comprobante-meta {
+    margin-right: 0.5rem;
+}
+
+.comprobante-monto {
+    color: #9333ea;
+    font-weight: 700;
 }
 
 .comprobante-badge {
-    background: linear-gradient(135deg, #9333ea 0%, #f97316 100%);
+    flex-shrink: 0;
     color: white;
-    padding: 0.25rem 0.75rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 20px;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 600;
+    white-space: nowrap;
 }
 
-.comprobante-imagen-container {
-    width: 100%;
-    height: 150px;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 0.75rem;
-    position: relative;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.comprobante-imagen-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.comprobante-imagen-container:hover img {
-    transform: scale(1.05);
-}
-
-.comprobante-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(147, 51, 234, 0.7);
+.comprobante-ver-btn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #9333ea 0%, #f97316 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: transform 0.2s ease;
 }
 
-.comprobante-imagen-container:hover .comprobante-overlay {
-    opacity: 1;
-}
-
-.comprobante-overlay i {
+.comprobante-ver-btn i {
     color: white;
-    font-size: 2rem;
-}
-
-.comprobante-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.comprobante-fecha {
-    color: #718096;
-    font-size: 0.8rem;
-}
-
-.btn-ver-comprobante {
-    background: linear-gradient(135deg, #9333ea 0%, #f97316 100%);
-    color: white;
-    border: none;
-    padding: 0.4rem 1rem;
-    border-radius: 8px;
     font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-.btn-ver-comprobante:hover {
-    background: linear-gradient(135deg, #7c3aed 0%, #ea580c 100%);
-    transform: translateY(-2px);
+.card-comprobante:hover .comprobante-ver-btn {
+    transform: scale(1.1);
 }
 </style>

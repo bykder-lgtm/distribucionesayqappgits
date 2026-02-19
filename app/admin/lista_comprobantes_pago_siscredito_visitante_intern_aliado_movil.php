@@ -153,48 +153,22 @@ $cod_base_caja          = "1";
     font-weight: 600;
 }
 
-.comprobante-imagen-container {
+.comprobante-icono-container {
     width: 100%;
-    height: 150px;
     border-radius: 10px;
-    overflow: hidden;
     margin-bottom: 0.75rem;
-    position: relative;
     cursor: pointer;
-}
-
-.comprobante-imagen-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.comprobante-imagen-container:hover img {
-    transform: scale(1.05);
-}
-
-.comprobante-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(147, 51, 234, 0.7);
+    background: rgba(255, 255, 255, 0.05);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    padding: 1rem;
+    transition: all 0.3s ease;
 }
 
-.comprobante-imagen-container:hover .comprobante-overlay {
-    opacity: 1;
-}
-
-.comprobante-overlay i {
-    color: white;
-    font-size: 2rem;
+.comprobante-icono-container:hover {
+    background: rgba(147, 51, 234, 0.15);
 }
 
 .comprobante-footer {
@@ -241,7 +215,7 @@ $buscar_por                                  = "nombre1_tercero_identificacion_t
              <?php include_once("../admin/menu_facturas_abiertas_cerradas_comprobante_pago.php"); ?>
 
             <div class="input-group">
-                <input type="search" class="form-control" id="busqueda_ajax" onkeyup='load(1);' placeholder="Buscar por nombre o cédula...">
+                <input type="search" class="form-control" id="busqueda_ajax" onkeyup='debouncedLoad();' placeholder="Buscar por nombre o cédula...">
                 <button class="btn btn-outline-secondary">✖</button>
                 <button class="btn btn-outline-secondary">⟳</button>
             </div>
@@ -292,6 +266,9 @@ $buscar_por                                  = "nombre1_tercero_identificacion_t
 </html>
 
 <script>
+var currentAjaxRequest = null; // Variable para almacenar la petición AJAX actual
+var debounceTimer = null; // Timer para debounce de búsqueda
+
 $(document).ready(function(){
     var tiempo_refresco_base = 30; //segundos
     const base_milisegundo = 1000;
@@ -309,17 +286,32 @@ $(document).ready(function(){
     }, tiempo_refresco);
 });
 
+// Función debounce para el buscador - espera 400ms después de la última tecla
+function debouncedLoad() {
+    if (debounceTimer) {
+        clearTimeout(debounceTimer);
+    }
+    debounceTimer = setTimeout(function() {
+        load(1);
+    }, 400);
+}
+
 function load(page){
+    // Cancelar petición anterior si aún está en curso
+    if (currentAjaxRequest && currentAjaxRequest.readyState !== 4) {
+        currentAjaxRequest.abort();
+    }
+
     var busqueda_ajax = $("#busqueda_ajax").val();
     var buscar_por = $("#buscar_por").val();
-    var numero_registro_por_pagina = 9999999;
+    var numero_registro_por_pagina = 20;
     var cod_administrador = $("#cod_administrador").val();
     var cod_seguridad = $("#cod_seguridad").val();
     var tabla = $("#tabla").val();
     var pagina = "<?php echo $pagina_local ?>";
 
     $("#loader").fadeIn('slow');
-    $.ajax({
+    currentAjaxRequest = $.ajax({
         url:'../admin/tabla_busqueda_paginacion_comprobantes_pago_siscredito_visitante_intern_aliado_movil_ajax.php?action=ajax&page='+page+'&busqueda_ajax='+busqueda_ajax+'&buscar_por='+buscar_por+'&numero_registro_por_pagina='+numero_registro_por_pagina+'&cod_administrador='+cod_administrador+'&cod_seguridad='+cod_seguridad+'&tabla='+tabla+'&pagina='+pagina, 
         beforeSend: function(objeto){
             $('#loader').html('<img src="../imagenes/ajax-loader.gif"> Cargando...');
@@ -327,8 +319,15 @@ function load(page){
         success:function(data){
             $("#outer_div").html(data).fadeIn('slow');
             $('#loader').html('');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            // No mostrar error si fue cancelada intencionalmente
+            if (textStatus !== 'abort') {
+                $('#loader').html('');
+                console.error('Error en la petición AJAX:', textStatus, errorThrown);
+            }
         }
-    })
+    });
 }
 // Función para abrir modal de comprobante de pago
 function abrirModalComprobantePago(codInfoFacturaVenta, urlComprobante) {

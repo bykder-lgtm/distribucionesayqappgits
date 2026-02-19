@@ -46,7 +46,7 @@ $carpeta_destino = '../archivador/documentos/comprobante_pago/';
 if (!file_exists($carpeta_destino)) { mkdir($carpeta_destino, 0777, true); }
 
 $ruta_completa = $carpeta_destino.$nombre_archivo;
-$url_img_orig_producto = 'archivador/documentos/comprobante_pago/'.$nombre_archivo;
+$url_img_orig_producto = '../archivador/documentos/comprobante_pago/'.$nombre_archivo;
 // Mover archivo a la carpeta destino
 if (move_uploaded_file($archivo['tmp_name'], $ruta_completa)) {
     // Actualizar base de datos

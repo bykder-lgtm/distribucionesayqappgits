@@ -48,7 +48,7 @@ $cod_base_caja          = "1";
 <style>
     .entidades-grid-simulador {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 0.75rem;
         margin-bottom: 1rem;
         padding: 1rem;
@@ -218,7 +218,73 @@ $cod_base_caja          = "1";
     .btn-solicitar-simulador i {
         font-size: 0.7rem;
     }
-    @media (max-width: 768px) {
+    .entidad-nombre {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #2d3748;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+    .entidad-botones {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-top: auto;
+        justify-content: center;
+    }
+    .btn-entidad {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0.5rem;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: white;
+        transition: all 0.25s ease;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-entidad:hover {
+        transform: translateY(-1px);
+        text-decoration: none;
+        color: white;
+    }
+    .btn-entidad i {
+        font-size: 0.7rem;
+    }
+    .btn-consultar-cupo {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+    }
+    .btn-consultar-cupo:hover {
+        box-shadow: 0 4px 12px rgba(72, 187, 120, 0.5);
+    }
+    .btn-valor-pagar {
+        background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        box-shadow: 0 2px 8px rgba(237, 137, 54, 0.3);
+    }
+    .btn-valor-pagar:hover {
+        box-shadow: 0 4px 12px rgba(237, 137, 54, 0.5);
+    }
+    .btn-plataforma {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    .btn-plataforma:hover {
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+    }
+    @media (max-width: 992px) {
+        .entidades-grid-simulador {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 576px) {
         .entidades-grid-simulador {
             grid-template-columns: 1fr;
             gap: 0.5rem;
@@ -226,64 +292,64 @@ $cod_base_caja          = "1";
         .entidad-card-simulador {
             padding: 0.6rem;
         }
-        .valor-credito-simulador {
-            font-size: 0.95rem;
-        }
-        .cuota-resultado-simulador .valor {
-            font-size: 1rem;
-        }
-        .btn-solicitar-simulador {
-            font-size: 0.7rem;
-            padding: 0.6rem 0.4rem;
-        }
     }
 </style>
 
 <main class="container pb-5 mb-5">
     <div class="entidades-grid-simulador">
-        <!-- Tarjeta 1: Consultas de Cupo -->
+        <?php
+        $sql_entidad_crediticia = "SELECT * FROM tbl15_entidad_crediticia WHERE (cod_estado = '1') ORDER BY cod_posicion ASC";
+        $consulta_entidad_crediticia = mysqli_query($conectar, $sql_entidad_crediticia) or die(mysqli_error($conectar));
+        while ($datos_entidad = mysqli_fetch_assoc($consulta_entidad_crediticia)) {
+
+            $cod_entidad_crediticia                                    = $datos_entidad['cod_entidad_crediticia'];
+            $nombre_entidad_crediticia                                 = $datos_entidad['nombre_entidad_crediticia'];
+            $url_entidad_crediticia_imag_orig                          = $datos_entidad['url_entidad_crediticia_imag_orig'];
+            $url_pagina_web_consultar_cupo                             = $datos_entidad['url_pagina_web_consultar_cupo'];
+            $url_pagina_web_valor_pagar                                = $datos_entidad['url_pagina_web_valor_pagar'];
+            $url_pagina_web_consulta                                   = $datos_entidad['url_pagina_web_consulta'];
+            $cod_estado_consulta_cupo_modal_enviar_whatsapp            = $datos_entidad['cod_estado_consulta_cupo_modal_enviar_whatsapp'];
+            $texto_mensaje_para_url_vacia_entidad_crediticia           = $datos_entidad['texto_mensaje_para_url_vacia_entidad_crediticia'];
+        ?>
         <div class="entidad-card-simulador">
-            <!-- Badge -->
-            <div class="descuento-badge-simulador"><i class="fa fa-star"></i>CONSULTA DE CUPO</div>
-
-            <!-- Logos de Entidades -->
-            <div class="logos-entidades-container">
-                <?php
-                $sql_entidad_crediticia = "SELECT * FROM tbl15_entidad_crediticia WHERE (cod_estado = '1') ORDER BY cod_posicion ASC";
-                $consulta_entidad_crediticia = mysqli_query($conectar, $sql_entidad_crediticia) or die(mysqli_error($conectar));
-                while ($datos_entidad = mysqli_fetch_assoc($consulta_entidad_crediticia)) {
-
-                    $nombre_entidad_crediticia                 = $datos_entidad['nombre_entidad_crediticia'];
-                    $url_entidad_crediticia_imag_orig          = $datos_entidad['url_entidad_crediticia_imag_orig'];
-                    $url_pagina_web_consultar_cupo             = $datos_entidad['url_pagina_web_consultar_cupo'];
-                ?>
-                <div class="logo-entidad-item">
-                    <a href="<?php echo $url_pagina_web_consultar_cupo ?>" target="_blank"><img src="<?php echo $url_entidad_crediticia_imag_orig ?>" alt="<?php echo $nombre_entidad_crediticia ?>" title="<?php echo $nombre_entidad_crediticia ?>"></a>
-                </div>
+            <div class="entidad-logo-simulador">
+                <img src="<?php echo $url_entidad_crediticia_imag_orig; ?>" alt="<?php echo $nombre_entidad_crediticia; ?>" title="<?php echo $nombre_entidad_crediticia; ?>">
+            </div>
+            <div class="entidad-nombre"><?php echo $nombre_entidad_crediticia; ?></div>
+            <div class="entidad-botones">
+                <?php if (!empty($url_pagina_web_consultar_cupo)) { ?>
+                <a href="<?php echo $url_pagina_web_consultar_cupo; ?>" target="_blank" class="btn-entidad btn-consultar-cupo"><i class="fa fa-search"></i> Consultar cupo</a>
+                <?php } elseif ($cod_estado_consulta_cupo_modal_enviar_whatsapp == '1') { ?>
+                <button type="button" class="btn-entidad btn-consultar-cupo" onclick="abrirModalWhatsapp('<?php echo $cod_entidad_crediticia; ?>', '<?php echo addslashes($nombre_entidad_crediticia); ?>', '<?php echo addslashes($texto_mensaje_para_url_vacia_entidad_crediticia); ?>')"><i class="fa fa-search"></i> Consultar cupo</button>
                 <?php } ?>
+                <a href="<?php echo $url_pagina_web_valor_pagar; ?>" target="_blank" class="btn-entidad btn-valor-pagar"><i class="fa fa-money-bill-wave"></i> Valor a pagar</a>
+                <a href="<?php echo $url_pagina_web_consulta; ?>" target="_blank" class="btn-entidad btn-plataforma"><i class="fa fa-globe"></i> Plataforma</a>
             </div>
         </div>
+        <?php } ?>
+    </div>
 
-        <!-- Tarjeta 2: Resumen Financiero -->
-        <div class="entidad-card-simulador">
-            <!-- Badge -->
-            <div class="descuento-badge-simulador"><i class="fa fa-money-bill-wave"></i>CONSULTAR VALOR A PAGAR  Y MEDIOS DE PAGO</div>
-
-            <!-- Logos de Entidades -->
-            <div class="logos-entidades-container">
-                <?php
-                $sql_entidad_crediticia_2 = "SELECT * FROM tbl15_entidad_crediticia WHERE (cod_estado = '1') ORDER BY cod_posicion ASC";
-                $consulta_entidad_crediticia_2 = mysqli_query($conectar, $sql_entidad_crediticia_2) or die(mysqli_error($conectar));
-                while ($datos_entidad_2 = mysqli_fetch_assoc($consulta_entidad_crediticia_2)) {
-
-                    $nombre_entidad_crediticia_2               = $datos_entidad_2['nombre_entidad_crediticia'];
-                    $url_entidad_crediticia_imag_orig_2        = $datos_entidad_2['url_entidad_crediticia_imag_orig'];
-                    $url_pagina_web_valor_pagar                = $datos_entidad_2['url_pagina_web_valor_pagar'];
-                ?>
-                <div class="logo-entidad-item">
-                    <a href="<?php echo $url_pagina_web_valor_pagar ?>" target="_blank"><img src="<?php echo $url_entidad_crediticia_imag_orig_2 ?>" alt="<?php echo $nombre_entidad_crediticia_2 ?>" title="<?php echo $nombre_entidad_crediticia_2 ?>"></a>
+    <!-- Modal WhatsApp Consulta de Cupo -->
+    <div class="modal fade" id="modalWhatsappConsulta" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="background: linear-gradient(135deg, #0a0e27 0%, #1a1d3a 100%); color: white; border-radius: 15px; border: 1px solid rgba(37, 211, 102, 0.3);">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(37, 211, 102, 0.2); padding: 1rem 1.25rem;">
+                    <h5 class="modal-title" style="font-weight: 700; font-size: 1rem;"><i class="fa fa-whatsapp" style="color: #25d366; margin-right: 8px;"></i> Consultar Cupo - <span id="modalWhatsappEntidadNombre"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" style="color: white; opacity: 0.8; font-size: 1.5rem;"><span>&times;</span></button>
                 </div>
-                <?php } ?>
+                <div class="modal-body" style="padding: 1.25rem;">
+                    <div id="modalWhatsappMensaje" style="background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.25); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; font-size: 0.85rem; color: #cbd5e0; line-height: 1.5;"></div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="color: #a0aec0; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; display: block;"><i class="fa fa-id-card" style="margin-right: 5px;"></i> Número de Cédula</label>
+                        <input type="text" id="cedulaWhatsapp" class="form-control" placeholder="Ingresa tu número de cédula" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.9rem;">
+                    </div>
+                    <input type="hidden" id="modalWhatsappEntidadId">
+                    <input type="hidden" id="modalWhatsappTextoMensaje">
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(37, 211, 102, 0.2); padding: 0.75rem 1.25rem; justify-content: center;">
+                    <button type="button" class="btn" data-dismiss="modal" style="background: #6c757d; color: white; border-radius: 8px; padding: 0.5rem 1.2rem; font-weight: 600; font-size: 0.85rem;">Cancelar</button>
+                    <button type="button" class="btn" onclick="enviarWhatsappConsulta()" style="background: linear-gradient(135deg, #25d366 0%, #128c7e 100%); color: white; border-radius: 8px; padding: 0.5rem 1.2rem; font-weight: 600; font-size: 0.85rem;"><i class="fa fa-whatsapp" style="margin-right: 5px;"></i> Enviar mensaje</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1269,6 +1335,30 @@ function cerrarNotificacion(btn) {
             toast.remove();
         }, 300);
     }
+}
+// ==================== FUNCIONES MODAL WHATSAPP ====================
+function abrirModalWhatsapp(codEntidad, nombreEntidad, textoMensaje) {
+    document.getElementById('modalWhatsappEntidadNombre').textContent = nombreEntidad;
+    document.getElementById('modalWhatsappMensaje').textContent = textoMensaje;
+    document.getElementById('modalWhatsappEntidadId').value = codEntidad;
+    document.getElementById('modalWhatsappTextoMensaje').value = textoMensaje;
+    document.getElementById('cedulaWhatsapp').value = '';
+    $('#modalWhatsappConsulta').modal('show');
+}
+
+function enviarWhatsappConsulta() {
+    var cedula = document.getElementById('cedulaWhatsapp').value.trim();
+    if (!cedula) {
+        alert('Por favor ingresa tu número de cédula');
+        document.getElementById('cedulaWhatsapp').focus();
+        return;
+    }
+    var nombreEntidad = document.getElementById('modalWhatsappEntidadNombre').textContent;
+    var textoMensaje = document.getElementById('modalWhatsappTextoMensaje').value;
+    var mensaje = textoMensaje + '\n\nCédula: ' + cedula + '\nEntidad: ' + nombreEntidad;
+    var url = 'https://wa.me/573028551795?text=' + encodeURIComponent(mensaje);
+    window.open(url, '_blank');
+    $('#modalWhatsappConsulta').modal('hide');
 }
 </script>
 <!-- **************************************************** FINALIZAR AQUI ******************************************** -->   

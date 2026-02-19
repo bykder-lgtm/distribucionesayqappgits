@@ -1089,14 +1089,14 @@ select[id^="edit_municipio_tienda_"] option {
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 $sql .= " ORDER BY a.cod_administrador DESC";
 $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
-    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
     $sql .= " ORDER BY a.cod_administrador DESC";
     $resultado = mysqli_query($conectar, $sql);
@@ -1261,10 +1261,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
                 </div>
 
-                <div class="form-group" id="container_nit_razon_social" style="display:none;">
-                    <label class="form-label">NIT Razón Social *</label>
-                    <input type="text" class="form-input" id="nit_razon_social" name="nit_razon_social">
-                    <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Ingrese el NIT de la razón social</small>
+                <div class="form-row">
+                    <div class="group-group" id="container_nit_razon_social" style="display:none;">
+                        <label class="form-label">NIT Razón Social *</label>
+                        <input type="text" class="form-input" id="nit_razon_social" name="nit_razon_social">
+                    </div>
+                    <div class="form-group" id="container_nombre_razon_social" style="display:none;">
+                        <label class="form-label">Razón Social *</label>
+                        <input type="text" class="form-input" id="nombre_razon_social" name="nombre_razon_social">
+                    </div>
                 </div>
 
                 <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
@@ -1293,6 +1298,32 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div class="form-group">
                         <label class="form-label">Correo *</label>
                         <input type="email" class="form-input" name="correo_tercero" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Departamento</label>
+                        <select class="form-select" id="cod_departamento" name="cod_departamento" onchange="cargarMunicipiosRegistro(this.value)">
+                            <option value="">Seleccione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio</label>
+                        <select class="form-select" id="cod_municipio" name="cod_municipio">
+                            <option value="">Primero seleccione departamento</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Barrio</label>
+                        <input type="text" class="form-input" id="barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
                     </div>
                 </div>
 
@@ -1459,6 +1490,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; margin: 0;">
+                        <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #6366f1; width: 20px; height: 20px; cursor: pointer;">
+                        <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #6366f1; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
+                    </label>
+                    <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se creará automáticamente una tienda con los datos del aliado</small>
+                </div>
                 
                 <button type="submit" class="submit-btn" id="btnGuardar"><i class="fa-solid fa-save"></i> Guardar Aliado</button>
             </form>
@@ -1515,7 +1554,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="form-group" id="edit_container_nit_razon_social" style="display:none;">
                     <label class="form-label">NIT Razón Social *</label>
                     <input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
-                    <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Ingrese el NIT de la razón social</small>
+                </div>
+
+                <div class="form-group" id="edit_container_nombre_razon_social" style="display:none;">
+                    <label class="form-label">Razón Social *</label>
+                    <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
                 </div>
 
                 <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
@@ -1546,6 +1589,32 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div class="form-group">
                         <label class="form-label">Correo *</label>
                         <input type="email" class="form-input" name="correo_tercero" id="edit_correo" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Departamento</label>
+                        <select class="form-select" id="edit_cod_departamento" name="cod_departamento" onchange="cargarMunicipiosEdicion(this.value)">
+                            <option value="">Seleccione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio</label>
+                        <select class="form-select" id="edit_cod_municipio" name="cod_municipio">
+                            <option value="">Primero seleccione departamento</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-input" id="edit_direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Barrio</label>
+                        <input type="text" class="form-input" id="edit_barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
                     </div>
                 </div>
 
@@ -2362,6 +2431,8 @@ function abrirModal() {
     setTimeout(function() {
         $('input[name="entidades[]"]').prop('checked', true);
     }, 100);
+    // Cargar departamentos en el select del modal de registro
+    cargarDepartamentosRegistro();
 }
 function cerrarModal() { 
     document.getElementById('modalRegistro').classList.remove('show');
@@ -2444,9 +2515,23 @@ function abrirModalEditar(data) {
     if(document.getElementById('edit_nit_razon_social')) {
         document.getElementById('edit_nit_razon_social').value = data.nit_razon_social || '';
     }
+    // Cargar Razón Social
+    if(document.getElementById('edit_nombre_razon_social')) {
+        document.getElementById('edit_nombre_razon_social').value = data.nombre_razon_social || '';
+    }
     
     // Mostrar/Ocultar Nit Razón Social al cargar (sin limpiar el valor)
     cambiarTipoClienteEdit(false);
+    
+    // Cargar Dirección y Barrio
+    if(document.getElementById('edit_direccion_tercero')) {
+        document.getElementById('edit_direccion_tercero').value = data.direccion_tercero || '';
+    }
+    if(document.getElementById('edit_barrio_tercero')) {
+        document.getElementById('edit_barrio_tercero').value = data.barrio_tercero || '';
+    }
+    // Cargar departamentos y preseleccionar departamento/municipio
+    cargarDepartamentosEdicion(data.cod_departamento || '', data.cod_municipio || '');
     
     // Cargar documentación legal si existe
     var editRutActual = document.getElementById('edit_rut_actual');
@@ -4453,16 +4538,23 @@ function cambiarTipoCliente() {
     var labelNombreComercial = document.getElementById('label_nombre_comercial');
     var containerNit = document.getElementById('container_nit_razon_social');
     var inputNit = document.getElementById('nit_razon_social');
+    var containerRazonSocial = document.getElementById('container_nombre_razon_social');
+    var inputRazonSocial = document.getElementById('nombre_razon_social');
     
     if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        labelNombreComercial.textContent = 'Razón Social *';
+        //labelNombreComercial.textContent = 'Razón Social *';
         containerNit.style.display = 'block';
         inputNit.required = true;
+        containerRazonSocial.style.display = 'block';
+        inputRazonSocial.required = true;
     } else { // PERSONA_NATURAL u otro
-        labelNombreComercial.textContent = 'Nombre Comercial *';
+        //labelNombreComercial.textContent = 'Nombre Comercial *';
         containerNit.style.display = 'none';
         inputNit.required = false;
         inputNit.value = '';
+        containerRazonSocial.style.display = 'none';
+        inputRazonSocial.required = false;
+        inputRazonSocial.value = '';
     }
 }
 
@@ -4472,20 +4564,116 @@ function cambiarTipoClienteEdit(limpiarNit) {
     var labelNombreComercial = document.getElementById('edit_label_nombre_comercial');
     var containerNit = document.getElementById('edit_container_nit_razon_social');
     var inputNit = document.getElementById('edit_nit_razon_social');
+    var containerRazonSocial = document.getElementById('edit_container_nombre_razon_social');
+    var inputRazonSocial = document.getElementById('edit_nombre_razon_social');
     
     if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        labelNombreComercial.textContent = 'Razón Social *';
+        //labelNombreComercial.textContent = 'Razón Social *';
         containerNit.style.display = 'block';
         inputNit.required = true;
+        containerRazonSocial.style.display = 'block';
+        inputRazonSocial.required = true;
     } else { // PERSONA_NATURAL u otro
-        labelNombreComercial.textContent = 'Nombre Comercial *';
+        //labelNombreComercial.textContent = 'Nombre Comercial *';
         containerNit.style.display = 'none';
         inputNit.required = false;
         // Solo limpiar el NIT si se indica explícitamente (cuando el usuario cambia manualmente)
         if (limpiarNit !== false) {
             inputNit.value = '';
         }
+        containerRazonSocial.style.display = 'none';
+        inputRazonSocial.required = false;
+        // Solo limpiar la Razón Social si se indica explícitamente (cuando el usuario cambia manualmente)
+        if (limpiarNit !== false) {
+            inputRazonSocial.value = '';
+        }
     }
+}
+
+// Cargar departamentos para el modal de registro de aliado
+function cargarDepartamentosRegistro() {
+    var $select = $('#cod_departamento');
+    $select.html('<option value="">Cargando...</option>');
+    $.ajax({
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) {
+            $select.html('<option value="">Seleccione...</option>');
+            if (response.success && response.departamentos) {
+                $.each(response.departamentos, function(i, dept) {
+                    $select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>');
+                });
+            }
+        },
+        error: function() { $select.html('<option value="">Error al cargar</option>'); }
+    });
+}
+
+// Cargar municipios según departamento seleccionado (modal registro)
+function cargarMunicipiosRegistro(codDepartamento) {
+    var $select = $('#cod_municipio');
+    if (!codDepartamento || codDepartamento === '') {
+        $select.html('<option value="">Primero seleccione departamento</option>');
+        return;
+    }
+    $select.html('<option value="">Cargando...</option>');
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php?cod_departamento=' + codDepartamento, type: 'GET', dataType: 'json',
+        success: function(response) {
+            $select.html('<option value="">Seleccione...</option>');
+            if (response.success && response.municipios) {
+                $.each(response.municipios, function(i, muni) {
+                    $select.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>');
+                });
+            }
+        },
+        error: function() { $select.html('<option value="">Error al cargar</option>'); }
+    });
+}
+
+// Cargar departamentos para el modal de edición con preselección
+function cargarDepartamentosEdicion(selectedDept, selectedMuni) {
+    var $select = $('#edit_cod_departamento');
+    $select.html('<option value="">Cargando...</option>');
+    $.ajax({
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) {
+            $select.html('<option value="">Seleccione...</option>');
+            if (response.success && response.departamentos) {
+                $.each(response.departamentos, function(i, dept) {
+                    var selected = (dept.cod_departamento == selectedDept) ? ' selected' : '';
+                    $select.append('<option value="' + dept.cod_departamento + '"' + selected + '>' + dept.nombre_departamento + '</option>');
+                });
+                // Si hay departamento preseleccionado, cargar municipios
+                if (selectedDept) {
+                    cargarMunicipiosEdicion(selectedDept, selectedMuni);
+                }
+            }
+        },
+        error: function() { $select.html('<option value="">Error al cargar</option>'); }
+    });
+}
+
+// Cargar municipios según departamento seleccionado (modal edición)
+function cargarMunicipiosEdicion(codDepartamento, selectedMuni) {
+    var $select = $('#edit_cod_municipio');
+    if (!codDepartamento || codDepartamento === '') {
+        $select.html('<option value="">Primero seleccione departamento</option>');
+        return;
+    }
+    $select.html('<option value="">Cargando...</option>');
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php?cod_departamento=' + codDepartamento, type: 'GET', dataType: 'json',
+        success: function(response) {
+            $select.html('<option value="">Seleccione...</option>');
+            if (response.success && response.municipios) {
+                $.each(response.municipios, function(i, muni) {
+                    var selected = (selectedMuni && muni.cod_municipio == selectedMuni) ? ' selected' : '';
+                    $select.append('<option value="' + muni.cod_municipio + '"' + selected + '>' + muni.nombre_municipio + '</option>');
+                });
+            }
+        },
+        error: function() { $select.html('<option value="">Error al cargar</option>'); }
+    });
 }
 
 function descargarZip() {
