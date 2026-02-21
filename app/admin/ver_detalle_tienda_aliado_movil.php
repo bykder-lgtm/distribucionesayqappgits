@@ -894,14 +894,16 @@ $(document).ready(function() {
             
             // Validar campos requeridos
             const nombres = document.getElementById('vend_nombres').value.trim();
+            const apellidos = document.getElementById('vend_apellidos').value.trim();
             const identificacion = document.getElementById('vend_identificacion').value.trim();
             const telefono = document.getElementById('vend_telefono').value.trim();
             const correo = document.getElementById('vend_correo').value.trim();
             
-            if (!nombres || !identificacion || !telefono || !correo) {
+            if (!nombres || !apellidos || !identificacion || !telefono || !correo) {
                 Swal.fire({ icon: 'warning', title: 'Campos incompletos', text: 'Por favor completa todos los campos obligatorios', confirmButtonColor: '#4169e1' });
                 return;
             }
+            
             
             // Validar correo electrónico
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -981,10 +983,18 @@ $(document).ready(function() {
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label style="color: #00d4ff; font-weight: 600;">Nombres y Apellidos *</label>
-                                <input type="text" name="nombres_apellidos_tercero" id="vend_nombres" class="form-control" required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(65, 105, 225, 0.3); color: white;">
+                                <label style="color: #00d4ff; font-weight: 600;">Nombres *</label>
+                                <input type="text" name="nombre1_tercero" id="vend_nombres" class="form-control" required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(65, 105, 225, 0.3); color: white;">
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label style="color: #00d4ff; font-weight: 600;">Apellidos *</label>
+                                <input type="text" name="apellido1_tercero" id="vend_apellidos" class="form-control" required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(65, 105, 225, 0.3); color: white;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label style="color: #00d4ff; font-weight: 600;">Identificación (CC) *</label>
@@ -1003,14 +1013,6 @@ $(document).ready(function() {
                             <div class="form-group">
                                 <label style="color: #00d4ff; font-weight: 600;">Correo Electrónico *</label>
                                 <input type="email" name="correo_tercero" id="vend_correo" class="form-control" required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(65, 105, 225, 0.3); color: white;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label style="color: #00d4ff; font-weight: 600;">Dirección</label>
-                                <input type="text" name="direccion_tercero" id="vend_direccion" class="form-control" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(65, 105, 225, 0.3); color: white;">
                             </div>
                         </div>
                     </div>

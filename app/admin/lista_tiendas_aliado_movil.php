@@ -25,14 +25,21 @@ $cod_base_caja          = "1";
 
 <?php include_once("../admin/03_modulo_css_visitante_intern_movil.php"); ?>
 <script src="../js/jquery-3.2.1.min_visitante.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
 /* Estilos adicionales para la cuadrícula de tiendas */
 .tiendas-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 1rem;
     padding: 0;
+}
+
+@media (max-width: 400px) {
+    .tiendas-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .tienda-card {
@@ -141,6 +148,44 @@ $cod_base_caja          = "1";
     background: linear-gradient(135deg, #ff6f00 0%, #ff9800 100%);
     color: white;
     box-shadow: 0 2px 8px rgba(255, 111, 0, 0.5);
+}
+
+.tienda-quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(65, 105, 225, 0.15);
+}
+
+.btn-quick-action {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.btn-quick-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-quick-action.btn-vendedor {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.btn-quick-action.btn-producto {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
 }
 
 .tienda-card-footer {
@@ -395,6 +440,17 @@ $cod_base_caja          = "1";
     margin-bottom: 0;
 }
 
+/* Form row para campos lado a lado */
+.form-row {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row > .form-group-tienda {
+    flex: 1;
+}
+
 /* Campos que ocupan ancho completo */
 .form-group-tienda.full-width {
     grid-column: 1 / -1;
@@ -476,6 +532,10 @@ $cod_base_caja          = "1";
     
     .form-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        flex-direction: column;
     }
     
     .modal-tienda-body {
@@ -951,6 +1011,611 @@ $cod_base_caja          = "1";
         font-size: 0.9rem;
     }
 }
+
+/* ============================================ */
+/* MODAL CONFIRMACIÓN POST-REGISTRO             */
+/* ============================================ */
+.confirm-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 2500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.confirm-modal-overlay.show {
+    display: flex;
+}
+
+.confirm-modal-box {
+    background: linear-gradient(135deg, #1a1d3a 0%, #0a0e27 100%);
+    border: 1px solid rgba(65, 105, 225, 0.3);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    padding: 0;
+    animation: confirmModalIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+}
+
+@keyframes confirmModalIn {
+    from { opacity: 0; transform: scale(0.8) translateY(30px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes successPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.confirm-success-header {
+    background: linear-gradient(135deg, #4169E1 0%, #3457D5 50%, #2B47B8 100%);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.confirm-success-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.confirm-success-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    animation: successPulse 2s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+}
+
+.confirm-success-icon i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.confirm-success-header h3 {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    position: relative;
+    z-index: 2;
+}
+
+.confirm-success-header p {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9rem;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.confirm-store-name {
+    background: rgba(255,255,255,0.15);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 700;
+    display: inline-block;
+    margin-top: 0.5rem;
+    position: relative;
+    z-index: 2;
+    color: white;
+}
+
+.confirm-body {
+    padding: 1.5rem;
+}
+
+.confirm-body-title {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+    font-weight: 500;
+}
+
+.confirm-actions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.confirm-action-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 16px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+}
+
+.confirm-action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.confirm-action-card.vendedores {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.confirm-action-card.vendedores:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.2) 100%);
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+.confirm-action-card.productos {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(234, 88, 12, 0.1) 100%);
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+.confirm-action-card.productos:hover {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(234, 88, 12, 0.2) 100%);
+    border-color: rgba(245, 158, 11, 0.5);
+}
+
+.confirm-action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.confirm-action-card.vendedores .confirm-action-icon {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.confirm-action-card.productos .confirm-action-icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+}
+
+.confirm-action-icon i {
+    font-size: 1.25rem;
+    color: white;
+}
+
+.confirm-action-text {
+    flex: 1;
+}
+
+.confirm-action-text h4 {
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin: 0 0 0.2rem 0;
+}
+
+.confirm-action-text p {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.78rem;
+    margin: 0;
+}
+
+.confirm-action-arrow {
+    color: rgba(255,255,255,0.3);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.confirm-action-card:hover .confirm-action-arrow {
+    color: rgba(255,255,255,0.7);
+    transform: translateX(3px);
+}
+
+.confirm-footer {
+    padding: 0 1.5rem 1.5rem;
+    text-align: center;
+}
+
+.confirm-skip-btn {
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.confirm-skip-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.8);
+    border-color: rgba(255,255,255,0.2);
+}
+
+/* ============================================ */
+/* MODAL REGISTRO VENDEDORES / PRODUCTOS        */
+/* ============================================ */
+.reg-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+.reg-modal-overlay.show { display: flex; }
+
+.reg-modal-container {
+    background: linear-gradient(135deg, #1a1d3a 0%, #0a0e27 100%);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 550px;
+    max-height: 92vh;
+    overflow-y: auto;
+    animation: confirmModalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.reg-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-radius: 20px 20px 0 0;
+}
+
+.reg-modal-header.vendedor-theme {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.reg-modal-header.producto-theme {
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+}
+
+.reg-modal-header h2 {
+    color: white;
+    font-size: 1.15rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.reg-modal-header .modal-close {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.reg-modal-body {
+    padding: 1.5rem;
+}
+
+.reg-modal-body .form-input,
+.reg-modal-body .form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.reg-modal-body .form-input:focus,
+.reg-modal-body .form-select:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+}
+
+.reg-modal-body.producto-theme .form-input:focus,
+.reg-modal-body.producto-theme .form-select:focus {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+.reg-modal-body .form-select {
+    appearance: none;
+    background-color: #1a1f2e;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    cursor: pointer;
+}
+
+.reg-modal-body .form-select option {
+    background-color: #1a1f2e;
+    color: white;
+    padding: 0.5rem;
+}
+
+.reg-modal-body .form-input::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+.reg-modal-body .form-group {
+    margin-bottom: 1rem;
+}
+
+.reg-modal-body .form-label {
+    display: block;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.reg-modal-body .form-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.reg-modal-body .form-row .form-group {
+    flex: 1;
+}
+
+.reg-submit-btn {
+    width: 100%;
+    color: white;
+    border: none;
+    padding: 0.9rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1.25rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.reg-submit-btn.vendedor-theme {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.reg-submit-btn.vendedor-theme:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.reg-submit-btn.producto-theme {
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.reg-submit-btn.producto-theme:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+}
+
+/* Lista de items registrados */
+.items-registrados {
+    margin-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 1rem;
+}
+
+.items-registrados-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.items-registrados-title .badge-count {
+    background: rgba(255,255,255,0.15);
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.item-registrado {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.item-registrado-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.item-registrado-icon.vendedor-bg {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));
+    color: #a78bfa;
+}
+
+.item-registrado-icon.producto-bg {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(234, 88, 12, 0.3));
+    color: #fbbf24;
+}
+
+.item-registrado-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-registrado-info h5 {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0 0 0.15rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-registrado-info span {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.75rem;
+}
+
+.item-registrado-check {
+    color: #22c55e;
+    font-size: 1rem;
+}
+
+.reg-modal-footer {
+    padding: 0 1.5rem 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.reg-footer-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: all 0.3s ease;
+}
+
+.reg-footer-btn.back-btn {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.reg-footer-btn.back-btn:hover {
+    background: rgba(255,255,255,0.12);
+    color: white;
+}
+
+.reg-footer-btn.finish-btn {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.reg-footer-btn.finish-btn:hover {
+    background: rgba(34, 197, 94, 0.25);
+}
+
+.reg-tienda-badge {
+    background: rgba(255,255,255,0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.8);
+}
+
+.reg-tienda-badge i {
+    color: #4169E1;
+}
+
+.reg-tienda-badge strong {
+    color: white;
+}
+
+.reg-modal-body .file-input-wrapper {
+    background: rgba(255,255,255,0.05);
+    border: 2px dashed rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 0.75rem;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.reg-modal-body .file-input-wrapper:hover {
+    border-color: rgba(245, 158, 11, 0.4);
+    background: rgba(255,255,255,0.08);
+}
+
+.reg-modal-body .file-input-wrapper input[type="file"] {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.reg-modal-body .file-input-icon {
+    font-size: 1.2rem;
+    color: #f59e0b;
+    margin-bottom: 0.2rem;
+}
+
+.reg-modal-body .file-input-text {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.7);
+}
+
+.swal-high-zindex {
+    z-index: 9999 !important;
+}
+
+.swal-high-zindex .swal2-container {
+    z-index: 9999 !important;
+}
+
+.swal2-container.swal-high-zindex {
+    z-index: 9999 !important;
+}
 </style>
 </head>
 <body>
@@ -962,6 +1627,15 @@ $sql_count_tiendas = "SELECT COUNT(*) as total_tiendas FROM tbl15_tienda WHERE (
 $consulta_count = mysqli_query($conectar, $sql_count_tiendas);
 $datos_count = mysqli_fetch_assoc($consulta_count);
 $total_tiendas_aliado = $datos_count['total_tiendas'];
+?>
+<?php
+// Consulta de tipos de sector para el formulario de registro de tienda
+$sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
+$res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
+// Obtener datos del aliado para pre-llenar el formulario de registro de tienda
+$sql_datos_aliado = "SELECT identificacion_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, cod_departamento, cod_municipio, cod_tipo_sector FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador'";
+$res_datos_aliado = mysqli_query($conectar, $sql_datos_aliado);
+$datos_aliado = ($res_datos_aliado && mysqli_num_rows($res_datos_aliado) > 0) ? mysqli_fetch_assoc($res_datos_aliado) : array();
 ?>
 
 <main class="container py-4 mb-5">
@@ -1007,6 +1681,12 @@ $total_tiendas_aliado = $datos_count['total_tiendas'];
                 $productos_activos = $datos_activos['total'];
                 
                 $productos_inactivos = $total_productos - $productos_activos;
+
+                // Contar vendedores de esta tienda
+                $sql_total_vend = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE cod_seguridad = '2' AND cod_aliado_estrategico = '$cod_administrador' AND cod_estado_activacion_usuario = '1'";
+                $consulta_total_vend = mysqli_query($conectar, $sql_total_vend);
+                $datos_total_vend = mysqli_fetch_assoc($consulta_total_vend);
+                $total_vendedores = $datos_total_vend['total'];
         ?>
         <div class="tienda-card">
             <div class="tienda-card-header">
@@ -1028,21 +1708,34 @@ $total_tiendas_aliado = $datos_count['total_tiendas'];
                     <p class="tienda-info"><i class="fa fa-phone"></i><?php echo $telefono_tienda; ?></p>
                 <?php } ?>
                 <span class="tienda-estado <?php echo $estado_class; ?>"><?php echo $estado_text; ?></span>
+                <?php if(!empty($tienda['fecha_creacion'])): ?>
+                <p class="tienda-info"><i class="fa fa-calendar-plus" style="color: #f59e0b;"></i><?php echo date('d/m/Y', strtotime($tienda['fecha_creacion'])); ?></p>
+                <?php endif; ?>
                 
-                <!-- Estadísticas de productos -->
+                <!-- Estadísticas de productos y vendedores -->
                 <div class="tienda-stats">
                     <div class="stat-item stat-total">
                         <span class="stat-number"><?php echo $total_productos; ?></span>
-                        <span class="stat-label">Total</span>
+                        <span class="stat-label">Productos</span>
                     </div>
                     <div class="stat-item stat-activos">
                         <span class="stat-number"><?php echo $productos_activos; ?></span>
                         <span class="stat-label">Activos</span>
                     </div>
                     <div class="stat-item stat-inactivos">
-                        <span class="stat-number"><?php echo $productos_inactivos; ?></span>
-                        <span class="stat-label">Inactivos</span>
+                        <span class="stat-number"><?php echo $total_vendedores; ?></span>
+                        <span class="stat-label">Vendedores</span>
                     </div>
+                </div>
+
+                <!-- Botones de acción rápida -->
+                <div class="tienda-quick-actions">
+                    <button type="button" class="btn-quick-action btn-vendedor" onclick="abrirRegistroVendedorDirecto(<?php echo $cod_tienda_item; ?>, '<?php echo addslashes($nombre_tienda); ?>')">
+                        <i class="fa fa-user-plus"></i> Registrar Vendedor
+                    </button>
+                    <button type="button" class="btn-quick-action btn-producto" onclick="abrirRegistroProductoDirecto(<?php echo $cod_tienda_item; ?>, '<?php echo addslashes($nombre_tienda); ?>')">
+                        <i class="fa fa-box-open"></i> Registrar Producto
+                    </button>
                 </div>
             </div>
             <div class="tienda-card-footer">
@@ -1090,7 +1783,7 @@ $total_tiendas_aliado = $datos_count['total_tiendas'];
     <div class="modal-tienda-content">
 
         <div class="modal-tienda-header">
-            <h3><i class="fa fa-store"></i> Registrar Nueva Tienda</h3>
+            <h3><i class="fa fa-store"></i> Nueva Tienda</h3>
             <button class="modal-close" onclick="cerrarModalTienda()">&times;</button>
         </div>
 
@@ -1106,116 +1799,143 @@ $total_tiendas_aliado = $datos_count['total_tiendas'];
                 <!-- SECCIÓN: Información Básica -->
                 <div class="form-section-title"><i class="fa fa-info-circle"></i> Información Básica</div>
                 
-                <div class="form-group-tienda">
+                <div class="form-group-tienda full-width">
                     <label for="nombre_tienda"><i class="fa fa-building"></i> Nombre de la Tienda <span class="required-star">*</span></label>
                     <input type="text" id="nombre_tienda" name="nombre_tienda" placeholder="Ej: Mi Tienda Principal" required>
                 </div>
-                
-                <div class="form-group-tienda">
-                    <label for="identificacion_tercero"><i class="fa fa-id-card"></i> NIT de la Tienda</label>
-                    <input type="text" id="identificacion_tercero" name="identificacion_tercero" placeholder="Ej: 900123456-7">
+
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="identificacion_tercero"><i class="fa fa-id-card"></i> NIT / Identificación</label>
+                        <input type="text" id="identificacion_tercero" name="identificacion_tercero" placeholder="Ej: 900123456-7" value="<?php echo isset($datos_aliado['identificacion_tercero']) ? htmlspecialchars($datos_aliado['identificacion_tercero']) : ''; ?>">
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="telefono_tienda"><i class="fa fa-phone"></i> Teléfono</label>
+                        <input type="text" id="telefono_tienda" name="telefono_tienda" placeholder="Ej: 3001234567" value="<?php echo isset($datos_aliado['telefono1_tercero']) ? htmlspecialchars($datos_aliado['telefono1_tercero']) : ''; ?>">
+                    </div>
                 </div>
 
-                
-                <div class="form-group-tienda">
-                    <label for="direccion_tienda"><i class="fa fa-map-marker"></i> Dirección</label>
-                    <input type="text" id="direccion_tienda" name="direccion_tienda" placeholder="Ej: Calle 123 #45-67">
-                </div>
-                
-                <div class="form-group-tienda">
-                    <label for="telefono_tienda"><i class="fa fa-phone"></i> Teléfono</label>
-                    <input type="text" id="telefono_tienda" name="telefono_tienda" placeholder="Ej: 3001234567">
-                </div>
-                
-                <div class="form-group-tienda">
+                <div class="form-group-tienda full-width">
                     <label for="correo_tercero"><i class="fa fa-envelope"></i> Correo Electrónico</label>
-                    <input type="email" id="correo_tercero" name="correo_tercero" placeholder="Ej: tienda@ejemplo.com">
+                    <input type="email" id="correo_tercero" name="correo_tercero" placeholder="Ej: tienda@ejemplo.com" value="<?php echo isset($datos_aliado['correo_tercero']) ? htmlspecialchars($datos_aliado['correo_tercero']) : ''; ?>">
                 </div>
                 
-                <div class="form-group-tienda">
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="cod_departamento"><i class="fa fa-map"></i> Departamento <span class="required-star">*</span></label>
+                        <select id="cod_departamento" name="cod_departamento" onchange="cargarMunicipiosNuevaTienda()" required><option value="">Seleccione un departamento</option></select>
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="cod_municipio"><i class="fa fa-map-pin"></i> Municipio <span class="required-star">*</span></label>
+                        <select id="cod_municipio" name="cod_municipio" required><option value="">Seleccione primero un departamento</option></select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="direccion_tienda"><i class="fa fa-map-marker"></i> Dirección <span class="required-star">*</span></label>
+                        <input type="text" id="direccion_tienda" name="direccion_tienda" placeholder="Ej: Calle 123 #45-67" required value="<?php echo isset($datos_aliado['direccion_tercero']) ? htmlspecialchars($datos_aliado['direccion_tercero']) : ''; ?>">
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="barrio_tercero"><i class="fa fa-map-signs"></i> Barrio <span class="required-star">*</span></label>
+                        <input type="text" id="barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel..." required value="<?php echo isset($datos_aliado['barrio_tercero']) ? htmlspecialchars($datos_aliado['barrio_tercero']) : ''; ?>">
+                    </div>
+                </div>
+
+                <!-- Ubicación GPS -->
+                <div class="form-group-tienda full-width">
                     <label for="ubicacion_gps_tienda"><i class="fa fa-map-marker-alt"></i> Ubicación GPS</label>
                     <div class="gps-input-wrapper">
                         <input type="text" id="ubicacion_gps_tienda" name="ubicacion_gps_tienda" placeholder="Ej: 4.7110,-74.0721" readonly>
-                        <button type="button" class="btn-gps" onclick="obtenerUbicacionGPS('ubicacion_gps_tienda', 'gps_status_nueva')">
-                            <i class="fa fa-crosshairs"></i> Obtener
-                        </button>
+                        <button type="button" class="btn-gps" onclick="obtenerUbicacionGPS('ubicacion_gps_tienda', 'gps_status_registro')"><i class="fa fa-crosshairs"></i> Obtener</button>
                     </div>
-                    <div id="gps_status_nueva" class="gps-status"></div>
+                    <div id="gps_status_registro" class="gps-status"></div>
+                </div>
+                
+                <!-- SECCIÓN: Información del Negocio -->
+                <div class="form-section-title"><i class="fa fa-briefcase"></i> Información del Negocio</div>
+
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="cod_tipo_sector"><i class="fa fa-industry"></i> Tipo de Sector</label>
+                        <select id="cod_tipo_sector" name="cod_tipo_sector">
+                            <option value="">-- Seleccione --</option>
+                            <?php 
+                            if (isset($res_tipo_sector)) { mysqli_data_seek($res_tipo_sector, 0); }
+                            while ($tipo_sector = mysqli_fetch_assoc($res_tipo_sector)): ?>
+                            <option value="<?php echo $tipo_sector['cod_tipo_sector']; ?>" title="<?php echo htmlspecialchars($tipo_sector['descripcion_tipo_sector']); ?>"><?php echo $tipo_sector['nombre_tipo_sector']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="existe_rues"><i class="fa fa-clipboard-check"></i> ¿Existe en RUES?</label>
+                        <select id="existe_rues" name="existe_rues">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group-tienda">
-                    <label for="cod_departamento"><i class="fa fa-map"></i> Departamento <span class="required-star">*</span></label>
-                    <select id="cod_departamento" name="cod_departamento" onchange="cargarMunicipiosNuevaTienda()" required>
-                        <option value="">Seleccione un departamento</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="venta_presencial"><i class="fa fa-shopping-bag"></i> ¿Venta Presencial?</label>
+                        <select id="venta_presencial" name="venta_presencial">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="venta_online"><i class="fa fa-globe"></i> ¿Venta Online?</label>
+                        <select id="venta_online" name="venta_online">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
                 </div>
-                
-                <div class="form-group-tienda">
-                    <label for="cod_municipio"><i class="fa fa-map-pin"></i> Municipio <span class="required-star">*</span></label>
-                    <select id="cod_municipio" name="cod_municipio" required>
-                        <option value="">Seleccione primero un departamento</option>
-                    </select>
+
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="nombre_plataforma_ecommerce"><i class="fa fa-shopping-cart"></i> Plataforma E-commerce</label>
+                        <input type="text" id="nombre_plataforma_ecommerce" name="nombre_plataforma_ecommerce" placeholder="Ej: Shopify, WooCommerce...">
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="nombre_sistema_contable"><i class="fa fa-calculator"></i> Sistema Contable</label>
+                        <input type="text" id="nombre_sistema_contable" name="nombre_sistema_contable" placeholder="Ej: Siigo, World Office, Alegra...">
+                    </div>
                 </div>
-                
-                <!-- SECCIÓN: Documentación Legal -->
-                <div class="form-section-title"><i class="fa fa-folder-open"></i> Documentación Legal</div>
-                
-                <div class="form-group-tienda">
-                    <label for="rut_tienda"><i class="fa fa-file-pdf"></i> RUT de la Tienda <span class="required-star">*</span></label>
-                    <input type="file" id="rut_tienda" name="url_documentacion_rut_tienda" accept=".pdf,.jpg,.jpeg,.png" required>
-                    <div id="preview_rut_tienda" class="file-preview-container"></div>
-                </div>
-                
-                <div class="form-group-tienda">
-                    <label for="camaracomercio_tienda"><i class="fa fa-file-pdf"></i> Cámara de Comercio <span class="required-star">*</span></label>
-                    <input type="file" id="camaracomercio_tienda" name="url_documentacion_camaracomercio_tienda" accept=".pdf,.jpg,.jpeg,.png" required>
-                    <div id="preview_camaracomercio_tienda" class="file-preview-container"></div>
-                </div>
-<!--
-                <div class="form-group-tienda">
-                    <label for="contratofirma_tienda"><i class="fa fa-file-signature"></i> Contrato Firmado <span class="required-star">*</span></label>
-                    <input type="file" id="contratofirma_tienda" name="url_documentacion_contratofirma_tienda" accept=".pdf,.jpg,.jpeg,.png" required>
-                    <div id="preview_contratofirma_tienda" class="file-preview-container"></div>
-                </div>
--->
-                <div class="form-group-tienda">
-                    <label for="extra1_tienda"><i class="fa fa-file-alt"></i> Documentación Extra (Opcional)</label>
-                    <input type="file" id="extra1_tienda" name="url_documentacion_extra1_tienda" accept=".pdf,.jpg,.jpeg,.png">
-                    <div id="preview_extra1_tienda" class="file-preview-container"></div>
-                </div>
-                
+
                 <!-- SECCIÓN: Imágenes del Establecimiento -->
                 <div class="form-section-title"><i class="fa fa-camera"></i> Imágenes del Establecimiento</div>
 
-                <div class="form-group-tienda">
-                    <label for="imagen_tienda"><i class="fa fa-image"></i> Imagen / Logo de la Tienda</label>
-                    <input type="file" id="imagen_tienda" name="imagen_tienda" accept="image/*">
-                    <img id="preview_img_tienda" src="" class="preview-img-tienda" alt="Vista previa">
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="imagen_tienda"><i class="fa fa-image"></i> Imagen / Logo de la Tienda</label>
+                        <input type="file" id="imagen_tienda" name="imagen_tienda" accept="image/*">
+                        <img id="preview_img_tienda" src="" class="preview-img-tienda" alt="Vista previa">
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="img_fachada_tienda"><i class="fa fa-store-alt"></i> Fachada</label>
+                        <input type="file" id="img_fachada_tienda" name="url_img_fachada_tienda" accept="image/*">
+                        <img id="preview_img_fachada" src="" class="preview-img-tienda" alt="Vista previa fachada">
+                    </div>
                 </div>
 
-                <div class="form-group-tienda">
-                    <label for="img_fachada_tienda"><i class="fa fa-store-alt"></i> Imagen de la Fachada <span class="required-star">*</span></label>
-                    <input type="file" id="img_fachada_tienda" name="url_img_fachada_tienda" accept="image/*" required>
-                    <img id="preview_img_fachada" src="" class="preview-img-tienda" alt="Vista previa fachada">
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="img_interna_tienda"><i class="fa fa-door-open"></i> Interna</label>
+                        <input type="file" id="img_interna_tienda" name="url_img_interna_tienda" accept="image/*">
+                        <img id="preview_img_interna" src="" class="preview-img-tienda" alt="Vista previa interna">
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="img_selfieadmin_tienda"><i class="fa fa-user-circle"></i> Selfie con Admin</label>
+                        <input type="file" id="img_selfieadmin_tienda" name="url_img_selfieadmin_tienda" accept="image/*">
+                        <img id="preview_img_selfieadmin" src="" class="preview-img-tienda" alt="Vista previa selfie">
+                    </div>
                 </div>
                 
-                <div class="form-group-tienda">
-                    <label for="img_interna_tienda"><i class="fa fa-door-open"></i> Imagen Interna de la Tienda <span class="required-star">*</span></label>
-                    <input type="file" id="img_interna_tienda" name="url_img_interna_tienda" accept="image/*" required>
-                    <img id="preview_img_interna" src="" class="preview-img-tienda" alt="Vista previa interna">
-                </div>
-                
-                <div class="form-group-tienda">
-                    <label for="img_selfieadmin_tienda"><i class="fa fa-user-circle"></i> Selfie del Administrador en la Tienda <span class="required-star">*</span></label>
-                    <input type="file" id="img_selfieadmin_tienda" name="url_img_selfieadmin_tienda" accept="image/*" required>
-                    <img id="preview_img_selfieadmin" src="" class="preview-img-tienda" alt="Vista previa selfie">
-                </div>
-                
-                <div class="form-group-tienda">
-                    <label for="img_otraopcional_tienda"><i class="fa fa-image"></i> Otra Imagen (Opcional)</label>
-                    <input type="file" id="img_otraopcional_tienda" name="url_img_otraopcional_tienda" accept="image/*">
-                    <img id="preview_img_otraopcional" src="" class="preview-img-tienda" alt="Vista previa opcional">
-                </div>
             </div>
             <div class="modal-tienda-footer">
                 <button type="button" class="btn-modal btn-modal-secondary" onclick="cerrarModalTienda()">Cancelar</button>
@@ -1229,7 +1949,7 @@ $total_tiendas_aliado = $datos_count['total_tiendas'];
 
 <script>
 // Cargar departamentos en el modal de nueva tienda
-function cargarDepartamentosNuevaTienda() {
+function cargarDepartamentosNuevaTienda(selectedDept, selectedMuni) {
     $.ajax({
         url: '../admin/obtener_departamentos_ajax.php',
         type: 'GET',
@@ -1240,9 +1960,14 @@ function cargarDepartamentosNuevaTienda() {
                 select.empty();
                 select.append('<option value="">Seleccione un departamento *</option>');
                 $.each(response.departamentos, function(index, dept) {
-                    select.append('<option value="' + dept.cod_departamento + '">' +
+                    var isSelected = (selectedDept && dept.cod_departamento == selectedDept) ? ' selected' : '';
+                    select.append('<option value="' + dept.cod_departamento + '"' + isSelected + '>' +
                                 dept.nombre_departamento + '</option>');
                 });
+                // Si hay departamento preseleccionado, cargar sus municipios
+                if (selectedDept) {
+                    cargarMunicipiosNuevaTiendaConPreseleccion(selectedDept, selectedMuni);
+                }
             } else {
                 console.error('Error al cargar departamentos:', response.mensaje);
             }
@@ -1279,6 +2004,29 @@ function cargarMunicipiosNuevaTienda() {
         },
         error: function() {
             console.error('Error al cargar municipios');
+        }
+    });
+}
+
+// Cargar municipios con preselección
+function cargarMunicipiosNuevaTiendaConPreseleccion(codDepartamento, selectedMuni) {
+    var selectMuni = $('#cod_municipio');
+    selectMuni.empty();
+    selectMuni.append('<option value="">Seleccione un municipio *</option>');
+    if (!codDepartamento) return;
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php',
+        type: 'GET',
+        data: { cod_departamento: codDepartamento },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                $.each(response.municipios, function(index, muni) {
+                    var isSelected = (selectedMuni && muni.cod_municipio == selectedMuni) ? ' selected' : '';
+                    selectMuni.append('<option value="' + muni.cod_municipio + '"' + isSelected + '>' +
+                                    muni.nombre_municipio + '</option>');
+                });
+            }
         }
     });
 }
@@ -1350,24 +2098,38 @@ function abrirModalTienda() {
     document.getElementById('alertSuccess').style.display = 'none';
     document.getElementById('alertError').style.display = 'none';
     
-    // Cargar departamentos
-    cargarDepartamentosNuevaTienda();
+    // Restaurar valores pre-llenados del aliado (el reset los borra)
+    var aliadoData = {
+        identificacion_tercero: '<?php echo isset($datos_aliado["identificacion_tercero"]) ? addslashes($datos_aliado["identificacion_tercero"]) : ""; ?>',
+        telefono1_tercero: '<?php echo isset($datos_aliado["telefono1_tercero"]) ? addslashes($datos_aliado["telefono1_tercero"]) : ""; ?>',
+        correo_tercero: '<?php echo isset($datos_aliado["correo_tercero"]) ? addslashes($datos_aliado["correo_tercero"]) : ""; ?>',
+        direccion_tercero: '<?php echo isset($datos_aliado["direccion_tercero"]) ? addslashes($datos_aliado["direccion_tercero"]) : ""; ?>',
+        barrio_tercero: '<?php echo isset($datos_aliado["barrio_tercero"]) ? addslashes($datos_aliado["barrio_tercero"]) : ""; ?>',
+        cod_departamento: '<?php echo isset($datos_aliado["cod_departamento"]) ? $datos_aliado["cod_departamento"] : ""; ?>',
+        cod_municipio: '<?php echo isset($datos_aliado["cod_municipio"]) ? $datos_aliado["cod_municipio"] : ""; ?>',
+        cod_tipo_sector: '<?php echo isset($datos_aliado["cod_tipo_sector"]) ? $datos_aliado["cod_tipo_sector"] : ""; ?>'
+    };
+    
+    document.getElementById('identificacion_tercero').value = aliadoData.identificacion_tercero;
+    document.getElementById('telefono_tienda').value = aliadoData.telefono1_tercero;
+    document.getElementById('correo_tercero').value = aliadoData.correo_tercero;
+    document.getElementById('direccion_tienda').value = aliadoData.direccion_tercero;
+    document.getElementById('barrio_tercero').value = aliadoData.barrio_tercero;
+    if (aliadoData.cod_tipo_sector) {
+        document.getElementById('cod_tipo_sector').value = aliadoData.cod_tipo_sector;
+    }
+    
+    // Cargar departamentos con preselección del aliado
+    cargarDepartamentosNuevaTienda(aliadoData.cod_departamento, aliadoData.cod_municipio);
     
     // Ocultar previews de imágenes
-    var imagePreviews = ['preview_img_tienda', 'preview_img_fachada', 'preview_img_interna', 'preview_img_selfieadmin', 'preview_img_otraopcional'];
+    var imagePreviews = ['preview_img_tienda', 'preview_img_fachada', 'preview_img_interna', 'preview_img_selfieadmin'];
     imagePreviews.forEach(function(id) {
         var el = document.getElementById(id);
         if (el) {
             el.style.display = 'none';
             el.src = '';
         }
-    });
-    
-    // Limpiar previews de documentos
-    var docPreviews = ['preview_rut_tienda', 'preview_camaracomercio_tienda', 'preview_contratofirma_tienda', 'preview_extra1_tienda'];
-    docPreviews.forEach(function(id) {
-        var el = document.getElementById(id);
-        if (el) el.innerHTML = '';
     });
 }
 
@@ -1474,13 +2236,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setupImagePreview('img_fachada_tienda', 'preview_img_fachada');
     setupImagePreview('img_interna_tienda', 'preview_img_interna');
     setupImagePreview('img_selfieadmin_tienda', 'preview_img_selfieadmin');
-    setupImagePreview('img_otraopcional_tienda', 'preview_img_otraopcional');
-    
-    // Previews de documentos - Modal Nueva Tienda
-    setupDocPreview('rut_tienda', 'preview_rut_tienda');
-    setupDocPreview('camaracomercio_tienda', 'preview_camaracomercio_tienda');
-    setupDocPreview('contratofirma_tienda', 'preview_contratofirma_tienda');
-    setupDocPreview('extra1_tienda', 'preview_extra1_tienda');
     
     // Previews de imágenes - Modal Editar Tienda
     setupImagePreview('edit_imagen_tienda', 'preview_img_tienda_edit');
@@ -1577,12 +2332,16 @@ function registrarTienda(event) {
             cerrarModalTienda();
             
             if (response.success) {
-                mostrarModalNotificacion(
-                    'success',
-                    '¡Tienda Registrada!',
-                    response.message || 'La tienda se registró correctamente. La página se recargará para mostrar los cambios.',
-                    true // recargar al cerrar
-                );
+                // Guardar datos de la tienda registrada para usar en los modales de vendedores/productos
+                window._tiendaRegistrada = {
+                    cod_tienda: response.cod_tienda,
+                    nombre_tienda: document.getElementById('nombre_tienda').value.trim()
+                };
+                // Resetear listas de items registrados
+                window._vendedoresRegistrados = [];
+                window._productosRegistrados = [];
+                // Mostrar modal de confirmación post-registro
+                abrirModalConfirmacion(window._tiendaRegistrada.nombre_tienda);
             } else {
                 mostrarModalNotificacion(
                     'error',
@@ -1654,10 +2413,19 @@ function abrirModalEditarTienda(codTienda) {
                 document.getElementById('edit_nombre_tienda').value = tienda.nombre_tienda;
                 document.getElementById('edit_identificacion_tercero').value = tienda.identificacion_tercero || '';
                 document.getElementById('edit_direccion_tienda').value = tienda.direccion_tercero || '';
+                document.getElementById('edit_barrio_tercero').value = tienda.barrio_tercero || '';
                 document.getElementById('edit_telefono_tienda').value = tienda.telefono1_tercero || '';
                 document.getElementById('edit_correo_tercero').value = tienda.correo_tercero || '';
                 document.getElementById('edit_ubicacion_gps_tienda').value = tienda.ubicacion_gps_tienda || '';
                 document.getElementById('edit_cod_estado').value = tienda.cod_estado;
+                
+                // Cargar campos de Información del Negocio
+                if (tienda.cod_tipo_sector) document.getElementById('edit_cod_tipo_sector').value = tienda.cod_tipo_sector;
+                if (tienda.existe_rues) document.getElementById('edit_existe_rues').value = tienda.existe_rues;
+                if (tienda.venta_presencial) document.getElementById('edit_venta_presencial').value = tienda.venta_presencial;
+                if (tienda.venta_online) document.getElementById('edit_venta_online').value = tienda.venta_online;
+                document.getElementById('edit_nombre_plataforma_ecommerce').value = tienda.nombre_plataforma_ecommerce || '';
+                document.getElementById('edit_nombre_sistema_contable').value = tienda.nombre_sistema_contable || '';
                 
                 // Cargar departamentos y municipios con valores guardados
                 cargarDepartamentosEditarTienda(tienda.cod_departamento, tienda.cod_municipio);
@@ -1909,6 +2677,165 @@ function mostrarNotificacionCopiado(nombreTienda) {
         }, 300);
     }, 2500);
 }
+
+// =====================================================
+// FUNCIONES PARA MODAL DE CONFIRMACIÓN POST-REGISTRO
+// =====================================================
+function abrirModalConfirmacion(nombreTienda) {
+    document.getElementById('confirmNombreTienda').textContent = nombreTienda;
+    document.getElementById('modalConfirmacionRegistro').classList.add('show');
+}
+
+function cerrarModalConfirmacion() {
+    document.getElementById('modalConfirmacionRegistro').classList.remove('show');
+}
+
+function cerrarConfirmacionYRecargar() {
+    cerrarModalConfirmacion();
+    location.reload();
+}
+
+// Contadores para items registrados en esta sesión
+window._vendedoresRegistrados = [];
+window._productosRegistrados = [];
+
+function irCrearVendedores() {
+    cerrarModalConfirmacion();
+    if (window._tiendaRegistrada && window._tiendaRegistrada.cod_tienda) {
+        document.getElementById('vendedor_cod_tienda').value = window._tiendaRegistrada.cod_tienda;
+        document.getElementById('vendedorNombreTienda').textContent = window._tiendaRegistrada.nombre_tienda;
+        document.getElementById('formRegistroVendedor').reset();
+        document.getElementById('vendedor_cod_tienda').value = window._tiendaRegistrada.cod_tienda;
+        document.getElementById('modalRegistroVendedor').classList.add('show');
+    } else {
+        location.reload();
+    }
+}
+
+function irCrearProductos() {
+    cerrarModalConfirmacion();
+    if (window._tiendaRegistrada && window._tiendaRegistrada.cod_tienda) {
+        document.getElementById('producto_cod_tienda').value = window._tiendaRegistrada.cod_tienda;
+        document.getElementById('productoNombreTienda').textContent = window._tiendaRegistrada.nombre_tienda;
+        document.getElementById('formRegistroProducto').reset();
+        document.getElementById('producto_cod_tienda').value = window._tiendaRegistrada.cod_tienda;
+        var previewImg = document.getElementById('preview_producto_img');
+        if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+        document.getElementById('modalRegistroProducto').classList.add('show');
+    } else {
+        location.reload();
+    }
+}
+
+// Abrir modal de registro de vendedor directamente desde la tarjeta de tienda
+function abrirRegistroVendedorDirecto(codTienda, nombreTienda) {
+    document.getElementById('vendedor_cod_tienda').value = codTienda;
+    document.getElementById('vendedorNombreTienda').textContent = nombreTienda;
+    document.getElementById('formRegistroVendedor').reset();
+    document.getElementById('vendedor_cod_tienda').value = codTienda;
+    document.getElementById('modalRegistroVendedor').classList.add('show');
+}
+
+// Abrir modal de registro de producto directamente desde la tarjeta de tienda
+function abrirRegistroProductoDirecto(codTienda, nombreTienda) {
+    document.getElementById('producto_cod_tienda').value = codTienda;
+    document.getElementById('productoNombreTienda').textContent = nombreTienda;
+    document.getElementById('formRegistroProducto').reset();
+    document.getElementById('producto_cod_tienda').value = codTienda;
+    var previewImg = document.getElementById('preview_producto_img');
+    if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+    document.getElementById('modalRegistroProducto').classList.add('show');
+}
+
+function cerrarModalVendedor() {
+    document.getElementById('modalRegistroVendedor').classList.remove('show');
+}
+
+function cerrarModalProducto() {
+    document.getElementById('modalRegistroProducto').classList.remove('show');
+}
+
+function volverAConfirmacion() {
+    cerrarModalVendedor();
+    abrirModalConfirmacion(window._tiendaRegistrada ? window._tiendaRegistrada.nombre_tienda : '');
+}
+
+function volverAConfirmacionDesdeProducto() {
+    cerrarModalProducto();
+    abrirModalConfirmacion(window._tiendaRegistrada ? window._tiendaRegistrada.nombre_tienda : '');
+}
+
+function finalizarYRecargar() {
+    cerrarModalVendedor();
+    cerrarModalProducto();
+    cerrarModalConfirmacion();
+    location.reload();
+}
+
+function previewImageProducto(input) {
+    var preview = document.getElementById('preview_producto_img');
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.src = '';
+        preview.style.display = 'none';
+    }
+}
+
+// Agregar vendedor registrado a la lista visual
+function agregarVendedorALista(nombre, identificacion, usuario) {
+    window._vendedoresRegistrados.push({ nombre: nombre, identificacion: identificacion });
+    var container = document.getElementById('listaVendedoresRegistrados');
+    var list = document.getElementById('vendedoresRegistradosList');
+    var counter = document.getElementById('contadorVendedores');
+    container.style.display = 'block';
+    counter.textContent = window._vendedoresRegistrados.length;
+    
+    var html = '<div class="item-registrado">' +
+        '<div class="item-registrado-icon vendedor-bg"><i class="fa fa-user"></i></div>' +
+        '<div class="item-registrado-info">' +
+            '<h5>' + nombre + '</h5>' +
+            '<span>CC: ' + identificacion + (usuario ? ' | Usuario: ' + usuario : '') + '</span>' +
+        '</div>' +
+        '<i class="fa fa-check-circle item-registrado-check"></i>' +
+    '</div>';
+    list.insertAdjacentHTML('beforeend', html);
+}
+
+// Agregar producto registrado a la lista visual
+function agregarProductoALista(nombre, codigo, precioVenta) {
+    window._productosRegistrados.push({ nombre: nombre, codigo: codigo });
+    var container = document.getElementById('listaProductosRegistrados');
+    var list = document.getElementById('productosRegistradosList');
+    var counter = document.getElementById('contadorProductos');
+    container.style.display = 'block';
+    counter.textContent = window._productosRegistrados.length;
+    
+    var precioFormateado = Number(precioVenta).toLocaleString('es-CO');
+    var html = '<div class="item-registrado">' +
+        '<div class="item-registrado-icon producto-bg"><i class="fa fa-cube"></i></div>' +
+        '<div class="item-registrado-info">' +
+            '<h5>' + nombre + '</h5>' +
+            '<span>Código: ' + codigo + ' | $' + precioFormateado + '</span>' +
+        '</div>' +
+        '<i class="fa fa-check-circle item-registrado-check"></i>' +
+    '</div>';
+    list.insertAdjacentHTML('beforeend', html);
+}
+
+// ========== FORMATEAR PRECIOS CON SEPARADOR DE MILES ==========
+function formatearPrecio(input) {
+    var valor = input.value.replace(/[^\d]/g, '');
+    if (valor === '') { input.value = ''; return; }
+    var numero = parseInt(valor, 10);
+    input.value = '$ ' + numero.toLocaleString('es-CO');
+}
+
 </script>
 
 <!-- Modal para editar tienda -->
@@ -1947,6 +2874,11 @@ function mostrarNotificacionCopiado(nombreTienda) {
                 </div>
                 
                 <div class="form-group-tienda">
+                    <label for="edit_barrio_tercero"><i class="fa fa-map-signs"></i> Barrio</label>
+                    <input type="text" id="edit_barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
+                </div>
+                
+                <div class="form-group-tienda">
                     <label for="edit_telefono_tienda"><i class="fa fa-phone"></i> Teléfono</label>
                     <input type="text" id="edit_telefono_tienda" name="telefono_tienda" placeholder="Ej: 3001234567">
                 </div>
@@ -1979,6 +2911,61 @@ function mostrarNotificacionCopiado(nombreTienda) {
                     <div id="gps_status_editar" class="gps-status"></div>
                 </div>
                 
+                <!-- SECCIÓN: Información del Negocio -->
+                <div class="form-section-title"><i class="fa fa-briefcase"></i> Información del Negocio</div>
+
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="edit_cod_tipo_sector"><i class="fa fa-industry"></i> Tipo de Sector</label>
+                        <select id="edit_cod_tipo_sector" name="cod_tipo_sector">
+                            <option value="">-- Seleccione --</option>
+                            <?php 
+                            if (isset($res_tipo_sector)) { mysqli_data_seek($res_tipo_sector, 0); }
+                            while ($tipo_sector = mysqli_fetch_assoc($res_tipo_sector)): ?>
+                            <option value="<?php echo $tipo_sector['cod_tipo_sector']; ?>" title="<?php echo htmlspecialchars($tipo_sector['descripcion_tipo_sector']); ?>"><?php echo $tipo_sector['nombre_tipo_sector']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="edit_existe_rues"><i class="fa fa-clipboard-check"></i> ¿Existe en RUES?</label>
+                        <select id="edit_existe_rues" name="existe_rues">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="edit_venta_presencial"><i class="fa fa-shopping-bag"></i> ¿Venta Presencial?</label>
+                        <select id="edit_venta_presencial" name="venta_presencial">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="edit_venta_online"><i class="fa fa-globe"></i> ¿Venta Online?</label>
+                        <select id="edit_venta_online" name="venta_online">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-tienda">
+                        <label for="edit_nombre_plataforma_ecommerce"><i class="fa fa-shopping-cart"></i> Plataforma E-commerce</label>
+                        <input type="text" id="edit_nombre_plataforma_ecommerce" name="nombre_plataforma_ecommerce" placeholder="Ej: Shopify, WooCommerce...">
+                    </div>
+                    <div class="form-group-tienda">
+                        <label for="edit_nombre_sistema_contable"><i class="fa fa-calculator"></i> Sistema Contable</label>
+                        <input type="text" id="edit_nombre_sistema_contable" name="nombre_sistema_contable" placeholder="Ej: Siigo, World Office, Alegra...">
+                    </div>
+                </div>
+
                 <div class="form-group-tienda">
                     <label for="edit_imagen_tienda"><i class="fa fa-image"></i> Imagen / Logo (dejar vacío para mantener)</label>
                     <input type="file" id="edit_imagen_tienda" name="imagen_tienda" accept="image/*">
@@ -2076,6 +3063,360 @@ function mostrarNotificacionCopiado(nombreTienda) {
         </div>
     </div>
 </div>
+
+<!-- Modal Confirmación Post-Registro -->
+<div class="confirm-modal-overlay" id="modalConfirmacionRegistro">
+    <div class="confirm-modal-box">
+        <div class="confirm-success-header">
+            <div class="confirm-success-icon">
+                <i class="fa fa-check"></i>
+            </div>
+            <h3>¡Tienda Creada Exitosamente!</h3>
+            <p>La tienda ha sido registrada correctamente</p>
+            <div class="confirm-store-name" id="confirmNombreTienda"></div>
+        </div>
+        
+        <div class="confirm-body">
+            <p class="confirm-body-title">¿Qué deseas hacer ahora?</p>
+            
+            <div class="confirm-actions-grid">
+                <!-- Opción: Crear Vendedores -->
+                <div class="confirm-action-card vendedores" onclick="irCrearVendedores()">
+                    <div class="confirm-action-icon">
+                        <i class="fa fa-user-plus"></i>
+                    </div>
+                    <div class="confirm-action-text">
+                        <h4>Crear Vendedores</h4>
+                        <p>Agrega vendedores a esta tienda</p>
+                    </div>
+                    <i class="fa fa-chevron-right confirm-action-arrow"></i>
+                </div>
+                
+                <!-- Opción: Crear Productos -->
+                <div class="confirm-action-card productos" onclick="irCrearProductos()">
+                    <div class="confirm-action-icon">
+                        <i class="fa fa-cube"></i>
+                    </div>
+                    <div class="confirm-action-text">
+                        <h4>Crear Productos</h4>
+                        <p>Agrega productos al catálogo de la tienda</p>
+                    </div>
+                    <i class="fa fa-chevron-right confirm-action-arrow"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="confirm-footer">
+            <button class="confirm-skip-btn" onclick="cerrarConfirmacionYRecargar()">
+                <i class="fa fa-arrow-right"></i> Finalizar y volver a la lista
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registro de Vendedores -->
+<div class="reg-modal-overlay" id="modalRegistroVendedor">
+    <div class="reg-modal-container">
+        <div class="reg-modal-header vendedor-theme">
+            <h2><i class="fa fa-user-plus"></i> Registrar Vendedor</h2>
+            <button class="modal-close" onclick="cerrarModalVendedor()"><i class="fa fa-times"></i></button>
+        </div>
+        
+        <div class="reg-modal-body">
+            <div class="reg-tienda-badge">
+                <i class="fa fa-store"></i>
+                Tienda: <strong id="vendedorNombreTienda"></strong>
+            </div>
+            
+            <form id="formRegistroVendedor">
+                <input type="hidden" id="vendedor_cod_tienda" name="cod_tienda" value="">
+                
+                <div class="form-group">
+                    <label class="form-label">Identificación (Cédula) *</label>
+                    <input type="text" class="form-input" name="identificacion_tercero" id="vendedor_identificacion" placeholder="Ej: 1234567890" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombres *</label>
+                        <input type="text" class="form-input" name="nombre1_tercero" id="vendedor_nombre" placeholder="Ej: Juan Carlos" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Apellidos *</label>
+                        <input type="text" class="form-input" name="apellido1_tercero" id="vendedor_apellido" placeholder="Ej: Pérez López" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Teléfono *</label>
+                        <input type="tel" class="form-input" name="telefono1_tercero" id="vendedor_telefono" placeholder="Ej: 3001234567" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo *</label>
+                        <input type="email" class="form-input" name="correo_tercero" id="vendedor_correo" placeholder="correo@email.com" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="reg-submit-btn vendedor-theme">
+                    <i class="fa fa-user-plus"></i> Registrar Vendedor
+                </button>
+            </form>
+            
+            <!-- Lista de vendedores registrados -->
+            <div class="items-registrados" id="listaVendedoresRegistrados" style="display: none;">
+                <div class="items-registrados-title">
+                    <i class="fa fa-users"></i> Vendedores Registrados
+                    <span class="badge-count" id="contadorVendedores">0</span>
+                </div>
+                <div id="vendedoresRegistradosList"></div>
+            </div>
+        </div>
+        
+        <div class="reg-modal-footer">
+            <button class="reg-footer-btn back-btn" onclick="volverAConfirmacion()">
+                <i class="fa fa-arrow-left"></i> Volver
+            </button>
+            <button class="reg-footer-btn finish-btn" onclick="finalizarYRecargar()">
+                <i class="fa fa-check"></i> Finalizar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registro de Productos -->
+<div class="reg-modal-overlay" id="modalRegistroProducto">
+    <div class="reg-modal-container">
+        <div class="reg-modal-header producto-theme">
+            <h2><i class="fa fa-cube"></i> Registrar Producto</h2>
+            <button class="modal-close" onclick="cerrarModalProducto()"><i class="fa fa-times"></i></button>
+        </div>
+        
+        <div class="reg-modal-body producto-theme">
+            <div class="reg-tienda-badge">
+                <i class="fa fa-store"></i>
+                Tienda: <strong id="productoNombreTienda"></strong>
+            </div>
+            
+            <form id="formRegistroProducto" enctype="multipart/form-data">
+                <input type="hidden" id="producto_cod_tienda" name="cod_tienda" value="">
+                <input type="hidden" name="cod_administrador" value="<?php echo $cod_administrador; ?>">
+                <input type="hidden" name="cod_estado" value="1">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Código de Barras *</label>
+                        <input type="text" class="form-input" name="cod_producto_barra" id="producto_codigo" placeholder="Ej: 7701234567890" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select class="form-select" name="cod_categoria" id="producto_categoria">
+                            <option value="0">Sin categoría</option>
+                            <?php
+                            $sql_categorias_modal = "SELECT cod_categoria, nombre_categoria FROM tbl15_categoria WHERE cod_estado = '1' ORDER BY nombre_categoria ASC";
+                            $result_categorias_modal = mysqli_query($conectar, $sql_categorias_modal);
+                            if ($result_categorias_modal) {
+                                while ($cat = mysqli_fetch_assoc($result_categorias_modal)) {
+                                    echo '<option value="'.$cat['cod_categoria'].'">'.ucwords(strtolower($cat['nombre_categoria'])).'</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nombre del Producto *</label>
+                    <input type="text" class="form-input" name="nombre_producto" id="producto_nombre" placeholder="Ej: Arroz Diana x 500g" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Precio Compra ($)</label>
+                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_compra" placeholder="$ 0" value="0" oninput="formatearPrecio(this)">
+                        <input type="hidden" name="precio_compra_producto" id="precio_compra_producto_hidden" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Precio Venta ($) *</label>
+                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_venta" placeholder="$ 0" oninput="formatearPrecio(this)">
+                        <input type="hidden" name="precio_venta_producto" id="precio_venta_producto_hidden" value="0">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">IVA (%)</label>
+                        <select class="form-select" name="iva_ptj" id="producto_iva">
+                            <option value="0">0%</option>
+                            <option value="5">5%</option>
+                            <option value="19">19%</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Imagen</label>
+                        <div class="file-input-wrapper" style="padding: 0.75rem;">
+                            <input type="file" name="imagen_producto" id="producto_imagen" accept="image/*" onchange="previewImageProducto(this)">
+                            <div class="file-input-icon" style="font-size: 1.2rem; margin-bottom: 0.2rem;"><i class="fa fa-camera"></i></div>
+                            <div class="file-input-text" style="font-size: 0.75rem;">Foto producto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <img id="preview_producto_img" class="image-preview" alt="Vista previa" style="display:none; max-height:100px; margin-top:0.5rem;">
+                
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-input" name="descripcion_producto" id="producto_descripcion" rows="2" placeholder="Descripción del producto (opcional)" style="resize: vertical; min-height: 60px;"></textarea>
+                </div>
+                
+                <button type="submit" class="reg-submit-btn producto-theme">
+                    <i class="fa fa-cube"></i> Registrar Producto
+                </button>
+            </form>
+            
+            <!-- Lista de productos registrados -->
+            <div class="items-registrados" id="listaProductosRegistrados" style="display: none;">
+                <div class="items-registrados-title">
+                    <i class="fa fa-cubes"></i> Productos Registrados
+                    <span class="badge-count" id="contadorProductos">0</span>
+                </div>
+                <div id="productosRegistradosList"></div>
+            </div>
+        </div>
+        
+        <div class="reg-modal-footer">
+            <button class="reg-footer-btn back-btn" onclick="volverAConfirmacionDesdeProducto()">
+                <i class="fa fa-arrow-left"></i> Volver
+            </button>
+            <button class="reg-footer-btn finish-btn" onclick="finalizarYRecargar()">
+                <i class="fa fa-check"></i> Finalizar
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ========== FORMULARIO REGISTRO VENDEDOR ==========
+// (Debe ir aquí, DESPUÉS de los modales HTML para que getElementById funcione)
+var _formVendedor = document.getElementById('formRegistroVendedor');
+if (_formVendedor) { _formVendedor.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    
+    Swal.fire({ title: 'Registrando vendedor...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+    
+    $.ajax({
+        url: 'agregar_vendedor_tienda_asesor_ajax.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                var nombreVendedor = document.getElementById('vendedor_nombre').value + ' ' + document.getElementById('vendedor_apellido').value;
+                var idVendedor = document.getElementById('vendedor_identificacion').value;
+                agregarVendedorALista(nombreVendedor, idVendedor, response.usuario || '');
+                
+                // Limpiar formulario pero mantener cod_tienda
+                var codTienda = document.getElementById('vendedor_cod_tienda').value;
+                document.getElementById('formRegistroVendedor').reset();
+                document.getElementById('vendedor_cod_tienda').value = codTienda;
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Vendedor Registrado!',
+                    text: 'Credenciales: Usuario: ' + (response.usuario || '') + ' / Contraseña: ' + (response.contrasena_inicial || ''),
+                    confirmButtonColor: '#6366f1',
+                    background: '#1a1f2e',
+                    color: 'white',
+                    customClass: { container: 'swal-high-zindex' }
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el vendedor', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            }
+        },
+        error: function(xhr, status, error) {
+            Swal.close();
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor.', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        }
+    });
+});
+}
+
+// ========== FORMULARIO REGISTRO PRODUCTO ==========
+var _formProducto = document.getElementById('formRegistroProducto');
+if (_formProducto) { _formProducto.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Copiar valores limpios a los hidden fields
+    var precioCompra = document.getElementById('producto_precio_compra');
+    var precioVenta = document.getElementById('producto_precio_venta');
+    if (precioCompra) document.getElementById('precio_compra_producto_hidden').value = precioCompra.value.replace(/[^\d]/g, '') || '0';
+    if (precioVenta) document.getElementById('precio_venta_producto_hidden').value = precioVenta.value.replace(/[^\d]/g, '') || '0';
+    // Validar precio de venta
+    var precioVentaVal = parseInt(document.getElementById('precio_venta_producto_hidden').value) || 0;
+    if (precioVentaVal <= 0) {
+        Swal.fire({ icon: 'warning', title: 'Precio requerido', text: 'El precio de venta es obligatorio y debe ser mayor a 0.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#f59e0b', customClass: { container: 'swal-high-zindex' } });
+        return;
+    }
+    var formData = new FormData(this);
+    
+    Swal.fire({ title: 'Registrando producto...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+    
+    $.ajax({
+        url: 'reg_producto_tienda_aliado_ajax.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                var nombreProducto = document.getElementById('producto_nombre').value;
+                var codigoProducto = document.getElementById('producto_codigo').value;
+                var precioProducto = document.getElementById('producto_precio_venta').value;
+                agregarProductoALista(nombreProducto, codigoProducto, precioProducto);
+                
+                // Limpiar formulario pero mantener cod_tienda y cod_administrador
+                var codTienda = document.getElementById('producto_cod_tienda').value;
+                document.getElementById('formRegistroProducto').reset();
+                document.getElementById('producto_cod_tienda').value = codTienda;
+                var previewImg = document.getElementById('preview_producto_img');
+                if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Producto Registrado!',
+                    text: 'El producto fue creado correctamente.',
+                    confirmButtonColor: '#f59e0b',
+                    background: '#1a1f2e',
+                    color: 'white',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    customClass: { container: 'swal-high-zindex' }
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el producto', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            }
+        },
+        error: function(xhr, status, error) {
+            Swal.close();
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor.', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        }
+    });
+});
+}
+
+// Cerrar modales al hacer clic fuera
+var _modalConfirmacion = document.getElementById('modalConfirmacionRegistro');
+var _modalVendedor = document.getElementById('modalRegistroVendedor');
+var _modalProducto = document.getElementById('modalRegistroProducto');
+if (_modalConfirmacion) { _modalConfirmacion.addEventListener('click', function(e) { if (e.target === this) { cerrarConfirmacionYRecargar(); } }); }
+if (_modalVendedor) { _modalVendedor.addEventListener('click', function(e) { if (e.target === this) { cerrarModalVendedor(); } }); }
+if (_modalProducto) { _modalProducto.addEventListener('click', function(e) { if (e.target === this) { cerrarModalProducto(); } }); }
+</script>
 
 </body>
 </html>

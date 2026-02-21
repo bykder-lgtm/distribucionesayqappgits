@@ -1004,10 +1004,18 @@ estilo_hologram - Holograma
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
-                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Nombres y Apellidos *</label>
-                                <input type="text" name="nombres_apellidos_tercero" id="vend_nombres" class="form-control" required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
+                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Nombres *</label>
+                                <input type="text" name="nombre1_tercero" id="vend_nombres" class="form-control" required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Apellidos *</label>
+                                <input type="text" name="apellido1_tercero" id="vend_apellidos" class="form-control" required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-3">
                                 <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Identificación (CC) *</label>
@@ -1026,14 +1034,6 @@ estilo_hologram - Holograma
                             <div class="form-group mb-3">
                                 <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Correo Electrónico *</label>
                                 <input type="email" name="correo_tercero" id="vend_correo" class="form-control" required style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group mb-3">
-                                <label style="color: #a0aec0; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Dirección</label>
-                                <input type="text" name="direccion_tercero" id="vend_direccion" class="form-control" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(102, 126, 234, 0.3); color: white; border-radius: 8px; padding: 0.75rem;">
                             </div>
                         </div>
                     </div>
@@ -3716,11 +3716,12 @@ $(document).on('click', '#btn_guardar_vendedor', function(e) {
     
     // Validar campos requeridos
     const nombres = document.getElementById('vend_nombres').value.trim();
+    const apellidos = document.getElementById('vend_apellidos').value.trim();
     const identificacion = document.getElementById('vend_identificacion').value.trim();
     const telefono = document.getElementById('vend_telefono').value.trim();
     const correo = document.getElementById('vend_correo').value.trim();
     
-    if (!nombres || !identificacion || !telefono || !correo) {
+    if (!nombres || !apellidos || !identificacion || !telefono || !correo) {
         Swal.fire({
             icon: 'warning',
             title: 'Campos incompletos',

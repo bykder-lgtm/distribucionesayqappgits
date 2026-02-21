@@ -17,13 +17,25 @@ try {
     $cod_tienda                                                         = isset($_POST['cod_tienda']) ? intval($_POST['cod_tienda']) : 0;
     $identificacion_tercero                                             = isset($_POST['identificacion_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['identificacion_tercero'])) : '';
     $nombres_apellidos_tercero                                          = isset($_POST['nombres_apellidos_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['nombres_apellidos_tercero'])) : '';
+    $nombre1_tercero_post                                               = isset($_POST['nombre1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['nombre1_tercero'])) : '';
+    $apellido1_tercero_post                                             = isset($_POST['apellido1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['apellido1_tercero'])) : '';
     $telefono1_tercero                                                  = isset($_POST['telefono1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['telefono1_tercero'])) : '';
     $correo_tercero                                                     = isset($_POST['correo_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['correo_tercero'])) : '';
     $direccion_tercero                                                  = isset($_POST['direccion_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['direccion_tercero'])) : '';
     // Validar campos requeridos
     if ($cod_tienda <= 0) { echo json_encode(array('success' => false, 'message' => 'Código de tienda inválido')); exit; }
     if (empty($identificacion_tercero)) { echo json_encode(array('success' => false, 'message' => 'La identificación es obligatoria')); exit; }
-    if (empty($nombres_apellidos_tercero)) { echo json_encode(array('success' => false, 'message' => 'El nombre es obligatorio')); exit; }
+    // Si se enviaron nombre y apellido por separado, construir nombres_apellidos_tercero
+    if (!empty($nombre1_tercero_post)) {
+        $nombre1_tercero = $nombre1_tercero_post;
+        $apellido1_tercero = $apellido1_tercero_post;
+        $nombres_apellidos_tercero = trim($nombre1_tercero . ' ' . $apellido1_tercero);
+    } else if (!empty($nombres_apellidos_tercero)) {
+        $nombre1_tercero = $nombres_apellidos_tercero;
+        $apellido1_tercero = '';
+    } else {
+        echo json_encode(array('success' => false, 'message' => 'El nombre es obligatorio')); exit;
+    }
     if (empty($telefono1_tercero)) { echo json_encode(array('success' => false, 'message' => 'El teléfono es obligatorio')); exit; }
     if (empty($correo_tercero)) { echo json_encode(array('success' => false, 'message' => 'El correo es obligatorio')); exit; }
     // Validar formato de correo
@@ -47,7 +59,6 @@ try {
     if (!$result_asesor) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de asesor: ' . mysqli_error($conectar))); exit; }
     $info_asesor = mysqli_fetch_assoc($result_asesor);
     $cod_lider                                                          = isset($info_asesor['cod_lider']) ? $info_asesor['cod_lider'] : 0;
-    $cod_lider                                                    = isset($info_asesor['cod_lider']) ? $info_asesor['cod_lider'] : 0;
     $cod_asesor                                                         = isset($info_asesor['cod_asesor']) ? $info_asesor['cod_asesor'] : 0;
 
     // Obtener el próximo código de administrador para generar el usuario
@@ -60,8 +71,6 @@ try {
     $cuenta                                                             = $identificacion_tercero . '-' . $cod_administrador_nuevo;
     $contrasena                                                         = sha1($identificacion_tercero); // Contraseña inicial es la identificación encriptada
     // Preparar otros campos
-    $nombre1_tercero                                                    = $nombres_apellidos_tercero;
-    $apellido1_tercero                                                  = '';
     $cod_tipo_tercero                                                   = "2"; // Vendedor
     $nombre_tipo_tercero                                                = 'VENDEDOR';
     $nombre_tipo_cliente                                                = "PERSONA_NATURAL";

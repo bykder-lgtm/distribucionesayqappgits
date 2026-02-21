@@ -304,6 +304,72 @@ body {
     background: #3b82f6;
     color: white;
 }
+/* Store Stats */
+.store-stats {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.store-stat-item {
+    flex: 1;
+    text-align: center;
+    padding: 0.4rem;
+    border-radius: 8px;
+    background: rgba(16, 185, 129, 0.08);
+}
+
+.store-stat-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #10b981;
+    display: block;
+}
+
+.store-stat-label {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+}
+
+/* Quick Action Buttons */
+.store-quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-quick-action {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.btn-quick-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-quick-action.btn-vendedor {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.btn-quick-action.btn-producto {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
 
 /* Bottom Navigation */
 .bottom-nav {
@@ -1282,6 +1348,9 @@ if ($resultado_con_gps) { $datos_con_gps = mysqli_fetch_assoc($resultado_con_gps
 // Obtener aliados estratégicos para el select (cod_seguridad = 23)
 $sql_aliados = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, comision_ptj FROM tbl15_administrador WHERE (cod_seguridad = '23' AND cod_asesor = '$cod_administrador') ORDER BY nombres_apellidos_tercero ASC";
 $resultado_aliados = mysqli_query($conectar, $sql_aliados);
+// Consulta de tipos de sector para el formulario de registro de tienda
+$sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
+$res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 ?>
 <main class="page-container">
     <!-- Header -->
@@ -1325,6 +1394,13 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                 WHERE cod_seguridad = '2' AND cod_aliado_estrategico = '$cod_aliado_tienda' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
                 $res_vendedores_tienda = mysqli_query($conectar, $sql_vendedores_tienda);
                 $total_vendedores_tienda = $res_vendedores_tienda ? mysqli_num_rows($res_vendedores_tienda) : 0;
+
+                // Contar productos de esta tienda
+                $cod_tienda_actual = $tienda['cod_tienda'];
+                $sql_total_prod = "SELECT COUNT(*) as total FROM tbl15_producto WHERE cod_tienda = '$cod_tienda_actual'";
+                $consulta_total_prod = mysqli_query($conectar, $sql_total_prod);
+                $datos_total_prod = mysqli_fetch_assoc($consulta_total_prod);
+                $total_productos_tienda = $datos_total_prod['total'];
             ?>
             <div class="store-card animate-in delay-2">
                 <div class="store-card-header">
@@ -1346,41 +1422,32 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                     <div class="store-detail"><i class="fa-solid fa-phone"></i><span><?php echo $tienda['telefono1_tercero']; ?></span></div>
                     <div class="store-detail"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($tienda['correo_tercero']); ?></span></div>
                     <div class="store-detail"><i class="fa-solid fa-credit-card"></i><span><?php echo $tienda['creditos_activos']; ?> créditos activos</span></div>
+                    <?php if(!empty($tienda['fecha_creacion'])): ?><div class="store-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($tienda['fecha_creacion'])); ?></span></div><?php endif; ?>
                 </div>
 
-                <!-- Sección Vendedores -->
-                <div class="store-vendedores" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(16, 185, 129, 0.15);">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span style="font-size: 0.75rem; font-weight: 600; color: #10b981;">
-                            <i class="fa-solid fa-users"></i> Vendedores (<?php echo $total_vendedores_tienda; ?>)
-                        </span>
-                        <button type="button" class="btn-add-vendedor" onclick="verDetalles(<?php echo $tienda['cod_tienda']; ?>)" 
-                            style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: none; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.65rem; cursor: pointer; font-weight: 600;">
-                            <i class="fa-solid fa-user-plus"></i> Agregar
-                        </button>
+                <!-- Estadísticas y Botones de Acción Rápida -->
+                <div class="store-stats">
+                    <div class="store-stat-item">
+                        <span class="store-stat-number"><?php echo $total_productos_tienda; ?></span>
+                        <span class="store-stat-label">Productos</span>
                     </div>
-                    <?php if ($total_vendedores_tienda > 0): ?>
-                        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
-                            <?php 
-                            $contador_vendedor = 0;
-                            while ($vendedor = mysqli_fetch_assoc($res_vendedores_tienda)): 
-                                if ($contador_vendedor >= 3) break; // Mostrar máximo 3 vendedores
-                                $contador_vendedor++;
-                            ?>
-                                <div class="vendedor-chip" style="background: rgba(16, 185, 129, 0.1); padding: 0.3rem 0.6rem; border-radius: 20px; display: flex; align-items: center; gap: 0.3rem;">
-                                    <i class="fa-solid fa-user" style="font-size: 0.6rem; color: #10b981;"></i>
-                                    <span style="font-size: 0.7rem; color: rgba(255,255,255,0.85); font-weight: 500;"><?php echo ucwords(strtolower($vendedor['nombres_apellidos_tercero'])); ?></span>
-                                </div>
-                            <?php endwhile; ?>
-                            <?php if ($total_vendedores_tienda > 3): ?>
-                                <div class="vendedor-chip" style="background: rgba(16, 185, 129, 0.2); padding: 0.3rem 0.6rem; border-radius: 20px;">
-                                    <span style="font-size: 0.7rem; color: #10b981; font-weight: 600;">+<?php echo ($total_vendedores_tienda - 3); ?> más</span>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    <?php else: ?>
-                        <p style="font-size: 0.7rem; color: rgba(255,255,255,0.5); margin: 0; font-style: italic;">Sin vendedores registrados</p>
-                    <?php endif; ?>
+                    <div class="store-stat-item">
+                        <span class="store-stat-number"><?php echo $total_vendedores_tienda; ?></span>
+                        <span class="store-stat-label">Vendedores</span>
+                    </div>
+                    <div class="store-stat-item">
+                        <span class="store-stat-number"><?php echo $tienda['creditos_activos']; ?></span>
+                        <span class="store-stat-label">Créditos</span>
+                    </div>
+                </div>
+
+                <div class="store-quick-actions">
+                    <button type="button" class="btn-quick-action btn-vendedor" onclick="abrirRegistroVendedorDirecto(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>')">
+                        <i class="fa-solid fa-user-plus"></i> Vendedor
+                    </button>
+                    <button type="button" class="btn-quick-action btn-producto" onclick="abrirRegistroProductoDirecto(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>')">
+                        <i class="fa-solid fa-box-open"></i> Producto
+                    </button>
                 </div>
 
                 <div class="store-actions">
@@ -1449,8 +1516,23 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                     <label class="form-label">Nombre de la Tienda *</label>
                     <input type="text" class="form-input" name="nombre1_tercero" id="nombre1_tercero" placeholder="Ej: Tienda El Éxito" required>
                 </div>
-                
+
                 <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">NIT / Identificación</label>
+                        <input type="text" class="form-input" name="identificacion_tercero" id="identificacion_tercero_reg" placeholder="Ej: 900123456-7">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" class="form-input" name="telefono_tienda" id="telefono1_tercero_reg" placeholder="Ej: 3001234567">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-input" name="correo_tercero" id="correo_tercero_reg" placeholder="Ej: tienda@ejemplo.com">
+                </div>
+
                     <div class="form-group">
                         <label class="form-label">Departamento *</label>
                         <select class="form-select" name="cod_departamento" id="cod_departamento" onchange="cargarMunicipiosRegistro()" required>
@@ -1477,6 +1559,60 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                     </div>
                 </div>
 
+                <!-- Sección: Información del Negocio -->
+                <div class="form-section-title"><i class="fa-solid fa-briefcase"></i> Información del Negocio</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Sector</label>
+                        <select class="form-select" name="cod_tipo_sector" id="cod_tipo_sector">
+                            <option value="">-- Seleccione --</option>
+                            <?php 
+                            if (isset($res_tipo_sector)) { mysqli_data_seek($res_tipo_sector, 0); }
+                            while ($tipo_sector = mysqli_fetch_assoc($res_tipo_sector)): ?>
+                            <option value="<?php echo $tipo_sector['cod_tipo_sector']; ?>" title="<?php echo htmlspecialchars($tipo_sector['descripcion_tipo_sector']); ?>"><?php echo $tipo_sector['nombre_tipo_sector']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">¿Existe en RUES?</label>
+                        <select class="form-select" name="existe_rues" id="existe_rues">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">¿Venta Presencial?</label>
+                        <select class="form-select" name="venta_presencial" id="venta_presencial">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">¿Venta Online?</label>
+                        <select class="form-select" name="venta_online" id="venta_online">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Plataforma E-commerce</label>
+                        <input type="text" class="form-input" name="nombre_plataforma_ecommerce" id="nombre_plataforma_ecommerce" placeholder="Ej: Shopify, WooCommerce...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Sistema Contable</label>
+                        <input type="text" class="form-input" name="nombre_sistema_contable" id="nombre_sistema_contable" placeholder="Ej: Siigo, World Office, Alegra...">
+                    </div>
+                </div>
 
                 <!-- Sección 3: Información Financiera -->
                 <!--
@@ -1490,8 +1626,7 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                 </div>
                 -->
 
-                <!-- Sección 4: Ubicación GPS (DESHABILITADA) -->
-                <!--
+                <!-- Sección 4: Ubicación GPS -->
                 <div class="form-section-title"><i class="fa-solid fa-map-marker-alt"></i> Ubicación GPS</div>
                 
                 <div class="form-group">
@@ -1501,12 +1636,10 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                     <div id="gpsStatus" class="gps-status"></div>
                 </div>
                 
-                
                 <div class="form-group">
                     <label class="form-label">Coordenadas</label>
                     <input type="text" class="form-input" name="ubicacion_gps_tienda" id="ubicacion_gps_tienda" readonly placeholder="Latitud, Longitud">
                 </div>
-                -->
 
                 <!-- Sección 6: Imágenes del Establecimiento -->
                 <div class="form-section-title"><i class="fa-solid fa-camera"></i> Imágenes del Establecimiento</div>
@@ -1644,9 +1777,15 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                     <input type="text" class="form-input" name="identificacion_tercero" id="vendedor_identificacion" placeholder="Ej: 1234567890" required>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Nombre Completo *</label>
-                    <input type="text" class="form-input" name="nombres_apellidos_tercero" id="vendedor_nombre" placeholder="Ej: Juan Pérez López" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombres *</label>
+                        <input type="text" class="form-input" name="nombre1_tercero" id="vendedor_nombre" placeholder="Ej: Juan Carlos" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Apellidos *</label>
+                        <input type="text" class="form-input" name="apellido1_tercero" id="vendedor_apellido" placeholder="Ej: Pérez López" required>
+                    </div>
                 </div>
                 
                 <div class="form-row">
@@ -1658,11 +1797,6 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                         <label class="form-label">Correo *</label>
                         <input type="email" class="form-input" name="correo_tercero" id="vendedor_correo" placeholder="correo@email.com" required>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Dirección</label>
-                    <input type="text" class="form-input" name="direccion_tercero" id="vendedor_direccion" placeholder="Ej: Calle 123 #45-67">
                 </div>
                 
                 <button type="submit" class="reg-submit-btn vendedor-theme">
@@ -1740,11 +1874,13 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Precio Compra ($)</label>
-                        <input type="number" class="form-input" name="precio_compra_producto" id="producto_precio_compra" placeholder="0" min="0" step="1" value="0">
+                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_compra" placeholder="$ 0" value="0" oninput="formatearPrecio(this)">
+                        <input type="hidden" name="precio_compra_producto" id="precio_compra_producto_hidden" value="0">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Precio Venta ($) *</label>
-                        <input type="number" class="form-input" name="precio_venta_producto" id="producto_precio_venta" placeholder="0" min="0" step="1" required>
+                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_venta" placeholder="$ 0" oninput="formatearPrecio(this)">
+                        <input type="hidden" name="precio_venta_producto" id="precio_venta_producto_hidden" value="0">
                     </div>
                 </div>
                 
@@ -1919,6 +2055,29 @@ function cargarMunicipiosRegistro() {
     });
 }
 
+// Cargar municipios con preselección
+function cargarMunicipiosRegistroConPreseleccion(codDepartamento, selectedMuni) {
+    var selectMuni = $('#cod_municipio');
+    selectMuni.empty();
+    selectMuni.append('<option value="">Seleccione un municipio *</option>');
+    if (!codDepartamento) return;
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php',
+        type: 'GET',
+        data: { cod_departamento: codDepartamento },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                $.each(response.municipios, function(index, muni) {
+                    var isSelected = (selectedMuni && muni.cod_municipio == selectedMuni) ? ' selected' : '';
+                    selectMuni.append('<option value="' + muni.cod_municipio + '"' + isSelected + '>' +
+                                    muni.nombre_municipio + '</option>');
+                });
+            }
+        }
+    });
+}
+
 function abrirModalRegistro() {
     const form = document.getElementById('formRegistroTienda');
     form.reset();
@@ -1948,6 +2107,9 @@ function actualizarBancosYComision(select) {
     if (codAliado) {
         if (bancoSelect) { bancoSelect.disabled = true; }
         if (loading) { loading.style.display = 'block'; }
+        
+        // Pre-llenar datos del aliado
+        prellenarDatosAliado(codAliado);
         
         $.ajax({
             url: 'obtener_bancos_cuenta_por_aliado_ajax.php',
@@ -1988,7 +2150,41 @@ function actualizarBancosYComision(select) {
             bancoSelect.innerHTML = '<option value="">Seleccione Aliado primero</option>';
             bancoSelect.disabled = true;
         }
+        // Limpiar campos pre-llenados al deseleccionar aliado
+        var camposLimpiar = ['identificacion_tercero_reg', 'telefono1_tercero_reg', 'correo_tercero_reg', 'direccion_tercero', 'barrio_tercero', 'cod_tipo_sector'];
+        camposLimpiar.forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
     }
+}
+
+// Pre-llenar campos del formulario con datos del aliado seleccionado
+function prellenarDatosAliado(codAliado) {
+    if (!codAliado) return;
+    $.ajax({
+        url: 'obtener_datos_aliado_ajax.php',
+        type: 'POST',
+        data: { cod_aliado: codAliado },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.aliado) {
+                var a = response.aliado;
+                var setVal = function(id, val) { var el = document.getElementById(id); if (el && val) el.value = val; };
+                setVal('identificacion_tercero_reg', a.identificacion_tercero);
+                setVal('telefono1_tercero_reg', a.telefono1_tercero);
+                setVal('correo_tercero_reg', a.correo_tercero);
+                setVal('direccion_tercero', a.direccion_tercero);
+                setVal('barrio_tercero', a.barrio_tercero);
+                setVal('cod_tipo_sector', a.cod_tipo_sector);
+                // Pre-seleccionar departamento y municipio
+                if (a.cod_departamento) {
+                    $('#cod_departamento').val(a.cod_departamento).trigger('change');
+                    // Cargar municipios con preselección
+                    setTimeout(function() {
+                        cargarMunicipiosRegistroConPreseleccion(a.cod_departamento, a.cod_municipio);
+                    }, 500);
+                }
+            }
+        }
+    });
 }
 // Obtener ubicación GPS
 function obtenerUbicacion() {
@@ -2486,6 +2682,34 @@ function irFirmaElectronica() {
     }
 }
 
+// Abrir modal de registro de vendedor directamente desde la tarjeta de tienda
+function abrirRegistroVendedorDirecto(codTienda, nombreTienda) {
+    document.getElementById('vendedor_cod_tienda').value = codTienda;
+    document.getElementById('vendedorNombreTienda').textContent = nombreTienda;
+    document.getElementById('formRegistroVendedor').reset();
+    document.getElementById('vendedor_cod_tienda').value = codTienda;
+    document.getElementById('modalRegistroVendedor').classList.add('show');
+}
+
+// ========== FORMATEAR PRECIOS CON SEPARADOR DE MILES ==========
+function formatearPrecio(input) {
+    var valor = input.value.replace(/[^\d]/g, '');
+    if (valor === '') { input.value = ''; return; }
+    var numero = parseInt(valor, 10);
+    input.value = '$ ' + numero.toLocaleString('es-CO');
+}
+
+// Abrir modal de registro de producto directamente desde la tarjeta de tienda
+function abrirRegistroProductoDirecto(codTienda, nombreTienda) {
+    document.getElementById('producto_cod_tienda').value = codTienda;
+    document.getElementById('productoNombreTienda').textContent = nombreTienda;
+    document.getElementById('formRegistroProducto').reset();
+    document.getElementById('producto_cod_tienda').value = codTienda;
+    var previewImg = document.getElementById('preview_producto_img');
+    if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+    document.getElementById('modalRegistroProducto').classList.add('show');
+}
+
 function cerrarModalVendedor() {
     document.getElementById('modalRegistroVendedor').classList.remove('show');
 }
@@ -2584,7 +2808,7 @@ document.getElementById('formRegistroVendedor').addEventListener('submit', funct
         success: function(response) {
             Swal.close();
             if (response.success) {
-                var nombreVendedor = document.getElementById('vendedor_nombre').value;
+                var nombreVendedor = document.getElementById('vendedor_nombre').value + ' ' + document.getElementById('vendedor_apellido').value;
                 var idVendedor = document.getElementById('vendedor_identificacion').value;
                 agregarVendedorALista(nombreVendedor, idVendedor, response.usuario || '');
                 
@@ -2618,6 +2842,17 @@ document.getElementById('formRegistroVendedor').addEventListener('submit', funct
 // ========== FORMULARIO REGISTRO PRODUCTO ==========
 document.getElementById('formRegistroProducto').addEventListener('submit', function(e) {
     e.preventDefault();
+    // Copiar valores limpios a los hidden fields
+    var precioCompra = document.getElementById('producto_precio_compra');
+    var precioVenta = document.getElementById('producto_precio_venta');
+    if (precioCompra) document.getElementById('precio_compra_producto_hidden').value = precioCompra.value.replace(/[^\d]/g, '') || '0';
+    if (precioVenta) document.getElementById('precio_venta_producto_hidden').value = precioVenta.value.replace(/[^\d]/g, '') || '0';
+    // Validar precio de venta
+    var precioVentaVal = parseInt(document.getElementById('precio_venta_producto_hidden').value) || 0;
+    if (precioVentaVal <= 0) {
+        Swal.fire({ icon: 'warning', title: 'Precio requerido', text: 'El precio de venta es obligatorio y debe ser mayor a 0.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#f59e0b', customClass: { container: 'swal-high-zindex' } });
+        return;
+    }
     var formData = new FormData(this);
     
     Swal.fire({ title: 'Registrando producto...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
@@ -3038,9 +3273,15 @@ function enviarPorCorreo() {
             <form id="formAgregarVendedor">
                 <input type="hidden" id="vendedor_cod_tienda" name="cod_tienda">
                 
-                <div class="form-group">
-                    <label class="form-label">Nombres y Apellidos *</label>
-                    <input type="text" class="form-input" id="vend_nombres" name="nombres_apellidos_tercero" placeholder="Nombre completo del vendedor" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombres *</label>
+                        <input type="text" class="form-input" id="vend_nombres" name="nombre1_tercero" placeholder="Ej: Juan Carlos" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Apellidos *</label>
+                        <input type="text" class="form-input" id="vend_apellidos" name="apellido1_tercero" placeholder="Ej: Pérez López" required>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -3057,11 +3298,6 @@ function enviarPorCorreo() {
                 <div class="form-group">
                     <label class="form-label">Correo Electrónico *</label>
                     <input type="email" class="form-input" id="vend_correo" name="correo_tercero" placeholder="correo@ejemplo.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Dirección</label>
-                    <input type="text" class="form-input" id="vend_direccion" name="direccion_tercero" placeholder="Dirección de residencia">
                 </div>
 
                 <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.75rem; margin-top: 1rem;">
@@ -4192,11 +4428,12 @@ $('#formAgregarVendedor').on('submit', function(e) {
     
     // Validar campos requeridos
     var nombres = $('#vend_nombres').val().trim();
+    var apellidos = $('#vend_apellidos').val().trim();
     var identificacion = $('#vend_identificacion').val().trim();
     var telefono = $('#vend_telefono').val().trim();
     var correo = $('#vend_correo').val().trim();
     
-    if (!nombres || !identificacion || !telefono || !correo) {
+    if (!nombres || !apellidos || !identificacion || !telefono || !correo) {
         Swal.fire({
             icon: 'warning',
             title: 'Campos incompletos',

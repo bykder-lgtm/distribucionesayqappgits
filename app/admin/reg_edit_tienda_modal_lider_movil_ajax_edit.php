@@ -92,6 +92,7 @@ if (isset($_POST['cod_tienda']) && !empty($_POST['cod_tienda'])) {
     $nombre_representante                                           = isset($_POST['nombre_representante']) ? trim(addslashes($_POST['nombre_representante'])) : '';
     $documento_representante                                        = isset($_POST['documento_representante']) ? intval($_POST['documento_representante']) : 0;
     $correo_representante                                           = isset($_POST['correo_representante']) ? trim(addslashes($_POST['correo_representante'])) : '';
+    $cod_tipo_sector                                                = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
     $existe_rues                                                    = isset($_POST['existe_rues']) ? trim(addslashes($_POST['existe_rues'])) : '';
     $venta_presencial                                               = isset($_POST['venta_presencial']) ? trim(addslashes($_POST['venta_presencial'])) : '';
     $venta_online                                                   = isset($_POST['venta_online']) ? trim(addslashes($_POST['venta_online'])) : '';
@@ -134,6 +135,7 @@ if (isset($_POST['cod_tienda']) && !empty($_POST['cod_tienda'])) {
     $campos_update[] = "nombre_representante = UPPER('$nombre_representante')";
     $campos_update[] = "documento_representante = '$documento_representante'";
     $campos_update[] = "correo_representante = '$correo_representante'";
+    $campos_update[] = "cod_tipo_sector = '$cod_tipo_sector'";
     $campos_update[] = "existe_rues = '$existe_rues'";
     $campos_update[] = "venta_presencial = '$venta_presencial'";
     $campos_update[] = "venta_online = '$venta_online'";

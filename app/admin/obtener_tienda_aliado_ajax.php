@@ -13,9 +13,10 @@ $cod_tienda = isset($_GET['cod_tienda']) ? intval($_GET['cod_tienda']) : 0;
 // Validaciones
 if ($cod_tienda <= 0) { $response['message'] = 'Código de tienda no válido'; echo json_encode($response); exit; }
 // Consultar tienda con todos los campos nuevos
-$sql_tienda = "SELECT cod_tienda, nombre_tienda, identificacion_tercero, abrev_tienda, direccion_tercero, telefono1_tercero, correo_tercero, ubicacion_gps_tienda, cod_estado, url_img_orig_tienda, 
+$sql_tienda = "SELECT cod_tienda, nombre_tienda, identificacion_tercero, abrev_tienda, direccion_tercero, barrio_tercero, telefono1_tercero, correo_tercero, ubicacion_gps_tienda, cod_estado, cod_departamento, cod_municipio, url_img_orig_tienda, 
 url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda, url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda,
-url_img_fachada_tienda, url_img_interna_tienda, url_img_selfieadmin_tienda, url_img_otraopcional_tienda FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
+url_img_fachada_tienda, url_img_interna_tienda, url_img_selfieadmin_tienda, url_img_otraopcional_tienda,
+cod_tipo_sector, existe_rues, venta_presencial, venta_online, nombre_plataforma_ecommerce, nombre_sistema_contable FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
 $resultado = mysqli_query($conectar, $sql_tienda);
 if (!$resultado || mysqli_num_rows($resultado) == 0) { $response['message'] = 'Tienda no encontrada'; echo json_encode($response); exit; }
 $tienda = mysqli_fetch_assoc($resultado);

@@ -17,7 +17,14 @@ $direccion_tienda                                               = isset($_POST['
 $telefono_tienda                                                = isset($_POST['telefono_tienda']) ? trim($_POST['telefono_tienda']) : '';
 $correo_tercero                                                 = isset($_POST['correo_tercero']) ? trim($_POST['correo_tercero']) : '';
 $ubicacion_gps_tienda                                           = isset($_POST['ubicacion_gps_tienda']) ? trim($_POST['ubicacion_gps_tienda']) : '';
+$barrio_tercero                                                 = isset($_POST['barrio_tercero']) ? trim($_POST['barrio_tercero']) : '';
 $cod_estado                                                     = isset($_POST['cod_estado']) ? intval($_POST['cod_estado']) : 1;
+$cod_tipo_sector                                                = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
+$existe_rues                                                    = isset($_POST['existe_rues']) ? trim($_POST['existe_rues']) : '';
+$venta_presencial                                               = isset($_POST['venta_presencial']) ? trim($_POST['venta_presencial']) : '';
+$venta_online                                                   = isset($_POST['venta_online']) ? trim($_POST['venta_online']) : '';
+$nombre_plataforma_ecommerce                                    = isset($_POST['nombre_plataforma_ecommerce']) ? trim($_POST['nombre_plataforma_ecommerce']) : '';
+$nombre_sistema_contable                                        = isset($_POST['nombre_sistema_contable']) ? trim($_POST['nombre_sistema_contable']) : '';
 $nombre1_tercero                                                = $nombre_tienda;
 // Validaciones
 if ($cod_tienda <= 0) { $response['message'] = 'Código de tienda no válido'; echo json_encode($response); exit; }
@@ -145,6 +152,7 @@ nombre_tienda = '" . mysqli_real_escape_string($conectar, $nombre_tienda_upper) 
 nombre1_tercero = '" . mysqli_real_escape_string($conectar, $nombre_tienda_upper) . "',
 identificacion_tercero = '" . mysqli_real_escape_string($conectar, $identificacion_tercero) . "',
 direccion_tercero = '" . mysqli_real_escape_string($conectar, $direccion_tienda) . "',
+barrio_tercero = '" . mysqli_real_escape_string($conectar, $barrio_tercero) . "',
 telefono1_tercero = '" . mysqli_real_escape_string($conectar, $telefono_tienda) . "',
 correo_tercero = '" . mysqli_real_escape_string($conectar, $correo_tercero) . "',
 ubicacion_gps_tienda = '" . mysqli_real_escape_string($conectar, $ubicacion_gps_tienda) . "',
@@ -158,7 +166,13 @@ url_documentacion_extra1_tienda = '" . mysqli_real_escape_string($conectar, $url
 url_img_fachada_tienda = '" . mysqli_real_escape_string($conectar, $url_img_fachada_tienda) . "',
 url_img_interna_tienda = '" . mysqli_real_escape_string($conectar, $url_img_interna_tienda) . "',
 url_img_selfieadmin_tienda = '" . mysqli_real_escape_string($conectar, $url_img_selfieadmin_tienda) . "',
-url_img_otraopcional_tienda = '" . mysqli_real_escape_string($conectar, $url_img_otraopcional_tienda) . "'
+url_img_otraopcional_tienda = '" . mysqli_real_escape_string($conectar, $url_img_otraopcional_tienda) . "',
+cod_tipo_sector = '" . intval($cod_tipo_sector) . "',
+existe_rues = '" . mysqli_real_escape_string($conectar, $existe_rues) . "',
+venta_presencial = '" . mysqli_real_escape_string($conectar, $venta_presencial) . "',
+venta_online = '" . mysqli_real_escape_string($conectar, $venta_online) . "',
+nombre_plataforma_ecommerce = '" . mysqli_real_escape_string($conectar, $nombre_plataforma_ecommerce) . "',
+nombre_sistema_contable = '" . mysqli_real_escape_string($conectar, $nombre_sistema_contable) . "'
 WHERE cod_tienda = '$cod_tienda'";
 $resultado = mysqli_query($conectar, $sql_actualizar);
 if ($resultado) { $response['success'] = true; $response['message'] = 'Tienda actualizada exitosamente'; } else { $response['message'] = 'Error al actualizar la tienda: ' . mysqli_error($conectar); }

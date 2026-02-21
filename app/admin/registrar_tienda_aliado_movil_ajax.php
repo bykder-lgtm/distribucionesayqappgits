@@ -18,6 +18,14 @@ $ubicacion_gps_tienda                                           = isset($_POST['
 $cod_aliado_estrategico                                         = isset($_POST['cod_aliado_estrategico']) ? intval($_POST['cod_aliado_estrategico']) : 0;
 $cod_departamento                                               = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
 $cod_municipio                                                  = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
+$barrio_tercero                                                 = isset($_POST['barrio_tercero']) ? trim($_POST['barrio_tercero']) : '';
+$cod_tipo_sector                                                = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
+$existe_rues                                                    = isset($_POST['existe_rues']) ? trim($_POST['existe_rues']) : '';
+$venta_presencial                                               = isset($_POST['venta_presencial']) ? trim($_POST['venta_presencial']) : '';
+$venta_online                                                   = isset($_POST['venta_online']) ? trim($_POST['venta_online']) : '';
+$nombre_plataforma_ecommerce                                    = isset($_POST['nombre_plataforma_ecommerce']) ? trim($_POST['nombre_plataforma_ecommerce']) : '';
+$nombre_sistema_contable                                        = isset($_POST['nombre_sistema_contable']) ? trim($_POST['nombre_sistema_contable']) : '';
+$cod_administrador                                              = $cod_aliado_estrategico;
 // Validaciones básicas
 if (empty($nombre_tienda)) { $response['message'] = 'El nombre de la tienda es obligatorio'; echo json_encode($response); exit; }
 if ($cod_aliado_estrategico <= 0) { $response['message'] = 'Error de sesión. Por favor recargue la página.'; echo json_encode($response); exit; }
@@ -128,15 +136,22 @@ $url_img_otraopcional_tienda                                    = procesarArchiv
 $fecha_creacion                                                 = date('Y-m-d H:i:s');
 $cod_estado                                                     = 1;
 // Insertar nueva tienda con todos los campos nuevos
-$sql_insertar = "INSERT INTO tbl15_tienda (nombre_tienda, nombre1_tercero, abrev_tienda, identificacion_tercero, direccion_tercero, telefono1_tercero, correo_tercero, ubicacion_gps_tienda, cod_aliado_estrategico, 
-cod_estado, fecha_creacion, url_img_orig_tienda, url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda,
-url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda, url_img_selfieadmin_tienda, url_img_otraopcional_tienda) 
-VALUES (UPPER(?), UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$sql_insertar = "INSERT INTO tbl15_tienda (nombre_tienda, nombre1_tercero, abrev_tienda, identificacion_tercero, direccion_tercero, barrio_tercero, telefono1_tercero, correo_tercero, ubicacion_gps_tienda, cod_aliado_estrategico, 
+cod_departamento, cod_municipio, cod_estado, fecha_creacion, cod_tipo_sector, existe_rues, venta_presencial, venta_online, nombre_plataforma_ecommerce, nombre_sistema_contable,
+url_img_orig_tienda, url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda,
+url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda, url_img_selfieadmin_tienda, url_img_otraopcional_tienda, cod_administrador) 
+VALUES (UPPER(?), UPPER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = mysqli_prepare($conectar, $sql_insertar);
 if ($stmt === false) { $response['message'] = 'Error al preparar inserción: ' . mysqli_error($conectar); echo json_encode($response); mysqli_close($conectar); exit; }
-mysqli_stmt_bind_param($stmt, "sssssssssiissssssssss", $nombre_tienda, $nombre1_tercero, $abrev_tienda, $identificacion_tercero, $direccion_tienda, $telefono_tienda, $correo_tercero, $ubicacion_gps_tienda, $cod_aliado_estrategico, 
-$cod_estado, $fecha_creacion, $url_img_orig_tienda, $url_img_min_tienda, $url_documentacion_rut_tienda, $url_documentacion_camaracomercio_tienda,
-$url_documentacion_contratofirma_tienda, $url_documentacion_extra1_tienda, $url_img_fachada_tienda, $url_img_interna_tienda, $url_img_selfieadmin_tienda, $url_img_otraopcional_tienda);
+mysqli_stmt_bind_param($stmt, "sssssssssiiiisisssssssssssssssi",
+$nombre_tienda, $nombre1_tercero, $abrev_tienda, $identificacion_tercero, $direccion_tienda,
+$barrio_tercero, $telefono_tienda, $correo_tercero, $ubicacion_gps_tienda,
+$cod_aliado_estrategico, $cod_departamento, $cod_municipio, $cod_estado,
+$fecha_creacion, $cod_tipo_sector,
+$existe_rues, $venta_presencial, $venta_online, $nombre_plataforma_ecommerce, $nombre_sistema_contable,
+$url_img_orig_tienda, $url_img_min_tienda, $url_documentacion_rut_tienda, $url_documentacion_camaracomercio_tienda,
+$url_documentacion_contratofirma_tienda, $url_documentacion_extra1_tienda,
+$url_img_fachada_tienda, $url_img_interna_tienda, $url_img_selfieadmin_tienda, $url_img_otraopcional_tienda, $cod_administrador);
 if (mysqli_stmt_execute($stmt)) {
     $cod_tienda_nuevo = mysqli_insert_id($conectar);
     $response['success'] = true;

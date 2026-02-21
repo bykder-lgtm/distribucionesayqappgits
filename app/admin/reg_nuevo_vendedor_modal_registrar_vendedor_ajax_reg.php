@@ -3,6 +3,7 @@ include_once('../conexiones/conexione.php');
 include_once('../evitar_mensaje_error/error.php');
 header('Content-Type: application/json');
 date_default_timezone_set("America/Bogota");
+$fecha_creacion = date("Y-m-d H:i:s");
 
 try {
     // Recibir datos del POST
@@ -45,9 +46,9 @@ try {
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 */
 	$sql_data = "INSERT INTO tbl15_administrador (cod_administrador, cedula, nombres, apellidos, identificacion_tercero, nombre1_tercero, apellido1_tercero, 
-	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, cod_seguridad) 
+	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, cod_seguridad, fecha_creacion) 
 	VALUES ('$cod_administrador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), 
-	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$cod_seguridad')";
+	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$cod_seguridad', '$fecha_creacion')";
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
 	$sql_info_factura_venta = sprintf("UPDATE tbl15_info_factura_venta SET cod_vendedor = '$cod_administrador' WHERE (cod_info_factura_venta = '$cod_info_factura_venta')");
@@ -56,11 +57,11 @@ try {
     // Validar campos obligatorios
     if (empty($nombres) || empty($apellidos) || empty($cedula)) { throw new Exception('Los nombres, apellidos y cédula son obligatorios'); }
     // Preparar la consulta de inserción
-    $sql_insertar = "INSERT INTO tbl15_vendedor (cedula, nombres, apellidos, identificacion_tercero, nombre1_tercero, apellido1_tercero, nombre_tipo_identificacion, cuenta, cod_aliado_estrategico) 
-    VALUES (?, UPPER(?), UPPER(?), ?, UPPER(?), UPPER(?), ?, ?, ?)";
+    $sql_insertar = "INSERT INTO tbl15_vendedor (cedula, nombres, apellidos, identificacion_tercero, nombre1_tercero, apellido1_tercero, nombre_tipo_identificacion, cuenta, cod_aliado_estrategico, fecha_creacion) 
+    VALUES (?, UPPER(?), UPPER(?), ?, UPPER(?), UPPER(?), ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conectar, $sql_insertar);
     if (!$stmt) { throw new Exception('Error al preparar la consulta: ' . mysqli_error($conectar)); }
-    mysqli_stmt_bind_param($stmt, "ississssi", $cedula, $nombres, $apellidos, $identificacion_tercero, $nombre1_tercero, $apellido1_tercero, $nombre_tipo_identificacion, $cuenta, $cod_aliado_estrategico);
+    mysqli_stmt_bind_param($stmt, "ississssis", $cedula, $nombres, $apellidos, $identificacion_tercero, $nombre1_tercero, $apellido1_tercero, $nombre_tipo_identificacion, $cuenta, $cod_aliado_estrategico, $fecha_creacion);
     if (!mysqli_stmt_execute($stmt)) { throw new Exception('Error al registrar el vendedor: ' . mysqli_stmt_error($stmt)); }
     // Obtener el ID del vendedor recién insertado
     $cod_vendedor_nuevo = mysqli_insert_id($conectar);

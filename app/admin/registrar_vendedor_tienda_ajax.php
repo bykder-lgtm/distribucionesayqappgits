@@ -29,11 +29,23 @@ $creador                                                            = $cuenta_ac
 //---------------------------------------------------------------------------------------------------------------------------------//
 if (isset($_POST['identificacion_tercero'])) {
 	$identificacion_tercero                                         = addslashes($_POST['identificacion_tercero']);
-	$nombre1_tercero                                                = trim(addslashes($_POST['nombres_apellidos_tercero']));
-	$apellido1_tercero                                              = '';
+	$nombre1_tercero_post                                           = isset($_POST['nombre1_tercero']) ? trim(addslashes($_POST['nombre1_tercero'])) : '';
+	$apellido1_tercero_post                                         = isset($_POST['apellido1_tercero']) ? trim(addslashes($_POST['apellido1_tercero'])) : '';
+	$nombres_apellidos_post                                         = isset($_POST['nombres_apellidos_tercero']) ? trim(addslashes($_POST['nombres_apellidos_tercero'])) : '';
+	// Si se enviaron nombre y apellido por separado, construir nombres_apellidos_tercero
+	if (!empty($nombre1_tercero_post)) {
+	    $nombre1_tercero = $nombre1_tercero_post;
+	    $apellido1_tercero = $apellido1_tercero_post;
+	    $nombres_apellidos_tercero = trim($nombre1_tercero . ' ' . $apellido1_tercero);
+	} else if (!empty($nombres_apellidos_post)) {
+	    $nombre1_tercero = $nombres_apellidos_post;
+	    $apellido1_tercero = '';
+	    $nombres_apellidos_tercero = $nombres_apellidos_post;
+	} else {
+	    echo json_encode(array('success' => false, 'message' => 'El nombre es obligatorio')); exit;
+	}
 	$telefono1_tercero                                              = trim(addslashes($_POST['telefono1_tercero']));
 	$correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
-	$nombres_apellidos_tercero                                      = trim(addslashes($_POST['nombres_apellidos_tercero']));
 	$direccion_tercero                                              = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
     $cod_tienda                                                     = intval($_POST['cod_tienda']);
     

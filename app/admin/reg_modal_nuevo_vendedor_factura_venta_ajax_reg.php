@@ -51,16 +51,18 @@ if (isset($_POST['cod_info_factura_venta'])) {
     $cod_aliado_estrategico                        = $info_info_factura_venta['cod_administrador_aliado_estrategico'];
     $cod_seguridad                                 = '2';
 
+	$fecha_creacion = date("Y-m-d H:i:s");
+
 	$sql_data = "INSERT INTO tbl15_vendedor (cod_vendedor, cedula, nombres, apellidos, identificacion_tercero, nombre1_tercero, apellido1_tercero, 
-	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico) 
+	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, fecha_creacion) 
 	VALUES ('$cod_vendedor', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), 
-	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico')";
+	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$fecha_creacion')";
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
 	$sql_data = "INSERT INTO tbl15_administrador (cod_administrador, cedula, nombres, apellidos, identificacion_tercero, nombre1_tercero, apellido1_tercero, 
-	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, cod_seguridad) 
+	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, cod_seguridad, fecha_creacion) 
 	VALUES ('$cod_administrador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), 
-	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$cod_seguridad')";
+	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$cod_seguridad', '$fecha_creacion')";
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
 	$sql_info_factura_venta = sprintf("UPDATE tbl15_info_factura_venta SET cod_vendedor = '$cod_administrador' WHERE (cod_info_factura_venta = '$cod_info_factura_venta')");

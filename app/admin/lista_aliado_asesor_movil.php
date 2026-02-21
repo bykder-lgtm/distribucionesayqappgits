@@ -623,14 +623,14 @@ select[id^="edit_municipio_tienda_"] option {
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
 $sql .= " ORDER BY a.cod_administrador DESC LIMIT 50";
 $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
-    $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+    $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
     $sql .= " ORDER BY a.cod_administrador DESC LIMIT 50";
     $resultado = mysqli_query($conectar, $sql);
@@ -725,6 +725,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <?php if(!empty($row['correo'])): ?><div class="ally-detail"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($row['correo']); ?></span></div><?php endif; ?>
                     <?php if(!empty($row['cuenta'])): ?><div class="ally-detail"><i class="fa-solid fa-building-columns"></i><span>Usuario: <?php echo $row['cuenta']; ?></span></div><?php endif; ?>
                     <div class="ally-detail"><i class="fa-solid fa-store"></i><span><?php echo $tiendas_texto; ?></span></div>
+                    <?php if(!empty($row['fecha'])): ?><div class="ally-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span></div><?php endif; ?>
                     <!--
                     <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 0.5rem; padding-top: 0.5rem;">
                         <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.25rem;">
@@ -1770,6 +1771,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+                <button onclick="registrarOtroAliado()" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Registrar Otro Aliado
+                </button>
+
                 <button onclick="abrirDocumentacionDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
                     <i class="fa-solid fa-file-contract"></i>
                     Compartir Enlace de Documentación
@@ -1782,6 +1788,52 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             </div>
             
             <button onclick="cerrarModalConfirmacionRegistro()" style="width: 100%; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 12px; cursor: pointer; font-weight: 600;">
+                <i class="fa-solid fa-check"></i> Finalizar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmación Tienda Registrada -->
+<div class="modal-overlay" id="modalConfirmacionTienda" style="z-index: 4500; align-items: center;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h2><i class="fa-solid fa-store"></i> ¡Tienda Registrada!</h2>
+            <button class="modal-close" onclick="cerrarModalConfirmacionTienda()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="confirm_tienda_cod" value="">
+            <input type="hidden" id="confirm_tienda_nombre" value="">
+            <input type="hidden" id="confirm_tienda_cod_aliado" value="">
+            
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-store" style="font-size: 3rem; color: #10b981;"></i>
+                </div>
+                <h3 style="color: white; margin-bottom: 0.5rem;" id="confirm_tienda_nombre_display"></h3>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">La tienda ha sido registrada exitosamente.</p>
+            </div>
+            
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                <h4 style="color: #10b981; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-tasks"></i> ¿Qué deseas hacer ahora?
+                </h4>
+                <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Selecciona una de las siguientes opciones:</p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+                <button onclick="registrarOtraTienda()" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <i class="fa-solid fa-store"></i>
+                    Registrar Otra Tienda
+                </button>
+
+                <button onclick="irATiendaRegistrada()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <i class="fa-solid fa-users-gear"></i>
+                    Registrar Vendedores / Productos
+                </button>
+            </div>
+            
+            <button onclick="cerrarModalConfirmacionTienda()" style="width: 100%; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 12px; cursor: pointer; font-weight: 600;">
                 <i class="fa-solid fa-check"></i> Finalizar
             </button>
         </div>
@@ -3133,14 +3185,14 @@ $('#formAgregarTienda').on('submit', function(e) {
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({
-                    icon: 'success', title: '¡Registrada!', text: 'Tienda registrada correctamente', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                }).then(() => {
-                    cerrarModalAgregarTienda();
-                    // Recargar la página para mostrar el nuevo registro
-                    location.reload();
-                });
+                cerrarModalAgregarTienda();
+                // Guardar datos en el modal de confirmación de tienda
+                document.getElementById('confirm_tienda_cod').value = response.cod_tienda || '';
+                document.getElementById('confirm_tienda_nombre').value = response.nombre_tienda || '';
+                document.getElementById('confirm_tienda_cod_aliado').value = document.getElementById('agregar_tienda_cod_aliado').value;
+                document.getElementById('confirm_tienda_nombre_display').textContent = response.nombre_tienda || 'Tienda registrada';
+                // Abrir modal de confirmación de tienda
+                document.getElementById('modalConfirmacionTienda').classList.add('show');
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -3594,6 +3646,48 @@ function abrirRegistroTiendaDesdeConfirmacion() {
     
     // Abrir modal de agregar tienda
     document.getElementById('modalAgregarTienda').classList.add('show');
+}
+
+function registrarOtroAliado() {
+    // Cerrar modal de confirmación
+    document.getElementById('modalConfirmacionRegistro').classList.remove('show');
+    // Limpiar formulario de registro
+    document.getElementById('formRegistro').reset();
+    identificacionValida = false;
+    var btnGuardar = document.getElementById('btnGuardar');
+    if (btnGuardar) { btnGuardar.disabled = false; btnGuardar.style.opacity = '1'; btnGuardar.style.cursor = 'pointer'; }
+    var mensajeId = document.getElementById('mensaje_identificacion');
+    if (mensajeId) { mensajeId.style.display = 'none'; }
+    // Abrir modal de registro
+    document.getElementById('modalRegistro').classList.add('show');
+}
+
+function cerrarModalConfirmacionTienda() {
+    document.getElementById('modalConfirmacionTienda').classList.remove('show');
+    location.reload();
+}
+
+function registrarOtraTienda() {
+    var codAliado = document.getElementById('confirm_tienda_cod_aliado').value;
+    // Cerrar modal de confirmación de tienda
+    document.getElementById('modalConfirmacionTienda').classList.remove('show');
+    // Limpiar formulario de tienda
+    document.getElementById('formAgregarTienda').reset();
+    // Re-asignar el aliado
+    document.getElementById('agregar_tienda_cod_aliado').value = codAliado;
+    // Recargar departamentos
+    cargarDepartamentosModalAgregar();
+    // Abrir modal de agregar tienda
+    document.getElementById('modalAgregarTienda').classList.add('show');
+}
+
+function irATiendaRegistrada() {
+    var codTienda = document.getElementById('confirm_tienda_cod').value;
+    if (codTienda) {
+        window.location.href = 'lista_tienda_asesor_movil.php?cod_tienda=' + codTienda;
+    } else {
+        window.location.href = 'lista_tienda_asesor_movil.php';
+    }
 }
 
 function cerrarModalDocumentacionAliado() {
