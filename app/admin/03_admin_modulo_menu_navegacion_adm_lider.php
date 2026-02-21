@@ -1,4 +1,4 @@
-        <div class="container body">
+﻿        <div class="container body">
             <div class="main_container">
                 <div class="col-md-3 left_col">
                     <div class="left_col scroll-view">
@@ -20,30 +20,10 @@
         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu"><!-- sidebar menu -->
             <div class="menu_section">
                 <ul class="nav side-menu">
-<!--
-<li class="dropdown active"><a href="#" class="dropdown-toggle"><i class="fa fa-ticket"></i> Pacientes<b class="caret"></b></a>
-<ul class="dropdown-menu">
-<li class=""><a href="../admin/odontograma.php"><i class="fa fa-area-chart"></i> Reg Pacientes</a></li>
-<li class=""><a href="../admin/odontograma.php"><i class="fa fa-child"></i> Edit Pacientes</a></li>
-</ul>
-</li>
--->
-<li class=""><a href="../admin/lista_info_factura_venta_lider_diseno_vertical.php"><i class="fa fa-list-alt"></i> Creditos</a></li>
-<li class=""><a href="../admin/lista_info_factura_venta_lider_diseno_vertical.php"><i class="fa fa-list-alt"></i> Documentos linea de credito</a></li>
-
-<!--
-<li class=""><a href="../admin/lista_banner_slider.php"><i class="fa fa-ticket"></i> Banner Slider</a></li>
-<li class=""><a href="../admin/lista_categoria.php"><i class="fa fa-ticket"></i> Categorias</a></li>
-<li class=""><a href="../admin/lista_cotizar_producto.php"><i class="fa fa-ticket"></i> Cotizacion</a></li>
-<li class=""><a href="../admin/lista_galeria_video.php"><i class="fa fa-ticket"></i> Galeria de Videos</a></li>
-<li class=""><a href="../admin/lista_paciente.php"><i class="fa fa-list-alt"></i> Mascotas</a></li>
-<li class=""><a href="../admin/lista_recurso.php"><i class="fa fa-ticket"></i> Recursos</a></li>
-<li class=""><a href="../admin/lista_campanya.php"><i class="fa fa-ticket"></i> Campañas</a></li>
-<li class=""><a href="../admin/lista_visita.php"><i class="fa fa-binoculars"></i> Visitas</a></li>
-<li class=""><a href="../admin/lista_estadistica.php"><i class="fa fa-pie-chart"></i> Estadisticas</a></li>
-<li class=""><a href="../admin/lista_nuestro_equipo.php"><i class="fa fa-users"></i> Nuestro Equipo</a></li>
-<li class=""><a href="../admin/lista_info_empresa.php"><i class="fa fa-list-alt"></i> Info Empresa</a></li>
--->
+<li class=""><a href="../admin/lista_info_factura_venta_lider_diseno_vertical.php"><i class="fa fa-list-alt"></i> Lista de Creditos</a></li>
+<li class=""><a href="../admin/lista_aliado_lider_diseno_vertical.php"><i class="fa fa-users"></i> Lista de Aliados</a></li>
+<li class=""><a href="../admin/lista_tienda_lider_diseno_vertical.php"><i class="fa fa-store"></i> Lista de Tiendas</a></li>
+<li class=""><a href="../admin/lista_producto_lider_diseno_vertical.php"><i class="fa fa-boxes-stacked"></i> Lista de Productos</a></li>
                 </ul>
             </div>
         </div><!-- /sidebar menu -->
@@ -64,7 +44,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-usermenu pull-right">
                             <!--<li><a href="../admin/usuario.php"><i class="fa fa-user"></i> Mi cuenta</a></li>-->
-                            <li><a href="../session/salir_visitante_intern.php?token=<?php echo $token ?>"><i class="fa fa-sign-out pull-right"></i> Cerrar Sesión</a></li>
+                            <li><a href="../session/salir_visitante_intern.php?token=<?php echo $token ?>"><i class="fa fa-sign-out pull-right"></i> Cerrar SesiÃ³n</a></li>
                         </ul>
                     </li>
                 </ul>

@@ -1,4 +1,0 @@
-UPDATE tbl15_entidad_crediticia SET url_pagina_plataforma_web = url_pagina_web_consulta;
-UPDATE `tbl15_entidad_crediticia` SET `url_pagina_web_consultar_cupo` = 'https://preapproval.addi.com/' WHERE `cod_entidad_crediticia` =2;
-UPDATE `tbl15_entidad_crediticia` SET `url_pagina_web_estudio_cupo` = 'https://preapproval.addi.com/' WHERE `cod_entidad_crediticia` =2;
-UPDATE `tbl15_entidad_crediticia` SET `url_pagina_web_valor_pagar` = 'https://clientes.addi.com/login' WHERE `cod_entidad_crediticia` =2;

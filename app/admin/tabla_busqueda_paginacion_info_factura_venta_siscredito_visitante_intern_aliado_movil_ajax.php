@@ -9068,4 +9068,16 @@ $(document).ready(function() {
             padding: 0.4rem 0.75rem;
         }
     }
+    #estilo_entidad_crediticia,
+    #estilo_precio,
+    #estilo_estado {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 18px !important;
+        vertical-align: middle !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        font-size: 0.75rem !important;
+    }
 </style>

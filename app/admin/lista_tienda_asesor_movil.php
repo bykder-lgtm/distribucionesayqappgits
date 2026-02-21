@@ -1256,8 +1256,13 @@ body {
 
 <?php
 // Obtener tiendas del asesor
+// Cadena: asesor → aliados (cod_asesor = asesor) → tiendas (cod_aliado_estrategico = aliado)
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
-$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_administrador = '$cod_administrador'";
+
+// Subquery para obtener los cod_administrador de los aliados que pertenecen a este asesor
+$subquery_aliados_asesor = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_asesor = '$cod_administrador'";
+
+$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_asesor)";
 if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
 
 $sql_tiendas .= " ORDER BY t.fecha_creacion DESC";
@@ -1265,12 +1270,12 @@ $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
 $total_tiendas = ($resultado_tiendas) ? mysqli_num_rows($resultado_tiendas) : 0;
 
 // Contar tiendas con firma
-$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_administrador = '$cod_administrador' AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
+$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_asesor) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
 $resultado_con_firma = mysqli_query($conectar, $sql_con_firma);
 $tiendas_con_firma = 0;
 if ($resultado_con_firma) { $datos_con_firma = mysqli_fetch_assoc($resultado_con_firma); $tiendas_con_firma = isset($datos_con_firma['total']) ? intval($datos_con_firma['total']) : 0; }
 // Contar tiendas con GPS
-$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_administrador = '$cod_administrador' AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != ''";
+$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_asesor) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != ''";
 $resultado_con_gps = mysqli_query($conectar, $sql_con_gps);
 $tiendas_con_gps = 0;
 if ($resultado_con_gps) { $datos_con_gps = mysqli_fetch_assoc($resultado_con_gps); $tiendas_con_gps = isset($datos_con_gps['total']) ? intval($datos_con_gps['total']) : 0; }

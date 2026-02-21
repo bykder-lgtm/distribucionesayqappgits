@@ -1,4 +1,4 @@
-<link href="../estilo_css/bootstrap.min_adm_tick.css" rel="stylesheet"><!-- Bootstrap -->
+﻿<link href="../estilo_css/bootstrap.min_adm_tick.css" rel="stylesheet"><!-- Bootstrap -->
 <link href="../estilo_css/font-awesome.min_adm_tick.css" rel="stylesheet"><!-- Font Awesome -->
 <link href="../estilo_css/nprogress_adm_tick.css" rel="stylesheet"><!-- NProgress -->
 <link href="../estilo_css/green_adm_tick.css" rel="stylesheet"><!-- iCheck -->
@@ -10,6 +10,6 @@
 <link href="../estilo_css/jquery.mCustomScrollbar.min_adm_tick.css" rel="stylesheet"/><!-- jQuery custom content scroller -->
 <link href="../estilo_css/daterangepicker_adm_tick.css" rel="stylesheet"><!-- bootstrap-daterangepicker -->
 <!--<link href="../estilo_css/custom_modificable.min.css" rel="stylesheet">--><!-- Custom Theme Style -->
-<link href="../estilo_css/custom_adm_tick_revisor.css" rel="stylesheet"><!-- Custom Theme Style -->
-<link href="../estilo_css/custom_theme_adm_tick_revisor.css" rel="stylesheet"><!-- Custom Theme Colors A&Q -->
+<link href="../estilo_css/custom_adm_tick_lider.css" rel="stylesheet"><!-- Custom Theme Style -->
+<link href="../estilo_css/custom_theme_adm_tick_lider.css" rel="stylesheet"><!-- Custom Theme Colors A&Q -->
 <link rel="stylesheet" href="../estilo_css/micss_adm_tick.css"><!-- MICSS button[type="file"] -->

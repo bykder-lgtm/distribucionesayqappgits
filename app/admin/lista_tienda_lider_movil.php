@@ -1,13 +1,13 @@
-﻿<?php 
+<?php 
 $nombre_pagina          = "Mis Tiendas";
 $cod_seguridad_pag      = "1";
 $pagina_local           = $_SERVER['PHP_SELF'];
 $cod_base_caja          = "1";
 ?>
 <!-- **************************************************** MODULO DE SESION ******************************************** -->
-<?php include_once("../admin/01_admin_modulo_inicio_sesion_adm_coordinador.php"); ?>
+<?php include_once("../admin/01_admin_modulo_inicio_sesion_adm_lider.php"); ?>
 <!-- **************************************************** MODULO DE SESION ******************************************** -->
-<?php include_once("../admin/01_admin_modulo_info_empresa_adm_coordinador.php"); ?>
+<?php include_once("../admin/01_admin_modulo_info_empresa_adm_lider.php"); ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -25,7 +25,7 @@ $cod_base_caja          = "1";
 
 <style>
 /* ============================================ */
-/* LISTA TIENDAS COORDINADOR - TEMA AZUL INDIGO */
+/* LISTA TIENDAS lider - TEMA VERDE ESMERALDA */
 /* ============================================ */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -45,13 +45,13 @@ body {
 
 /* Header */
 .page-header {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
     border-radius: 20px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
 }
 
 .page-header::before {
@@ -116,7 +116,7 @@ body {
 /* Search Bar */
 .search-bar {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 16px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -139,13 +139,13 @@ body {
 }
 
 .search-bar i {
-    color: #6366f1;
+    color: #8b5cf6;
     font-size: 1.1rem;
 }
 
 /* Add Button */
 .add-button {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     border: none;
     border-radius: 16px;
@@ -160,12 +160,12 @@ body {
     cursor: pointer;
     margin-bottom: 1.5rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
 }
 
 .add-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 6px 30px rgba(139, 92, 246, 0.5);
 }
 
 /* Store Cards */
@@ -177,15 +177,15 @@ body {
 
 .store-card {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 16px;
     padding: 1.25rem;
     transition: all 0.3s ease;
 }
 
 .store-card:hover {
-    border-color: #6366f1;
-    box-shadow: 0 5px 20px rgba(99, 102, 241, 0.2);
+    border-color: #8b5cf6;
+    box-shadow: 0 5px 20px rgba(139, 92, 246, 0.2);
 }
 
 .store-card-header {
@@ -220,8 +220,8 @@ body {
 }
 
 .store-status.active {
-    background: rgba(129, 140, 248, 0.2);
-    color: #818cf8;
+    background: rgba(52, 211, 153, 0.2);
+    color: #34d399;
 }
 
 .store-status.pending {
@@ -243,7 +243,7 @@ body {
 }
 
 .store-detail i {
-    color: #6366f1;
+    color: #8b5cf6;
     font-size: 0.85rem;
     width: 20px;
 }
@@ -256,7 +256,7 @@ body {
 .store-actions {
     display: flex;
     gap: 0.5rem;
-    border-top: 1px solid rgba(99, 102, 241, 0.15);
+    border-top: 1px solid rgba(139, 92, 246, 0.15);
     padding-top: 1rem;
 }
 
@@ -276,12 +276,12 @@ body {
 }
 
 .action-btn.primary {
-    background: rgba(99, 102, 241, 0.2);
-    color: #6366f1;
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
 }
 
 .action-btn.primary:hover {
-    background: #6366f1;
+    background: #8b5cf6;
     color: white;
 }
 
@@ -312,7 +312,7 @@ body {
     left: 0;
     right: 0;
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border-top: 1px solid rgba(99, 102, 241, 0.2);
+    border-top: 1px solid rgba(139, 92, 246, 0.2);
     display: flex;
     justify-content: space-around;
     padding: 0.75rem 0;
@@ -332,12 +332,12 @@ body {
 }
 
 .nav-item:hover, .nav-item.active {
-    color: #6366f1;
+    color: #8b5cf6;
     text-decoration: none;
 }
 
 .nav-item.active {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(139, 92, 246, 0.1);
 }
 
 .nav-item i {
@@ -359,7 +359,7 @@ body {
 
 .empty-state i {
     font-size: 4rem;
-    color: rgba(99, 102, 241, 0.3);
+    color: rgba(139, 92, 246, 0.3);
     margin-bottom: 1rem;
 }
 
@@ -420,7 +420,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
     position: sticky;
     top: 0;
     background: #1a1f2e;
@@ -443,7 +443,7 @@ body {
 }
 
 .modal-header h2 i {
-    color: #6366f1;
+    color: #8b5cf6;
 }
 
 .modal-close {
@@ -459,14 +459,14 @@ body {
 
 /* Form Styles */
 .form-section-title {
-    color: #6366f1;
+    color: #8b5cf6;
     font-size: 0.9rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin: 1.5rem 0 1rem 0;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -486,8 +486,8 @@ body {
 
 .form-input, .form-select {
     width: 100%;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 12px;
     padding: 0.85rem 1rem;
     color: white;
@@ -497,8 +497,8 @@ body {
 }
 
 .form-input:focus, .form-select:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
 }
 
 .form-input::placeholder {
@@ -535,17 +535,17 @@ body {
 
 .file-input-wrapper {
     position: relative;
-    border: 2px dashed rgba(99, 102, 241, 0.3);
+    border: 2px dashed rgba(139, 92, 246, 0.3);
     border-radius: 12px;
     padding: 1.5rem;
     text-align: center;
-    background: rgba(99, 102, 241, 0.05);
+    background: rgba(139, 92, 246, 0.05);
     transition: all 0.3s ease;
 }
 
 .file-input-wrapper:hover {
-    border-color: #6366f1;
-    background: rgba(99, 102, 241, 0.1);
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
 }
 
 .file-input-wrapper input[type="file"] {
@@ -560,7 +560,7 @@ body {
 
 .file-input-icon {
     font-size: 2rem;
-    color: #6366f1;
+    color: #8b5cf6;
     margin-bottom: 0.5rem;
 }
 
@@ -576,14 +576,14 @@ body {
     object-fit: cover;
     border-radius: 8px;
     display: none;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .document-preview {
     margin-top: 1rem;
     padding: 1rem;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 8px;
     display: none;
 }
@@ -611,11 +611,11 @@ body {
     align-items: center;
     margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .document-preview-title {
-    color: #6366f1;
+    color: #8b5cf6;
     font-weight: 600;
     font-size: 0.9rem;
 }
@@ -626,7 +626,7 @@ body {
 }
 
 .document-preview-btn {
-    background: #6366f1;
+    background: #8b5cf6;
     color: white;
     border: none;
     padding: 0.4rem 0.8rem;
@@ -640,11 +640,11 @@ body {
 }
 
 .document-preview-btn:hover {
-    background: #4f46e5;
+    background: #7c3aed;
 }
 
 .gps-btn {
-    background: #6366f1;
+    background: #8b5cf6;
     color: white;
     border: none;
     padding: 0.85rem;
@@ -668,7 +668,7 @@ body {
 
 .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     border: none;
     padding: 1rem;
@@ -678,12 +678,12 @@ body {
     cursor: pointer;
     margin-top: 2rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 }
 
 .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
 }
 
 /* Animations */
@@ -717,14 +717,14 @@ body {
 <body>
 
 <?php
-// Obtener tiendas del coordinador
-// Cadena: coordinador → aliados (cod_coordinador = coordinador) → tiendas (cod_aliado_estrategico = aliado)
+// Obtener tiendas del líder
+// Cadena: líder → aliados (cod_lider = líder) → tiendas (cod_aliado_estrategico = aliado)
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 
-// Subquery para obtener los cod_administrador de los aliados que pertenecen a este coordinador
-$subquery_aliados_coord = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_coordinador = '$cod_administrador'";
+// Subquery para obtener los cod_administrador de los aliados que pertenecen a este líder
+$subquery_aliados_lider = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_lider = '$cod_administrador'";
 
-$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_coord)";
+$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_lider)";
 if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
 
 $sql_tiendas .= " ORDER BY t.fecha_creacion DESC";
@@ -732,17 +732,17 @@ $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
 $total_tiendas = ($resultado_tiendas) ? mysqli_num_rows($resultado_tiendas) : 0;
 
 // Contar tiendas con firma
-$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_coord) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
+$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
 $resultado_con_firma = mysqli_query($conectar, $sql_con_firma);
 $tiendas_con_firma = 0;
 if ($resultado_con_firma) { $datos_con_firma = mysqli_fetch_assoc($resultado_con_firma); $tiendas_con_firma = isset($datos_con_firma['total']) ? intval($datos_con_firma['total']) : 0; }
 // Contar tiendas con GPS
-$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_coord) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != ''";
+$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != ''";
 $resultado_con_gps = mysqli_query($conectar, $sql_con_gps);
 $tiendas_con_gps = 0;
 if ($resultado_con_gps) { $datos_con_gps = mysqli_fetch_assoc($resultado_con_gps); $tiendas_con_gps = isset($datos_con_gps['total']) ? intval($datos_con_gps['total']) : 0; }
 // Obtener aliados estratégicos para el select (cod_seguridad = 23)
-$sql_aliados = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, comision_ptj FROM tbl15_administrador WHERE (cod_seguridad = '23' AND cod_coordinador = '$cod_administrador') ORDER BY nombres_apellidos_tercero ASC";
+$sql_aliados = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, comision_ptj FROM tbl15_administrador WHERE (cod_seguridad = '23' AND cod_lider = '$cod_administrador') ORDER BY nombres_apellidos_tercero ASC";
 $resultado_aliados = mysqli_query($conectar, $sql_aliados);
 ?>
 <main class="page-container">
@@ -797,7 +797,7 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                     <div style="display: flex; align-items: center; gap: 5px;">
                         <span class="store-status <?php echo $tiene_firma ? 'active' : 'pending'; ?>"><?php echo $tiene_firma ? 'Firmado' : 'Pendiente'; ?></span>
                         <?php if (isset($tienda['cod_estado_firma_signature']) && $tienda['cod_estado_firma_signature'] == '1'): ?>
-                            <i class="fa-solid fa-circle-check" style="color: #818cf8; font-size: 1.2rem;" title="Firma Verificada"></i>
+                            <i class="fa-solid fa-circle-check" style="color: #34d399; font-size: 1.2rem;" title="Firma Verificada"></i>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -811,13 +811,13 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                 </div>
 
                 <!-- Sección Vendedores -->
-                <div class="store-vendedores" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(99, 102, 241, 0.15);">
+                <div class="store-vendedores" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(139, 92, 246, 0.15);">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span style="font-size: 0.75rem; font-weight: 600; color: #6366f1;">
+                        <span style="font-size: 0.75rem; font-weight: 600; color: #8b5cf6;">
                             <i class="fa-solid fa-users"></i> Vendedores (<?php echo $total_vendedores_tienda; ?>)
                         </span>
                         <button type="button" class="btn-add-vendedor" onclick="verDetalles(<?php echo $tienda['cod_tienda']; ?>)" 
-                            style="background: rgba(99, 102, 241, 0.15); color: #6366f1; border: none; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.65rem; cursor: pointer; font-weight: 600;">
+                            style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border: none; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.65rem; cursor: pointer; font-weight: 600;">
                             <i class="fa-solid fa-user-plus"></i> Agregar
                         </button>
                     </div>
@@ -829,14 +829,14 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                                 if ($contador_vendedor >= 3) break; // Mostrar máximo 3 vendedores
                                 $contador_vendedor++;
                             ?>
-                                <div class="vendedor-chip" style="background: rgba(99, 102, 241, 0.1); padding: 0.3rem 0.6rem; border-radius: 20px; display: flex; align-items: center; gap: 0.3rem;">
-                                    <i class="fa-solid fa-user" style="font-size: 0.6rem; color: #6366f1;"></i>
+                                <div class="vendedor-chip" style="background: rgba(139, 92, 246, 0.1); padding: 0.3rem 0.6rem; border-radius: 20px; display: flex; align-items: center; gap: 0.3rem;">
+                                    <i class="fa-solid fa-user" style="font-size: 0.6rem; color: #8b5cf6;"></i>
                                     <span style="font-size: 0.7rem; color: rgba(255,255,255,0.85); font-weight: 500;"><?php echo ucwords(strtolower($vendedor['nombres_apellidos_tercero'])); ?></span>
                                 </div>
                             <?php endwhile; ?>
                             <?php if ($total_vendedores_tienda > 3): ?>
-                                <div class="vendedor-chip" style="background: rgba(99, 102, 241, 0.2); padding: 0.3rem 0.6rem; border-radius: 20px;">
-                                    <span style="font-size: 0.7rem; color: #6366f1; font-weight: 600;">+<?php echo ($total_vendedores_tienda - 3); ?> más</span>
+                                <div class="vendedor-chip" style="background: rgba(139, 92, 246, 0.2); padding: 0.3rem 0.6rem; border-radius: 20px;">
+                                    <span style="font-size: 0.7rem; color: #8b5cf6; font-weight: 600;">+<?php echo ($total_vendedores_tienda - 3); ?> más</span>
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -866,7 +866,7 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                     <button class="action-btn" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);" onclick="abrirModalAgregarBanco(<?php echo $tienda['cod_tienda']; ?>, '<?php echo htmlspecialchars($tienda['nombre_tienda'], ENT_QUOTES); ?>')">
                         <i class="fa-solid fa-university"></i> Banco
                     </button>
-                    <button class="action-btn" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);" onclick="abrirModalAgregarVendedor(<?php echo $tienda['cod_tienda']; ?>, '<?php echo htmlspecialchars($tienda['nombre_tienda'], ENT_QUOTES); ?>')">
+                    <button class="action-btn" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);" onclick="abrirModalAgregarVendedor(<?php echo $tienda['cod_tienda']; ?>, '<?php echo htmlspecialchars($tienda['nombre_tienda'], ENT_QUOTES); ?>')">
                         <i class="fa-solid fa-user-plus"></i> Vendedor
                     </button>
                     -->
@@ -975,7 +975,7 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                     <select class="form-select" name="cod_banco_cuenta" id="cod_banco_cuenta" disabled>
                         <option value="">Seleccione Aliado primero</option>
                     </select>
-                    <div id="loading_bancos" style="display:none; color: #6366f1; font-size: 0.8rem; margin-top: 5px;">Cargando bancos...</div>
+                    <div id="loading_bancos" style="display:none; color: #8b5cf6; font-size: 0.8rem; margin-top: 5px;">Cargando bancos...</div>
                 </div>
                 -->
 
@@ -1082,9 +1082,9 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
             <input type="hidden" id="firma_nombre_tienda" value="">
             
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="background: linear-gradient(135deg, rgba(99, 102, 241,0.2), rgba(79, 70, 229,0.2)); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
-                    <i class="fa-solid fa-check-circle" style="font-size: 2.5rem; color: #6366f1;"></i>
-                    <h3 style="color: #6366f1; margin: 0.5rem 0;">¡Tienda Registrada!</h3>
+                <div style="background: linear-gradient(135deg, rgba(139, 92, 246,0.2), rgba(79, 70, 229,0.2)); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-check-circle" style="font-size: 2.5rem; color: #8b5cf6;"></i>
+                    <h3 style="color: #8b5cf6; margin: 0.5rem 0;">¡Tienda Registrada!</h3>
                     <p style="color: rgba(255,255,255,0.7); margin: 0;" id="firma_tienda_nombre_display"></p>
                 </div>
                 <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">Ahora comparta el enlace de firma con su cliente para completar el proceso.</p>
@@ -1107,7 +1107,7 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
                 <label class="form-label">Enlace de Firma</label>
                 <div style="display: flex; gap: 0.5rem;">
                     <input type="text" class="form-input" id="firma_enlace" readonly style="flex: 1;">
-                    <button type="button" onclick="copiarEnlaceFirma()" style="background: #6366f1; color: white; border: none; padding: 0.85rem 1rem; border-radius: 12px; cursor: pointer;">
+                    <button type="button" onclick="copiarEnlaceFirma()" style="background: #8b5cf6; color: white; border: none; padding: 0.85rem 1rem; border-radius: 12px; cursor: pointer;">
                         <i class="fa-solid fa-copy"></i>
                     </button>
                 </div>
@@ -1130,7 +1130,7 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
 </div>
 
 <!-- Bottom Navigation -->
-<?php include_once("../menu/05_modulo_menu_coordinador_movil.php"); ?>
+<?php include_once("../menu/05_modulo_menu_lider_movil.php"); ?>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -1271,8 +1271,8 @@ function obtenerUbicacion() {
             var lng = position.coords.longitude.toFixed(6);
             input.value = lat + ',' + lng;
             
-            status.style.background = 'rgba(99, 102, 241, 0.2)';
-            status.style.color = '#6366f1';
+            status.style.background = 'rgba(139, 92, 246, 0.2)';
+            status.style.color = '#8b5cf6';
             status.innerHTML = '<i class="fa fa-check"></i> Ubicación obtenida: ' + lat + ', ' + lng;
         },
         function(error) {
@@ -1308,18 +1308,18 @@ function updateFileName(input) {
         var textElement = wrapper.querySelector('.file-input-text');
         if (textElement) {
             textElement.textContent = fileName;
-            textElement.style.color = '#6366f1';
+            textElement.style.color = '#8b5cf6';
             textElement.style.fontWeight = 'bold';
         }
     }
 }
-function filtrarTiendas(busqueda) { clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(function() { window.location.href = 'lista_tienda_coordinador_movil.php?busqueda=' + encodeURIComponent(busqueda); }, 500); }
+function filtrarTiendas(busqueda) { clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(function() { window.location.href = 'lista_tienda_lider_movil.php?busqueda=' + encodeURIComponent(busqueda); }, 500); }
 
 function editarTienda(codTienda) {
     Swal.fire({ title: 'Cargando...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
     
     $.ajax({
-        url: 'get_tienda_modal_coordinador_ajax.php',
+        url: 'get_tienda_modal_lider_ajax.php',
         type: 'POST',
         data: { cod_tienda: codTienda },
         dataType: 'json',
@@ -1393,7 +1393,7 @@ function mostrarDocumentosCargados(tienda) {
     if (tienda.url_documentacion_rut_tienda && tienda.url_documentacion_rut_tienda.trim() !== '') {
         const rutWrapper = document.querySelector('#url_rut_tienda').closest('.file-input-wrapper');
         const rutText = rutWrapper.querySelector('.file-input-text');
-        rutText.innerHTML = '<i class="fa-solid fa-check-circle" style="color: #6366f1;"></i> Documento cargado';
+        rutText.innerHTML = '<i class="fa-solid fa-check-circle" style="color: #8b5cf6;"></i> Documento cargado';
         
         // Mostrar previsualización
         const previewRut = document.getElementById('preview_rut');
@@ -1404,7 +1404,7 @@ function mostrarDocumentosCargados(tienda) {
     if (tienda.url_documentacion_camaracomercio_tienda && tienda.url_documentacion_camaracomercio_tienda.trim() !== '') {
         const camaraWrapper = document.querySelector('#url_camara_comercio_tienda').closest('.file-input-wrapper');
         const camaraText = camaraWrapper.querySelector('.file-input-text');
-        camaraText.innerHTML = '<i class="fa-solid fa-check-circle" style="color: #6366f1;"></i> Documento cargado';
+        camaraText.innerHTML = '<i class="fa-solid fa-check-circle" style="color: #8b5cf6;"></i> Documento cargado';
         
         // Mostrar previsualización
         const previewCamara = document.getElementById('preview_camara');
@@ -1496,7 +1496,7 @@ function mostrarPreviewDocumento(url, contenedor, titulo) {
         const mensaje = document.createElement('p');
         mensaje.style.cssText = 'color: rgba(255,255,255,0.7); text-align: center; padding: 2rem;';
         mensaje.innerHTML = `
-            <i class="fa-solid fa-file" style="font-size: 3rem; color: #6366f1; display: block; margin-bottom: 1rem;"></i>
+            <i class="fa-solid fa-file" style="font-size: 3rem; color: #8b5cf6; display: block; margin-bottom: 1rem;"></i>
             Archivo no soportado para previsualización.<br>
             Usa los botones de arriba para abrir o descargar.
         `;
@@ -1578,7 +1578,7 @@ function compartirEnlaceFirma(codTiendaCryp, nombreTienda, codEstadoFirma, urlFi
         html: `
             <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">Tienda: <strong>${nombreTienda}</strong></p>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
-                <button onclick="copiarEnlace('${enlaceFirma}')" style="flex: 1; min-width: 120px; padding: 0.75rem; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                <button onclick="copiarEnlace('${enlaceFirma}')" style="flex: 1; min-width: 120px; padding: 0.75rem; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer;">
                     <i class="fa-solid fa-copy"></i> Copiar
                 </button>
                 <a href="https://wa.me/?text=${encodeURIComponent('Por favor firma tu documento digital aquí: ' + enlaceFirma)}" target="_blank" style="flex: 1; min-width: 120px; padding: 0.75rem; background: #25d366; color: white; border: none; border-radius: 8px; text-decoration: none; text-align: center;">
@@ -1614,7 +1614,7 @@ document.getElementById('formRegistroTienda').addEventListener('submit', functio
     }
    
     var accion = document.getElementById('accion').value;
-    var url = accion === 'editar' ? 'edit_tienda_modal_coordinador_movil_ajax_reg2.php' : '../admin/reg_tienda_modal_coordinador_movil_ajax_reg.php';
+    var url = accion === 'editar' ? 'edit_tienda_modal_lider_movil_ajax_reg2.php' : '../admin/reg_tienda_modal_lider_movil_ajax_reg.php';
     var titulo = accion === 'editar' ? 'Actualizando...' : 'Registrando...';
     var successTitle = accion === 'editar' ? '¡Tienda Actualizada!' : '¡Tienda Registrada!';
     var successMsg = accion === 'editar' ? 'Los datos han sido actualizados exitosamente.' : 'La tienda ha sido creada correctamente.';
@@ -1641,7 +1641,7 @@ document.getElementById('formRegistroTienda').addEventListener('submit', functio
                         icon: 'success', 
                         title: successTitle, 
                         text: successMsg, 
-                        confirmButtonColor: '#6366f1', 
+                        confirmButtonColor: '#8b5cf6', 
                         background: '#1a1f2e', 
                         color: 'white',
                         timer: 2000,
@@ -1652,7 +1652,7 @@ document.getElementById('formRegistroTienda').addEventListener('submit', functio
                 }
             } else {
                 console.error('Error del servidor:', response.message);
-                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo procesar', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white' });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo procesar', confirmButtonColor: '#8b5cf6', background: '#1a1f2e', color: 'white' });
             }
         },
         error: function(xhr, status, error) {
@@ -1663,7 +1663,7 @@ document.getElementById('formRegistroTienda').addEventListener('submit', functio
             console.error('Status Code:', xhr.status);
             console.error('====================');
             
-            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Hubo un problema al enviar los datos. Revisa la consola para más detalles.', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white' });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Hubo un problema al enviar los datos. Revisa la consola para más detalles.', confirmButtonColor: '#8b5cf6', background: '#1a1f2e', color: 'white' });
         }
     });
 });
@@ -1790,7 +1790,7 @@ function enviarPorCorreo() {
                     icon: 'success',
                     title: '¡Correo Enviado!',
                     html: '<p>' + response.mensaje + '</p><p style="font-size: 0.9rem; color: #6b7280; margin-top: 10px;">El cliente recibirá el enlace para firmar en su correo electrónico.</p>',
-                    confirmButtonColor: '#6366f1',
+                    confirmButtonColor: '#8b5cf6',
                     confirmButtonText: 'Entendido',
                     customClass: { container: 'swal-high-zindex' }
                 });
@@ -1840,8 +1840,8 @@ function enviarPorCorreo() {
             </div>
             
             <!-- Opciones de Compartir -->
-            <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
-                <h4 style="color: #6366f1; margin: 0 0 1rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+            <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem;">
+                <h4 style="color: #8b5cf6; margin: 0 0 1rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-share-nodes"></i> Compartir Enlace para Firmar
                 </h4>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
@@ -1851,7 +1851,7 @@ function enviarPorCorreo() {
                     <button onclick="compartirEmail()" style="background: #EA4335; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Compartir por Email">
                         <i class="fa-solid fa-envelope"></i> Email
                     </button>
-                    <button onclick="copiarEnlace()" style="background: #6366f1; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
+                    <button onclick="copiarEnlace()" style="background: #8b5cf6; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
                         <i class="fa-solid fa-copy"></i> Copiar
                     </button>
                 </div>
@@ -1862,7 +1862,7 @@ function enviarPorCorreo() {
                 <button onclick="gestionarFirma('rechazar')" style="flex: 1; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s ease;">
                     <i class="fa-solid fa-times"></i> Rechazar
                 </button>
-                <button onclick="gestionarFirma('aceptar')" style="flex: 1; background: #6366f1; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s ease;">
+                <button onclick="gestionarFirma('aceptar')" style="flex: 1; background: #8b5cf6; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s ease;">
                     <i class="fa-solid fa-check"></i> Aceptar
                 </button>
             </div>
@@ -1895,8 +1895,8 @@ function enviarPorCorreo() {
                 <p style="color: rgba(255,255,255,0.7); margin: 0 0 1.5rem 0;">Esta tienda aún no ha registrado su ubicación GPS.</p>
                 
                 <!-- Opciones de Compartir Enlace para Capturar GPS -->
-                <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 1rem; margin-top: 1rem;">
-                    <h4 style="color: #6366f1; margin: 0 0 1rem 0; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 1rem; margin-top: 1rem;">
+                    <h4 style="color: #8b5cf6; margin: 0 0 1rem 0; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                         <i class="fa-solid fa-share-nodes"></i> Compartir Enlace para Capturar GPS
                     </h4>
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
@@ -1906,7 +1906,7 @@ function enviarPorCorreo() {
                         <button onclick="compartirGPSEmail()" style="background: #EA4335; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Compartir por Email">
                             <i class="fa-solid fa-envelope"></i> Email
                         </button>
-                        <button onclick="copiarEnlaceGPS()" style="background: #6366f1; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
+                        <button onclick="copiarEnlaceGPS()" style="background: #8b5cf6; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
                             <i class="fa-solid fa-copy"></i> Copiar
                         </button>
                     </div>
@@ -1918,7 +1918,7 @@ function enviarPorCorreo() {
                 <button onclick="abrirGoogleMaps()" style="flex: 1; background: #4285F4; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s ease;">
                     <i class="fa-solid fa-map"></i> Abrir en Google Maps
                 </button>
-                <button onclick="copiarCoordenadas()" style="flex: 1; background: #6366f1; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s ease;">
+                <button onclick="copiarCoordenadas()" style="flex: 1; background: #8b5cf6; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s ease;">
                     <i class="fa-solid fa-copy"></i> Copiar Coordenadas
                 </button>
             </div>
@@ -1935,7 +1935,7 @@ function enviarPorCorreo() {
         </div>
         <div class="modal-body">
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div id="confirmacion_icono" style="font-size: 3rem; margin-bottom: 1rem; color: #6366f1;">
+                <div id="confirmacion_icono" style="font-size: 3rem; margin-bottom: 1rem; color: #8b5cf6;">
                     <i class="fa-solid fa-question-circle"></i>
                 </div>
                 <h3 id="confirmacion_mensaje" style="color: white; margin-bottom: 0.5rem;">¿Deseas continuar?</h3>
@@ -1946,7 +1946,7 @@ function enviarPorCorreo() {
                 <button onclick="cerrarModalConfirmacion()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
                     <i class="fa-solid fa-times"></i> Cancelar
                 </button>
-                <button id="btn_confirmar_accion" onclick="confirmarAccionFirma()" style="flex: 1; background: #6366f1; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s ease;">
+                <button id="btn_confirmar_accion" onclick="confirmarAccionFirma()" style="flex: 1; background: #8b5cf6; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; transition: all 0.3s ease;">
                     <i class="fa-solid fa-check"></i> Confirmar
                 </button>
             </div>
@@ -2009,10 +2009,10 @@ function enviarPorCorreo() {
 
                 <div class="form-group">
                     <label class="form-label"><i class="fa-solid fa-file-certificate"></i> Certificado Bancario</label>
-                    <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('banco_certificado').click()" onmouseover="this.style.borderColor='rgba(99, 102, 241, 0.6)'" onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.3)'">
+                    <div style="background: rgba(139, 92, 246, 0.05); border: 2px dashed rgba(139, 92, 246, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('banco_certificado').click()" onmouseover="this.style.borderColor='rgba(139, 92, 246, 0.6)'" onmouseout="this.style.borderColor='rgba(139, 92, 246, 0.3)'">
                         <input type="file" id="banco_certificado" name="certificado_banco" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="display: none;" onchange="mostrarNombreArchivoBanco(this)">
                         <div id="preview_certificado_banco">
-                            <i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(99, 102, 241, 0.6); margin-bottom: 0.5rem;"></i>
+                            <i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(139, 92, 246, 0.6); margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p>
                             <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Imagen o documento (JPG, PNG, PDF, DOC)</p>
                         </div>
@@ -2040,8 +2040,8 @@ function enviarPorCorreo() {
             <button class="modal-close" onclick="cerrarModalAgregarVendedor()"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body">
-            <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
-                <strong style="color: #6366f1;">Tienda:</strong> <span id="vendedor_nombre_tienda" style="color: white;"></span>
+            <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                <strong style="color: #8b5cf6;">Tienda:</strong> <span id="vendedor_nombre_tienda" style="color: white;"></span>
             </div>
             <form id="formAgregarVendedor">
                 <input type="hidden" id="vendedor_cod_tienda" name="cod_tienda">
@@ -2090,7 +2090,7 @@ function enviarPorCorreo() {
                     <button type="button" onclick="cerrarModalAgregarVendedor()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-times"></i> Cancelar
                     </button>
-                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-save"></i> Guardar Vendedor
                     </button>
                 </div>
@@ -2128,7 +2128,7 @@ function compartirEnlaceFirma(codTiendaCryp, nombreTienda, codEstadoFirma, urlFi
         html: `
             <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">Tienda: <strong>${nombreTienda}</strong></p>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
-                <button onclick="copiarEnlace('${enlaceFirma}')" style="flex: 1; min-width: 120px; padding: 0.75rem; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                <button onclick="copiarEnlace('${enlaceFirma}')" style="flex: 1; min-width: 120px; padding: 0.75rem; background: #8b5cf6; color: white; border: none; border-radius: 8px; cursor: pointer;">
                     <i class="fa-solid fa-copy"></i> Copiar
                 </button>
                 <a href="https://wa.me/?text=${encodeURIComponent('Por favor firma tu documento digital aquí: ' + enlaceFirma)}" target="_blank" style="flex: 1; min-width: 120px; padding: 0.75rem; background: #25d366; color: white; border: none; border-radius: 8px; text-decoration: none; text-align: center;">
@@ -2166,7 +2166,7 @@ function abrirModalRevisionFirma(codTiendaCryp, nombreTienda, codEstadoFirma, ur
         if (firmaAceptada) {
             // Firma ya aceptada - deshabilitar botón
             btnAceptar.disabled = true;
-            btnAceptar.style.background = 'rgba(99, 102, 241, 0.3)';
+            btnAceptar.style.background = 'rgba(139, 92, 246, 0.3)';
             btnAceptar.style.color = 'rgba(255, 255, 255, 0.5)';
             btnAceptar.style.cursor = 'not-allowed';
             btnAceptar.innerHTML = '<i class="fa-solid fa-check"></i> Ya Aceptada';
@@ -2180,7 +2180,7 @@ function abrirModalRevisionFirma(codTiendaCryp, nombreTienda, codEstadoFirma, ur
         } else {
             // Firma pendiente con imagen - habilitar botón
             btnAceptar.disabled = false;
-            btnAceptar.style.background = '#6366f1';
+            btnAceptar.style.background = '#8b5cf6';
             btnAceptar.style.color = 'white';
             btnAceptar.style.cursor = 'pointer';
             btnAceptar.innerHTML = '<i class="fa-solid fa-check"></i> Aceptar';
@@ -2253,7 +2253,7 @@ function compartirEmail() {
                             text: response.mensaje || 'El correo se envió exitosamente',
                             background: '#1a1f2e',
                             color: 'white',
-                            confirmButtonColor: '#6366f1',
+                            confirmButtonColor: '#8b5cf6',
                             customClass: { container: 'swal-high-zindex' }
                         });
                     } else {
@@ -2296,7 +2296,7 @@ function copiarEnlace() {
             text: 'No se pudo obtener la información de la tienda', 
             background: '#1a1f2e', 
             color: 'white',
-            confirmButtonColor: '#6366f1',
+            confirmButtonColor: '#8b5cf6',
             customClass: { container: 'swal-high-zindex' }
         });
         return;
@@ -2311,7 +2311,7 @@ function copiarEnlace() {
             text: 'No se encontró el código de la tienda', 
             background: '#1a1f2e', 
             color: 'white',
-            confirmButtonColor: '#6366f1',
+            confirmButtonColor: '#8b5cf6',
             customClass: { container: 'swal-high-zindex' }
         }); 
         return; 
@@ -2381,7 +2381,7 @@ function gestionarFirma(accion) {
                 text: detalle || mensaje,
                 background: '#1a1f2e',
                 color: 'white',
-                confirmButtonColor: '#6366f1'
+                confirmButtonColor: '#8b5cf6'
             });
             return;
         }
@@ -2392,7 +2392,7 @@ function gestionarFirma(accion) {
     var mensaje = accion === 'aceptar' ? '¿Deseas aceptar esta firma?' : '¿Deseas rechazar esta firma?';
     var descripcion = accion === 'aceptar' ? 'La firma será aprobada y el proceso se completará.' : 'El cliente deberá firmar nuevamente.';
     var icono = accion === 'aceptar' ? 'fa-check-circle' : 'fa-times-circle';
-    var color = accion === 'aceptar' ? '#6366f1' : '#ef4444';
+    var color = accion === 'aceptar' ? '#8b5cf6' : '#ef4444';
     
     document.getElementById('confirmacion_titulo').innerHTML = '<i class="fa-solid ' + icono + '"></i> ' + titulo;
     document.getElementById('confirmacion_mensaje').textContent = mensaje;
@@ -2677,13 +2677,13 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
     right: 20px;
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.5);
     z-index: 9999;
     transition: all 0.3s ease;
     border: none;
@@ -2691,7 +2691,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 
 .notification-bell-movil:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 30px rgba(99, 102, 241, 0.7);
+    box-shadow: 0 6px 30px rgba(139, 92, 246, 0.7);
 }
 
 .notification-bell-movil i {
@@ -2750,7 +2750,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
     z-index: 9998;
     display: none;
     overflow: hidden;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .notification-panel-movil.show {
@@ -2764,7 +2764,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 }
 
 .notification-header-movil {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
     padding: 15px 18px;
     display: flex;
@@ -2808,7 +2808,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 
 .notification-item-movil {
     padding: 14px 18px;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.15);
     cursor: pointer;
     transition: background 0.2s ease;
     display: flex;
@@ -2817,7 +2817,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 }
 
 .notification-item-movil:hover {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(139, 92, 246, 0.1);
 }
 
 .notification-item-movil:last-child {
@@ -2836,7 +2836,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 }
 
 .notification-icon-movil.type-1 {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
     color: white;
 }
 
@@ -2877,7 +2877,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 
 .notification-time-movil {
     font-size: 10px;
-    color: rgba(99, 102, 241, 0.8);
+    color: rgba(139, 92, 246, 0.8);
     margin-top: 5px;
 }
 
@@ -2891,7 +2891,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
     font-size: 40px;
     margin-bottom: 12px;
     display: block;
-    color: rgba(99, 102, 241, 0.4);
+    color: rgba(139, 92, 246, 0.4);
 }
 
 .notification-empty-movil p {
@@ -3032,7 +3032,7 @@ function marcarTodasLeidasMovil() {
         text: 'Se marcarán todas las notificaciones pendientes como leídas',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#6366f1',
+        confirmButtonColor: '#8b5cf6',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Sí, marcar todas',
         cancelButtonText: 'Cancelar',
@@ -3101,7 +3101,7 @@ function abrirModalAgregarBanco(codTienda, nombreTienda) {
 function cerrarModalAgregarBanco() {
     document.getElementById('modalAgregarBanco').classList.remove('show');
     $('#formAgregarBanco')[0].reset();
-    document.getElementById('preview_certificado_banco').innerHTML = '<i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(99, 102, 241, 0.6); margin-bottom: 0.5rem;"></i><p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Imagen o documento (JPG, PNG, PDF, DOC)</p>';
+    document.getElementById('preview_certificado_banco').innerHTML = '<i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(139, 92, 246, 0.6); margin-bottom: 0.5rem;"></i><p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Imagen o documento (JPG, PNG, PDF, DOC)</p>';
 }
 
 function mostrarNombreArchivoBanco(input) {
@@ -3109,7 +3109,7 @@ function mostrarNombreArchivoBanco(input) {
     if (input.files && input.files[0]) {
         var fileName = input.files[0].name;
         var fileSize = (input.files[0].size / 1024).toFixed(2);
-        preview.innerHTML = '<i class="fa-solid fa-file-check" style="font-size: 2rem; color: #6366f1; margin-bottom: 0.5rem;"></i><p style="margin: 0; color: #6366f1; font-size: 0.85rem; font-weight: 600;">' + fileName + '</p><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">' + fileSize + ' KB</p>';
+        preview.innerHTML = '<i class="fa-solid fa-file-check" style="font-size: 2rem; color: #8b5cf6; margin-bottom: 0.5rem;"></i><p style="margin: 0; color: #8b5cf6; font-size: 0.85rem; font-weight: 600;">' + fileName + '</p><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">' + fileSize + ' KB</p>';
     }
 }
 
@@ -3129,7 +3129,7 @@ $('#formAgregarBanco').on('submit', function(e) {
     });
     
     $.ajax({
-        url: '../admin/agregar_banco_tienda_coordinador_ajax.php',
+        url: '../admin/agregar_banco_tienda_lider_ajax.php',
         type: 'POST',
         data: formData,
         processData: false,
@@ -3211,7 +3211,7 @@ $('#formAgregarVendedor').on('submit', function(e) {
             text: 'Por favor completa todos los campos obligatorios',
             background: '#1a1f2e',
             color: 'white',
-            confirmButtonColor: '#6366f1',
+            confirmButtonColor: '#8b5cf6',
             customClass: { container: 'swal-high-zindex' }
         });
         return;
@@ -3226,7 +3226,7 @@ $('#formAgregarVendedor').on('submit', function(e) {
             text: 'Por favor ingresa un correo electrónico válido',
             background: '#1a1f2e',
             color: 'white',
-            confirmButtonColor: '#6366f1',
+            confirmButtonColor: '#8b5cf6',
             customClass: { container: 'swal-high-zindex' }
         });
         return;
@@ -3236,7 +3236,7 @@ $('#formAgregarVendedor').on('submit', function(e) {
     
     Swal.fire({
         title: 'Registrando vendedor...',
-        html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #6366f1;"></i>',
+        html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #8b5cf6;"></i>',
         showConfirmButton: false,
         allowOutsideClick: false,
         background: '#1a1f2e',
@@ -3244,7 +3244,7 @@ $('#formAgregarVendedor').on('submit', function(e) {
         customClass: { container: 'swal-high-zindex' }
     });
     
-    fetch('agregar_vendedor_tienda_coordinador_ajax.php', {
+    fetch('agregar_vendedor_tienda_lider_ajax.php', {
         method: 'POST',
         body: formData
     })
@@ -3259,7 +3259,7 @@ $('#formAgregarVendedor').on('submit', function(e) {
                 text: data.message || 'El vendedor ha sido registrado exitosamente',
                 background: '#1a1f2e',
                 color: 'white',
-                confirmButtonColor: '#6366f1',
+                confirmButtonColor: '#8b5cf6',
                 customClass: { container: 'swal-high-zindex' }
             }).then(() => {
                 location.reload();
