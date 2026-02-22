@@ -44,8 +44,8 @@ if ((isset($_POST["insersion"])) && ($_POST["insersion"] == "formulario_de_inser
 /* ----------------------------------------------------------------------------------------------------------/ */
 	$cod_guia                           = $matriz_consulta['cod_guia'] + 1;
 	$nombre_tipo_producto               = "SERVICIO";
-	$cod_estado                         = 1;
-	$cod_estado_aviso                   = 1;
+	$cod_estado                         = 0;
+	$cod_estado_aviso                   = 0;
 	$fecha_creacion                     = date("Y-m-d H:i:s");
 	$total_numero_cuota                 = $numero_cuota;
 /* ----------------------------------------------------------------------------------------------------------/ */
@@ -107,10 +107,16 @@ if ((isset($_POST["insersion"])) && ($_POST["insersion"] == "formulario_de_inser
 		$fecha_cobro_notificacion_alerta_renovacion          = $fecha_pago_alerta;
 		//$fecha_cobro_notificacion_alerta_renovacion          = date("Y-m-d", strtotime($fecha_inicio_notificacion_alerta_renovacion.' - '.$cantidad_dias_antelacion_alerta.' DAY'));
 
-		$agreg = "INSERT INTO tbl15_notificacion_alerta_renovacion (nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, cod_tercero, precio_venta_notificacion_alerta_renovacion, 
+		$cod_administrador_sesion = $_SESSION['cod_administrador'];
+		$sql_admin_tienda = "SELECT cod_tienda FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador_sesion'";
+		$consulta_admin_tienda = mysqli_query($conectar, $sql_admin_tienda);
+		$datos_admin_tienda = mysqli_fetch_assoc($consulta_admin_tienda);
+		$cod_tienda_sesion = isset($datos_admin_tienda['cod_tienda']) ? $datos_admin_tienda['cod_tienda'] : 0;
+
+		$agreg = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_administrador, cod_tienda, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, cod_tercero, precio_venta_notificacion_alerta_renovacion, 
 		fecha_inicio_notificacion_alerta_renovacion, nombre_tipo_cobro, cod_guia, nombre_tipo_producto, cod_estado, cod_estado_aviso, fecha_creacion, 
 		fecha_cobro_notificacion_alerta_renovacion, cantidad_dias_antelacion_alerta, total_numero_cuota, numero_cuota, numero_alerta) 
-		VALUES (UPPER('$nombre_notificacion_alerta_renovacion'), UPPER('$descipcion_notificacion_alerta_renovacion'), '$cod_tercero', '$precio_venta_notificacion_alerta_renovacion', 
+		VALUES ('$cod_administrador_sesion', '$cod_tienda_sesion', UPPER('$nombre_notificacion_alerta_renovacion'), UPPER('$descipcion_notificacion_alerta_renovacion'), '$cod_tercero', '$precio_venta_notificacion_alerta_renovacion', 
 		'$fecha_inicio_notificacion_alerta_renovacion', '$nombre_tipo_cobro', '$cod_guia', '$nombre_tipo_producto', '$cod_estado', '$cod_estado_aviso', '$fecha_creacion', 
 		'$fecha_cobro_notificacion_alerta_renovacion', '$cantidad_dias_antelacion_alerta', '$total_numero_cuota', '$numero_cuota', '$numero_alerta')";
 		$resultado_sql1 = mysqli_query($conectar, $agreg) or die(mysqli_error($conectar));

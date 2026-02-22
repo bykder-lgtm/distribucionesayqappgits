@@ -216,6 +216,28 @@ body {
     text-transform: uppercase;
 }
 
+/* Search & Filter Container */
+.search-filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 641px) {
+    .search-filter-container {
+        flex-direction: row;
+        align-items: stretch;
+    }
+    .search-filter-container .search-bar {
+        flex: 2;
+        margin-bottom: 0;
+    }
+    .search-filter-container .filter-group {
+        flex: 1;
+    }
+}
+
 /* Search Bar */
 .search-bar {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
@@ -1012,7 +1034,8 @@ select[id^="edit_municipio_tienda_"] option {
     }
     
     .form-row {
-        flex-direction: column;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
     }
     
     .form-row .form-group {
@@ -1087,17 +1110,42 @@ select[id^="edit_municipio_tienda_"] option {
 <?php
 // Obtener parámetros de búsqueda
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
+$filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
+
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+
+// Filtro de documentación
+if ($filtro_doc == '1') {
+    $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
+} elseif ($filtro_doc == '2') {
+    $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '' AND (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
+} elseif ($filtro_doc == '3') {
+    $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))";
+}
+
 $sql .= " ORDER BY a.cod_administrador DESC";
 $resultado = mysqli_query($conectar, $sql);
+
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
     a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+    
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+    
+    // Filtro de documentación (sin el campo de cédula)
+    if ($filtro_doc == '1') {
+        $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')";
+    } elseif ($filtro_doc == '2') {
+        $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')";
+    } elseif ($filtro_doc == '3') {
+        $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')";
+    }
+    
     $sql .= " ORDER BY a.cod_administrador DESC";
     $resultado = mysqli_query($conectar, $sql);
 }
@@ -1141,8 +1189,21 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         </div>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-bar animate-in delay-1"><i class="fa-solid fa-search"></i><input type="text" id="searchInput" placeholder="Buscar aliado..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrar(this.value)"></div>
+    <!-- Search Bar and Filter -->
+    <div class="search-filter-container animate-in delay-1">
+        <div class="search-bar">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar aliado..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrar()">
+        </div>
+        <div class="filter-group">
+            <select id="filtroDoc" class="form-select" onchange="filtrar()" style="height: 100%;">
+                <option value="" <?php echo $filtro_doc == '' ? 'selected' : ''; ?>>Todos los documentos</option>
+                <option value="1" <?php echo $filtro_doc == '1' ? 'selected' : ''; ?>>Con documentación (Al menos uno)</option>
+                <option value="2" <?php echo $filtro_doc == '2' ? 'selected' : ''; ?>>Documentación completa (Los 3)</option>
+                <option value="3" <?php echo $filtro_doc == '3' ? 'selected' : ''; ?>>Sin documentación</option>
+            </select>
+        </div>
+    </div>
     <!-- Add Button -->
     <button class="add-button animate-in delay-1" onclick="abrirModal()"><i class="fa-solid fa-plus"></i>Registrar Nuevo Aliado</button>
 
@@ -4307,7 +4368,14 @@ function recargarEntidadesEditar(codAdministrador) {
     });
 }
 
-function filtrar(busqueda) { clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(function() { window.location.href = 'lista_aliado_coordinador_movil.php?busqueda=' + encodeURIComponent(busqueda); }, 500); }
+function filtrar() { 
+    var busqueda = document.getElementById('searchInput').value;
+    var filtro_doc = document.getElementById('filtroDoc').value;
+    clearTimeout(window.searchTimeout); 
+    window.searchTimeout = setTimeout(function() { 
+        window.location.href = 'lista_aliado_coordinador_movil.php?busqueda=' + encodeURIComponent(busqueda) + '&filtro_doc=' + encodeURIComponent(filtro_doc); 
+    }, 500); 
+}
 
 // Variable para controlar si la identificación es válida
 var identificacionValida = false;

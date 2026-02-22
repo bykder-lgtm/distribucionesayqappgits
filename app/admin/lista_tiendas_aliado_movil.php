@@ -3418,5 +3418,173 @@ if (_modalVendedor) { _modalVendedor.addEventListener('click', function(e) { if 
 if (_modalProducto) { _modalProducto.addEventListener('click', function(e) { if (e.target === this) { cerrarModalProducto(); } }); }
 </script>
 
+<!-- Botón flotante de notificaciones -->
+<button class="notification-bell-movil" id="notificationBellMovil" onclick="toggleNotificationPanelMovil()">
+    <i class="fa-solid fa-bell"></i>
+    <span class="notification-badge-movil" id="notificationBadgeMovil" style="display: none;">0</span>
+</button>
+
+<!-- Panel de notificaciones -->
+<div class="notification-panel-movil" id="notificationPanelMovil">
+    <div class="notification-header-movil">
+        <h4><i class="fa-solid fa-bell"></i> Notificaciones</h4>
+        <div class="notification-header-actions-movil">
+            <button onclick="marcarTodasLeidasMovil()" title="Marcar todas como leídas">
+                <i class="fa-solid fa-check-double"></i> Leer todas
+            </button>
+            <button onclick="toggleNotificationPanelMovil()" title="Cerrar">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div class="notification-list-movil" id="notificationListMovil">
+        <div class="notification-empty-movil">
+            <i class="fa-solid fa-bell-slash"></i>
+            <p>No hay notificaciones pendientes</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// ====================== SISTEMA DE NOTIFICACIONES MÓVIL ======================
+var notificationCheckIntervalMovil = null;
+
+// Inicializar sistema de notificaciones
+$(document).ready(function() {
+    cargarNotificacionesMovil();
+    notificationCheckIntervalMovil = setInterval(cargarNotificacionesMovil, 30000);
+});
+
+function cargarNotificacionesMovil() {
+    $.ajax({
+        url: '../admin/obtener_notificaciones_ajax.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                actualizarUINotificacionesMovil(response.notificaciones, response.count);
+            }
+        },
+        error: function() {
+            console.log('Error al cargar notificaciones');
+        }
+    });
+}
+
+function actualizarUINotificacionesMovil(notificaciones, count) {
+    var $badge = $('#notificationBadgeMovil');
+    var $bell = $('#notificationBellMovil');
+    var $list = $('#notificationListMovil');
+    
+    if (count > 0) {
+        $badge.text(count > 99 ? '99+' : count).show();
+        $bell.addClass('has-notifications');
+    } else {
+        $badge.hide();
+        $bell.removeClass('has-notifications');
+    }
+    
+    if (notificaciones.length > 0) {
+        var html = '';
+        notificaciones.forEach(function(notif) {
+            var iconClass = 'type-' + (notif.tipo || 1);
+            var iconSymbol = getNotificationIconMovil(notif.tipo);
+            html += '<div class="notification-item-movil" onclick="marcarNotificacionLeidaMovil(' + notif.id + ', this)">';
+            html += '  <div class="notification-icon-movil ' + iconClass + '"><i class="fa-solid ' + iconSymbol + '"></i></div>';
+            html += '  <div class="notification-content-movil">';
+            html += '    <div class="notification-title-movil">' + escapeHtmlMovil(notif.titulo) + '</div>';
+            html += '    <div class="notification-desc-movil">' + escapeHtmlMovil(notif.descripcion) + '</div>';
+            html += '    <div class="notification-time-movil"><i class="fa-regular fa-clock"></i> ' + notif.fecha_corta + '</div>';
+            html += '  </div>';
+            html += '</div>';
+        });
+        $list.html(html);
+    } else {
+        $list.html('<div class="notification-empty-movil"><i class="fa-solid fa-bell-slash"></i><p>No hay notificaciones pendientes</p></div>');
+    }
+}
+
+function getNotificationIconMovil(tipo) {
+    switch(parseInt(tipo)) {
+        case 1: return 'fa-signature';
+        case 2: return 'fa-triangle-exclamation';
+        case 3: return 'fa-circle-info';
+        default: return 'fa-bell';
+    }
+}
+
+function toggleNotificationPanelMovil() {
+    $('#notificationPanelMovil').toggleClass('show');
+}
+
+$(document).on('click', function(e) {
+    if (!$(e.target).closest('#notificationPanelMovil, #notificationBellMovil').length) {
+        $('#notificationPanelMovil').removeClass('show');
+    }
+});
+
+function marcarNotificacionLeidaMovil(codNotificacion, element) {
+    $.ajax({
+        url: '../admin/marcar_notificacion_leida_ajax.php',
+        type: 'POST',
+        data: { cod_notificacion: codNotificacion },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                $(element).fadeOut(300, function() {
+                    $(this).remove();
+                    cargarNotificacionesMovil();
+                });
+            }
+        }
+    });
+}
+
+function marcarTodasLeidasMovil() {
+    Swal.fire({
+        title: '¿Marcar todas como leídas?',
+        text: 'Se marcarán todas las notificaciones pendientes como leídas',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#4169e1',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, marcar todas',
+        cancelButtonText: 'Cancelar',
+        background: '#1a1f2e',
+        color: 'white'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '../admin/marcar_notificacion_leida_ajax.php',
+                type: 'POST',
+                data: { marcar_todas: 'si' },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        cargarNotificacionesMovil();
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Listo!',
+                            text: 'Todas las notificaciones han sido marcadas como leídas',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: '#1a1f2e',
+                            color: 'white'
+                        });
+                    }
+                }
+            });
+        }
+    });
+}
+
+function escapeHtmlMovil(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+}
+</script>
+
 </body>
 </html>

@@ -84,4 +84,4 @@ function esMenuActivo($paginas) {
       <div class="icon-container-menu"><i class="fa fa-sign-out custom-icon-menu"></i><span class="menu-label">Salir</span></div>
     </a>
 
-  </nav>
+  </nav><?php include_once("../admin/notificaciones_aliado_movil_inc.php"); ?>

@@ -4080,7 +4080,7 @@ if ($action == 'ajax') {
     }
 
     // Event handler para el botón de guardar notificación
-    $(document).on('click', '#btnGuardarNotificacion', function () {
+    $(document).off('click', '#btnGuardarNotificacion').on('click', '#btnGuardarNotificacion', function () {
         guardarNotificacion();
     });
 

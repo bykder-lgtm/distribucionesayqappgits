@@ -44,6 +44,11 @@ try {
         WHERE cod_nota_observacion = '$cod_nota_observacion'";
         mysqli_query($conectar, $actualizar_estado) or die(mysqli_error($conectar));
 
+        // Obtener datos de la factura para vincular la notificación al aliado
+        $obtener_info_factura_venta = "SELECT * FROM tbl15_info_factura_venta WHERE cod_info_factura_venta = '$cod_info_factura_venta'";
+        $resultado_info_factura_venta = mysqli_query($conectar, $obtener_info_factura_venta);
+        $info_info_factura_venta = mysqli_fetch_assoc($resultado_info_factura_venta);
+
         $nombre_notificacion_alerta_renovacion            = 'Imagen por cargar';
         $descipcion_notificacion_alerta_renovacion        = 'La imagen: '. ($nombre_nota_observacion).' esta por cargar nuevamente';
         $cod_tipo_notificacion_alerta                     = 0;
@@ -55,10 +60,13 @@ try {
         $fecha_seg                                        = time();
         $cod_estado                                       = '0';
         $cod_estado_aviso                                 = '0';
+        $cod_administrador_notif         = $info_info_factura_venta['cod_administrador_aliado_estrategico'];
+        $cod_tienda_notif                = $info_info_factura_venta['cod_tienda'];
+
         // Insertar la notificación en la base de datos
-        $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
+        $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, cod_administrador, cod_tienda, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
         cod_tipo_notificacion_alerta, fecha_creacion, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, cod_estado, cod_estado_aviso) 
-        VALUES ('$cod_info_factura_venta', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
+        VALUES ('$cod_info_factura_venta', '$cod_administrador_notif', '$cod_tienda_notif', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
         '$cod_tipo_notificacion_alerta', '$fecha_creacion', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', '$cod_estado', '$cod_estado_aviso')";
         $resultado = mysqli_query($conectar, $sql_insert);
 
@@ -75,6 +83,11 @@ try {
         WHERE cod_nota_observacion = '$cod_nota_observacion'";
         mysqli_query($conectar, $actualizar_estado) or die(mysqli_error($conectar));
 
+        // Obtener datos de la factura para vincular la notificación al aliado
+        $obtener_info_factura_venta = "SELECT * FROM tbl15_info_factura_venta WHERE cod_info_factura_venta = '$cod_info_factura_venta'";
+        $resultado_info_factura_venta = mysqli_query($conectar, $obtener_info_factura_venta);
+        $info_info_factura_venta = mysqli_fetch_assoc($resultado_info_factura_venta);
+
         $nombre_notificacion_alerta_renovacion            = 'Imagen rechazada';
         $descipcion_notificacion_alerta_renovacion        = 'La imagen: '. ($nombre_nota_observacion).', ha sido rechazada por: '.$descripcion_nota_observacion;
         $cod_tipo_notificacion_alerta                     = 0;
@@ -86,10 +99,13 @@ try {
         $fecha_seg                                        = time();
         $cod_estado                                       = '0';
         $cod_estado_aviso                                 = '0';
+        $cod_administrador_notif         = $info_info_factura_venta['cod_administrador_aliado_estrategico'];
+        $cod_tienda_notif                = $info_info_factura_venta['cod_tienda'];
+
         // Insertar la notificación en la base de datos
-        $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
+        $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, cod_administrador, cod_tienda, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
         cod_tipo_notificacion_alerta, fecha_creacion, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, cod_estado, cod_estado_aviso) 
-        VALUES ('$cod_info_factura_venta', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
+        VALUES ('$cod_info_factura_venta', '$cod_administrador_notif', '$cod_tienda_notif', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
         '$cod_tipo_notificacion_alerta', '$fecha_creacion', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', '$cod_estado', '$cod_estado_aviso')";
         $resultado = mysqli_query($conectar, $sql_insert);
 
@@ -100,9 +116,11 @@ try {
     } else {
 
     }
-    $obtener_info_factura_venta= "SELECT * FROM tbl15_info_factura_venta WHERE cod_info_factura_venta = '$cod_info_factura_venta'";
-	$resultado_info_factura_venta = mysqli_query($conectar, $obtener_info_factura_venta) or die(mysqli_error($conectar));
-	$info_info_factura_venta = mysqli_fetch_assoc($resultado_info_factura_venta);
+    if (!isset($info_info_factura_venta)) {
+        $obtener_info_factura_venta= "SELECT * FROM tbl15_info_factura_venta WHERE cod_info_factura_venta = '$cod_info_factura_venta'";
+        $resultado_info_factura_venta = mysqli_query($conectar, $obtener_info_factura_venta) or die(mysqli_error($conectar));
+        $info_info_factura_venta = mysqli_fetch_assoc($resultado_info_factura_venta);
+    }
 
 	$cod_estado_obligatorio                                        = $info_nota_observacion['cod_estado_obligatorio'];
     $cod_estado_obligatorio2                                       = $info_nota_observacion['cod_estado_obligatorio2'];

@@ -1,5 +1,0 @@
-# Ignorar todos los archivos ZIP temporales
-*.zip
-
-# Pero mantener este directorio en el repositorio
-!.gitignore

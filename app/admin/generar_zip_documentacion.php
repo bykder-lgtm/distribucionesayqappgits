@@ -26,33 +26,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verificar cédula
     if (!empty($aliado['url_documentacion_cedula_aliado'])) {
         $ruta_completa = $aliado['url_documentacion_cedula_aliado'];
-        if (file_exists($ruta_completa)) {
-            $archivos_a_comprimir['cedula'] = $ruta_completa;
-            $archivos_info[] = ['nombre' => 'Cédula', 'archivo' => basename($aliado['url_documentacion_cedula_aliado']), 'tamano' => filesize($ruta_completa)];
-        }
+        if (file_exists($ruta_completa)) { $archivos_a_comprimir['cedula'] = $ruta_completa; $archivos_info[] = ['nombre' => 'Cédula', 'archivo' => basename($aliado['url_documentacion_cedula_aliado']), 'tamano' => filesize($ruta_completa)]; }
     }
     // Verificar RUT
     if (!empty($aliado['url_documentacion_rut_aliado'])) {
         $ruta_completa = $aliado['url_documentacion_rut_aliado'];
-        if (file_exists($ruta_completa)) {
-            $archivos_a_comprimir['rut'] = $ruta_completa;
-            $archivos_info[] = ['nombre' => 'RUT', 'archivo' => basename($aliado['url_documentacion_rut_aliado']), 'tamano' => filesize($ruta_completa)];
-        }
+        if (file_exists($ruta_completa)) { $archivos_a_comprimir['rut'] = $ruta_completa; $archivos_info[] = ['nombre' => 'RUT', 'archivo' => basename($aliado['url_documentacion_rut_aliado']), 'tamano' => filesize($ruta_completa)]; } 
     }
     // Verificar Cámara de Comercio
     if (!empty($aliado['url_documentacion_camaracomercio_aliado'])) {
         $ruta_completa = $aliado['url_documentacion_camaracomercio_aliado'];
-        if (file_exists($ruta_completa)) {
-            $archivos_a_comprimir['camara'] = $ruta_completa;
-            $archivos_info[] = ['nombre' => 'Cámara de Comercio', 'archivo' => basename($aliado['url_documentacion_camaracomercio_aliado']), 'tamano' => filesize($ruta_completa)];
-        }
+        if (file_exists($ruta_completa)) { $archivos_a_comprimir['camara'] = $ruta_completa; $archivos_info[] = ['nombre' => 'Cámara de Comercio', 'archivo' => basename($aliado['url_documentacion_camaracomercio_aliado']), 'tamano' => filesize($ruta_completa)]; }
     }
     if (empty($archivos_a_comprimir)) { echo json_encode(['success' => false, 'message' => 'No se encontraron documentos para comprimir']); exit; }
     // Crear directorio temporal si no existe
     $temp_dir = $base_dir . 'archivador/temp_zips/';
     if (!is_dir($temp_dir)) { mkdir($temp_dir, 0777, true); }
     // Nombre del archivo ZIP
-    $nombre_zip = 'Documentacion_' . $aliado['nombres'] . '_' . $aliado['apellidos'] . '_' . date('YmdHis') . '.zip';
+    $nombre_zip = ''.$aliado['nombres'].'_'.$aliado['apellidos'].'_'.date('YmdHis').'.zip';
     $ruta_zip = $temp_dir . $nombre_zip;
     // Crear el archivo ZIP
     $zip = new ZipArchive();

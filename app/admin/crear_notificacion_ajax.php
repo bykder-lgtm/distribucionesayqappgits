@@ -5,16 +5,11 @@ include_once('../conexiones/conexione.php');
 include_once('../evitar_mensaje_error/error.php');
 date_default_timezone_set("America/Bogota");
 include_once("../session/funciones_admin.php");
-if (verificar_usuario()){
-    // Usuario autenticado
-} else { 
-    header("Location:../index.php");
-}
+if (verificar_usuario()){ } else { header("Location:../index.php"); }
 ob_end_clean();
 header('Content-Type: application/json; charset=utf-8');
 
 function sendJsonResponse($data) { echo json_encode($data); exit; }
-
 try {
     if (!isset($conectar) || !$conectar) { sendJsonResponse(['success' => false, 'message' => 'Error de conexión a la base de datos']); }
     // Obtener parámetros
@@ -40,17 +35,24 @@ try {
     // Escapar strings para prevenir SQL injection
     $nombre_notificacion_alerta_renovacion            = mysqli_real_escape_string($conectar, $nombre_notificacion_alerta_renovacion);
     $descipcion_notificacion_alerta_renovacion        = mysqli_real_escape_string($conectar, $descipcion_notificacion_alerta_renovacion);
+
+    // Obtener cod_administrador y cod_tienda de la factura si no están definidos
+    // Se prioriza cod_administrador_aliado_estrategico para que aparezca en el módulo móvil del aliado
+    $sql_factura = "SELECT cod_administrador, cod_administrador_aliado_estrategico, cod_tienda FROM tbl15_info_factura_venta WHERE cod_info_factura_venta = '$cod_info_factura_venta'";
+    $consulta_factura = mysqli_query($conectar, $sql_factura);
+    $datos_factura = mysqli_fetch_assoc($consulta_factura);
+    
+    $cod_administrador = !empty($datos_factura['cod_administrador_aliado_estrategico']) ? $datos_factura['cod_administrador_aliado_estrategico'] : $datos_factura['cod_administrador'];
+    $cod_tienda = isset($datos_factura['cod_tienda']) ? $datos_factura['cod_tienda'] : 0;
+
     // Insertar la notificación en la base de datos
-    $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
+    $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, cod_administrador, cod_tienda, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
     cod_tipo_notificacion_alerta, fecha_creacion, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, cod_estado, cod_estado_aviso) 
-    VALUES ('$cod_info_factura_venta', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
+    VALUES ('$cod_info_factura_venta', '$cod_administrador', '$cod_tienda', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
     '$cod_tipo_notificacion_alerta', '$fecha_creacion', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', '$cod_estado', '$cod_estado_aviso')";
     $resultado = mysqli_query($conectar, $sql_insert);
     if (!$resultado) { sendJsonResponse(['success' => false, 'message' => 'Error al guardar la notificación: ' . mysqli_error($conectar)]); }
-    sendJsonResponse([
-        'success' => true, 
-        'message' => 'Notificación creada exitosamente'
-    ]);
+    sendJsonResponse(['success' => true, 'message' => 'Notificación creada exitosamente']);
 } catch (Exception $e) {
     sendJsonResponse(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }

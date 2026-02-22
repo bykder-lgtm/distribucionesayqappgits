@@ -1,9 +1,5 @@
 <?php
-/**
- * Guardar Imágenes de Tienda - AJAX Handler
- * Procesa las imágenes cargadas desde el formulario público
- * Guarda los archivos y actualiza la base de datos
- */
+/*** Guardar Imágenes de Tienda - AJAX Handler * Procesa las imágenes cargadas desde el formulario público * Guarda los archivos y actualiza la base de datos */
 
 header('Content-Type: application/json');
 include_once('../conexiones/conexione.php');
@@ -44,11 +40,8 @@ try {
         if (move_uploaded_file($_FILES['img_original']['tmp_name'], $ruta_archivo)) {
             $imagenes_guardadas['original'] = $nombre_archivo;
             $campos_actualizados[] = "url_img_orig_tienda = '$ruta_archivo'";
-            
             // Eliminar imagen anterior si existe
-            if (!empty($datos_tienda['url_img_orig_tienda']) && file_exists($datos_tienda['url_img_orig_tienda'])) {
-                unlink($datos_tienda['url_img_orig_tienda']);
-            }
+            if (!empty($datos_tienda['url_img_orig_tienda']) && file_exists($datos_tienda['url_img_orig_tienda'])) { unlink($datos_tienda['url_img_orig_tienda']); }
         }
     }
     // Procesar imagen de fachada
@@ -59,11 +52,8 @@ try {
         if (move_uploaded_file($_FILES['img_fachada']['tmp_name'], $ruta_archivo)) {
             $imagenes_guardadas['fachada'] = $nombre_archivo;
             $campos_actualizados[] = "url_img_fachada_tienda = '$ruta_archivo'";
-            
             // Eliminar imagen anterior si existe
-            if (!empty($datos_tienda['url_img_fachada_tienda']) && file_exists($datos_tienda['url_img_fachada_tienda'])) {
-                unlink($datos_tienda['url_img_fachada_tienda']);
-            }
+            if (!empty($datos_tienda['url_img_fachada_tienda']) && file_exists($datos_tienda['url_img_fachada_tienda'])) { unlink($datos_tienda['url_img_fachada_tienda']); }
         }
     }
     // Procesar imagen interior
@@ -74,11 +64,8 @@ try {
         if (move_uploaded_file($_FILES['img_interior']['tmp_name'], $ruta_archivo)) {
             $imagenes_guardadas['interior'] = $nombre_archivo;
             $campos_actualizados[] = "url_img_interna_tienda = '$ruta_archivo'";
-            
             // Eliminar imagen anterior si existe
-            if (!empty($datos_tienda['url_img_interna_tienda']) && file_exists($datos_tienda['url_img_interna_tienda'])) {
-                unlink($datos_tienda['url_img_interna_tienda']);
-            }
+            if (!empty($datos_tienda['url_img_interna_tienda']) && file_exists($datos_tienda['url_img_interna_tienda'])) { unlink($datos_tienda['url_img_interna_tienda']); }
         }
     }
     // Procesar imagen selfie con administrador
@@ -89,11 +76,8 @@ try {
         if (move_uploaded_file($_FILES['img_selfie']['tmp_name'], $ruta_archivo)) {
             $imagenes_guardadas['selfie'] = $nombre_archivo;
             $campos_actualizados[] = "url_img_selfieadmin_tienda = '$ruta_archivo'";
-            
             // Eliminar imagen anterior si existe
-            if (!empty($datos_tienda['url_img_selfieadmin_tienda']) && file_exists($datos_tienda['url_img_selfieadmin_tienda'])) {
-                unlink($datos_tienda['url_img_selfieadmin_tienda']);
-            }
+            if (!empty($datos_tienda['url_img_selfieadmin_tienda']) && file_exists($datos_tienda['url_img_selfieadmin_tienda'])) { unlink($datos_tienda['url_img_selfieadmin_tienda']); }
         }
     }
     // Procesar imagen opcional
@@ -104,11 +88,8 @@ try {
         if (move_uploaded_file($_FILES['img_opcional']['tmp_name'], $ruta_archivo)) {
             $imagenes_guardadas['opcional'] = $nombre_archivo;
             $campos_actualizados[] = "url_img_otraopcional_tienda = '$ruta_archivo'";
-            
             // Eliminar imagen anterior si existe
-            if (!empty($datos_tienda['url_img_otraopcional_tienda']) && file_exists($datos_tienda['url_img_otraopcional_tienda'])) {
-                unlink($datos_tienda['url_img_otraopcional_tienda']);
-            }
+            if (!empty($datos_tienda['url_img_otraopcional_tienda']) && file_exists($datos_tienda['url_img_otraopcional_tienda'])) { unlink($datos_tienda['url_img_otraopcional_tienda']); }
         }
     }
     // Verificar que al menos una imagen se guardó
@@ -134,9 +115,9 @@ try {
     $cod_estado_aviso = '0';
     
     $sql_notificacion = "INSERT INTO tbl15_notificacion_alerta_renovacion 
-    (cod_administrador, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
+    (cod_administrador, cod_tienda, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
     cod_tipo_notificacion_alerta, fecha_creacion, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, cod_estado, cod_estado_aviso)
-    VALUES ('$cod_administrador', '$nombre_notificacion', '$descripcion_notificacion', 
+    VALUES ('$cod_administrador', '$cod_tienda', '$nombre_notificacion', '$descripcion_notificacion', 
     '$cod_tipo_notificacion_alerta', '$fecha_actual', '$fecha', '$fecha_mes', '$anyo', '$fecha', '$fecha_seg', '$cod_estado', '$cod_estado_aviso')";
     mysqli_query($conectar, $sql_notificacion);
     
@@ -155,7 +136,6 @@ try {
     $response['message'] = 'Las imágenes se han guardado correctamente';
     $response['imagenes'] = $imagenes_guardadas;
     $response['total'] = count($imagenes_guardadas);
-    
 } catch (Exception $e) {
     $response['success'] = false;
     $response['message'] = $e->getMessage();

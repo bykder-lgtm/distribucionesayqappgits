@@ -76,6 +76,21 @@ body {
     padding-bottom: 100px;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        padding: 0.75rem;
+        padding-bottom: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        padding: 0.5rem;
+        padding-bottom: 70px;
+    }
 }
 
 /* Header */
@@ -146,6 +161,28 @@ body {
     font-size: 0.65rem;
     color: rgba(255,255,255,0.8);
     text-transform: uppercase;
+}
+
+/* Search & Filter Container */
+.search-filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 641px) {
+    .search-filter-container {
+        flex-direction: row;
+        align-items: stretch;
+    }
+    .search-filter-container .search-bar {
+        flex: 2;
+        margin-bottom: 0;
+    }
+    .search-filter-container .filter-group {
+        flex: 1;
+    }
 }
 
 /* Search Bar */
@@ -411,6 +448,13 @@ body {
     gap: 1rem;
 }
 
+@media (max-width: 480px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+}
+
 .submit-btn {
     width: 100%;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -514,6 +558,13 @@ body {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+@media (max-width: 480px) {
+    .ally-actions {
+        flex-direction: column;
+        gap: 0.4rem;
+    }
 }
 
 .action-btn {
@@ -621,18 +672,43 @@ select[id^="edit_municipio_tienda_"] option {
 <?php
 // Obtener parámetros de búsqueda
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
+$filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
+
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
-$sql .= " ORDER BY a.cod_administrador DESC LIMIT 50";
+// Filtro de documentación
+if ($filtro_doc == '1') {
+    $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
+} elseif ($filtro_doc == '2') {
+    $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '' AND (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
+} elseif ($filtro_doc == '3') {
+    $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))";
+}
+
+$sql .= " ORDER BY a.cod_administrador DESC";
 $resultado = mysqli_query($conectar, $sql);
+
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
-    $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+    $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+    
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
-    $sql .= " ORDER BY a.cod_administrador DESC LIMIT 50";
+    
+    // Filtro de documentación (sin el campo de cédula)
+    if ($filtro_doc == '1') {
+        $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')";
+    } elseif ($filtro_doc == '2') {
+        $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')";
+    } elseif ($filtro_doc == '3') {
+        $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')";
+    }
+    
+    $sql .= " ORDER BY a.cod_administrador DESC";
     $resultado = mysqli_query($conectar, $sql);
 }
 $total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
@@ -676,8 +752,21 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         </div>
     </div>
 
-    <!-- Search Bar -->
-    <div class="search-bar animate-in delay-1"><i class="fa-solid fa-search"></i><input type="text" id="searchInput" placeholder="Buscar aliado..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrar(this.value)"></div>
+    <!-- Search Bar and Filter -->
+    <div class="search-filter-container animate-in delay-1">
+        <div class="search-bar">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Buscar aliado..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrar()">
+        </div>
+        <div class="filter-group">
+            <select id="filtroDoc" class="form-select" onchange="filtrar()" style="height: 100%;">
+                <option value="" <?php echo $filtro_doc == '' ? 'selected' : ''; ?>>Todos los documentos</option>
+                <option value="1" <?php echo $filtro_doc == '1' ? 'selected' : ''; ?>>Con documentación (Al menos uno)</option>
+                <option value="2" <?php echo $filtro_doc == '2' ? 'selected' : ''; ?>>Documentación completa (Los 3)</option>
+                <option value="3" <?php echo $filtro_doc == '3' ? 'selected' : ''; ?>>Sin documentación</option>
+            </select>
+        </div>
+    </div>
     <!-- Add Button -->
     <button class="add-button animate-in delay-1" onclick="abrirModal()"><i class="fa-solid fa-plus"></i>Registrar Nuevo Aliado</button>
 
@@ -791,14 +880,24 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" id="label_nombre_comercial">Nombre Comercial *</label>
-                    <input type="text" class="form-input" id="nombres_apellidos_tercero" name="nombres_apellidos_tercero" required>
-                    <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" id="label_nombre_comercial">Nombre Comercial *</label>
+                        <input type="text" class="form-input" id="nombres_apellidos_tercero" name="nombres_apellidos_tercero" required>
+                        <small id="mensaje_identificacion_comercial" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                    </div>
+                    <div class="form-group" style="padding-top: 1.6rem;">
+                        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; margin: 0;">
+                                <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer;">
+                                <span style="color: rgba(255,255,255,0.95); font-size: 0.85rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #10b981; margin-right: 0.25rem;"></i> Crear Tienda al guardar</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="group-group" id="container_nit_razon_social" style="display:none;">
+                    <div class="form-group" id="container_nit_razon_social" style="display:none;">
                         <label class="form-label">NIT Razón Social *</label>
                         <input type="text" class="form-input" id="nit_razon_social" name="nit_razon_social">
                     </div>
@@ -840,14 +939,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Departamento</label>
-                        <select class="form-select" id="cod_departamento" name="cod_departamento" onchange="cargarMunicipiosRegistro(this.value)">
+                        <label class="form-label">Departamento *</label>
+                        <select class="form-select" id="cod_departamento" name="cod_departamento" required onchange="cargarMunicipiosRegistro(this.value)">
                             <option value="">Seleccione...</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Municipio</label>
-                        <select class="form-select" id="cod_municipio" name="cod_municipio">
+                        <label class="form-label">Municipio *</label>
+                        <select class="form-select" id="cod_municipio" name="cod_municipio" required>
                             <option value="">Primero seleccione departamento</option>
                         </select>
                     </div>
@@ -855,12 +954,12 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Dirección</label>
-                        <input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
+                        <label class="form-label">Dirección *</label>
+                        <input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Barrio</label>
-                        <input type="text" class="form-input" id="barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
+                        <label class="form-label">Barrio *</label>
+                        <input type="text" class="form-input" id="barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel..." required>
                     </div>
                 </div>
 
@@ -1023,13 +1122,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
-                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; margin: 0;">
-                        <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #10b981; width: 20px; height: 20px; cursor: pointer;">
-                        <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #10b981; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
-                    </label>
-                    <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se creará automáticamente una tienda con los datos del aliado</small>
-                </div>
+                <!-- Checkbox creado arriba junto al nombre comercial -->
                 
                 <button type="submit" class="submit-btn" id="btnGuardar"><i class="fa-solid fa-save"></i> Guardar Aliado</button>
             </form>
@@ -4248,7 +4341,14 @@ function recargarEntidadesEditar(codAdministrador) {
     });
 }
 
-function filtrar(busqueda) { clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(function() { window.location.href = 'lista_aliado_asesor_movil.php?busqueda=' + encodeURIComponent(busqueda); }, 500); }
+function filtrar() { 
+    var busqueda = document.getElementById('searchInput').value;
+    var filtro_doc = document.getElementById('filtroDoc').value;
+    clearTimeout(window.searchTimeout); 
+    window.searchTimeout = setTimeout(function() { 
+        window.location.href = 'lista_aliado_asesor_movil.php?busqueda=' + encodeURIComponent(busqueda) + '&filtro_doc=' + encodeURIComponent(filtro_doc); 
+    }, 500); 
+}
 
 // Variable para controlar si la identificación es válida
 var identificacionValida = false;

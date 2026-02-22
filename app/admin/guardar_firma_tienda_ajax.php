@@ -5,16 +5,12 @@ include_once('../conexiones/conexione.php');
 include_once('../admin/class_php/funcion_cryptor_descryptor_class.php');
 include_once('../evitar_mensaje_error/error.php');
 date_default_timezone_set("America/Bogota");
-
 header('Content-Type: application/json');
-
 $respuesta = array('success' => false, 'message' => 'Error desconocido');
 // Obtener datos JSON
 $json = file_get_contents('php://input');
 $datos = json_decode($json, true);
-
 if (!$datos || !isset($datos['cod_tienda_cryp']) || !isset($datos['firma'])) { $respuesta['message'] = 'Datos incompletos'; echo json_encode($respuesta); exit; }
-
 $cod_tienda_cryp                                                = $datos['cod_tienda_cryp'];
 $firma_base64                                                   = $datos['firma'];
 
@@ -50,11 +46,10 @@ try {
     $nombre_archivo                                                 = 'firma_tienda_'.$cod_tienda.'_'.date('YmdHis').'.png';
     $ruta_archivo                                                   = $directorio_firmas . $nombre_archivo;
     $url_firma                                                      = '../archivador/firma/'.$nombre_archivo;
-   
     // Insertar la notificación en la base de datos
-    $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_administrador, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
+    $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_administrador, cod_tienda, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
     cod_tipo_notificacion_alerta, fecha_creacion, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, cod_estado, cod_estado_aviso) 
-    VALUES ('$cod_administrador', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
+    VALUES ('$cod_administrador', '$cod_tienda', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
     '$cod_tipo_notificacion_alerta', '$fecha_creacion', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', '$cod_estado', '$cod_estado_aviso')";
     $resultado = mysqli_query($conectar, $sql_insert);
     
@@ -62,7 +57,6 @@ try {
     $firma_data                                                     = str_replace('data:image/png;base64,', '', $firma_base64);
     $firma_data                                                     = str_replace(' ', '+', $firma_data);
     $firma_decoded                                                  = base64_decode($firma_data);
-    
     // Guardar archivo
     if (file_put_contents($ruta_archivo, $firma_decoded)) {
         // Actualizar la base de datos con la URL de la firma

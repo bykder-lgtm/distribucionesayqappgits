@@ -127,7 +127,7 @@ try {
     $cod_operador_credito                                           = $datos_cuenta_cobrar['cod_operador_credito'];
     $cod_tipo_forma_pago_operador_credito                           = $datos_cuenta_cobrar['cod_tipo_forma_pago_operador_credito'];
     $descripcion_tipo_forma_pago_operador_credito                   = $datos_cuenta_cobrar['descripcion_tipo_forma_pago_operador_credito'];
-    $cod_administrador                                              = $datos_cuenta_cobrar['cod_administrador'];
+    $cod_administrador                                              = !empty($datos_cuenta_cobrar['cod_administrador_aliado_estrategico']) ? $datos_cuenta_cobrar['cod_administrador_aliado_estrategico'] : $datos_cuenta_cobrar['cod_administrador'];
  	//---------------------------------------------------------------------------------------------------------------------------------//
     if ($cod_tipo_inventario == '1') { $campo_und_inventario = 'und_producto'; } elseif ($cod_tipo_inventario == '2') { $campo_und_inventario = 'und_producto_bodega'; } else { $campo_und_inventario = 'und_producto'; }
 	//---------------------------------------------------------------------------------------------------------------------------------//
@@ -243,7 +243,7 @@ try {
 		$total_puntos_redimibles_campanya_producto  = ($total_venta_producto / $valor_puntos_redimibles_campanya) * $cantidad_puntos_x_valor_redimibles_campanya;
 
 		$iva_ptj                                    = $datos_prod['iva_ptj'];
-		if ($cod_estado_dia_sin_iva_global == '1') { $iva_ptj = '0'; } else { $iva_ptj = $iva_ptj; }
+		if ($cod_estado_dia_sin_iva_global == '1') { $iva_ptj = '0'; }
 
 		if ($cod_tipo_inventario == '1') { 
 			if ($cod_opcion_descontable_inv == '0') { $und_producto = $und_producto_inv - $und_venta; } else { $und_producto = 0; }
@@ -312,20 +312,13 @@ try {
     $cod_estado                                       = '0';
     $cod_estado_aviso                                 = '0';
 
-    $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
+    $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, cod_administrador, cod_tienda, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
     cod_tipo_notificacion_alerta, fecha_creacion, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, cod_estado, cod_estado_aviso) 
-    VALUES ('$cod_info_factura_venta', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
+    VALUES ('$cod_info_factura_venta', '$cod_administrador', '$cod_tienda', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
     '$cod_tipo_notificacion_alerta', '$fecha_creacion', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', '$cod_estado', '$cod_estado_aviso')";
     $resultado = mysqli_query($conectar, $sql_insert);
 
-    sendJsonResponse([
-        'success' => true, 
-        'message' => 'Estado actualizado correctamente', 
-        'cod_info_factura_venta' => $cod_info_factura_venta,
-        'codigo_estado_facturacion' => $codigo_estado_facturacion,
-        'nombre_estado_facturacion' => $nombre_estado_facturacion,
-        'color_estado' => $color_estado
-    ]);
+    sendJsonResponse(['success' => true, 'message' => 'Estado actualizado correctamente', 'cod_info_factura_venta' => $cod_info_factura_venta, 'codigo_estado_facturacion' => $codigo_estado_facturacion, 'nombre_estado_facturacion' => $nombre_estado_facturacion, 'color_estado' => $color_estado]);
 } catch (Exception $e) {
     sendJsonResponse(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }

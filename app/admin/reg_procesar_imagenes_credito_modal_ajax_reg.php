@@ -53,32 +53,32 @@ try {
     $fecha_seg                                        = time();
     $cod_estado                                       = '0';
     $cod_estado_aviso                                 = '0';
+    // Obtener cod_administrador y cod_tienda de la factura
+    // Obtener cod_administrador y cod_tienda de la factura
+    $sql_factura = "SELECT cod_administrador, cod_administrador_aliado_estrategico, cod_tienda FROM tbl15_info_factura_venta WHERE cod_info_factura_venta = '$cod_info_factura_venta'";
+    $consulta_factura = mysqli_query($conectar, $sql_factura);
+    $datos_factura = mysqli_fetch_assoc($consulta_factura);
+
+    $cod_administrador_notif = !empty($datos_factura['cod_administrador_aliado_estrategico']) ? $datos_factura['cod_administrador_aliado_estrategico'] : $datos_factura['cod_administrador'];
+    $cod_tienda_notif = isset($datos_factura['cod_tienda']) ? $datos_factura['cod_tienda'] : 0;
+
     // Insertar la notificación en la base de datos
-    $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
+    $sql_insert = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_info_factura_venta, cod_administrador, cod_tienda, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, 
     cod_tipo_notificacion_alerta, fecha_creacion, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, cod_estado, cod_estado_aviso) 
-    VALUES ('$cod_info_factura_venta', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
+    VALUES ('$cod_info_factura_venta', '$cod_administrador_notif', '$cod_tienda_notif', '$nombre_notificacion_alerta_renovacion', '$descipcion_notificacion_alerta_renovacion', 
     '$cod_tipo_notificacion_alerta', '$fecha_creacion', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', '$cod_estado', '$cod_estado_aviso')";
     $resultado = mysqli_query($conectar, $sql_insert);
 
     if($filas_afectadas_info_factura_venta <> 0) { $afectado = 'SI'; } else { $afectado = 'NO'; }
     // Respuesta exitosa
-    $respuesta = [
-        'success' => true,
-        'afectado' => $afectado,
-        'btn_origen' => $btn_origen,
-         'cod_notas_observacion_vector' => $cod_notas_observacion,
-        'message' => "Imágenes procesadas",
+    $respuesta = ['success' => true, 'afectado' => $afectado, 'btn_origen' => $btn_origen, 'cod_notas_observacion_vector' => $cod_notas_observacion, 'message' => "Imágenes procesadas",
         'data' => ['cod_info_factura_venta' => $cod_info_factura_venta, 'cod_tercero' => $cod_tercero, 'cod_tipo_metodo_aprobacion' => $cod_tipo_metodo_aprobacion, 'cod_estado_factura' => $cod_estado_factura, 'fecha_procesamiento' => $fecha_ymd . ' ' . $fecha_hora]
     ];
     echo json_encode($respuesta);
 } catch (Exception $e) {
     // Respuesta de error
     http_response_code(400);
-    $respuesta = [
-        'success' => false,
-        'message' => $e->getMessage(),
-        'error_code' => 'PROCESSING_ERROR'
-    ];
+    $respuesta = ['success' => false, 'message' => $e->getMessage(), 'error_code' => 'PROCESSING_ERROR'];
     echo json_encode($respuesta);
 }
 ?>
