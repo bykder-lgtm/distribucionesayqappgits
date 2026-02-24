@@ -516,6 +516,7 @@ body {
 </style>
 </head>
 <body>
+<?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 
 <?php
 // Obtener datos para el dashboard

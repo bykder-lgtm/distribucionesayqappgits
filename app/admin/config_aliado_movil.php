@@ -483,6 +483,7 @@ if (isset($cod_administrador) && !empty($cod_administrador)) {
 </style>
 </head>
 <body>
+<?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 <?php include_once("../admin/01_modulo_encabezado_superior_visitante_intern_movil.php"); ?>
 
 <main class="container py-4 mb-5">

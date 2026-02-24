@@ -534,6 +534,7 @@ body {
 </style>
 </head>
 <body>
+<?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 <?php
 // Parámetros de paginación
 $registros_por_pagina = 30;

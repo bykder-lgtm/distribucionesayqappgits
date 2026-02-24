@@ -668,6 +668,7 @@ select[id^="edit_municipio_tienda_"] option {
 </style>
 </head>
 <body>
+<?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 
 <?php
 // Obtener parámetros de búsqueda

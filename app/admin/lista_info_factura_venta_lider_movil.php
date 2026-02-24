@@ -1150,6 +1150,7 @@ body {
 </style>
 </head>
 <body>
+<?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 
 <!-- Contenedor para notificaciones toast -->
 <div class="toast-container" id="toastContainer"></div>
