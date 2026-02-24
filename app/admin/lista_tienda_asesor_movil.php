@@ -1324,24 +1324,50 @@ body {
 // Obtener tiendas del asesor
 // Cadena: asesor → aliados (cod_asesor = asesor) → tiendas (cod_aliado_estrategico = aliado)
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
-
+$view = isset($_GET['view']) ? $_GET['view'] : 'normal'; // normal o rapida
 // Subquery para obtener los cod_administrador de los aliados que pertenecen a este asesor
 $subquery_aliados_asesor = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_asesor = '$cod_administrador'";
 
-$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_asesor)";
+if ($view == 'rapida') {
+    // Tiendas rápidas: creadas por este asesor pero SIN aliado asignado (cod_aliado_estrategico = 0)
+    $sql_tiendas = "SELECT t.*, 'Tienda Rápida' as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos 
+    FROM tbl15_tienda t WHERE t.cod_administrador = '$cod_administrador' AND (t.cod_aliado_estrategico = '0' OR t.cod_aliado_estrategico IS NULL)";
+} else {
+    // Tiendas normales: vinculadas a aliados del asesor
+    $sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos 
+    FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador 
+    WHERE t.cod_aliado_estrategico IN ($subquery_aliados_asesor)";
+}
 if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
 
 $sql_tiendas .= " ORDER BY t.fecha_creacion DESC";
 $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
 $total_tiendas = ($resultado_tiendas) ? mysqli_num_rows($resultado_tiendas) : 0;
+// Totales para las pestañas
+$sql_total_normal = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_asesor)";
+$res_total_normal = mysqli_query($conectar, $sql_total_normal);
+$count_normal = 0;
+if ($res_total_normal) { $datos_total_normal = mysqli_fetch_assoc($res_total_normal); $count_normal = $datos_total_normal['total']; }
 
-// Contar tiendas con firma
-$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_asesor) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
+$sql_total_rapida = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_administrador = '$cod_administrador' AND (cod_aliado_estrategico = '0' OR cod_aliado_estrategico IS NULL)";
+$res_total_rapida = mysqli_query($conectar, $sql_total_rapida);
+$count_rapida = 0;
+if ($res_total_rapida) { $datos_total_rapida = mysqli_fetch_assoc($res_total_rapida); $count_rapida = $datos_total_rapida['total']; }
+// Contar tiendas con firma (basado en la vista actual)
+if ($view == 'rapida') {
+    $sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_administrador = '$cod_administrador' AND (cod_aliado_estrategico = '0' OR cod_aliado_estrategico IS NULL) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
+} else {
+    $sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_asesor) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
+}
 $resultado_con_firma = mysqli_query($conectar, $sql_con_firma);
 $tiendas_con_firma = 0;
 if ($resultado_con_firma) { $datos_con_firma = mysqli_fetch_assoc($resultado_con_firma); $tiendas_con_firma = isset($datos_con_firma['total']) ? intval($datos_con_firma['total']) : 0; }
 // Contar tiendas con GPS
-$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_asesor) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != ''";
+if ($view == 'rapida') {
+    $sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_administrador = '$cod_administrador' AND (cod_aliado_estrategico = '0' OR cod_aliado_estrategico IS NULL) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != ''";
+} else {
+    $sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_asesor) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != ''";
+}
 $resultado_con_gps = mysqli_query($conectar, $sql_con_gps);
 $tiendas_con_gps = 0;
 if ($resultado_con_gps) { $datos_con_gps = mysqli_fetch_assoc($resultado_con_gps); $tiendas_con_gps = isset($datos_con_gps['total']) ? intval($datos_con_gps['total']) : 0; }
@@ -1355,8 +1381,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 <main class="page-container">
     <!-- Header -->
     <div class="page-header animate-in">
-        <h1><i class="fa-solid fa-store"></i> Mis Tiendas</h1>
-        <p>Gestiona tus tiendas afiliadas</p>
+        <h1><i class="fa-solid fa-store"></i> <?php echo $view == 'rapida' ? 'Tiendas Rápidas' : 'Mis Tiendas'; ?></h1>
+        <p><?php echo $view == 'rapida' ? 'Tiendas registradas sin aliado asignado' : 'Gestiona tus tiendas afiliadas'; ?></p>
         <div class="header-stats">
             <div class="header-stat">
                 <div class="header-stat-value"><?php echo $total_tiendas; ?></div>
@@ -1373,13 +1399,33 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         </div>
     </div>
 
+    <!-- Pestañas de Navegación -->
+    <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;" class="animate-in delay-1">
+        <a href="?view=normal" style="flex: 1; text-decoration: none;">
+            <div style="padding: 1rem; border-radius: 12px; background: <?php echo $view == 'normal' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'rgba(255,255,255,0.05)'; ?>; border: 1px solid <?php echo $view == 'normal' ? '#10b981' : 'rgba(255,255,255,0.1)'; ?>; text-align: center; color: white; transition: all 0.3s ease;">
+                <i class="fa-solid fa-store" style="margin-bottom: 5px; display: block; font-size: 1.2rem;"></i>
+                <span style="font-size: 0.8rem; font-weight: 700;">Normales (<?php echo $count_normal; ?>)</span>
+            </div>
+        </a>
+        <a href="?view=rapida" style="flex: 1; text-decoration: none;">
+            <div style="padding: 1rem; border-radius: 12px; background: <?php echo $view == 'rapida' ? 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' : 'rgba(255,255,255,0.05)'; ?>; border: 1px solid <?php echo $view == 'rapida' ? '#8b5cf6' : 'rgba(255,255,255,0.1)'; ?>; text-align: center; color: white; transition: all 0.3s ease;">
+                <i class="fa-solid fa-bolt" style="margin-bottom: 5px; display: block; font-size: 1.2rem;"></i>
+                <span style="font-size: 0.8rem; font-weight: 700;">Rápidas (<?php echo $count_rapida; ?>)</span>
+            </div>
+        </a>
+    </div>
+
     <!-- Search Bar -->
     <div class="search-bar animate-in delay-1">
         <i class="fa-solid fa-search"></i>
         <input type="text" id="searchInput" placeholder="Buscar tienda..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrarTiendas(this.value)">
     </div>
-    <!-- Add Button -->
-    <button class="add-button animate-in delay-1" onclick="abrirModalRegistro()"><i class="fa-solid fa-plus"></i>Registrar Nueva Tienda</button>
+
+    <!-- Botones de Acción -->
+    <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;" class="animate-in delay-1">
+        <button class="add-button" style="margin-bottom: 0; flex: 1;" onclick="abrirModalRegistro('normal')"><i class="fa-solid fa-plus"></i>Tienda Normal</button>
+        <button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);" onclick="abrirModalRegistro('rapida')"><i class="fa-solid fa-bolt"></i>Tienda Rápida</button>
+    </div>
     <!-- Store List -->
     <div class="store-list" id="storeList">
         <?php if ($total_tiendas > 0 && $resultado_tiendas): ?>
@@ -1402,7 +1448,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 $datos_total_prod = mysqli_fetch_assoc($consulta_total_prod);
                 $total_productos_tienda = $datos_total_prod['total'];
             ?>
-            <div class="store-card animate-in delay-2">
+            <div class="store-card animate-in delay-2 <?php echo ($tienda['cod_aliado_estrategico'] == '0' || empty($tienda['cod_aliado_estrategico'])) ? 'rapida' : ''; ?>">
                 <div class="store-card-header">
                     <div class="store-info">
                         <div class="store-name"><?php echo ucwords(strtolower($tienda['nombre_tienda'])); ?></div>
@@ -1492,19 +1538,24 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 <!-- Modal Registro -->
 <div class="modal-overlay" id="modalRegistro" style="align-items: center; padding: 20px;">
     <div class="modal-content">
-        <div class="modal-header"><h2><i class="fa-solid fa-store"></i> Nueva Tienda</h2><button class="modal-close" onclick="cerrarModal()"><i class="fa-solid fa-times"></i></button></div>
+        <div class="modal-header"><h2><i class="fa-solid fa-store" id="iconModalTienda"></i> <span id="tituloModalTienda">Nueva Tienda</span></h2><button class="modal-close" onclick="cerrarModal()"><i class="fa-solid fa-times"></i></button></div>
         
         <div class="modal-body">
             <form id="formRegistroTienda" enctype="multipart/form-data">
                 <input type="hidden" id="accion" name="accion" value="registrar">
                 <input type="hidden" id="cod_tienda_edit" name="cod_tienda_edit" value="">
+                <input type="hidden" id="tipo_tienda_actual" name="tipo_tienda" value="normal">
+                
                 <!-- Sección 1: Información Básica -->
                 <div class="form-section-title"><i class="fa-solid fa-info-circle"></i> Información Básica</div>
-                <div class="form-group">
+                
+                <div class="form-group" id="containerAliado">
                     <label class="form-label">Aliado Estratégico *</label>
-                    <select class="form-select" name="cod_aliado_estrategico" id="cod_aliado_estrategico" onchange="actualizarBancosYComision(this)" required>
+                    <select class="form-select" name="cod_aliado_estrategico" id="cod_aliado_estrategico" onchange="actualizarBancosYComision(this)">
                         <option value="">Seleccione un aliado</option>
-                        <?php while ($aliado = mysqli_fetch_assoc($resultado_aliados)): ?>
+                        <?php 
+                        if ($resultado_aliados) { mysqli_data_seek($resultado_aliados, 0); }
+                        while ($aliado = mysqli_fetch_assoc($resultado_aliados)): ?>
                         <option value="<?php echo $aliado['cod_administrador']; ?>" data-comision="<?php echo $aliado['comision_ptj']; ?>">
                             <?php echo $aliado['nombres_apellidos_tercero'].' ('.$aliado['nombres'].' ' .$aliado['apellidos'].' - '.$aliado['cedula'].')'; ?>
                         </option>
@@ -2078,19 +2129,70 @@ function cargarMunicipiosRegistroConPreseleccion(codDepartamento, selectedMuni) 
     });
 }
 
-function abrirModalRegistro() {
+function abrirModalRegistro(tipo = 'normal') {
     const form = document.getElementById('formRegistroTienda');
     form.reset();
-    // Habilitar campos y mostrar botón por si vienen desactivados de "Ver Detalles"
+    
+    // Habilitar campos y mostrar botón
     Array.from(form.elements).forEach(ele => ele.disabled = false);
     document.querySelector('.submit-btn').style.display = 'block';
     document.getElementById('accion').value = 'registrar';
     document.getElementById('cod_tienda_edit').value = '';
-    document.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-store"></i> Nueva Tienda';
-    document.querySelector('.submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> Registrar Tienda Completa';
+    document.getElementById('tipo_tienda_actual').value = tipo;
+    
+    const containerAliado = document.getElementById('containerAliado');
+    const selectAliado = document.getElementById('cod_aliado_estrategico');
+    const tituloModal = document.getElementById('tituloModalTienda');
+    const iconModal = document.getElementById('iconModalTienda');
+    
+    // Otros campos que podrían ser obligatorios
+    const camposOpcionales = [
+        { el: document.getElementById('cod_departamento'), label: 'Departamento' },
+        { el: document.getElementById('cod_municipio'), label: 'Municipio' },
+        { el: document.getElementById('direccion_tercero'), label: 'Dirección' },
+        { el: document.getElementById('barrio_tercero'), label: 'Barrio' }
+    ];
+    
+    if (tipo === 'rapida') {
+        containerAliado.style.display = 'none';
+        selectAliado.removeAttribute('required');
+        selectAliado.value = '0';
+        
+        // Quitar required y asteriscos de los labels para tienda rápida
+        camposOpcionales.forEach(item => {
+            if (item.el) {
+                item.el.removeAttribute('required');
+                const label = item.el.closest('.form-group').querySelector('.form-label');
+                if (label) label.innerHTML = item.label; // Sin asterisco
+            }
+        });
+        
+        tituloModal.innerText = 'Nueva Tienda Rápida';
+        iconModal.className = 'fa-solid fa-bolt';
+        document.querySelector('.submit-btn').innerHTML = '<i class="fa-solid fa-bolt"></i> Registrar Tienda Rápida';
+        document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)';
+    } else {
+        containerAliado.style.display = 'block';
+        selectAliado.setAttribute('required', 'required');
+        
+        // Restaurar required y asteriscos para tienda normal
+        camposOpcionales.forEach(item => {
+            if (item.el) {
+                item.el.setAttribute('required', 'required');
+                const label = item.el.closest('.form-group').querySelector('.form-label');
+                if (label) label.innerHTML = item.label + ' *'; // Con asterisco
+            }
+        });
+        
+        tituloModal.innerText = 'Nueva Tienda';
+        iconModal.className = 'fa-solid fa-store';
+        document.querySelector('.submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> Registrar Tienda Completa';
+        document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    }
+    
     // Limpiar previsualizaciones
     document.querySelectorAll('.image-preview').forEach(el => { el.src = ''; el.style.display = 'none'; });
-    // document.getElementById('gpsStatus').style.display = 'none'; // GPS deshabilitado
+    
     // Cargar departamentos
     cargarDepartamentosRegistro();
     document.getElementById('modalRegistro').classList.add('show');
@@ -2265,15 +2367,29 @@ function editarTienda(codTienda) {
                 document.querySelector('.submit-btn').style.display = 'block';
                 document.getElementById('accion').value = 'editar';
                 document.getElementById('cod_tienda_edit').value = t.cod_tienda;
-                // nombre_tienda va al campo nombre1_tercero del form
+                const tipo = (t.cod_aliado_estrategico == '0' || !t.cod_aliado_estrategico) ? 'rapida' : 'normal';
+                document.getElementById('tipo_tienda_actual').value = tipo;
+                
+                const containerAliado = document.getElementById('containerAliado');
+                const selectAliado = document.getElementById('cod_aliado_estrategico');
+                
+                if (tipo === 'rapida') {
+                    containerAliado.style.display = 'none';
+                    selectAliado.removeAttribute('required');
+                    selectAliado.value = '0';
+                    document.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-bolt"></i> Editar Tienda Rápida';
+                } else {
+                    containerAliado.style.display = 'block';
+                    selectAliado.setAttribute('required', 'required');
+                    selectAliado.value = t.cod_aliado_estrategico;
+                    document.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-edit"></i> Editar Tienda';
+                }
+                
                 document.getElementById('nombre1_tercero').value = t.nombre_tienda || t.nombre1_tercero || '';
-                document.getElementById('identificacion_tercero').value = t.identificacion_tercero || '';
-                document.getElementById('nombre_representante').value = t.nombre_representante || t.nombre1_tercero || '';
-                document.getElementById('documento_representante').value = t.documento_representante || '';
-                document.getElementById('telefono1_tercero').value = t.telefono1_tercero;
+                document.getElementById('identificacion_tercero_reg').value = t.identificacion_tercero || '';
+                document.getElementById('telefono1_tercero_reg').value = t.telefono1_tercero;
                 document.getElementById('direccion_tercero').value = t.direccion_tercero;
-                document.getElementById('correo_tercero').value = t.correo_tercero;
-                document.getElementById('cod_aliado_estrategico').value = t.cod_aliado_estrategico;
+                document.getElementById('correo_tercero_reg').value = t.correo_tercero;
                 document.getElementById('ubicacion_gps_tienda').value = t.ubicacion_gps_tienda;
                 
                 // Cargar departamentos y luego municipios con valores guardados
@@ -2289,16 +2405,23 @@ function editarTienda(codTienda) {
                         }, 500);
                     }
                 }, 500);
-                // Cargar bancos (simulado manualmente ya que es dependiente)
-                actualizarBancosYComision(document.getElementById('cod_aliado_estrategico'));
-                setTimeout(() => { if(document.getElementById('cod_banco_cuenta')) { document.getElementById('cod_banco_cuenta').value = t.cod_banco_cuenta; } }, 1000);
+
+                if (tipo === 'normal') {
+                    // Cargar bancos (sólo para tiendas normales)
+                    actualizarBancosYComision(selectAliado);
+                    setTimeout(() => { if(document.getElementById('cod_banco_cuenta')) { document.getElementById('cod_banco_cuenta').value = t.cod_banco_cuenta; } }, 1000);
+                }
                 
                 // ========== MOSTRAR DOCUMENTOS E IMÁGENES EXISTENTES ==========
                 mostrarDocumentosCargados(t);
                 mostrarImagenesCargadas(t);
                 
-                document.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-edit"></i> Editar Tienda';
                 document.querySelector('.submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> Guardar Cambios';
+                if (tipo === 'rapida') {
+                     document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)';
+                } else {
+                     document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                }
                 document.getElementById('modalRegistro').classList.add('show');
             } else {
                 Swal.fire({ icon:'error', title:'Error', text:response.message, background:'#1a1f2e', color:'white' });
@@ -2495,10 +2618,7 @@ function mostrarImagenesCargadas(tienda) {
 function compartirEnlaceFirma(codTiendaCryp, nombreTienda, codEstadoFirma, urlFirma) {
     // Si la firma existe (url no vacía) y el estado es '0' (pendiente), mostrar modal de revisión
     // Asegurarse de que urlFirma no sea una cadena vacía o nula
-    if (codEstadoFirma == '0' && urlFirma && urlFirma.trim() !== '') {
-        abrirModalRevisionFirma(codTiendaCryp, nombreTienda, urlFirma);
-        return;
-    }
+    if (codEstadoFirma == '0' && urlFirma && urlFirma.trim() !== '') { abrirModalRevisionFirma(codTiendaCryp, nombreTienda, urlFirma); return; }
 
     // Comportamiento original: Mostrar modal de compartir enlace
     var currentPath = window.location.pathname;
@@ -2537,55 +2657,33 @@ document.getElementById('formRegistroTienda').addEventListener('submit', functio
     var formData = new FormData(this);
     formData.append('cod_administrador', '<?php echo $cod_administrador; ?>');
     
-    for (let pair of formData.entries()) {
-        if (pair[1] instanceof File) {
-            console.log(pair[0] + ':', pair[1].name, '(' + pair[1].size + ' bytes)');
-        } else {
-            console.log(pair[0] + ':', pair[1]);
-        }
-    }
+    for (let pair of formData.entries()) { if (pair[1] instanceof File) { console.log(pair[0] + ':', pair[1].name, '(' + pair[1].size + ' bytes)'); } else { console.log(pair[0] + ':', pair[1]); } }
    
     var accion = document.getElementById('accion').value;
-    var url = accion === 'editar' ? 'edit_tienda_modal_asesor_movil_ajax_reg.php' : '../admin/reg_tienda_modal_asesor_movil_ajax_reg.php';
+    var tipoTiendaActual = document.getElementById('tipo_tienda_actual').value;
+    
+    var url = '';
+    if (tipoTiendaActual === 'rapida') { url = accion === 'editar' ? 'edit_tienda_rapida_asesor_movil_ajax.php' : 'reg_tienda_rapida_asesor_movil_ajax.php'; } else { url = accion === 'editar' ? 'edit_tienda_modal_asesor_movil_ajax_reg.php' : '../admin/reg_tienda_modal_asesor_movil_ajax_reg.php'; }
+    
     var titulo = accion === 'editar' ? 'Actualizando...' : 'Registrando...';
     var successTitle = accion === 'editar' ? '¡Tienda Actualizada!' : '¡Tienda Registrada!';
     var successMsg = accion === 'editar' ? 'Los datos han sido actualizados exitosamente.' : 'La tienda ha sido creada correctamente.';
 
     Swal.fire({ title: titulo, text: 'Procesando información', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
     $.ajax({
-        url: url,
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        success: function(response) {
-
+        url: url, type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json', success: function(response) {
             Swal.close();
             if (response.success) {
                 cerrarModal(); // Cerrar modal primero
                 if (accion === 'registrar') {
                     // Guardar datos de la tienda recién creada para uso posterior
-                    window._tiendaRegistrada = {
-                        cod_tienda: response.cod_tienda || '',
-                        cod_tienda_codifcryp: response.cod_tienda_codifcryp || '',
-                        nombre_tienda: response.nombre_tienda || '',
-                        correo_tercero: response.correo_tercero || '',
-                        telefono1_tercero: response.telefono1_tercero || ''
-                    };
+                    window._tiendaRegistrada = { cod_tienda: response.cod_tienda || '', cod_tienda_codifcryp: response.cod_tienda_codifcryp || '', nombre_tienda: response.nombre_tienda || '', correo_tercero: response.correo_tercero || '', telefono1_tercero: response.telefono1_tercero || '' };
                     // Mostrar modal de confirmación con opciones
                     abrirModalConfirmacion(response.nombre_tienda);
                 } else {
                     // Para editar, mostrar mensaje de éxito y recargar
                     Swal.fire({ 
-                        icon: 'success', 
-                        title: successTitle, 
-                        text: successMsg, 
-                        confirmButtonColor: '#10b981', 
-                        background: '#1a1f2e', 
-                        color: 'white',
-                        timer: 2000,
-                        timerProgressBar: true
+                        icon: 'success', title: successTitle, text: successMsg, confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true
                     }).then(() => { 
                         location.reload(); 
                     });
@@ -2628,19 +2726,9 @@ function cerrarModalFirmaYRecargar() { cerrarModalFirma(); location.reload(); }
 // =====================================================
 // FUNCIONES PARA MODAL DE CONFIRMACIÓN POST-REGISTRO
 // =====================================================
-function abrirModalConfirmacion(nombreTienda) {
-    document.getElementById('confirmNombreTienda').textContent = nombreTienda;
-    document.getElementById('modalConfirmacionRegistro').classList.add('show');
-}
-
-function cerrarModalConfirmacion() {
-    document.getElementById('modalConfirmacionRegistro').classList.remove('show');
-}
-
-function cerrarConfirmacionYRecargar() {
-    cerrarModalConfirmacion();
-    location.reload();
-}
+function abrirModalConfirmacion(nombreTienda) { document.getElementById('confirmNombreTienda').textContent = nombreTienda; document.getElementById('modalConfirmacionRegistro').classList.add('show'); }
+function cerrarModalConfirmacion() { document.getElementById('modalConfirmacionRegistro').classList.remove('show'); }
+function cerrarConfirmacionYRecargar() { cerrarModalConfirmacion(); location.reload(); }
 
 // Contadores para items registrados en esta sesión
 window._vendedoresRegistrados = [];
@@ -2710,30 +2798,11 @@ function abrirRegistroProductoDirecto(codTienda, nombreTienda) {
     document.getElementById('modalRegistroProducto').classList.add('show');
 }
 
-function cerrarModalVendedor() {
-    document.getElementById('modalRegistroVendedor').classList.remove('show');
-}
-
-function cerrarModalProducto() {
-    document.getElementById('modalRegistroProducto').classList.remove('show');
-}
-
-function volverAConfirmacion() {
-    cerrarModalVendedor();
-    abrirModalConfirmacion(window._tiendaRegistrada ? window._tiendaRegistrada.nombre_tienda : '');
-}
-
-function volverAConfirmacionDesdeProducto() {
-    cerrarModalProducto();
-    abrirModalConfirmacion(window._tiendaRegistrada ? window._tiendaRegistrada.nombre_tienda : '');
-}
-
-function finalizarYRecargar() {
-    cerrarModalVendedor();
-    cerrarModalProducto();
-    cerrarModalConfirmacion();
-    location.reload();
-}
+function cerrarModalVendedor() { document.getElementById('modalRegistroVendedor').classList.remove('show'); }
+function cerrarModalProducto() { document.getElementById('modalRegistroProducto').classList.remove('show'); }
+function volverAConfirmacion() { cerrarModalVendedor(); abrirModalConfirmacion(window._tiendaRegistrada ? window._tiendaRegistrada.nombre_tienda : ''); }
+function volverAConfirmacionDesdeProducto() { cerrarModalProducto(); abrirModalConfirmacion(window._tiendaRegistrada ? window._tiendaRegistrada.nombre_tienda : ''); }
+function finalizarYRecargar() { cerrarModalVendedor(); cerrarModalProducto(); cerrarModalConfirmacion(); location.reload(); }
 
 function previewImageProducto(input) {
     var preview = document.getElementById('preview_producto_img');
@@ -2799,12 +2868,7 @@ document.getElementById('formRegistroVendedor').addEventListener('submit', funct
     Swal.fire({ title: 'Registrando vendedor...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: 'agregar_vendedor_tienda_asesor_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: 'agregar_vendedor_tienda_asesor_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
@@ -2817,17 +2881,7 @@ document.getElementById('formRegistroVendedor').addEventListener('submit', funct
                 document.getElementById('formRegistroVendedor').reset();
                 document.getElementById('vendedor_cod_tienda').value = codTienda;
                 
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Vendedor Registrado!',
-                    html: response.message || 'El vendedor fue creado correctamente.',
-                    confirmButtonColor: '#6366f1',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    timer: 3000,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Vendedor Registrado!', html: response.message || 'El vendedor fue creado correctamente.', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white', timer: 3000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el vendedor', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }

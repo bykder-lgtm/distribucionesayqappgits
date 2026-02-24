@@ -48,7 +48,7 @@ try {
     $info_tienda = mysqli_fetch_assoc($result_tienda);
     $cod_aliado_estrategico                                             = $info_tienda['cod_aliado_estrategico'];
     // Verificar si el vendedor ya existe para esta tienda
-    $sql_verificar = "SELECT cod_administrador FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion_tercero' AND cod_seguridad = '24' AND cod_vendedor = '$cod_tienda'";
+    $sql_verificar = "SELECT cod_administrador FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion_tercero' AND cod_seguridad = '2' AND cod_vendedor = '$cod_tienda'";
     $result_verificar = mysqli_query($conectar, $sql_verificar);
     if (!$result_verificar) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de verificación: ' . mysqli_error($conectar))); exit; }
     if (mysqli_num_rows($result_verificar) > 0) { echo json_encode(array('success' => false, 'message' => 'Ya existe un vendedor con esta identificación para esta tienda')); exit; }
@@ -78,7 +78,7 @@ try {
     $nombre_tipo_regimen                                                = "SIMPLE";
     $nombre_tipo_impuesto                                               = "NO_RESPONSABLE_DE_IVA";
     $nombre_tipo_identificacion                                         = "CC";
-    $cod_seguridad                                                      = "24"; // Vendedor
+    $cod_seguridad                                                      = "2"; // Vendedor
     $cod_estado_activacion_usuario                                      = "1"; // Activo
     $url_pag_redirec_ini_sesion                                         = '../app/';
     $cod_caja_virtual                                                   = 1;

@@ -328,22 +328,60 @@ body {
 /* Ally List */
 .ally-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1rem;
 }
 
 @media (max-width: 768px) {
     .ally-list {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 0.85rem;
     }
 }
 
 @media (max-width: 640px) {
     .ally-list {
-        grid-template-columns: 1fr;
         gap: 0.75rem;
     }
+}
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: white;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.pagination-btn.active {
+    background: #8b5cf6;
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.pagination-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .ally-card {
@@ -386,13 +424,12 @@ body {
 }
 
 .ally-name {
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: white;
     margin-bottom: 0.25rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    line-height: 1.3;
+    word-break: break-word; /* Permite que nombres largos bajen de línea */
 }
 
 .ally-doc {
@@ -434,11 +471,10 @@ body {
 }
 
 .ally-detail span {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: rgba(255,255,255,0.8);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-word; /* Evita que correos o textos largos rompan el layout */
+    line-height: 1.4;
 }
 
 /* Modal */
@@ -802,41 +838,35 @@ body {
 /* Actions */
 .ally-actions {
     display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-@media (max-width: 480px) {
+@media (min-width: 641px) {
     .ally-actions {
-        flex-direction: column;
-        gap: 0.4rem;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
 }
 
 .action-btn {
     flex: 1;
-    padding: 0.5rem;
+    padding: 0.7rem;
     border-radius: 10px;
     border: none;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
     transition: all 0.3s ease;
     text-decoration: none;
-}
-
-@media (max-width: 480px) {
-    .action-btn {
-        padding: 0.65rem;
-        font-size: 0.8rem;
-        border-radius: 8px;
-    }
+    min-width: 0;
 }
 
 .action-btn.edit {
@@ -1146,17 +1176,40 @@ select[id^="edit_municipio_tienda_"] option {
 </div>
 
 <?php
+// Parámetros de paginación
+$registros_por_pagina = 30;
+$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina <= 0) $pagina = 1;
+$inicio = ($pagina - 1) * $registros_por_pagina;
+
 // Obtener parámetros de búsqueda
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
 
-// Consulta de aliados asignados a este asesor
-// La versión de escritorio filtra por cod_asesor = $cod_administrador
+// Consulta base para contar el total de registros (OPTIMIZADO)
+$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
+
+if (!empty($busqueda)) { $sql_conteo .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+
+// Filtro de documentación
+if ($filtro_doc == '1') {
+    $sql_conteo .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
+} elseif ($filtro_doc == '2') {
+    $sql_conteo .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '' AND (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
+} elseif ($filtro_doc == '3') {
+    $sql_conteo .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))";
+}
+
+$res_conteo = mysqli_query($conectar, $sql_conteo);
+$row_conteo = mysqli_fetch_assoc($res_conteo);
+$total_registros = $row_conteo['total'];
+$total_paginas = ceil($total_registros / $registros_por_pagina);
+
+// Consulta de aliados con LIMIT
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
 
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
-// Filtro de documentación
 if ($filtro_doc == '1') {
     $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
 } elseif ($filtro_doc == '2') {
@@ -1165,17 +1218,16 @@ if ($filtro_doc == '1') {
     $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))";
 }
 
-$sql .= " ORDER BY a.cod_administrador DESC";
+$sql .= " ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);
 
-// Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
+// Fallback por si falla la columna de cédula (mismo limit)
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
     a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
     
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
     
-    // Filtro de documentación (sin el campo de cédula)
     if ($filtro_doc == '1') {
         $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')";
     } elseif ($filtro_doc == '2') {
@@ -1184,10 +1236,9 @@ if (!$resultado) {
         $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')";
     }
     
-    $sql .= " ORDER BY a.cod_administrador DESC";
+    $sql .= " ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
     $resultado = mysqli_query($conectar, $sql);
 }
-$total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
 // Consultas para combos - Líder (20)
 $sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY nombres_apellidos_tercero ASC";
 $res_lider = mysqli_query($conectar, $sql_lider);
@@ -1277,7 +1328,13 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="ally-header">
                     <div class="ally-info">
                         <div class="ally-name"><?php echo ucwords(strtolower($nombre_completo)); ?></div>
-                        <div class="ally-doc">CC: <?php echo $row['cedula']; ?></div>
+                        <div class="ally-doc">
+                            CC: <?php echo $row['cedula']; ?> 
+                            <?php if(!empty($row['fecha'])): ?>
+                            <span style="margin-left: 0.5rem; color: rgba(255,255,255,0.4);">•</span>
+                            <span style="margin-left: 0.5rem;"><i class="fa-solid fa-calendar-day" style="color: #8b5cf6; font-size: 0.7rem;"></i> <?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <span class="ally-role" style="background: <?php echo $estado_bg; ?>; color: <?php echo $estado_color; ?>;">
                         <?php echo $estado_texto; ?>
@@ -1318,7 +1375,9 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <?php elseif ($total_docs > 0): ?>
                     <button class="action-btn share-partial" onclick="compartirDocumentacion(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-file-circle-exclamation"></i> Docs <span class="docs-badge"><?php echo $total_docs; ?>/3</span></button>
                     <?php else: ?>
-                    <button class="action-btn share" onclick="compartirDocumentacion(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-share-nodes"></i> Compartir Docs</button>
+                    <button class="action-btn share" disabled style="opacity: 0.5; cursor: not-allowed;" title="El aliado no ha cargado documentos">
+                        <i class="fa-solid fa-share-nodes"></i> Compartir Docs
+                    </button>
                     <?php endif; ?>
                 </div>
             </div>
@@ -1327,6 +1386,42 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             <div class="empty-state"><i class="fa-solid fa-users-slash"></i><h3>No hay aliados</h3><p>No se encontraron registros</p></div>
         <?php endif; ?>
     </div>
+
+    <!-- Pagination -->
+    <?php if ($total_paginas > 1): ?>
+    <div class="pagination-container animate-in delay-2">
+        <a href="?pagina=1&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
+           class="pagination-btn <?php echo $pagina == 1 ? 'disabled' : ''; ?>" title="Primera página">
+            <i class="fa-solid fa-angles-left"></i>
+        </a>
+        <a href="?pagina=<?php echo max(1, $pagina - 1); ?>&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
+           class="pagination-btn <?php echo $pagina == 1 ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-angle-left"></i>
+        </a>
+        
+        <?php 
+        $rango = 2;
+        $inicio_p = max(1, $pagina - $rango);
+        $fin_p = min($total_paginas, $pagina + $rango);
+        
+        for ($i = $inicio_p; $i <= $fin_p; $i++): 
+        ?>
+        <a href="?pagina=<?php echo $i; ?>&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
+           class="pagination-btn <?php echo $pagina == $i ? 'active' : ''; ?>">
+            <?php echo $i; ?>
+        </a>
+        <?php endfor; ?>
+
+        <a href="?pagina=<?php echo min($total_paginas, $pagina + 1); ?>&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
+           class="pagination-btn <?php echo $pagina == $total_paginas ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-angle-right"></i>
+        </a>
+        <a href="?pagina=<?php echo $total_paginas; ?>&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
+           class="pagination-btn <?php echo $pagina == $total_paginas ? 'disabled' : ''; ?>" title="Última página">
+            <i class="fa-solid fa-angles-right"></i>
+        </a>
+    </div>
+    <?php endif; ?>
 </main>
 <!-- Modal Registro -->
 <div class="modal-overlay" id="modalRegistro" style="align-items: flex-start; padding-top: 20px;">
@@ -2012,6 +2107,10 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <span class="detail-label-modal">Tiendas</span>
                 <span class="detail-value-modal" id="detTiendas"></span>
             </div>
+            <div class="detail-row">
+                <span class="detail-label-modal">Fecha Registro</span>
+                <span class="detail-value-modal" id="detFecha"></span>
+            </div>
 
             <button class="submit-btn" onclick="cerrarModalDetalle()" style="background: rgba(255,255,255,0.1); margin-top: 1.5rem;">Cerrar</button>
         </div>
@@ -2406,18 +2505,23 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <h4 style="color: #8b5cf6; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-tasks"></i> ¿Qué deseas hacer ahora?
                 </h4>
-                <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Selecciona una de las siguientes opciones:</p>
+                <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Gestiona los detalles de la nueva tienda:</p>
             </div>
             
             <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
-                <button onclick="registrarOtraTienda()" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
-                    <i class="fa-solid fa-store"></i>
-                    Registrar Otra Tienda
+                <button onclick="abrirRegistroVendedorDesdeTienda()" style="width: 100%; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Registrar Vendedor de la Tienda
                 </button>
 
-                <button onclick="irATiendaRegistrada()" style="width: 100%; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
-                    <i class="fa-solid fa-users-gear"></i>
-                    Registrar Vendedores / Productos
+                <button onclick="abrirRegistroProductoDesdeTienda()" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <i class="fa-solid fa-box-open"></i>
+                    Registrar Producto de la Tienda
+                </button>
+                
+                <button onclick="irATiendaRegistrada()" style="width: 100%; background: rgba(139, 92, 246, 0.2); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.3); padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    Ir a Mis Tiendas
                 </button>
             </div>
             
@@ -3967,6 +4071,7 @@ function abrirModalDetalle(data, tiendas) {
     document.getElementById('detCuenta').textContent = data.cuenta || 'No asignada';
     document.getElementById('detComision').textContent = (data.comision_ptj || '0') + '%';
     document.getElementById('detTiendas').textContent = tiendas;
+    document.getElementById('detFecha').textContent = data.fecha ? new Date(data.fecha).toLocaleDateString('es-ES') : 'No registrada';
     
     var badge = document.getElementById('detEstado');
     if(data.cod_estado_activacion_usuario == '1') {
@@ -4046,6 +4151,197 @@ function cerrarModalConfirmacionTienda() {
     document.getElementById('modalConfirmacionTienda').classList.remove('show');
     location.reload();
 }
+
+// ===== FUNCIONES PARA REGISTRO DE VENDEDOR Y PRODUCTO DESDE CONFIRMACIÓN =====
+function abrirRegistroVendedorDesdeTienda() {
+    var codTienda = document.getElementById('confirm_tienda_cod').value;
+    var nombreTienda = document.getElementById('confirm_tienda_nombre').value;
+    
+    // Poblar modal de vendedor
+    document.getElementById('vendedor_cod_tienda').value = codTienda;
+    document.getElementById('vendedor_nombre_tienda').textContent = nombreTienda;
+    
+    // Abrir modal
+    document.getElementById('modalAgregarVendedor').classList.add('show');
+}
+
+function cerrarModalAgregarVendedor() {
+    document.getElementById('modalAgregarVendedor').classList.remove('show');
+}
+
+function abrirRegistroProductoDesdeTienda() {
+    var codTienda = document.getElementById('confirm_tienda_cod').value;
+    var nombreTienda = document.getElementById('confirm_tienda_nombre').value;
+    
+    // Poblar modal de producto
+    document.getElementById('producto_cod_tienda').value = codTienda;
+    document.getElementById('productoNombreTienda').textContent = nombreTienda;
+    
+    // Resetear form de producto
+    document.getElementById('formRegistroProducto').reset();
+    document.getElementById('producto_cod_tienda').value = codTienda;
+    
+    // Abrir modal
+    document.getElementById('modalRegistroProducto').classList.add('show');
+}
+
+function cerrarModalProducto() {
+    document.getElementById('modalRegistroProducto').classList.remove('show');
+}
+
+function formatearPrecio(input) {
+    var valor = input.value.replace(/[^\d]/g, '');
+    if (valor === '') { input.value = ''; return; }
+    var numero = parseInt(valor, 10);
+    input.value = '$ ' + numero.toLocaleString('es-CO');
+}
+
+function previewImageProducto(input) {
+    var preview = document.getElementById('preview_producto_img');
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) { 
+            preview.src = e.target.result; 
+            preview.style.display = 'block'; 
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Envío del formulario de Vendedor
+$(document).on('submit', '#formAgregarVendedor', function(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(this);
+    
+    Swal.fire({
+        title: 'Registrando vendedor...',
+        didOpen: () => { Swal.showLoading(); },
+        allowOutsideClick: false,
+        background: '#1a1f2e',
+        color: 'white',
+        customClass: { container: 'swal-high-zindex' }
+    });
+    
+    $.ajax({
+        url: '../admin/agregar_vendedor_tienda_lider_ajax.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Vendedor Registrado!',
+                    text: response.message || 'El vendedor ha sido registrado exitosamente',
+                    background: '#1a1f2e',
+                    color: 'white',
+                    confirmButtonColor: '#8b5cf6',
+                    customClass: { container: 'swal-high-zindex' }
+                }).then(() => {
+                    document.getElementById('formAgregarVendedor').reset();
+                    cerrarModalAgregarVendedor();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message || 'No se pudo registrar el vendedor',
+                    background: '#1a1f2e',
+                    color: 'white',
+                    confirmButtonColor: '#ef4444',
+                    customClass: { container: 'swal-high-zindex' }
+                });
+            }
+        },
+        error: function() {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error de conexión. Intenta nuevamente.',
+                background: '#1a1f2e',
+                color: 'white',
+                customClass: { container: 'swal-high-zindex' }
+            });
+        }
+    });
+});
+
+// Envío del formulario de Producto
+$(document).on('submit', '#formRegistroProducto', function(e) {
+    e.preventDefault();
+    
+    // Limpiar precios
+    var precioCompraRaw = document.getElementById('producto_precio_compra').value.replace(/[^\d]/g, '') || '0';
+    var precioVentaRaw = document.getElementById('producto_precio_venta').value.replace(/[^\d]/g, '') || '0';
+    
+    document.getElementById('precio_compra_producto_hidden').value = precioCompraRaw;
+    document.getElementById('precio_venta_producto_hidden').value = precioVentaRaw;
+    
+    var formData = new FormData(this);
+    
+    Swal.fire({
+        title: 'Registrando producto...',
+        didOpen: () => { Swal.showLoading(); },
+        allowOutsideClick: false,
+        background: '#1a1f2e',
+        color: 'white',
+        customClass: { container: 'swal-high-zindex' }
+    });
+    
+    $.ajax({
+        url: 'reg_producto_tienda_aliado_ajax.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Producto Registrado!',
+                    text: response.message || 'El producto se registró correctamente.',
+                    background: '#1a1f2e',
+                    color: 'white',
+                    confirmButtonColor: '#8b5cf6',
+                    customClass: { container: 'swal-high-zindex' }
+                }).then(() => {
+                    document.getElementById('formRegistroProducto').reset();
+                    document.getElementById('preview_producto_img').style.display = 'none';
+                    cerrarModalProducto();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message || 'No se pudo registrar el producto.',
+                    background: '#1a1f2e',
+                    color: 'white',
+                    confirmButtonColor: '#ef4444',
+                    customClass: { container: 'swal-high-zindex' }
+                });
+            }
+        },
+        error: function() {
+            Swal.close();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Error de conexión. Intenta nuevamente.',
+                background: '#1a1f2e',
+                color: 'white',
+                customClass: { container: 'swal-high-zindex' }
+            });
+        }
+    });
+});
+
 
 function registrarOtraTienda() {
     var codAliado = document.getElementById('confirm_tienda_cod_aliado').value;
@@ -4536,8 +4832,17 @@ $('#formRegistro').on('submit', function(e) {
                 document.getElementById('confirm_telefono_aliado').value = resp.telefono;
                 document.getElementById('confirm_nombre_display').textContent = resp.nombre_completo;
                 
-                // Abrir modal de confirmación
-                document.getElementById('modalConfirmacionRegistro').classList.add('show');
+                // Si se creó una tienda automáticamente
+                if (resp.cod_tienda) {
+                    document.getElementById('confirm_tienda_cod').value = resp.cod_tienda;
+                    document.getElementById('confirm_tienda_nombre').value = resp.nombre_completo;
+                    document.getElementById('confirm_tienda_cod_aliado').value = resp.cod_administrador;
+                    document.getElementById('confirm_tienda_nombre_display').textContent = resp.nombre_completo;
+                    document.getElementById('modalConfirmacionTienda').classList.add('show');
+                } else {
+                    // Abrir modal de confirmación de aliado
+                    document.getElementById('modalConfirmacionRegistro').classList.add('show');
+                }
             } else if(resp.afectado === 'EXISTE') {
                 Swal.fire({ 
                     icon: 'warning', title: 'Aliado Existente', text: resp.mensaje || 'Este aliado ya está registrado en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
@@ -5195,6 +5500,161 @@ function escapeHtmlMovil(text) {
         }
     }, 10000);
 </script>
+
+<!-- Modal Agregar Vendedor a Tienda -->
+<div class="modal-overlay" id="modalAgregarVendedor" style="z-index: 5000;">
+    <div class="modal-content" style="max-width: 650px;">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-user-plus"></i> Registrar Nuevo Vendedor</h2>
+            <button class="modal-close" onclick="cerrarModalAgregarVendedor()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                <strong style="color: #8b5cf6;">Tienda:</strong> <span id="vendedor_nombre_tienda" style="color: white;"></span>
+            </div>
+            <form id="formAgregarVendedor">
+                <input type="hidden" id="vendedor_cod_tienda" name="cod_tienda">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombres *</label>
+                        <input type="text" class="form-input" id="vend_nombres" name="nombre1_tercero" placeholder="Ej: Juan Carlos" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Apellidos *</label>
+                        <input type="text" class="form-input" id="vend_apellidos" name="apellido1_tercero" placeholder="Ej: Pérez López" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación (CC) *</label>
+                        <input type="text" class="form-input" id="vend_identificacion" name="identificacion_tercero" placeholder="Cédula de ciudadanía" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono *</label>
+                        <input type="tel" class="form-input" id="vend_telefono" name="telefono1_tercero" placeholder="Número de contacto" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico *</label>
+                    <input type="email" class="form-input" id="vend_correo" name="correo_tercero" placeholder="correo@ejemplo.com" required>
+                </div>
+
+                <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.75rem; margin-top: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <i class="fa-solid fa-info-circle" style="color: #3b82f6; font-size: 1.2rem;"></i>
+                        <strong style="color: #3b82f6; font-size: 0.95rem;">Información:</strong>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.85rem; margin: 0; line-height: 1.4;">
+                        El usuario y contraseña se generarán automáticamente basándose en la identificación del vendedor.
+                    </p>
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.75rem; margin: 0.5rem 0 0 0;">
+                        <strong>Usuario:</strong> identificacion-codigoautogenerado<br>
+                        <strong>Contraseña:</strong> identificación
+                    </p>
+                </div>
+
+                <div class="form-row" style="gap: 0.5rem; margin-top: 1.5rem;">
+                    <button type="button" onclick="cerrarModalAgregarVendedor()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                        <i class="fa-solid fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="submit-btn" style="flex: 1; margin-top: 0; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                        <i class="fa-solid fa-save"></i> Guardar Vendedor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registro Producto -->
+<div class="modal-overlay" id="modalRegistroProducto" style="z-index: 5000; align-items: center; padding: 20px;">
+    <div class="modal-content" style="max-width: 650px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+            <h2><i class="fa-solid fa-box-open"></i> Registrar Producto</h2>
+            <button class="modal-close" onclick="cerrarModalProducto()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                <strong style="color: #f59e0b;">Tienda:</strong> <span id="productoNombreTienda" style="color: white;"></span>
+            </div>
+            <form id="formRegistroProducto" enctype="multipart/form-data">
+                <input type="hidden" id="producto_cod_tienda" name="cod_tienda" value="">
+                <input type="hidden" name="cod_administrador" value="<?php echo $cod_administrador; ?>">
+                <input type="hidden" name="cod_estado" value="1">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Código de Barras *</label>
+                        <input type="text" class="form-input" name="cod_producto_barra" placeholder="Ej: 7701234567890" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select class="form-select" name="cod_categoria">
+                            <option value="0">Sin categoría</option>
+                            <?php
+                            $sql_cat_prod = "SELECT cod_categoria, nombre_categoria FROM tbl15_categoria WHERE cod_estado = '1' ORDER BY nombre_categoria ASC";
+                            $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
+                            if ($res_cat_prod) { while ($cat = mysqli_fetch_assoc($res_cat_prod)) { echo '<option value="'.$cat['cod_categoria'].'">'.ucwords(strtolower($cat['nombre_categoria'])).'</option>'; } }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nombre del Producto *</label>
+                    <input type="text" class="form-input" name="nombre_producto" placeholder="Ej: Arroz Diana x 500g" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Precio Compra ($)</label>
+                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_compra" placeholder="$ 0" value="0" oninput="formatearPrecio(this)">
+                        <input type="hidden" name="precio_compra_producto" id="precio_compra_producto_hidden" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Precio Venta ($) *</label>
+                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_venta" placeholder="$ 0" oninput="formatearPrecio(this)">
+                        <input type="hidden" name="precio_venta_producto" id="precio_venta_producto_hidden" value="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">IVA (%)</label>
+                        <select class="form-select" name="iva_ptj">
+                            <option value="0">0%</option>
+                            <option value="5">5%</option>
+                            <option value="19">19%</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Imagen</label>
+                        <div class="file-input-wrapper" style="padding: 0.75rem;">
+                            <input type="file" name="imagen_producto" accept="image/*" onchange="previewImageProducto(this)">
+                            <div class="file-input-icon" style="font-size: 1.2rem; margin-bottom: 0.2rem;"><i class="fa-solid fa-camera"></i></div>
+                            <div class="file-input-text" style="font-size: 0.75rem;">Foto producto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <img id="preview_producto_img" class="image-preview" alt="Vista previa" style="display:none; max-height:100px; margin-top:0.5rem;">
+
+                <div class="form-group">
+                    <label class="form-label">Descripción</label>
+                    <textarea class="form-input" name="descripcion_producto" rows="2" placeholder="Descripción del producto (opcional)" style="resize: vertical; min-height: 60px;"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                    <i class="fa-solid fa-box-open"></i> Registrar Producto
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
 

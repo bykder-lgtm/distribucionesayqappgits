@@ -74,13 +74,8 @@ function conexiones($usuario, $clave) {
 //---------------------------------------------------------------------------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------------------------------//
 	if (mysqli_num_rows($ejecutar_sql)!=0) {
-		
-		// Verificar estado de activación del usuario
-		// cod_estado_activacion_usuario en tbl15_administrador: 1 = ACTIVO, 2 = EN ESPERA, 3 = INACTIVO
-		// Si no tiene valor o es NULL, asumimos que está ACTIVO (valor por defecto = 1)
-		if (empty($cod_estado_activacion_usuario_sec) || $cod_estado_activacion_usuario_sec == '' || $cod_estado_activacion_usuario_sec == NULL) {
-			$cod_estado_activacion_usuario_sec = 1; // Por defecto ACTIVO
-		}
+		// Verificar estado de activación del usuario// cod_estado_activacion_usuario en tbl15_administrador: 1 = ACTIVO, 2 = EN ESPERA, 3 = INACTIVO// Si no tiene valor o es NULL, asumimos que está ACTIVO (valor por defecto = 1)
+		if (empty($cod_estado_activacion_usuario_sec) || $cod_estado_activacion_usuario_sec == '' || $cod_estado_activacion_usuario_sec == NULL) { $cod_estado_activacion_usuario_sec = 1; /*Por defecto ACTIVO*/	}
 		
 		$sql_estado_activacion = "SELECT codigo_estado_activacion_usuario, nombre_estado_activacion_usuario FROM tbl15_estado_activacion_usuario WHERE cod_estado_activacion_usuario = '$cod_estado_activacion_usuario_sec'";
 		$exec_estado_activacion = mysqli_query($conectar2, $sql_estado_activacion);

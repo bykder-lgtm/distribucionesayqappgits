@@ -5,6 +5,7 @@ $pagina_actual = basename($_SERVER['PHP_SELF']);
 // Definir las páginas asociadas a cada ítem del menú
 $menu_inicio         = ['dashboard_lider_movil.php'];
 $menu_creditos       = ['lista_info_factura_venta_lider_movil.php'];
+$menu_coordinadores  = ['lista_coordinador_lider_movil.php'];
 $menu_asesores       = ['lista_asesor_lider_movil.php'];
 $menu_aliados        = ['lista_aliado_lider_movil.php', 'lista_aliado_asesor_lider_movil.php'];
 $menu_tiendas        = ['lista_tienda_lider_movil.php', 'lista_producto_lider_movil.php'];
@@ -16,10 +17,10 @@ $menu_config         = ['config_lider_movil.php'];
 <nav class="bottom-nav">
     <a href="../admin/dashboard_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_inicio) ? 'active' : ''; ?>"><i class="fa-solid fa-house"></i><span>Inicio</span></a>
     <a href="../admin/lista_info_factura_venta_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_creditos) ? 'active' : ''; ?>"><i class="fa-solid fa-credit-card"></i><span>Créditos</span></a>
-    <a href="../admin/lista_asesor_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_asesores) ? 'active' : ''; ?>"><i class="fa-solid fa-store"></i><span>Asesores</span></a>
-    <a href="../admin/lista_aliado_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_aliados) ? 'active' : ''; ?>"><i class="fa-solid fa-store"></i><span>Aliados</span></a>
+    <a href="../admin/lista_coordinador_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_coordinadores) ? 'active' : ''; ?>"><i class="fa-solid fa-users-gear"></i><span>Coord.</span></a>
+    <a href="../admin/lista_asesor_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_asesores) ? 'active' : ''; ?>"><i class="fa-solid fa-user-tie"></i><span>Asesores</span></a>
+    <a href="../admin/lista_aliado_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_aliados) ? 'active' : ''; ?>"><i class="fa-solid fa-handshake"></i><span>Aliados</span></a>
     <a href="../admin/lista_tienda_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_tiendas) ? 'active' : ''; ?>"><i class="fa-solid fa-store"></i><span>Tiendas</span></a>
-    <a href="../admin/lista_consultas_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_consultas) ? 'active' : ''; ?>"><i class="fa-solid fa-compass"></i><span>Consultas</span></a>
     <a href="../admin/config_lider_movil.php" class="nav-item <?php echo in_array($pagina_actual, $menu_config) ? 'active' : ''; ?>"><i class="fa-solid fa-gear"></i><span>Config</span></a>
 </nav>
 

@@ -678,7 +678,7 @@ if(isset($_GET['cod_info_factura_venta']) && $_GET['cod_info_factura_venta'] != 
 
 <?php } ?>
 <?php //include_once("../seguridad/seguridad_diseno_plantillas_visitante_intern.php"); ?>
-<?php include_once("../menu/05_modulo_menu_visitante_intern_movil.php"); ?>
+<?php include_once("../menu/05_modulo_menu_vendedor_movil.php"); ?>
 <?php include_once("../admin/10_modulo_sin_js_visitante_intern_movil.php"); ?>
 </body>
 </html>

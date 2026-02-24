@@ -270,9 +270,9 @@ $nombre_estado_factura                       = "ABIERTA";
 // escaping, additionally removing everything that could be (html/javascript-) code
      $sTable = "tbl15_tercero RIGHT JOIN tbl15_info_factura_venta ON tbl15_tercero.cod_tercero = tbl15_info_factura_venta.cod_tercero LEFT JOIN tbl15_entidad_crediticia ON tbl15_info_factura_venta.cod_entidad_crediticia = tbl15_entidad_crediticia.cod_entidad_crediticia";
 
-     $sWhere = " WHERE (tbl15_info_factura_venta.cod_tienda = '$cod_tienda')";
+     $sWhere = " WHERE (tbl15_info_factura_venta.cod_vendedor = '$cod_administrador')";
     if ( $_GET['busqueda_ajax'] != "" ) {
-        $sWhere = " WHERE (tbl15_info_factura_venta.cod_tienda = '$cod_tienda') AND ( ";
+        $sWhere = " WHERE (tbl15_info_factura_venta.cod_vendedor = '$cod_administrador') AND ( ";
         for ( $i=0 ; $i<count($aColumns) ; $i++ ) {
             $sWhere .= $aColumns[$i]." LIKE '$busq_aprox_der".$busqueda_ajax."$busq_aprox_izq' OR ";
         }

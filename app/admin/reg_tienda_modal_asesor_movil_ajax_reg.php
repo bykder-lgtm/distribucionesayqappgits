@@ -4,15 +4,11 @@ include_once('../admin/class_php/funcion_cryptor_descryptor_class.php');
 include_once('../evitar_mensaje_error/error.php');
 date_default_timezone_set("America/Bogota");
 include ("../session/funciones_admin.php");
+if (verificar_usuario()){ } else { header("Location:../index.php"); }
 
-if (verificar_usuario()){
-//print "Bienvenido (a), <strong>".$_SESSION['usuario'].", </strong>al sistema.";
-    } else { header("Location:../index.php");
-}
 $cuenta_actual                                                      = DAXCRYPTOR::descriptardax($_SESSION['usuario_cryp']);
 $cuenta_visitante                                                   = $_SESSION['usuario'];
 $cod_administrador                                                  = ($_SESSION['cod_administrador']);
-
 $retorno_array                                                      = array();
 $retorno_array2                                                     = array();
 $codigoHTML_menu                                                    = '';
@@ -128,7 +124,8 @@ if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero']) && iss
     $fecha_creacion                                                 = date("Y-m-d H:i:s");
 	//---------------------------------------------------------------------------------------------------------------------------------//
     $sql_autoincremento_tienda = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$base_datos' AND TABLE_NAME = 'tbl15_tienda'";
-    $exec_autoincremento_tienda = mysqli_query($conectar, $sql_autoincremento_tienda) or die(mysqli_error($conectar));
+    $exec_autoincremento_tienda = mysqli_query($conectar, $sql_autoincremento_tienda);
+    if (!$exec_autoincremento_tienda) { echo json_encode(array('success' => false, 'message' => 'Error al obtener autoincremento: ' . mysqli_error($conectar))); exit; }
     $datos_autoincremento_tienda = mysqli_fetch_assoc($exec_autoincremento_tienda);
 
     $cod_tienda                                                     = $datos_autoincremento_tienda['AUTO_INCREMENT'];
@@ -152,29 +149,45 @@ if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero']) && iss
     $url_img_selfieadmin_tienda                                     = procesarArchivo('url_img_selfieadmin_tienda', $directorio_imgs, 'selfie_');
     $url_img_otraopcional_tienda                                    = procesarArchivo('url_img_otraopcional_tienda', $directorio_imgs, 'otra_');
 	//---------------------------------------------------------------------------------------------------------------------------------//
-	$sql_dato_aliado = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_administrador = '".($cod_aliado_estrategico)."'";
-	$consultar_dato_aliado = mysqli_query($conectar, $sql_dato_aliado) or die(mysqli_error($conectar));
-	$info_dato_aliado = mysqli_fetch_assoc($consultar_dato_aliado);
-	$existe_dato_aliado = mysqli_num_rows(@$consultar_dato_aliado);
+    $existe_dato_aliado = 0;
+    if ($cod_aliado_estrategico > 0) {
+	    $sql_dato_aliado = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_administrador = '".($cod_aliado_estrategico)."'";
+	    $consultar_dato_aliado = mysqli_query($conectar, $sql_dato_aliado);
+        if (!$consultar_dato_aliado) { echo json_encode(array('success' => false, 'message' => 'Error al consultar aliado: ' . mysqli_error($conectar))); exit; }
+	    $info_dato_aliado = mysqli_fetch_assoc($consultar_dato_aliado);
+	    $existe_dato_aliado = mysqli_num_rows($consultar_dato_aliado);
+    } else {
+        // Si es 0 es una tienda rápida
+        $existe_dato_aliado = 1;
+    }
+    $cod_tipo_tienda = ($cod_aliado_estrategico == 0) ? 1 : 0;
+
 	//---------------------------------------------------------------------------------------------------------------------------------//
     if($existe_dato_aliado > 0) {
-		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, 
-        cod_aliado_estrategico, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
-        nombre_representante, documento_representante, correo_representante, nombre_tipo_industria, nombre_tipo_subindustria, 
-        nombre_tipo_otraindustria, numero_comercios, cod_tipo_sector, existe_rues, venta_presencial, venta_online, 
-        nombre_plataforma_ecommerce, nombre_sistema_contable, cod_banco_cuenta, ubicacion_gps_tienda,
-        url_img_orig_tienda, url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda,
-        url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda,
-        url_img_selfieadmin_tienda, url_img_otraopcional_tienda, nombre_razon_social, cod_administrador) 
-        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', UPPER('$barrio_tercero'), 
-        '$cod_aliado_estrategico', '$cod_departamento', '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
-        UPPER('$nombre_representante'), '$documento_representante', '$correo_representante', UPPER('$nombre_tipo_industria'), UPPER('$nombre_tipo_subindustria'), 
-        UPPER('$nombre_tipo_otraindustria'), '$numero_comercios', '$cod_tipo_sector', '$existe_rues', '$venta_presencial', '$venta_online', 
-        '$nombre_plataforma_ecommerce', '$nombre_sistema_contable', '$cod_banco_cuenta', '$ubicacion_gps_tienda',
-        '$url_img_orig_tienda', '$url_img_min_tienda', '$url_documentacion_rut_tienda', '$url_documentacion_camaracomercio_tienda',
-        '$url_documentacion_contratofirma_tienda', '$url_documentacion_extra1_tienda', '$url_img_fachada_tienda', '$url_img_interna_tienda',
-        '$url_img_selfieadmin_tienda', '$url_img_otraopcional_tienda', UPPER('$nombre_razon_social'), '$cod_administrador')";
-		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
+		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, 
+        correo_tercero, direccion_tercero, barrio_tercero, cod_aliado_estrategico, cod_departamento, 
+        cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, 
+        fecha_creacion, cod_estado, nombre_representante, documento_representante, correo_representante, 
+        nombre_tipo_industria, nombre_tipo_subindustria, nombre_tipo_otraindustria, numero_comercios, 
+        cod_tipo_sector, existe_rues, venta_presencial, venta_online, nombre_plataforma_ecommerce, 
+        nombre_sistema_contable, cod_banco_cuenta, ubicacion_gps_tienda, url_img_orig_tienda, 
+        url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda, 
+        url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, 
+        url_img_interna_tienda, url_img_selfieadmin_tienda, url_img_otraopcional_tienda, nombre_razon_social, 
+        cod_administrador, cod_tipo_tienda, descripcion_tienda, nit_razon_social, garantia_tienda) 
+        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', 
+        '$correo_tercero', '$direccion_tercero', UPPER('$barrio_tercero'), '$cod_aliado_estrategico', '$cod_departamento', 
+        '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', 
+        '$fecha_creacion', '$cod_estado', UPPER('$nombre_representante'), '$documento_representante', '$correo_representante', 
+        UPPER('$nombre_tipo_industria'), UPPER('$nombre_tipo_subindustria'), UPPER('$nombre_tipo_otraindustria'), '$numero_comercios', 
+        '$cod_tipo_sector', '$existe_rues', '$venta_presencial', '$venta_online', '$nombre_plataforma_ecommerce', 
+        '$nombre_sistema_contable', '$cod_banco_cuenta', '$ubicacion_gps_tienda', '$url_img_orig_tienda', 
+        '$url_img_min_tienda', '$url_documentacion_rut_tienda', '$url_documentacion_camaracomercio_tienda', 
+        '$url_documentacion_contratofirma_tienda', '$url_documentacion_extra1_tienda', '$url_img_fachada_tienda', 
+        '$url_img_interna_tienda', '$url_img_selfieadmin_tienda', '$url_img_otraopcional_tienda', UPPER('$nombre_razon_social'), 
+        '$cod_administrador', '$cod_tipo_tienda', '', '$identificacion_tercero', '')";
+		$exec_data = mysqli_query($conectar, $sql_data);
+        if (!$exec_data) { echo json_encode(array('success' => false, 'message' => 'Error al registrar tienda: ' . mysqli_error($conectar))); exit; }
     } else {
         header('Content-Type: application/json');
         echo json_encode(array('success' => false, 'message' => 'El aliado estratégico seleccionado no existe.'));
@@ -192,7 +205,6 @@ if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero']) && iss
 	$respuesta_ajax['correo_tercero']              = $correo_tercero;
 	$respuesta_ajax['telefono1_tercero']           = $telefono1_tercero;
 	$respuesta_ajax['mensaje']                     = 'Hecho correctamente.';
-
 	echo json_encode($respuesta_ajax);
 }
 ?>

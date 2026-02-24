@@ -69,13 +69,13 @@ if (isset($_POST['identificacion_tercero'])) {
 
 	//$cod_administrador                                              = intval($info_dato_aliado['cod_administrador']);
 	//---------------------------------------------------------------------------------------------------------------------------------//
-	$sql_matriz_lider_coord = "SELECT cod_lider, cod_lider FROM tbl15_administrador WHERE cod_administrador = '".($cod_asesor)."'";
+	$sql_matriz_lider_coord = "SELECT cod_lider, cod_coordinador FROM tbl15_administrador WHERE cod_administrador = '".($cod_asesor)."'";
 	$consultar_matriz_lider_coord = mysqli_query($conectar, $sql_matriz_lider_coord) or die(mysqli_error($conectar));
 	$info_matriz_lider_coord = mysqli_fetch_assoc($consultar_matriz_lider_coord);
 	$existe_matriz_lider_coord = mysqli_num_rows(@$consultar_matriz_lider_coord);
 
 	$cod_lider                                                      = $info_matriz_lider_coord['cod_lider'];
-    $cod_lider                                                = $info_matriz_lider_coord['cod_lider'];
+    $cod_coordinador                                                = $info_matriz_lider_coord['cod_coordinador'];
 	//---------------------------------------------------------------------------------------------------------------------------------//
     if($existe_dato_aliado > 0) {
         // El aliado ya existe, no se registra nuevamente
@@ -85,11 +85,11 @@ if (isset($_POST['identificacion_tercero'])) {
 		$sql_data = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
         nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion, 
         cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, correo, telefono, cuenta, contrasena, 
-        cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_lider, cod_asesor, cod_tipo_sector, nit_razon_social) 
+        cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, cod_tipo_sector, nit_razon_social) 
 		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
         UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion', 
         '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$creador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$correo', '$telefono', '$cuenta', '$contrasena', 
-        '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_lider', '$cod_asesor', '$cod_tipo_sector', '$nit_razon_social')";
+        '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_tipo_sector', '$nit_razon_social')";
 		$exec_data = mysqli_query($conectar, $sql_data);
         //---------------------------------------------------------------------------------------------------------------------------------//
         if ($exec_data && mysqli_affected_rows($conectar) > 0) { 
@@ -195,6 +195,31 @@ if (isset($_POST['identificacion_tercero'])) {
                 }
             }
             if ($docs_para_actualizar) { $sql_update_docs .= " WHERE cod_administrador = '$cod_administrador'"; mysqli_query($conectar, $sql_update_docs); }
+            
+            // ========================================================================================
+            // CREAR TIENDA AUTOMÁTICAMENTE SI SE SOLICITÓ
+            // ========================================================================================
+            if (isset($_POST['crear_tienda_al_guardar']) && $_POST['crear_tienda_al_guardar'] == '1') {
+                $nombre_tienda = $nombres_apellidos_tercero;
+                $abrev_tienda = 'TIENDA_' . $identificacion_tercero;
+                $cod_departamento_tienda = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+                $cod_municipio_tienda = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
+                $direccion_tienda = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
+                $fecha_creacion_tienda = date("Y-m-d H:i:s");
+                
+                $sql_insert_tienda = "INSERT INTO tbl15_tienda (
+                    identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
+                    cod_aliado_estrategico, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado, cod_administrador
+                ) VALUES (
+                    '$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tienda', 
+                    '$cod_administrador', '$cod_departamento_tienda', '$cod_municipio_tienda', 'TIENDA', 'PERSONA_NATURAL', 'SIMPLE', 'NO_RESPONSABLE_DE_IVA', '$fecha_creacion_tienda', '1', '$cod_administrador'
+                )";
+                
+                if (mysqli_query($conectar, $sql_insert_tienda)) {
+                    $cod_tienda_creada = mysqli_insert_id($conectar);
+                    $respuesta_ajax['cod_tienda'] = $cod_tienda_creada;
+                }
+            }
             // ========================================================================================
             // ENVIAR CORREO DE BIENVENIDA CON CREDENCIALES AL NUEVO ALIADO
             // ========================================================================================

@@ -48,20 +48,30 @@ try {
     $info_tienda = mysqli_fetch_assoc($result_tienda);
     $cod_aliado_estrategico                                             = $info_tienda['cod_aliado_estrategico'];
     // Verificar si el vendedor ya existe para esta tienda
-    $sql_verificar = "SELECT cod_administrador FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion_tercero' AND cod_seguridad = '24' AND cod_vendedor = '$cod_tienda'";
+    $sql_verificar = "SELECT cod_administrador FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion_tercero' AND cod_seguridad = '2' AND cod_vendedor = '$cod_tienda'";
     $result_verificar = mysqli_query($conectar, $sql_verificar);
     if (!$result_verificar) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de verificación: ' . mysqli_error($conectar))); exit; }
     if (mysqli_num_rows($result_verificar) > 0) { echo json_encode(array('success' => false, 'message' => 'Ya existe un vendedor con esta identificación para esta tienda')); exit; }
 
-    // Obtener información del asesor para heredar lider y coordinador
-    $sql_asesor = "SELECT cod_lider, cod_coordinador, cod_asesor FROM tbl15_administrador WHERE cod_administrador = '$cod_aliado_estrategico'";
-    $result_asesor = mysqli_query($conectar, $sql_asesor);
-    if (!$result_asesor) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de asesor: ' . mysqli_error($conectar))); exit; }
-    $info_asesor = mysqli_fetch_assoc($result_asesor);
-    $cod_lider                                                          = isset($info_asesor['cod_lider']) ? $info_asesor['cod_lider'] : 0;
-    $cod_coordinador                                                    = isset($info_asesor['cod_coordinador']) ? $info_asesor['cod_coordinador'] : 0;
-    $cod_asesor                                                         = isset($info_asesor['cod_asesor']) ? $info_asesor['cod_asesor'] : 0;
-
+    // Obtener información del asesor (lider y coordinador)
+    if ($cod_aliado_estrategico > 0) {
+        $sql_asesor = "SELECT cod_lider, cod_coordinador, cod_asesor FROM tbl15_administrador WHERE cod_administrador = '$cod_aliado_estrategico'";
+        $result_asesor = mysqli_query($conectar, $sql_asesor);
+        if (!$result_asesor) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de asesor/aliado: ' . mysqli_error($conectar))); exit; }
+        $info_asesor = mysqli_fetch_assoc($result_asesor);
+        $cod_lider                                                          = isset($info_asesor['cod_lider']) ? $info_asesor['cod_lider'] : 0;
+        $cod_coordinador                                                    = isset($info_asesor['cod_coordinador']) ? $info_asesor['cod_coordinador'] : 0;
+        $cod_asesor                                                         = isset($info_asesor['cod_asesor']) ? $info_asesor['cod_asesor'] : 0;
+    } else {
+        // Para tienda rápida, el asesor es el que está en sesión
+        $sql_asesor_actual = "SELECT cod_lider, cod_coordinador, cod_administrador as cod_asesor FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador_sesion'";
+        $res_asesor_actual = mysqli_query($conectar, $sql_asesor_actual);
+        $info_asesor_actual = mysqli_fetch_assoc($res_asesor_actual);
+        
+        $cod_lider                                                          = isset($info_asesor_actual['cod_lider']) ? $info_asesor_actual['cod_lider'] : 0;
+        $cod_coordinador                                                    = isset($info_asesor_actual['cod_coordinador']) ? $info_asesor_actual['cod_coordinador'] : 0;
+        $cod_asesor                                                         = isset($info_asesor_actual['cod_asesor']) ? $info_asesor_actual['cod_asesor'] : 0;
+    }
     // Obtener el próximo código de administrador para generar el usuario
     $sql_autoincremento = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$base_datos' AND TABLE_NAME = 'tbl15_administrador'";
     $result_autoincremento = mysqli_query($conectar, $sql_autoincremento);
@@ -78,7 +88,7 @@ try {
     $nombre_tipo_regimen                                                = "SIMPLE";
     $nombre_tipo_impuesto                                               = "NO_RESPONSABLE_DE_IVA";
     $nombre_tipo_identificacion                                         = "CC";
-    $cod_seguridad                                                      = "24"; // Vendedor
+    $cod_seguridad                                                      = "2"; // Vendedor
     $cod_estado_activacion_usuario                                      = "1"; // Activo
     $url_pag_redirec_ini_sesion                                         = '../app/';
     $cod_caja_virtual                                                   = 1;

@@ -621,22 +621,10 @@ $anio = date('Y');
 
     <!-- Acciones Rápidas -->
     <div class="quick-actions animate-in delay-1">
-        <a href="lista_tienda_lider_movil.php" class="quick-action-btn qa-tiendas">
-            <i class="fa-solid fa-store"></i>
-            <span>Tiendas</span>
-        </a>
-        <a href="lista_producto_lider_movil.php" class="quick-action-btn qa-productos">
-            <i class="fa-solid fa-boxes-stacked"></i>
-            <span>Productos</span>
-        </a>
-        <a href="lista_info_factura_venta_lider_movil.php" class="quick-action-btn qa-creditos">
-            <i class="fa-solid fa-credit-card"></i>
-            <span>Créditos</span>
-        </a>
-        <a href="reporte_ventas_asesor_movil.php" class="quick-action-btn qa-reportes">
-            <i class="fa-solid fa-chart-bar"></i>
-            <span>Reportes</span>
-        </a>
+        <a href="lista_coordinador_lider_movil.php" class="quick-action-btn qa-tiendas"><i class="fa-solid fa-users-gear"></i><span>Coordinadores</span></a>
+        <a href="lista_tienda_lider_movil.php" class="quick-action-btn qa-tiendas"><i class="fa-solid fa-store"></i><span>Tiendas</span></a>
+        <a href="lista_producto_lider_movil.php" class="quick-action-btn qa-productos"><i class="fa-solid fa-boxes-stacked"></i><span>Productos</span></a>
+        <a href="lista_info_factura_venta_lider_movil.php" class="quick-action-btn qa-creditos"><i class="fa-solid fa-credit-card"></i><span>Créditos</span></a>
     </div>
 
     <!-- KPI Cards -->

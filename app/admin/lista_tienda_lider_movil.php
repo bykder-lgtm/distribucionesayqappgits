@@ -372,6 +372,46 @@ body {
     color: white;
 }
 
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: white;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.pagination-btn.active {
+    background: #8b5cf6;
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.pagination-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 /* Bottom Navigation */
 .bottom-nav {
     position: fixed;
@@ -784,19 +824,36 @@ body {
 <body>
 
 <?php
-// Obtener tiendas del líder
-// Cadena: líder → aliados (cod_lider = líder) → tiendas (cod_aliado_estrategico = aliado)
+// Parámetros de paginación
+$registros_por_pagina = 30;
+$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina <= 0) $pagina = 1;
+$inicio = ($pagina - 1) * $registros_por_pagina;
+
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 
 // Subquery para obtener los cod_administrador de los aliados que pertenecen a este líder
 $subquery_aliados_lider = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_lider = '$cod_administrador'";
 
-$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_lider)";
+// Consulta para contar el total de tiendas (para la paginación)
+$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider)";
+if (!empty($busqueda)) { $sql_conteo .= " AND (nombre_tienda LIKE '%$busqueda%' OR identificacion_tercero LIKE '%$busqueda%' OR nombre1_tercero LIKE '%$busqueda%')"; }
+$resultado_conteo = mysqli_query($conectar, $sql_conteo);
+$fila_conteo = mysqli_fetch_assoc($resultado_conteo);
+$total_registros = $fila_conteo['total'];
+$total_paginas = ceil($total_registros / $registros_por_pagina);
+
+// Consulta principal adaptada para paginación
+$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, 
+                (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos 
+                FROM tbl15_tienda t 
+                LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador 
+                WHERE t.cod_aliado_estrategico IN ($subquery_aliados_lider)";
 if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
 
-$sql_tiendas .= " ORDER BY t.fecha_creacion DESC";
+$sql_tiendas .= " ORDER BY t.fecha_creacion DESC LIMIT $inicio, $registros_por_pagina";
 $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
-$total_tiendas = ($resultado_tiendas) ? mysqli_num_rows($resultado_tiendas) : 0;
+$total_tiendas_pagina = ($resultado_tiendas) ? mysqli_num_rows($resultado_tiendas) : 0;
 
 // Contar tiendas con firma
 $sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
@@ -822,7 +879,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         <p>Gestiona tus tiendas afiliadas</p>
         <div class="header-stats">
             <div class="header-stat">
-                <div class="header-stat-value"><?php echo $total_tiendas; ?></div>
+                <div class="header-stat-value"><?php echo $total_registros; ?></div>
                 <div class="header-stat-label">Total</div>
             </div>
             <div class="header-stat">
@@ -845,7 +902,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     <button class="add-button animate-in delay-1" onclick="abrirModalRegistro()"><i class="fa-solid fa-plus"></i>Registrar Nueva Tienda</button>
     <!-- Store List -->
     <div class="store-list" id="storeList">
-        <?php if ($total_tiendas > 0 && $resultado_tiendas): ?>
+        <?php if ($total_tiendas_pagina > 0 && $resultado_tiendas): ?>
             <?php while ($tienda = mysqli_fetch_assoc($resultado_tiendas)): 
                 $tiene_firma = !empty($tienda['url_firma_electronica']);
                 $tiene_gps = !empty($tienda['ubicacion_gps_tienda']);
@@ -867,9 +924,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             ?>
             <div class="store-card animate-in delay-2">
                 <div class="store-card-header">
-                    <div class="store-info">
-                        <div class="store-name"><?php echo ucwords(strtolower($tienda['nombre_tienda'])); ?></div>
-                        <div class="store-nit">NIT: <?php echo $tienda['identificacion_tercero']; ?></div>
+                    <div class="store-info" style="min-width: 0; flex: 1;">
+                        <div class="store-name" style="word-break: break-word; line-height: 1.3; font-size: 1.05rem;"><?php echo ucwords(strtolower($tienda['nombre_tienda'])); ?></div>
+                        <div class="store-nit" style="font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <span>NIT: <?php echo $tienda['identificacion_tercero']; ?></span>
+                            <?php if(!empty($tienda['fecha_creacion'])): ?>
+                            <span style="color: rgba(255,255,255,0.3);">|</span>
+                            <span><i class="fa-solid fa-calendar-day" style="color: #8b5cf6; font-size: 0.7rem;"></i> <?php echo date('d/m/Y', strtotime($tienda['fecha_creacion'])); ?></span>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <div style="display: flex; align-items: center; gap: 5px;">
                         <span class="store-status <?php echo $tiene_firma ? 'active' : 'pending'; ?>"><?php echo $tiene_firma ? 'Firmado' : 'Pendiente'; ?></span>
@@ -885,7 +948,6 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div class="store-detail"><i class="fa-solid fa-phone"></i><span><?php echo $tienda['telefono1_tercero']; ?></span></div>
                     <div class="store-detail"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($tienda['correo_tercero']); ?></span></div>
                     <div class="store-detail"><i class="fa-solid fa-credit-card"></i><span><?php echo $tienda['creditos_activos']; ?> créditos activos</span></div>
-                    <?php if(!empty($tienda['fecha_creacion'])): ?><div class="store-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($tienda['fecha_creacion'])); ?></span></div><?php endif; ?>
                 </div>
 
                 <!-- Estadísticas y Botones de Acción Rápida -->
@@ -943,13 +1005,49 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             </div>
             <?php endwhile; ?>
         <?php else: ?>
-            <div class="empty-state">
-                <i class="fa-solid fa-store-slash"></i>
-                <h3>No hay tiendas registradas</h3>
-                <p>Comienza registrando tu primera tienda</p>
+            <div class="empty-state animate-in delay-2">
+                <i class="fa-solid fa-store-slash" style="font-size: 3rem; color: rgba(139, 92, 246, 0.3); display: block; margin-bottom: 1rem;"></i>
+                <h3 style="color: white; margin-bottom: 0.5rem;">No se encontraron tiendas</h3>
+                <p style="color: rgba(255,255,255,0.5);">No hay tiendas registradas que coincidan con tu búsqueda.</p>
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- Pagination -->
+    <?php if ($total_paginas > 1): ?>
+    <div class="pagination-container animate-in delay-2">
+        <a href="?pagina=1&busqueda=<?php echo urlencode($busqueda); ?>" 
+           class="pagination-btn <?php echo $pagina == 1 ? 'disabled' : ''; ?>" title="Primera página">
+            <i class="fa-solid fa-angles-left"></i>
+        </a>
+        <a href="?pagina=<?php echo max(1, $pagina - 1); ?>&busqueda=<?php echo urlencode($busqueda); ?>" 
+           class="pagination-btn <?php echo $pagina == 1 ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-angle-left"></i>
+        </a>
+        
+        <?php 
+        $rango = 2;
+        $inicio_p = max(1, $pagina - $rango);
+        $fin_p = min($total_paginas, $pagina + $rango);
+        
+        for ($i = $inicio_p; $i <= $fin_p; $i++): 
+        ?>
+        <a href="?pagina=<?php echo $i; ?>&busqueda=<?php echo urlencode($busqueda); ?>" 
+           class="pagination-btn <?php echo $pagina == $i ? 'active' : ''; ?>">
+            <?php echo $i; ?>
+        </a>
+        <?php endfor; ?>
+
+        <a href="?pagina=<?php echo min($total_paginas, $pagina + 1); ?>&busqueda=<?php echo urlencode($busqueda); ?>" 
+           class="pagination-btn <?php echo $pagina == $total_paginas ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-angle-right"></i>
+        </a>
+        <a href="?pagina=<?php echo $total_paginas; ?>&busqueda=<?php echo urlencode($busqueda); ?>" 
+           class="pagination-btn <?php echo $pagina == $total_paginas ? 'disabled' : ''; ?>" title="Última página">
+            <i class="fa-solid fa-angles-right"></i>
+        </a>
+    </div>
+    <?php endif; ?>
 </main>
 
 <!-- Modal Registro -->
@@ -3122,17 +3220,11 @@ $(document).ready(function() {
 
 function cargarNotificacionesMovil() {
     $.ajax({
-        url: '../admin/obtener_notificaciones_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../admin/obtener_notificaciones_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
-            if (response.success) {
-                actualizarUINotificacionesMovil(response.notificaciones, response.count);
-            }
+            if (response.success) { actualizarUINotificacionesMovil(response.notificaciones, response.count); }
         },
-        error: function() {
-            console.log('Error al cargar notificaciones');
-        }
+        error: function() { console.log('Error al cargar notificaciones'); }
     });
 }
 
@@ -3211,35 +3303,15 @@ function marcarNotificacionLeidaMovil(codNotificacion, element) {
 
 function marcarTodasLeidasMovil() {
     Swal.fire({
-        title: '¿Marcar todas como leídas?',
-        text: 'Se marcarán todas las notificaciones pendientes como leídas',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#8b5cf6',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, marcar todas',
-        cancelButtonText: 'Cancelar',
-        background: '#1a1f2e',
-        color: 'white'
+        title: '¿Marcar todas como leídas?', text: 'Se marcarán todas las notificaciones pendientes como leídas', icon: 'question', showCancelButton: true, confirmButtonColor: '#8b5cf6', cancelButtonColor: '#6c757d', confirmButtonText: 'Sí, marcar todas', cancelButtonText: 'Cancelar', background: '#1a1f2e',color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../admin/marcar_notificacion_leida_ajax.php',
-                type: 'POST',
-                data: { marcar_todas: 'si' },
-                dataType: 'json',
+                url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { marcar_todas: 'si' },dataType: 'json',
                 success: function(response) {
                     if (response.success) {
                         cargarNotificacionesMovil();
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Listo!',
-                            text: 'Todas las notificaciones han sido marcadas como leídas',
-                            timer: 2000,
-                            showConfirmButton: false,
-                            background: '#1a1f2e',
-                            color: 'white'
-                        });
+                        Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Todas las notificaciones han sido marcadas como leídas', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
                     }
                 }
             });
@@ -3261,9 +3333,7 @@ function abrirModalAgregarBanco(codTienda, nombreTienda) {
     
     // Cargar bancos disponibles
     $.ajax({
-        url: '../admin/obtener_bancos_disponibles_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../admin/obtener_bancos_disponibles_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             var options = '<option value="">Seleccione un banco</option>';
             if (response.success && response.bancos) {
@@ -3301,62 +3371,26 @@ $('#formAgregarBanco').on('submit', function(e) {
     
     var formData = new FormData(this);
     
-    Swal.fire({
-        title: 'Guardando...',
-        html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i>',
-        showConfirmButton: false,
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Guardando...', html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i>', showConfirmButton: false, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: '../admin/agregar_banco_tienda_lider_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: '../admin/agregar_banco_tienda_lider_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
                 cerrarModalAgregarBanco();
                 Swal.fire({
-                    icon: 'success',
-                    title: '¡Éxito!',
-                    text: response.mensaje || 'Cuenta bancaria registrada exitosamente',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    confirmButtonColor: '#3b82f6',
-                    customClass: { container: 'swal-high-zindex' }
-                }).then(() => {
+                    icon: 'success', title: '¡Éxito!', text: response.mensaje || 'Cuenta bancaria registrada exitosamente', background: '#1a1f2e', color: 'white', confirmButtonColor: '#3b82f6', customClass: { container: 'swal-high-zindex' } }).then(() => {
                     location.reload();
                 });
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.mensaje || 'No se pudo registrar la cuenta bancaria',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    confirmButtonColor: '#ef4444',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo registrar la cuenta bancaria', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             Swal.close();
             console.error('Error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de conexión',
-                text: 'No se pudo procesar la solicitud',
-                background: '#1a1f2e',
-                color: 'white',
-                confirmButtonColor: '#ef4444',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
@@ -3389,48 +3423,23 @@ $('#formAgregarVendedor').on('submit', function(e) {
     var correo = $('#vend_correo').val().trim();
     
     if (!nombres || !apellidos || !identificacion || !telefono || !correo) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Campos incompletos',
-            text: 'Por favor completa todos los campos obligatorios',
-            background: '#1a1f2e',
-            color: 'white',
-            confirmButtonColor: '#8b5cf6',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campos incompletos', text: 'Por favor completa todos los campos obligatorios', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     // Validar correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Correo inválido',
-            text: 'Por favor ingresa un correo electrónico válido',
-            background: '#1a1f2e',
-            color: 'white',
-            confirmButtonColor: '#8b5cf6',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Correo inválido', text: 'Por favor ingresa un correo electrónico válido', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     var formData = new FormData(this);
     
-    Swal.fire({
-        title: 'Registrando vendedor...',
-        html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #8b5cf6;"></i>',
-        showConfirmButton: false,
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Registrando vendedor...', html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #8b5cf6;"></i>', showConfirmButton: false, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     fetch('agregar_vendedor_tienda_lider_ajax.php', {
-        method: 'POST',
-        body: formData
+        method: 'POST', body: formData
     })
     .then(response => response.json())
     .then(data => {
@@ -3438,40 +3447,18 @@ $('#formAgregarVendedor').on('submit', function(e) {
         if (data.success) {
             cerrarModalAgregarVendedor();
             Swal.fire({
-                icon: 'success',
-                title: '¡Vendedor Registrado!',
-                text: data.message || 'El vendedor ha sido registrado exitosamente',
-                background: '#1a1f2e',
-                color: 'white',
-                confirmButtonColor: '#8b5cf6',
-                customClass: { container: 'swal-high-zindex' }
+                icon: 'success', title: '¡Vendedor Registrado!', text: data.message || 'El vendedor ha sido registrado exitosamente', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' }
             }).then(() => {
                 location.reload();
             });
         } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: data.message || 'No se pudo registrar el vendedor',
-                background: '#1a1f2e',
-                color: 'white',
-                confirmButtonColor: '#ef4444',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'No se pudo registrar el vendedor', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     })
     .catch(error => {
         Swal.close();
         console.error('Error:', error);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error de conexión',
-            text: 'No se pudo procesar la solicitud',
-            background: '#1a1f2e',
-            color: 'white',
-            confirmButtonColor: '#ef4444',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
     });
 });
 
@@ -3504,9 +3491,7 @@ function abrirRegistroProductoDirecto(codTienda, nombreTienda) {
     document.getElementById('modalRegistroProducto').classList.add('show');
 }
 
-function cerrarModalProducto() {
-    document.getElementById('modalRegistroProducto').classList.remove('show');
-}
+function cerrarModalProducto() { document.getElementById('modalRegistroProducto').classList.remove('show'); }
 
 function previewImageProducto(input) {
     var preview = document.getElementById('preview_producto_img');
@@ -3535,12 +3520,7 @@ $(document).on('submit', '#formRegistroProducto', function(e) {
     Swal.fire({ title: 'Registrando producto...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
     $.ajax({
-        url: 'reg_producto_tienda_aliado_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: 'reg_producto_tienda_aliado_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             if (response.success) {
                 Swal.fire({ icon: 'success', title: '¡Producto Registrado!', text: response.message || 'El producto se registró correctamente.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' } }).then(function() {
