@@ -319,6 +319,20 @@ body {
     padding: 0.4rem;
     border-radius: 8px;
     background: rgba(16, 185, 129, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(16, 185, 129, 0.05);
+}
+
+.store-stat-item:hover {
+    background: rgba(16, 185, 129, 0.15);
+    transform: translateY(-1px);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.store-stat-item:active {
+    transform: scale(0.95);
+    background: rgba(16, 185, 129, 0.2);
 }
 
 .store-stat-number {
@@ -1098,6 +1112,10 @@ body {
     background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
 }
 
+.reg-modal-header.credito-theme {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
 .reg-modal-header h2 {
     color: white;
     font-size: 1.15rem;
@@ -1500,15 +1518,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <!-- Estadísticas y Botones de Acción Rápida -->
                 <div class="store-stats">
-                    <div class="store-stat-item" id="contadorProductos">
+                    <div class="store-stat-item" onclick="verProductosTienda(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>')">
                         <span class="store-stat-number"><?php echo $total_productos_tienda; ?></span>
                         <span class="store-stat-label">Productos</span>
                     </div>
-                    <div class="store-stat-item" id="contadorVendedores">
+                    <div class="store-stat-item" onclick="verVendedoresTienda(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>')">
                         <span class="store-stat-number"><?php echo $total_vendedores_tienda; ?></span>
                         <span class="store-stat-label">Vendedores</span>
                     </div>
-                    <div class="store-stat-item" id="contadorCreditos">
+                    <div class="store-stat-item" onclick="verCreditosTienda(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>')">
                         <span class="store-stat-number"><?php echo $tienda['creditos_activos']; ?></span>
                         <span class="store-stat-label">Créditos</span>
                     </div>
@@ -2068,6 +2086,78 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             
             <button type="button" onclick="cerrarModalFirmaYRecargar()" class="submit-btn" style="margin-top: 1rem; background: rgba(255,255,255,0.1);">
                 <i class="fa-solid fa-check"></i> Finalizar y Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ver Vendedores -->
+<div class="reg-modal-overlay" id="modalVerVendedores">
+    <div class="reg-modal-container">
+        <div class="reg-modal-header vendedor-theme">
+            <h2><i class="fa-solid fa-users"></i> Vendedores de la Tienda</h2>
+            <button class="modal-close" onclick="cerrarModalVerVendedores()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="reg-modal-body">
+            <div class="reg-tienda-badge">
+                <i class="fa-solid fa-store"></i>
+                Tienda: <strong id="verVendedoresNombreTienda"></strong>
+            </div>
+            <div class="items-registrados" style="display: block; margin-top: 0; border: none; padding-top: 0;">
+                <div id="verVendedoresList"></div>
+            </div>
+        </div>
+        <div class="reg-modal-footer">
+            <button class="reg-footer-btn back-btn" style="flex: 1;" onclick="cerrarModalVerVendedores()">
+                <i class="fa-solid fa-times"></i> Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ver Productos -->
+<div class="reg-modal-overlay" id="modalVerProductos">
+    <div class="reg-modal-container">
+        <div class="reg-modal-header producto-theme">
+            <h2><i class="fa-solid fa-box-open"></i> Productos de la Tienda</h2>
+            <button class="modal-close" onclick="cerrarModalVerProductos()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="reg-modal-body">
+            <div class="reg-tienda-badge">
+                <i class="fa-solid fa-store"></i>
+                Tienda: <strong id="verProductosNombreTienda"></strong>
+            </div>
+            <div class="items-registrados" style="display: block; margin-top: 0; border: none; padding-top: 0;">
+                <div id="verProductosList"></div>
+            </div>
+        </div>
+        <div class="reg-modal-footer">
+            <button class="reg-footer-btn back-btn" style="flex: 1;" onclick="cerrarModalVerProductos()">
+                <i class="fa-solid fa-times"></i> Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ver Créditos -->
+<div class="reg-modal-overlay" id="modalVerCreditos">
+    <div class="reg-modal-container">
+        <div class="reg-modal-header credito-theme">
+            <h2><i class="fa-solid fa-credit-card"></i> Créditos de la Tienda</h2>
+            <button class="modal-close" onclick="cerrarModalVerCreditos()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="reg-modal-body">
+            <div class="reg-tienda-badge">
+                <i class="fa-solid fa-store" style="color: #10b981;"></i>
+                Tienda: <strong id="verCreditosNombreTienda"></strong>
+            </div>
+            <div class="items-registrados" style="display: block; margin-top: 0; border: none; padding-top: 0;">
+                <div id="verCreditosList"></div>
+            </div>
+        </div>
+        <div class="reg-modal-footer">
+            <button class="reg-footer-btn back-btn" style="flex: 1;" onclick="cerrarModalVerCreditos()">
+                <i class="fa-solid fa-times"></i> Cerrar
             </button>
         </div>
     </div>
@@ -2902,6 +2992,119 @@ function cargarProductosTienda(codTienda) {
         }
     });
 }
+// ========== FUNCIONES PARA VER LISTA DE VENDEDORES Y PRODUCTOS ==========
+function verVendedoresTienda(codTienda, nombreTienda) {
+    document.getElementById('verVendedoresNombreTienda').textContent = nombreTienda;
+    var list = document.getElementById('verVendedoresList');
+    list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;"><i class="fa fa-spinner fa-spin fa-2x"></i><br>Cargando vendedores...</div>';
+    document.getElementById('modalVerVendedores').classList.add('show');
+    
+    $.ajax({
+        url: 'obtener_vendedores_por_tienda_ajax.php',
+        type: 'POST',
+        data: { cod_tienda: codTienda },
+        dataType: 'json',
+        success: function(response) {
+            list.innerHTML = '';
+            if (response.success && response.vendedores && response.vendedores.length > 0) {
+                var html = '';
+                response.vendedores.forEach(function(v) {
+                    html += '<div class="item-registrado existente">' +
+                        '<div class="item-registrado-icon vendedor-existente-bg"><i class="fa-solid fa-user-check"></i></div>' +
+                        '<div class="item-registrado-info">' +
+                            '<h5>' + v.nombres_apellidos_tercero + '</h5>' +
+                            '<span>CC: ' + v.identificacion_tercero + (v.cuenta ? ' | Usuario: ' + v.cuenta : '') + '</span>' +
+                        '</div>' +
+                    '</div>';
+                });
+                list.innerHTML = html;
+            } else {
+                list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;">No hay vendedores registrados</div>';
+            }
+        },
+        error: function() {
+            list.innerHTML = '<div style="text-align:center; padding:2rem; color:#ef4444;">Error al cargar datos</div>';
+        }
+    });
+}
+
+function verProductosTienda(codTienda, nombreTienda) {
+    document.getElementById('verProductosNombreTienda').textContent = nombreTienda;
+    var list = document.getElementById('verProductosList');
+    list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;"><i class="fa fa-spinner fa-spin fa-2x"></i><br>Cargando productos...</div>';
+    document.getElementById('modalVerProductos').classList.add('show');
+    
+    $.ajax({
+        url: 'obtener_productos_por_tienda_ajax.php',
+        type: 'POST',
+        data: { cod_tienda: codTienda },
+        dataType: 'json',
+        success: function(response) {
+            list.innerHTML = '';
+            if (response.success && response.productos && response.productos.length > 0) {
+                var html = '';
+                response.productos.forEach(function(p) {
+                    var precioFormateado = Number(p.precio).toLocaleString('es-CO');
+                    html += '<div class="item-registrado existente">' +
+                        '<div class="item-registrado-icon producto-existente-bg"><i class="fa-solid fa-boxes-stacked"></i></div>' +
+                        '<div class="item-registrado-info">' +
+                            '<h5>' + p.nombre + '</h5>' +
+                            '<span>Código: ' + p.codigo + ' | $' + precioFormateado + '</span>' +
+                        '</div>' +
+                    '</div>';
+                });
+                list.innerHTML = html;
+            } else {
+                list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;">No hay productos registrados</div>';
+            }
+        },
+        error: function() {
+            list.innerHTML = '<div style="text-align:center; padding:2rem; color:#ef4444;">Error al cargar datos</div>';
+        }
+    });
+}
+
+function cerrarModalVerVendedores() { document.getElementById('modalVerVendedores').classList.remove('show'); }
+function cerrarModalVerProductos() { document.getElementById('modalVerProductos').classList.remove('show'); }
+
+function verCreditosTienda(codTienda, nombreTienda) {
+    document.getElementById('verCreditosNombreTienda').textContent = nombreTienda;
+    var list = document.getElementById('verCreditosList');
+    list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;"><i class="fa fa-spinner fa-spin fa-2x"></i><br>Cargando créditos...</div>';
+    document.getElementById('modalVerCreditos').classList.add('show');
+    
+    $.ajax({
+        url: 'obtener_creditos_por_tienda_ajax.php',
+        type: 'POST',
+        data: { cod_tienda: codTienda },
+        dataType: 'json',
+        success: function(response) {
+            list.innerHTML = '';
+            if (response.success && response.creditos && response.creditos.length > 0) {
+                var html = '';
+                response.creditos.forEach(function(c) {
+                    var totalFormateado = Number(c.total_precio_venta).toLocaleString('es-CO');
+                    html += '<div class="item-registrado existente">' +
+                        '<div class="item-registrado-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i class="fa-solid fa-credit-card"></i></div>' +
+                        '<div class="item-registrado-info">' +
+                            '<h5>Factura: ' + c.cod_factura + '</h5>' +
+                            '<span>' + c.tercero + '</span>' +
+                            '<span style="color: #10b981; font-weight: 600;">$ ' + totalFormateado + ' | ' + c.fecha + '</span>' +
+                        '</div>' +
+                    '</div>';
+                });
+                list.innerHTML = html;
+            } else {
+                list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;">No hay créditos activos</div>';
+            }
+        },
+        error: function() {
+            list.innerHTML = '<div style="text-align:center; padding:2rem; color:#ef4444;">Error al cargar datos</div>';
+        }
+    });
+}
+
+function cerrarModalVerCreditos() { document.getElementById('modalVerCreditos').classList.remove('show'); }
 
 function cerrarModalVendedor() { document.getElementById('modalRegistroVendedor').classList.remove('show'); }
 function cerrarModalProducto() { document.getElementById('modalRegistroProducto').classList.remove('show'); }
@@ -3077,6 +3280,15 @@ document.getElementById('modalRegistroVendedor').addEventListener('click', funct
 });
 document.getElementById('modalRegistroProducto').addEventListener('click', function(e) {
     if (e.target === this) { cerrarModalProducto(); }
+});
+document.getElementById('modalVerVendedores').addEventListener('click', function(e) {
+    if (e.target === this) { cerrarModalVerVendedores(); }
+});
+document.getElementById('modalVerProductos').addEventListener('click', function(e) {
+    if (e.target === this) { cerrarModalVerProductos(); }
+});
+document.getElementById('modalVerCreditos').addEventListener('click', function(e) {
+    if (e.target === this) { cerrarModalVerCreditos(); }
 });
 
 function copiarEnlaceFirma() {
