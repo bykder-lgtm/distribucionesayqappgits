@@ -1107,6 +1107,46 @@ body {
         max-width: none;
     }
 }
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: white;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.pagination-btn.active {
+    background: #8b5cf6;
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.pagination-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
 </style>
 </head>
 <body>
@@ -1119,21 +1159,41 @@ body {
 $estado_filtro = isset($_GET['estado']) ? mysqli_real_escape_string($conectar, $_GET['estado']) : 'TODOS';
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 
+// Parámetros de paginación
+$registros_por_pagina = 30;
+$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina <= 0) $pagina = 1;
+$inicio = ($pagina - 1) * $registros_por_pagina;
+
 // Estadísticas
 $sql_stats = "SELECT COUNT(*) as total, SUM(CASE WHEN ifv.nombre_estado_factura = 'ABIERTA' THEN 1 ELSE 0 END) as activos,
 SUM(CASE WHEN ifv.nombre_estado_factura = 'CERRADA' THEN 1 ELSE 0 END) as cerrados,
 COALESCE(SUM(CASE WHEN ifv.nombre_estado_factura = 'ABIERTA' THEN ifv.monto_deuda ELSE 0 END), 0) as cartera
 FROM tbl15_info_factura_venta ifv
 INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda
-WHERE t.cod_administrador = '$cod_administrador'";
+WHERE ifv.cod_administrador_lider = '$cod_administrador'";
 $resultado_stats = mysqli_query($conectar, $sql_stats);
 $stats = mysqli_fetch_assoc($resultado_stats);
+
+// Consulta para contar el total según filtros
+$sql_conteo = "SELECT COUNT(*) as total
+FROM tbl15_info_factura_venta ifv
+INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda
+LEFT JOIN tbl15_tercero ter ON ifv.cod_tercero = ter.cod_tercero
+WHERE ifv.cod_administrador_lider = '$cod_administrador'";
+
+if ($estado_filtro != 'TODOS') { $sql_conteo .= " AND ifv.nombre_estado_factura = '$estado_filtro'"; }
+if (!empty($busqueda)) { $sql_conteo .= " AND (ter.nombre1_tercero LIKE '%$busqueda%' OR ter.identificacion_tercero LIKE '%$busqueda%' OR t.nombre_tienda LIKE '%$busqueda%')"; }
+
+$resultado_conteo = mysqli_query($conectar, $sql_conteo);
+$fila_conteo = mysqli_fetch_assoc($resultado_conteo);
+$total_registros_global = $fila_conteo['total'];
+$total_paginas = ceil($total_registros_global / $registros_por_pagina);
 
 // Query principal
 $sql_creditos = "SELECT ifv.*, t.nombre_tienda, ter.nombre1_tercero, ter.nombre2_tercero, ter.apellido1_tercero, ter.apellido2_tercero, 
 ter.identificacion_tercero, ter.telefono1_tercero, ter.correo_tercero, ter.direccion_tercero, ec.nombre_entidad_crediticia, tp.nombre_tipo_pago, op.nombre_operador_credito,
 CONCAT(admin_lider.nombres, ' ', admin_lider.apellidos) AS nombre_lider,
-CONCAT(admin_coord.nombres, ' ', admin_coord.apellidos) AS nombre_lider,
 CONCAT(admin_asesor.nombres, ' ', admin_asesor.apellidos) AS nombre_asesor,
 CONCAT(admin_aliado.nombres, ' ', admin_aliado.apellidos) AS nombre_aliado,
 CONCAT(admin_revisor.nombres, ' ', admin_revisor.apellidos) AS nombre_revisor,
@@ -1146,8 +1206,7 @@ LEFT JOIN tbl15_entidad_crediticia ec ON ifv.cod_entidad_crediticia = ec.cod_ent
 LEFT JOIN tbl15_tipo_pago tp ON ifv.cod_tipo_pago = tp.cod_tipo_pago
 LEFT JOIN tbl15_operador_credito op ON ifv.cod_operador_credito = op.cod_operador_credito
 LEFT JOIN tbl15_administrador admin_lider ON ifv.cod_administrador_lider = admin_lider.cod_administrador
-LEFT JOIN tbl15_administrador admin_coord ON ifv.cod_administrador_lider = admin_coord.cod_administrador
-LEFT JOIN tbl15_administrador admin_asesor ON ifv.cod_administrador_lider = admin_asesor.cod_administrador
+LEFT JOIN tbl15_administrador admin_asesor ON ifv.cod_administrador_asesor = admin_asesor.cod_administrador
 LEFT JOIN tbl15_administrador admin_aliado ON ifv.cod_administrador_aliado_estrategico = admin_aliado.cod_administrador
 LEFT JOIN tbl15_administrador admin_revisor ON ifv.cod_administrador_revisor = admin_revisor.cod_administrador
 LEFT JOIN tbl15_vendedor vend ON ifv.cod_vendedor = vend.cod_vendedor
@@ -1157,8 +1216,9 @@ WHERE ifv.cod_administrador_lider = '$cod_administrador'";
 if ($estado_filtro != 'TODOS') { $sql_creditos .= " AND ifv.nombre_estado_factura = '$estado_filtro'"; }
 if (!empty($busqueda)) { $sql_creditos .= " AND (ter.nombre1_tercero LIKE '%$busqueda%' OR ter.identificacion_tercero LIKE '%$busqueda%' OR t.nombre_tienda LIKE '%$busqueda%')"; }
 
-$sql_creditos .= " ORDER BY ifv.fecha_creacion DESC LIMIT 50";
+$sql_creditos .= " ORDER BY ifv.fecha_creacion DESC LIMIT $inicio, $registros_por_pagina";
 $resultado_creditos = mysqli_query($conectar, $sql_creditos);
+$total_registros_pagina = $resultado_creditos ? mysqli_num_rows($resultado_creditos) : 0;
 ?>
 
 <main class="page-container">
@@ -1360,6 +1420,41 @@ $resultado_creditos = mysqli_query($conectar, $sql_creditos);
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- Paginación -->
+    <?php if ($total_paginas > 1): ?>
+    <div class="pagination-container animate-in delay-2">
+        <?php 
+        $params = $_GET;
+        unset($params['pagina']);
+        $query_string = http_build_query($params);
+        $base_url = "lista_info_factura_venta_lider_movil.php?" . ($query_string ? $query_string . "&" : "");
+        ?>
+        
+        <a href="<?php echo $base_url; ?>pagina=<?php echo max(1, $pagina - 1); ?>" class="pagination-btn <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-chevron-left"></i>
+        </a>
+
+        <?php
+        $rango = 2;
+        for ($i = 1; $i <= $total_paginas; $i++):
+            if ($i == 1 || $i == $total_paginas || ($i >= $pagina - $rango && $i <= $pagina + $rango)):
+        ?>
+            <a href="<?php echo $base_url; ?>pagina=<?php echo $i; ?>" class="pagination-btn <?php echo ($i == $pagina) ? 'active' : ''; ?>">
+                <?php echo $i; ?>
+            </a>
+        <?php 
+            elseif ($i == $pagina - $rango - 1 || $i == $pagina + $rango + 1):
+                echo '<span style="color: rgba(255,255,255,0.5);">...</span>';
+            endif;
+        endfor; 
+        ?>
+
+        <a href="<?php echo $base_url; ?>pagina=<?php echo min($total_paginas, $pagina + 1); ?>" class="pagination-btn <?php echo ($pagina >= $total_paginas) ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+    </div>
+    <?php endif; ?>
 </main>
 
 <!-- Modal Ver Detalle -->

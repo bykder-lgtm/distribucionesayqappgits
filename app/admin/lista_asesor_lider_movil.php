@@ -491,12 +491,67 @@ body {
         min-width: 100%;
     }
 }
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.pagination-btn {
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: white;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.pagination-btn:hover {
+    background: rgba(139, 92, 246, 0.3);
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.pagination-btn.active {
+    background: #8b5cf6;
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.pagination-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 </style>
 </head>
 <body>
 <?php
-// Obtener parámetros de búsqueda
+// Parámetros de paginación
+$registros_por_pagina = 30;
+$pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina <= 0) $pagina = 1;
+$inicio = ($pagina - 1) * $registros_por_pagina;
+
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
+
+// Consulta para contar el total de registros
+$sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total 
+               FROM tbl15_administrador a 
+               WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
+if (!empty($busqueda)) { $sql_conteo .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+$resultado_conteo = mysqli_query($conectar, $sql_conteo);
+$fila_conteo = mysqli_fetch_assoc($resultado_conteo);
+$total_registros_global = $fila_conteo['total'];
+$total_paginas = ceil($total_registros_global / $registros_por_pagina);
 
 // Consulta de asesores asignados a este lider (cod_seguridad = '22' para asesores)
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion,
@@ -506,9 +561,9 @@ WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
 
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
-$sql .= " GROUP BY a.cod_administrador ORDER BY a.cod_administrador DESC LIMIT 50";
+$sql .= " GROUP BY a.cod_administrador ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);
-$total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
+$total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
 ?>
 
 <main class="page-container">
@@ -518,7 +573,7 @@ $total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
         <p>Gestiona tu equipo de asesores comerciales</p>
         <div class="header-stats">
             <div class="header-stat">
-                <div class="header-stat-value"><?php echo $total_registros; ?></div>
+                <div class="header-stat-value"><?php echo $total_registros_global; ?></div>
                 <div class="header-stat-label">Total Asesores</div>
             </div>
         </div>
@@ -535,7 +590,7 @@ $total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
 
     <!-- Asesores List -->
     <div class="asesores-list">
-        <?php if ($total_registros > 0): ?>
+        <?php if ($total_registros_pagina > 0): ?>
             <?php while($row = mysqli_fetch_assoc($resultado)): 
                 $iniciales = '';
                 if (!empty($row['nombres'])) { $iniciales = strtoupper(substr($row['nombres'], 0, 1)); }
@@ -616,6 +671,41 @@ $total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- Paginación -->
+    <?php if ($total_paginas > 1): ?>
+    <div class="pagination-container animate-in delay-3">
+        <?php 
+        $params = $_GET;
+        unset($params['pagina']);
+        $query_string = http_build_query($params);
+        $base_url = "lista_asesor_lider_movil.php?" . ($query_string ? $query_string . "&" : "");
+        ?>
+        
+        <a href="<?php echo $base_url; ?>pagina=<?php echo max(1, $pagina - 1); ?>" class="pagination-btn <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-chevron-left"></i>
+        </a>
+
+        <?php
+        $rango = 2;
+        for ($i = 1; $i <= $total_paginas; $i++):
+            if ($i == 1 || $i == $total_paginas || ($i >= $pagina - $rango && $i <= $pagina + $rango)):
+        ?>
+            <a href="<?php echo $base_url; ?>pagina=<?php echo $i; ?>" class="pagination-btn <?php echo ($i == $pagina) ? 'active' : ''; ?>">
+                <?php echo $i; ?>
+            </a>
+        <?php 
+            elseif ($i == $pagina - $rango - 1 || $i == $pagina + $rango + 1):
+                echo '<span style="color: rgba(255,255,255,0.5);">...</span>';
+            endif;
+        endfor; 
+        ?>
+
+        <a href="<?php echo $base_url; ?>pagina=<?php echo min($total_paginas, $pagina + 1); ?>" class="pagination-btn <?php echo ($pagina >= $total_paginas) ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+    </div>
+    <?php endif; ?>
 </main>
 
 <!-- Modal Registro Asesor -->
