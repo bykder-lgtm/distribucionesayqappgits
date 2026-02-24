@@ -673,39 +673,43 @@ $total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
     </div>
 
     <!-- Paginación -->
-    <?php if ($total_paginas > 1): ?>
     <div class="pagination-container animate-in delay-3">
-        <?php 
-        $params = $_GET;
-        unset($params['pagina']);
-        $query_string = http_build_query($params);
-        $base_url = "lista_asesor_lider_movil.php?" . ($query_string ? $query_string . "&" : "");
-        ?>
+        <div style="width: 100%; text-align: center; color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-bottom: 0.75rem; font-weight: 500; background: rgba(139, 92, 246, 0.1); padding: 0.5rem; border-radius: 10px; border: 1px solid rgba(139, 92, 246, 0.2);">
+            Mostrando <span style="color: #a78bfa; font-weight: 700;"><?php echo $total_registros_pagina; ?></span> de <span style="color: #a78bfa; font-weight: 700;"><?php echo $total_registros_global; ?></span> asesores
+        </div>
         
-        <a href="<?php echo $base_url; ?>pagina=<?php echo max(1, $pagina - 1); ?>" class="pagination-btn <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
-            <i class="fa-solid fa-chevron-left"></i>
-        </a>
-
-        <?php
-        $rango = 2;
-        for ($i = 1; $i <= $total_paginas; $i++):
-            if ($i == 1 || $i == $total_paginas || ($i >= $pagina - $rango && $i <= $pagina + $rango)):
-        ?>
-            <a href="<?php echo $base_url; ?>pagina=<?php echo $i; ?>" class="pagination-btn <?php echo ($i == $pagina) ? 'active' : ''; ?>">
-                <?php echo $i; ?>
+        <?php if ($total_paginas > 1): ?>
+            <?php 
+            $params = $_GET;
+            unset($params['pagina']);
+            $query_string = http_build_query($params);
+            $base_url = "lista_asesor_lider_movil.php?" . ($query_string ? $query_string . "&" : "");
+            ?>
+            
+            <a href="<?php echo $base_url; ?>pagina=<?php echo max(1, $pagina - 1); ?>" class="pagination-btn <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
+                <i class="fa-solid fa-chevron-left"></i>
             </a>
-        <?php 
-            elseif ($i == $pagina - $rango - 1 || $i == $pagina + $rango + 1):
-                echo '<span style="color: rgba(255,255,255,0.5);">...</span>';
-            endif;
-        endfor; 
-        ?>
 
-        <a href="<?php echo $base_url; ?>pagina=<?php echo min($total_paginas, $pagina + 1); ?>" class="pagination-btn <?php echo ($pagina >= $total_paginas) ? 'disabled' : ''; ?>">
-            <i class="fa-solid fa-chevron-right"></i>
-        </a>
+            <?php
+            $rango = 2;
+            for ($i = 1; $i <= $total_paginas; $i++):
+                if ($i == 1 || $i == $total_paginas || ($i >= $pagina - $rango && $i <= $pagina + $rango)):
+            ?>
+                <a href="<?php echo $base_url; ?>pagina=<?php echo $i; ?>" class="pagination-btn <?php echo ($i == $pagina) ? 'active' : ''; ?>">
+                    <?php echo $i; ?>
+                </a>
+            <?php 
+                elseif ($i == $pagina - $rango - 1 || $i == $pagina + $rango + 1):
+                    echo '<span style="color: rgba(255,255,255,0.5);">...</span>';
+                endif;
+            endfor; 
+            ?>
+
+            <a href="<?php echo $base_url; ?>pagina=<?php echo min($total_paginas, $pagina + 1); ?>" class="pagination-btn <?php echo ($pagina >= $total_paginas) ? 'disabled' : ''; ?>">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        <?php endif; ?>
     </div>
-    <?php endif; ?>
 </main>
 
 <!-- Modal Registro Asesor -->
