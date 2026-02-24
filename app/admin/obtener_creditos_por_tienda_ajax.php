@@ -4,7 +4,6 @@ include_once('../conexiones/conexione.php');
 include_once('../evitar_mensaje_error/error.php');
 ob_end_clean();
 header('Content-Type: application/json; charset=utf-8');
-
 $cod_tienda = isset($_POST['cod_tienda']) ? intval($_POST['cod_tienda']) : 0;
 $response = array('success' => false, 'creditos' => array());
 
@@ -22,15 +21,11 @@ if ($cod_tienda > 0) {
     if ($consulta) {
         while ($row = mysqli_fetch_assoc($consulta)) {
             $nombre_tercero = trim($row['nombre1_tercero'] . ' ' . $row['nombre2_tercero'] . ' ' . $row['apellido1_tercero'] . ' ' . $row['apellido2_tercero']);
-            $response['creditos'][] = array(
-                'cod_info_factura_venta' => $row['cod_info_factura_venta'],
-                'cod_factura' => $row['cod_factura'],
-                'total_precio_venta' => $row['total_precio_venta'], 'fecha' => $row['fecha_anyo'], 'tercero' => $nombre_tercero, 'identificacion' => $row['identificacion_tercero']);
+            $response['creditos'][] = array('cod_info_factura_venta' => $row['cod_info_factura_venta'], 'cod_factura' => $row['cod_factura'], 'total_precio_venta' => $row['total_precio_venta'], 'fecha' => $row['fecha_anyo'], 'tercero' => $nombre_tercero, 'identificacion' => $row['identificacion_tercero']);
         }
         $response['success'] = true;
     }
 }
-
 mysqli_close($conectar);
 echo json_encode($response);
 ?>
