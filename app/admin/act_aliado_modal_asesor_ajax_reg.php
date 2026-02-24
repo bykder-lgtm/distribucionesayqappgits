@@ -19,7 +19,6 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $telefono1_tercero                                                  = trim(addslashes($_POST['telefono1_tercero']));
     $correo_tercero                                                     = trim(addslashes($_POST['correo_tercero']));
     $cod_estado_activacion_usuario                                      = intval($_POST['cod_estado_activacion_usuario']);
-    
     // Campos nuevos
     $nombres_apellidos_tercero_form                                     = isset($_POST['nombres_apellidos_tercero']) ? trim(addslashes($_POST['nombres_apellidos_tercero'])) : '';
     $nombre_tipo_cliente                                                = isset($_POST['nombre_tipo_cliente']) ? trim(addslashes($_POST['nombre_tipo_cliente'])) : '';
@@ -30,6 +29,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $cod_municipio                                                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
     $direccion_tercero                                                  = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
     $barrio_tercero                                                     = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
+    $cod_gestor_operador_credito                                        = isset($_POST['cod_gestor_operador_credito']) ? intval($_POST['cod_gestor_operador_credito']) : 0;
 
     // Verificar si se debe cambiar el usuario
     $nuevo_usuario                                                      = '';
@@ -37,9 +37,9 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         $nuevo_usuario_raw                                              = trim($_POST['nuevo_usuario']);
         if ($nuevo_usuario_raw !== '') {
             $nuevo_usuario                                              = trim(addslashes($nuevo_usuario_raw));
-        // Validar que el nuevo usuario no exista
-        $check_usuario_sql = "SELECT cod_administrador FROM tbl15_administrador WHERE usuario = '$nuevo_usuario' AND cod_administrador != '$cod_administrador'";
-        $check_usuario_result = mysqli_query($conectar, $check_usuario_sql);
+            // Validar que el nuevo usuario no exista
+            $check_usuario_sql = "SELECT cod_administrador FROM tbl15_administrador WHERE usuario = '$nuevo_usuario' AND cod_administrador != '$cod_administrador'";
+            $check_usuario_result = mysqli_query($conectar, $check_usuario_sql);
             if (mysqli_num_rows($check_usuario_result) > 0) { header('Content-Type: application/json'); echo json_encode(['afectado' => 'NO', 'mensaje' => 'El nombre de usuario ya está en uso. Por favor elija otro.']); exit; } 
         }
     }
@@ -63,7 +63,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         nombres = UPPER('$nombre1_tercero'), apellido1_tercero = UPPER('$apellido1_tercero'), apellidos = UPPER('$apellido1_tercero'), nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'),
         telefono1_tercero = '$telefono1_tercero', telefono = '$telefono1_tercero', correo_tercero = '$correo_tercero', correo = '$correo_tercero', cod_estado_activacion_usuario = '$cod_estado_activacion_usuario',
         nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', nombre_razon_social = UPPER('$nombre_razon_social'),
-        cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio', direccion_tercero = '$direccion_tercero', barrio_tercero = '$barrio_tercero'";
+        cod_gestor_operador_credito = '$cod_gestor_operador_credito', cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio', direccion_tercero = '$direccion_tercero', barrio_tercero = '$barrio_tercero'";
 
         
         // Si se debe cambiar el usuario, agregarlo a la consulta

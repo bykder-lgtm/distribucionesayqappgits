@@ -665,6 +665,144 @@ select[id^="edit_municipio_tienda_"] option {
     padding: 8px !important;
 }
 
+/* ========== MODALES REGISTRO VENDEDOR/PRODUCTO ========== */
+.reg-modal-overlay-aliado {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 5500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.reg-modal-overlay-aliado.show { display: flex; }
+
+.reg-modal-container-aliado {
+    background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: regModalFadeIn 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+@keyframes regModalFadeIn {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.reg-modal-header-aliado {
+    padding: 1.25rem 1.5rem;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.reg-modal-header-aliado.vendedor-theme {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+.reg-modal-header-aliado.producto-theme {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+.reg-modal-header-aliado h2 {
+    color: white; font-size: 1.15rem; font-weight: 700;
+    display: flex; align-items: center; gap: 0.5rem; margin: 0;
+}
+.reg-modal-header-aliado .modal-close-reg {
+    background: rgba(255,255,255,0.2); color: white;
+    border: none; width: 36px; height: 36px; border-radius: 10px;
+    cursor: pointer; font-size: 0.95rem;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.reg-modal-body-aliado { padding: 1.5rem; }
+
+.reg-modal-body-aliado .reg-form-input,
+.reg-modal-body-aliado .reg-form-select {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+.reg-modal-body-aliado .reg-form-input:focus { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2); }
+.reg-modal-body-aliado.producto-body .reg-form-input:focus,
+.reg-modal-body-aliado.producto-body .reg-form-select:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+.reg-modal-body-aliado .reg-form-input::placeholder { color: rgba(255,255,255,0.35); }
+
+.reg-form-select {
+    appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f97316' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    background-color: #1a1f2e;
+}
+.reg-form-select option { background-color: #1a1f2e; color: white; }
+
+.reg-form-label { display: block; color: rgba(255,255,255,0.75); font-size: 0.82rem; font-weight: 600; margin-bottom: 0.4rem; }
+.reg-form-group { margin-bottom: 0.9rem; }
+.reg-form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+
+.reg-submit-btn-aliado {
+    width: 100%; color: white; border: none; padding: 0.85rem;
+    border-radius: 12px; font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; margin-top: 1rem; transition: all 0.3s ease;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}
+.reg-submit-btn-aliado.vendedor-theme { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4); }
+.reg-submit-btn-aliado.vendedor-theme:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5); }
+.reg-submit-btn-aliado.producto-theme { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); }
+.reg-submit-btn-aliado.producto-theme:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5); }
+
+.reg-tienda-badge-aliado {
+    background: rgba(255,255,255,0.1);
+    padding: 0.5rem 1rem; border-radius: 12px;
+    margin-bottom: 1.25rem; display: flex;
+    align-items: center; gap: 0.5rem;
+    font-size: 0.82rem; color: rgba(255,255,255,0.8);
+}
+.reg-tienda-badge-aliado i { color: #10b981; }
+.reg-tienda-badge-aliado strong { color: white; }
+
+.reg-items-list-aliado { margin-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.75rem; }
+.reg-items-list-title { font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.reg-items-list-title .reg-badge-count { background: rgba(255,255,255,0.15); padding: 0.1rem 0.45rem; border-radius: 8px; font-size: 0.72rem; }
+
+.reg-item-card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 0.65rem 0.85rem; margin-bottom: 0.4rem;
+    display: flex; align-items: center; gap: 0.65rem;
+    animation: regFadeInUp 0.3s ease;
+}
+@keyframes regFadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.reg-item-card.existente { opacity: 0.75; }
+.reg-item-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.reg-item-icon.vendedor-new { background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(234, 88, 12, 0.3)); color: #fb923c; }
+.reg-item-icon.vendedor-exist { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); color: #10b981; }
+.reg-item-icon.producto-new { background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.3)); color: #60a5fa; }
+.reg-item-icon.producto-exist { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); color: #10b981; }
+.reg-item-info { flex: 1; min-width: 0; }
+.reg-item-info h5 { color: white; font-size: 0.82rem; font-weight: 600; margin: 0 0 0.1rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.reg-item-info span { color: rgba(255,255,255,0.4); font-size: 0.72rem; }
+.reg-item-check { color: #22c55e; font-size: 0.9rem; }
+
+.reg-modal-footer-aliado { padding: 0 1.5rem 1.25rem; display: flex; gap: 0.6rem; }
+.reg-footer-btn-aliado { flex: 1; padding: 0.7rem; border-radius: 10px; border: none; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.35rem; transition: all 0.3s ease; font-family: 'Inter', sans-serif; }
+.reg-footer-btn-aliado.back-btn { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.1); }
+.reg-footer-btn-aliado.back-btn:hover { background: rgba(255,255,255,0.12); color: white; }
+.reg-footer-btn-aliado.finish-btn { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+.reg-footer-btn-aliado.finish-btn:hover { background: rgba(34, 197, 94, 0.25); }
 </style>
 </head>
 <body>
@@ -737,6 +875,9 @@ $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
+// Consulta de gestores operadores de crédito
+$sql_gestores = "SELECT cod_gestor_operador_credito, nombre_gestor_operador_credito FROM tbl15_gestor_operador_credito WHERE cod_estado = '1' ORDER BY nombre_gestor_operador_credito ASC";
+$res_gestores = mysqli_query($conectar, $sql_gestores);
 
 ?>
 
@@ -906,6 +1047,19 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         <label class="form-label">Razón Social *</label>
                         <input type="text" class="form-input" id="nombre_razon_social" name="nombre_razon_social">
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gestor Operador de Crédito *</label>
+                    <select class="form-select" id="cod_gestor_operador_credito" name="cod_gestor_operador_credito" required>
+                        <option value="">Seleccione...</option>
+                        <?php 
+                        mysqli_data_seek($res_gestores, 0);
+                        while ($gestor = mysqli_fetch_assoc($res_gestores)): 
+                        ?>
+                        <option value="<?php echo $gestor['cod_gestor_operador_credito']; ?>"><?php echo $gestor['nombre_gestor_operador_credito']; ?></option>
+                        <?php endwhile; ?>
+                    </select>
                 </div>
 
 
@@ -1187,6 +1341,19 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="form-group" id="edit_container_nombre_razon_social" style="display:none;">
                     <label class="form-label">Razón Social *</label>
                     <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gestor Operador de Crédito *</label>
+                    <select class="form-select" id="edit_cod_gestor_operador_credito" name="cod_gestor_operador_credito" required>
+                        <option value="">Seleccione...</option>
+                        <?php 
+                        mysqli_data_seek($res_gestores, 0);
+                        while ($gestor = mysqli_fetch_assoc($res_gestores)): 
+                        ?>
+                        <option value="<?php echo $gestor['cod_gestor_operador_credito']; ?>"><?php echo $gestor['nombre_gestor_operador_credito']; ?></option>
+                        <?php endwhile; ?>
+                    </select>
                 </div>
 
                 <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
@@ -1856,32 +2023,225 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <h3 style="color: white; margin-bottom: 0.5rem;" id="confirm_nombre_display"></h3>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">El aliado ha sido registrado exitosamente.</p>
             </div>
+
+            <!-- Sección de Tienda (Solo si se creó tienda) -->
+            <div id="section_confirm_tienda" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fa-solid fa-store" style="font-size: 1.25rem; color: #10b981;"></i>
+                    </div>
+                    <div>
+                        <h4 style="color: white; margin: 0; font-size: 0.95rem;">Tienda también registrada</h4>
+                        <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Se ha creado el establecimiento para el aliado.</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button id="btn_registrar_vendedores_tienda_rapida" style="width: 100%; background: #10b981; color: white; border: none; padding: 0.75rem; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-users-gear"></i> Registrar Vendedores
+                    </button>
+                    <button id="btn_registrar_productos_tienda_rapida" style="width: 100%; background: #10b981; color: white; border: none; padding: 0.75rem; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-users-gear"></i> Registrar Productos
+                    </button>
+                    <input type="hidden" id="confirm_cod_tienda_actual" value="">
+                </div>
+            </div>
             
             <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
                 <h4 style="color: #8b5cf6; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-tasks"></i> ¿Qué deseas hacer ahora?
+                    <i class="fa-solid fa-tasks"></i> Acciones del Aliado
                 </h4>
-                <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Selecciona una de las siguientes opciones:</p>
-            </div>
-            
-            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
-                <button onclick="registrarOtroAliado()" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
-                    <i class="fa-solid fa-user-plus"></i>
-                    Registrar Otro Aliado
-                </button>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button onclick="registrarOtroAliado()" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                        <i class="fa-solid fa-user-plus"></i> Registrar Otro Aliado
+                    </button>
 
-                <button onclick="abrirDocumentacionDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
-                    <i class="fa-solid fa-file-contract"></i>
-                    Compartir Enlace de Documentación
-                </button>
-                
-                <button onclick="abrirRegistroTiendaDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
-                    <i class="fa-solid fa-store"></i>
-                    Registrar Nueva Tienda
-                </button>
+                    <button onclick="abrirDocumentacionDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                        <i class="fa-solid fa-file-contract"></i> Compartir Enlace de Documentación
+                    </button>
+                    
+                    <button onclick="abrirRegistroTiendaDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                        <i class="fa-solid fa-store"></i> Registrar Nueva Tienda
+                    </button>
+                </div>
             </div>
             
             <button onclick="cerrarModalConfirmacionRegistro()" style="width: 100%; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 12px; cursor: pointer; font-weight: 600;">
+                <i class="fa-solid fa-check"></i> Finalizar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registro de Vendedores (desde Confirmación Aliado) -->
+<div class="reg-modal-overlay-aliado" id="modalRegVendedorAliado">
+    <div class="reg-modal-container-aliado">
+        <div class="reg-modal-header-aliado vendedor-theme">
+            <h2><i class="fa-solid fa-user-plus"></i> Registrar Vendedor</h2>
+            <button class="modal-close-reg" onclick="cerrarModalRegVendedorAliado()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        
+        <div class="reg-modal-body-aliado">
+            <div class="reg-tienda-badge-aliado">
+                <i class="fa-solid fa-store"></i>
+                Tienda: <strong id="regVendedorNombreTienda"></strong>
+            </div>
+            
+            <form id="formRegVendedorAliado">
+                <input type="hidden" id="regVendedor_cod_tienda" name="cod_tienda" value="">
+                
+                <div class="reg-form-group">
+                    <label class="reg-form-label">Identificación (Cédula) *</label>
+                    <input type="text" class="reg-form-input" name="identificacion_tercero" id="regVendedor_identificacion" placeholder="Ej: 1234567890" required>
+                </div>
+                
+                <div class="reg-form-row">
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Nombres *</label>
+                        <input type="text" class="reg-form-input" name="nombre1_tercero" id="regVendedor_nombre" placeholder="Ej: Juan Carlos" required>
+                    </div>
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Apellidos *</label>
+                        <input type="text" class="reg-form-input" name="apellido1_tercero" id="regVendedor_apellido" placeholder="Ej: Pérez López" required>
+                    </div>
+                </div>
+                
+                <div class="reg-form-row">
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Teléfono *</label>
+                        <input type="tel" class="reg-form-input" name="telefono1_tercero" id="regVendedor_telefono" placeholder="Ej: 3001234567" required>
+                    </div>
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Correo *</label>
+                        <input type="email" class="reg-form-input" name="correo_tercero" id="regVendedor_correo" placeholder="correo@email.com" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="reg-submit-btn-aliado vendedor-theme">
+                    <i class="fa-solid fa-user-plus"></i> Registrar Vendedor
+                </button>
+            </form>
+            
+            <!-- Lista de vendedores registrados -->
+            <div class="reg-items-list-aliado" id="listaRegVendedoresAliado" style="display: none;">
+                <div class="reg-items-list-title">
+                    <i class="fa-solid fa-users"></i> Vendedores Registrados
+                    <span class="reg-badge-count" id="contadorRegVendedoresAliado">0</span>
+                </div>
+                <div id="regVendedoresListAliado"></div>
+            </div>
+        </div>
+        
+        <div class="reg-modal-footer-aliado">
+            <button class="reg-footer-btn-aliado back-btn" onclick="volverAConfirmacionDesdeVendedor()">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </button>
+            <button class="reg-footer-btn-aliado finish-btn" onclick="finalizarRegistroDesdeModal()">
+                <i class="fa-solid fa-check"></i> Finalizar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registro de Productos (desde Confirmación Aliado) -->
+<div class="reg-modal-overlay-aliado" id="modalRegProductoAliado">
+    <div class="reg-modal-container-aliado">
+        <div class="reg-modal-header-aliado producto-theme">
+            <h2><i class="fa-solid fa-box-open"></i> Registrar Producto</h2>
+            <button class="modal-close-reg" onclick="cerrarModalRegProductoAliado()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        
+        <div class="reg-modal-body-aliado producto-body">
+            <div class="reg-tienda-badge-aliado">
+                <i class="fa-solid fa-store"></i>
+                Tienda: <strong id="regProductoNombreTienda"></strong>
+            </div>
+            
+            <form id="formRegProductoAliado" enctype="multipart/form-data">
+                <input type="hidden" id="regProducto_cod_tienda" name="cod_tienda" value="">
+                <input type="hidden" name="cod_administrador" value="<?php echo $cod_administrador; ?>">
+                <input type="hidden" name="cod_estado" value="1">
+                
+                <div class="reg-form-row">
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Código de Barras *</label>
+                        <input type="text" class="reg-form-input" name="cod_producto_barra" id="regProducto_codigo" placeholder="Ej: 7701234567890" required>
+                    </div>
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Categoría</label>
+                        <select class="reg-form-select" name="cod_categoria" id="regProducto_categoria">
+                            <option value="0">Sin categoría</option>
+                            <?php
+                            $sql_cat_aliado = "SELECT cod_categoria, nombre_categoria FROM tbl15_categoria WHERE cod_estado = '1' ORDER BY nombre_categoria ASC";
+                            $res_cat_aliado = mysqli_query($conectar, $sql_cat_aliado);
+                            if ($res_cat_aliado) {
+                                while ($cat_a = mysqli_fetch_assoc($res_cat_aliado)) {
+                                    echo '<option value="'.$cat_a['cod_categoria'].'">'.ucwords(strtolower($cat_a['nombre_categoria'])).'</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="reg-form-group">
+                    <label class="reg-form-label">Nombre del Producto *</label>
+                    <input type="text" class="reg-form-input" name="nombre_producto" id="regProducto_nombre" placeholder="Ej: Arroz Diana x 500g" required>
+                </div>
+                
+                <div class="reg-form-row">
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Precio Compra ($)</label>
+                        <input type="text" class="reg-form-input" inputmode="numeric" id="regProducto_precio_compra" placeholder="$ 0" value="0" oninput="formatearPrecioAliado(this)">
+                        <input type="hidden" name="precio_compra_producto" id="regProducto_precio_compra_hidden" value="0">
+                    </div>
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Precio Venta ($) *</label>
+                        <input type="text" class="reg-form-input" inputmode="numeric" id="regProducto_precio_venta" placeholder="$ 0" oninput="formatearPrecioAliado(this)">
+                        <input type="hidden" name="precio_venta_producto" id="regProducto_precio_venta_hidden" value="0">
+                    </div>
+                </div>
+                
+                <div class="reg-form-row">
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">IVA (%)</label>
+                        <select class="reg-form-select" name="iva_ptj" id="regProducto_iva">
+                            <option value="0">0%</option>
+                            <option value="5">5%</option>
+                            <option value="19">19%</option>
+                        </select>
+                    </div>
+                    <div class="reg-form-group">
+                        <label class="reg-form-label">Imagen</label>
+                        <input type="file" name="imagen_producto" id="regProducto_imagen" accept="image/*" style="width:100%; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:0.6rem; color:white; font-size:0.8rem;">
+                    </div>
+                </div>
+                
+                <div class="reg-form-group">
+                    <label class="reg-form-label">Descripción</label>
+                    <textarea class="reg-form-input" name="descripcion_producto" id="regProducto_descripcion" rows="2" placeholder="Descripción del producto (opcional)" style="resize: vertical; min-height: 50px;"></textarea>
+                </div>
+                
+                <button type="submit" class="reg-submit-btn-aliado producto-theme">
+                    <i class="fa-solid fa-box-open"></i> Registrar Producto
+                </button>
+            </form>
+            
+            <!-- Lista de productos registrados -->
+            <div class="reg-items-list-aliado" id="listaRegProductosAliado" style="display: none;">
+                <div class="reg-items-list-title">
+                    <i class="fa-solid fa-boxes-stacked"></i> Productos Registrados
+                    <span class="reg-badge-count" id="contadorRegProductosAliado">0</span>
+                </div>
+                <div id="regProductosListAliado"></div>
+            </div>
+        </div>
+        
+        <div class="reg-modal-footer-aliado">
+            <button class="reg-footer-btn-aliado back-btn" onclick="volverAConfirmacionDesdeProducto()">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </button>
+            <button class="reg-footer-btn-aliado finish-btn" onclick="finalizarRegistroDesdeModal()">
                 <i class="fa-solid fa-check"></i> Finalizar
             </button>
         </div>
@@ -2399,6 +2759,10 @@ function abrirModalEditar(data) {
     document.getElementById('edit_correo').value = data.correo || '';
     document.getElementById('edit_direccion_tercero').value = data.direccion_tercero || '';
     document.getElementById('edit_barrio_tercero').value = data.barrio_tercero || '';
+    
+    // Cargar Gestor Operador de Crédito
+    document.getElementById('edit_cod_gestor_operador_credito').value = data.cod_gestor_operador_credito || '';
+
     // Cargar departamentos y preseleccionar departamento/municipio
     cargarDepartamentosEdicion(data.cod_departamento || '', data.cod_municipio || '');
     document.getElementById('edit_cod_asesor').value = data.cod_asesor || '';
@@ -2454,10 +2818,7 @@ function abrirModalEditar(data) {
     
     // Cargar entidades crediticias asignadas al aliado
     $.ajax({
-        url: '../admin/obtener_entidades_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_administrador: data.cod_administrador },
-        dataType: 'json',
+        url: '../admin/obtener_entidades_aliado_ajax.php', type: 'POST', data: { cod_administrador: data.cod_administrador }, dataType: 'json',
         success: function(response) {
             //console.log('Respuesta obtener_entidades_aliado_ajax:', response);
             if (response.success && response.entidades && response.entidades.length > 0) {
@@ -2533,13 +2894,10 @@ function abrirModalEditar(data) {
             $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(239, 68, 68, 0.8);"><i class="fa-solid fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Error al cargar entidades. Intente nuevamente.</p></div>');
         }
     });
-    
     // Cargar bancos del aliado
     cargarBancosAliado(data.cod_administrador);
-    
     // Cargar tiendas del aliado
     cargarTiendasAliado(data.cod_administrador);
-    
     document.getElementById('modalEditar').classList.add('show');
 }
 
@@ -2548,10 +2906,7 @@ function cargarBancosAliado(codAdministrador) {
     $('#contenedor_bancos_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando bancos...</p></div>');
     
     $.ajax({
-        url: '../admin/obtener_bancos_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_administrador: codAdministrador },
-        dataType: 'json',
+        url: '../admin/obtener_bancos_aliado_ajax.php', type: 'POST', data: { cod_administrador: codAdministrador }, dataType: 'json',
         success: function(response) {
             if (response.success && response.bancos && response.bancos.length > 0) {
                 var html = '';
@@ -2661,25 +3016,11 @@ function guardarBancoEditado(codBancoCuenta) {
     var certificadoFile = document.getElementById('edit_certificado_' + codBancoCuenta).files[0];
     
     if (numeroCuenta === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El número de cuenta no puede estar vacío', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El número de cuenta no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
-    Swal.fire({
-        title: 'Guardando...',
-        didOpen: () => { Swal.showLoading() },
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     var formData = new FormData();
     formData.append('cod_banco_cuenta', codBancoCuenta);
@@ -2695,47 +3036,17 @@ function guardarBancoEditado(codBancoCuenta) {
         formData.append('certificado_banco', certificadoFile);
     }
     
-    $.ajax({
-        url: '../admin/actualizar_banco_aliado_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        success: function(response) {
+    $.ajax({ url: '../admin/actualizar_banco_aliado_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json', success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({ 
-                    icon: 'success', 
-                    title: '¡Actualizado!', 
-                    text: 'Cuenta bancaria actualizada correctamente', 
-                    background: '#1a1f2e', 
-                    color: 'white', 
-                    timer: 2000,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualizado!', text: 'Cuenta bancaria actualizada correctamente', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
             } else {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Error', 
-                    text: response.mensaje || 'No se pudo actualizar la cuenta', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo actualizar la cuenta', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
             Swal.close();
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'Error de conexión. Intenta nuevamente.', 
-                background: '#1a1f2e', 
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -2753,9 +3064,7 @@ function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
         cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
         background: '#1a1f2e',
         color: 'white',
-        customClass: {
-            container: 'swal-high-zindex'
-        }
+        customClass: { container: 'swal-high-zindex' }
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
@@ -2765,30 +3074,11 @@ function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        Swal.fire({ 
-                            icon: 'success', 
-                            title: '¡Eliminado!', 
-                            text: 'Cuenta bancaria eliminada correctamente', 
-                            background: '#1a1f2e', 
-                            color: 'white', 
-                            timer: 2000,
-                            customClass: {
-                                container: 'swal-high-zindex'
-                            }
-                        });
+                        Swal.fire({ icon: 'success', title: '¡Eliminado!', text: 'Cuenta bancaria eliminada correctamente', background: '#1a1f2e', color: 'white', timer: 2000, customClass: { container: 'swal-high-zindex' } });
                         var codAdmin = $('#edit_cod_administrador').val();
                         cargarBancosAliado(codAdmin);
                     } else {
-                        Swal.fire({ 
-                            icon: 'error', 
-                            title: 'Error', 
-                            text: response.mensaje || 'No se pudo eliminar la cuenta', 
-                            background: '#1a1f2e', 
-                            color: 'white',
-                            customClass: {
-                                container: 'swal-high-zindex'
-                            }
-                        });
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo eliminar la cuenta', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     }
                 }
             });
@@ -3784,6 +4074,15 @@ function irATiendaRegistrada() {
     }
 }
 
+function irARegistroVendedoresDesdeConfirmacion() {
+    var codTienda = document.getElementById('confirm_cod_tienda_actual').value;
+    if (codTienda) {
+        window.location.href = 'lista_tienda_asesor_movil.php?cod_tienda=' + codTienda + '&accion=registro_vendedores';
+    } else {
+        window.location.href = 'lista_tienda_asesor_movil.php';
+    }
+}
+
 function cerrarModalDocumentacionAliado() {
     document.getElementById('modalDocumentacionAliado').classList.remove('show');
     // Cerrar también el modal de confirmación y recargar
@@ -4452,21 +4751,50 @@ $('#formRegistro').on('submit', function(e) {
             Swal.close();
             console.log('Respuesta del servidor:', resp); // Debug
             
-            if(resp.afectado === 'SI') {
+            if(resp.afectado === 'SI' || resp.afectado === 'EXISTE') {
                 cerrarModal();
                 // Guardar datos en el modal de confirmación
-                document.getElementById('confirm_cod_aliado').value = resp.cod_administrador;
-                document.getElementById('confirm_cod_aliado_cryp').value = resp.cod_aliado_cryp;
-                document.getElementById('confirm_nombre_aliado').value = resp.nombre_completo;
-                document.getElementById('confirm_telefono_aliado').value = resp.telefono;
-                document.getElementById('confirm_nombre_display').textContent = resp.nombre_completo;
+                document.getElementById('confirm_cod_aliado').value = resp.cod_administrador || '';
+                document.getElementById('confirm_cod_aliado_cryp').value = resp.cod_aliado_cryp || '';
+                document.getElementById('confirm_nombre_aliado').value = resp.nombre_completo || '';
+                document.getElementById('confirm_telefono_aliado').value = resp.telefono || '';
+                document.getElementById('confirm_nombre_display').textContent = resp.nombre_completo || '';
                 
+                // Cambiar título si ya existe
+                if(resp.afectado === 'EXISTE') {
+                    $('#modalConfirmacionRegistro h2').html('<i class="fa-solid fa-circle-exclamation"></i> Aliado ya registrado');
+                    $('#modalConfirmacionRegistro p').first().text('Este aliado ya se encontraba en el sistema.');
+                    $('#modalConfirmacionRegistro .modal-header').css('background', 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)');
+                } else {
+                    $('#modalConfirmacionRegistro h2').html('<i class="fa-solid fa-circle-check"></i> ¡Aliado Registrado!');
+                    $('#modalConfirmacionRegistro p').first().text('El aliado ha sido registrado exitosamente.');
+                    $('#modalConfirmacionRegistro .modal-header').css('background', 'linear-gradient(135deg, #10b981 0%, #059669 100%)');
+                }
+
+                // Manejar sección de tienda (nueva o existente)
+                if(resp.tienda_creada || resp.tienda_ya_existia) {
+                    document.getElementById('section_confirm_tienda').style.display = 'block';
+                    document.getElementById('confirm_cod_tienda_actual').value = resp.cod_tienda;
+                    
+                    if(resp.tienda_ya_existia) {
+                        $('#section_confirm_tienda h4').text('Tienda ya registrada');
+                        $('#section_confirm_tienda p').text('Este aliado ya tiene un establecimiento asociado.');
+                        $('#section_confirm_tienda').css('background', 'rgba(59, 130, 246, 0.1)').css('border-color', 'rgba(59, 130, 246, 0.3)');
+                        $('#section_confirm_tienda i.fa-store').css('color', '#3b82f6');
+                        $('#section_confirm_tienda button').css('background', '#3b82f6');
+                    } else {
+                        $('#section_confirm_tienda h4').text('Tienda también registrada');
+                        $('#section_confirm_tienda p').text('Se ha creado el establecimiento para el aliado.');
+                        $('#section_confirm_tienda').css('background', 'rgba(16, 185, 129, 0.1)').css('border-color', 'rgba(16, 185, 129, 0.3)');
+                        $('#section_confirm_tienda i.fa-store').css('color', '#10b981');
+                        $('#section_confirm_tienda button').css('background', '#10b981');
+                    }
+                } else {
+                    document.getElementById('section_confirm_tienda').style.display = 'none';
+                }
+
                 // Abrir modal de confirmación
                 document.getElementById('modalConfirmacionRegistro').classList.add('show');
-            } else if(resp.afectado === 'EXISTE') {
-                Swal.fire({ 
-                    icon: 'warning', title: 'Aliado Existente', text: resp.mensaje || 'Este aliado ya está registrado en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-                });
             } else {
                 var errorMsg = resp.mensaje || 'Error al registrar el aliado';
                 if(resp.error) {
@@ -5049,6 +5377,309 @@ function marcarTodasLeidasMovil() {
         }
     });
 }
+
+// ========== MODALES DE VENDEDORES Y PRODUCTOS (desde confirmación aliado) ==========
+window._regVendedoresAliado = [];
+window._regProductosAliado = [];
+
+// Botón "Registrar Vendedores" desde confirmación aliado
+document.getElementById('btn_registrar_vendedores_tienda_rapida').addEventListener('click', function() {
+    var codTienda = document.getElementById('confirm_cod_tienda_actual').value;
+    if (!codTienda) {
+        Swal.fire({ icon: 'warning', title: 'Sin tienda', text: 'No se encontró una tienda asociada.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        return;
+    }
+    // Ocultar confirmación y abrir modal vendedores
+    document.getElementById('modalConfirmacionRegistro').classList.remove('show');
+    abrirModalRegVendedorAliado(codTienda);
+});
+
+// Botón "Registrar Productos" desde confirmación aliado
+document.getElementById('btn_registrar_productos_tienda_rapida').addEventListener('click', function() {
+    var codTienda = document.getElementById('confirm_cod_tienda_actual').value;
+    if (!codTienda) {
+        Swal.fire({ icon: 'warning', title: 'Sin tienda', text: 'No se encontró una tienda asociada.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        return;
+    }
+    // Ocultar confirmación y abrir modal productos
+    document.getElementById('modalConfirmacionRegistro').classList.remove('show');
+    abrirModalRegProductoAliado(codTienda);
+});
+
+// Obtener nombre tienda por AJAX
+function obtenerNombreTiendaYAbrir(codTienda, callback) {
+    // Intentar obtener nombre de la tienda
+    $.ajax({
+        url: 'obtener_vendedores_por_tienda_ajax.php',
+        type: 'POST',
+        data: { cod_tienda: codTienda },
+        dataType: 'json',
+        success: function(r) { callback(codTienda); },
+        error: function() { callback(codTienda); }
+    });
+}
+
+// ===== MODAL VENDEDORES =====
+function abrirModalRegVendedorAliado(codTienda) {
+    document.getElementById('regVendedor_cod_tienda').value = codTienda;
+    document.getElementById('regVendedorNombreTienda').textContent = 'Tienda #' + codTienda;
+    document.getElementById('formRegVendedorAliado').reset();
+    document.getElementById('regVendedor_cod_tienda').value = codTienda;
+    window._regVendedoresAliado = [];
+    cargarVendedoresTiendaAliado(codTienda);
+    document.getElementById('modalRegVendedorAliado').classList.add('show');
+}
+
+function cerrarModalRegVendedorAliado() {
+    document.getElementById('modalRegVendedorAliado').classList.remove('show');
+}
+
+function cargarVendedoresTiendaAliado(codTienda) {
+    var container = document.getElementById('listaRegVendedoresAliado');
+    var list = document.getElementById('regVendedoresListAliado');
+    var counter = document.getElementById('contadorRegVendedoresAliado');
+    list.innerHTML = '<div style="text-align:center; padding:0.75rem; opacity:0.5; font-size:0.8rem;"><i class="fa fa-spinner fa-spin"></i> Cargando...</div>';
+    container.style.display = 'block';
+    counter.textContent = '0';
+    window._regVendedoresAliado = [];
+
+    $.ajax({
+        url: 'obtener_vendedores_por_tienda_ajax.php',
+        type: 'POST',
+        data: { cod_tienda: codTienda },
+        dataType: 'json',
+        success: function(response) {
+            list.innerHTML = '';
+            if (response.success && response.vendedores && response.vendedores.length > 0) {
+                response.vendedores.forEach(function(v) {
+                    agregarVendedorAListaAliado(v.nombres_apellidos_tercero || v.nombres, v.identificacion_tercero, '', true);
+                });
+            } else {
+                list.innerHTML = '<div style="text-align:center; padding:0.75rem; opacity:0.4; font-size:0.78rem;">No hay vendedores registrados aún</div>';
+            }
+        },
+        error: function() {
+            list.innerHTML = '<div style="text-align:center; padding:0.75rem; color:#ef4444; font-size:0.78rem;">Error al cargar vendedores</div>';
+        }
+    });
+}
+
+function agregarVendedorAListaAliado(nombre, identificacion, usuario, esExistente) {
+    window._regVendedoresAliado.push({ nombre: nombre, identificacion: identificacion });
+    var container = document.getElementById('listaRegVendedoresAliado');
+    var list = document.getElementById('regVendedoresListAliado');
+    var counter = document.getElementById('contadorRegVendedoresAliado');
+    container.style.display = 'block';
+    counter.textContent = window._regVendedoresAliado.length;
+
+    // Limpiar "no hay vendedores" si existe
+    var emptyMsg = list.querySelector('div[style*="opacity"]');
+    if (emptyMsg && !emptyMsg.classList.contains('reg-item-card')) { emptyMsg.remove(); }
+
+    var iconCls = esExistente ? 'fa-user-check' : 'fa-user-plus';
+    var bgCls = esExistente ? 'vendedor-exist' : 'vendedor-new';
+    var checkHtml = esExistente ? '' : '<i class="fa-solid fa-circle-check reg-item-check"></i>';
+
+    var html = '<div class="reg-item-card' + (esExistente ? ' existente' : '') + '">' +
+        '<div class="reg-item-icon ' + bgCls + '"><i class="fa-solid ' + iconCls + '"></i></div>' +
+        '<div class="reg-item-info">' +
+            '<h5>' + nombre + '</h5>' +
+            '<span>CC: ' + identificacion + (usuario ? ' | Usuario: ' + usuario : '') + '</span>' +
+        '</div>' +
+        checkHtml +
+    '</div>';
+    list.insertAdjacentHTML('beforeend', html);
+}
+
+// Submit vendedor
+document.getElementById('formRegVendedorAliado').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    Swal.fire({ title: 'Registrando vendedor...', allowOutsideClick: false, didOpen: function() { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+
+    $.ajax({
+        url: 'agregar_vendedor_tienda_asesor_ajax.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                var nombreV = document.getElementById('regVendedor_nombre').value + ' ' + document.getElementById('regVendedor_apellido').value;
+                var idV = document.getElementById('regVendedor_identificacion').value;
+                agregarVendedorAListaAliado(nombreV, idV, response.usuario || '', false);
+
+                var codTienda = document.getElementById('regVendedor_cod_tienda').value;
+                document.getElementById('formRegVendedorAliado').reset();
+                document.getElementById('regVendedor_cod_tienda').value = codTienda;
+
+                Swal.fire({ icon: 'success', title: '¡Vendedor Registrado!', html: response.message || 'El vendedor fue creado correctamente.', confirmButtonColor: '#f97316', background: '#1a1f2e', color: 'white', timer: 3000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el vendedor', confirmButtonColor: '#f97316', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            }
+        },
+        error: function() {
+            Swal.close();
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor.', confirmButtonColor: '#f97316', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        }
+    });
+});
+
+// ===== MODAL PRODUCTOS =====
+function abrirModalRegProductoAliado(codTienda) {
+    document.getElementById('regProducto_cod_tienda').value = codTienda;
+    document.getElementById('regProductoNombreTienda').textContent = 'Tienda #' + codTienda;
+    document.getElementById('formRegProductoAliado').reset();
+    document.getElementById('regProducto_cod_tienda').value = codTienda;
+    window._regProductosAliado = [];
+    cargarProductosTiendaAliado(codTienda);
+    document.getElementById('modalRegProductoAliado').classList.add('show');
+}
+
+function cerrarModalRegProductoAliado() {
+    document.getElementById('modalRegProductoAliado').classList.remove('show');
+}
+
+function cargarProductosTiendaAliado(codTienda) {
+    var container = document.getElementById('listaRegProductosAliado');
+    var list = document.getElementById('regProductosListAliado');
+    var counter = document.getElementById('contadorRegProductosAliado');
+    list.innerHTML = '<div style="text-align:center; padding:0.75rem; opacity:0.5; font-size:0.8rem;"><i class="fa fa-spinner fa-spin"></i> Cargando...</div>';
+    container.style.display = 'block';
+    counter.textContent = '0';
+    window._regProductosAliado = [];
+
+    $.ajax({
+        url: 'obtener_productos_por_tienda_ajax.php',
+        type: 'POST',
+        data: { cod_tienda: codTienda },
+        dataType: 'json',
+        success: function(response) {
+            list.innerHTML = '';
+            if (response.success && response.productos && response.productos.length > 0) {
+                response.productos.forEach(function(p) {
+                    agregarProductoAListaAliado(p.nombre, p.codigo, p.precio, true);
+                });
+            } else {
+                list.innerHTML = '<div style="text-align:center; padding:0.75rem; opacity:0.4; font-size:0.78rem;">No hay productos registrados aún</div>';
+            }
+        },
+        error: function() {
+            list.innerHTML = '<div style="text-align:center; padding:0.75rem; color:#ef4444; font-size:0.78rem;">Error al cargar productos</div>';
+        }
+    });
+}
+
+function agregarProductoAListaAliado(nombre, codigo, precioVenta, esExistente) {
+    window._regProductosAliado.push({ nombre: nombre, codigo: codigo });
+    var container = document.getElementById('listaRegProductosAliado');
+    var list = document.getElementById('regProductosListAliado');
+    var counter = document.getElementById('contadorRegProductosAliado');
+    container.style.display = 'block';
+    counter.textContent = window._regProductosAliado.length;
+
+    // Limpiar empty message
+    var emptyMsg = list.querySelector('div[style*="opacity"]');
+    if (emptyMsg && !emptyMsg.classList.contains('reg-item-card')) { emptyMsg.remove(); }
+
+    var precioFormateado = Number(precioVenta).toLocaleString('es-CO');
+    var iconCls = esExistente ? 'fa-boxes-stacked' : 'fa-box-open';
+    var bgCls = esExistente ? 'producto-exist' : 'producto-new';
+    var checkHtml = esExistente ? '' : '<i class="fa-solid fa-circle-check reg-item-check"></i>';
+
+    var html = '<div class="reg-item-card' + (esExistente ? ' existente' : '') + '">' +
+        '<div class="reg-item-icon ' + bgCls + '"><i class="fa-solid ' + iconCls + '"></i></div>' +
+        '<div class="reg-item-info">' +
+            '<h5>' + nombre + '</h5>' +
+            '<span>Código: ' + codigo + ' | $' + precioFormateado + '</span>' +
+        '</div>' +
+        checkHtml +
+    '</div>';
+    list.insertAdjacentHTML('beforeend', html);
+}
+
+// Formatear precios
+function formatearPrecioAliado(input) {
+    var valor = input.value.replace(/[^\d]/g, '');
+    if (valor === '') { input.value = ''; return; }
+    var numero = parseInt(valor, 10);
+    input.value = '$ ' + numero.toLocaleString('es-CO');
+}
+
+// Submit producto
+document.getElementById('formRegProductoAliado').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // Copiar precios a hidden fields
+    var precioCompra = document.getElementById('regProducto_precio_compra');
+    var precioVenta = document.getElementById('regProducto_precio_venta');
+    if (precioCompra) document.getElementById('regProducto_precio_compra_hidden').value = precioCompra.value.replace(/[^\d]/g, '') || '0';
+    if (precioVenta) document.getElementById('regProducto_precio_venta_hidden').value = precioVenta.value.replace(/[^\d]/g, '') || '0';
+
+    var precioVentaVal = parseInt(document.getElementById('regProducto_precio_venta_hidden').value) || 0;
+    if (precioVentaVal <= 0) {
+        Swal.fire({ icon: 'warning', title: 'Precio requerido', text: 'El precio de venta es obligatorio y debe ser mayor a 0.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#3b82f6', customClass: { container: 'swal-high-zindex' } });
+        return;
+    }
+
+    var formData = new FormData(this);
+    Swal.fire({ title: 'Registrando producto...', allowOutsideClick: false, didOpen: function() { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+
+    $.ajax({
+        url: 'reg_producto_tienda_ajax.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                var nombreP = document.getElementById('regProducto_nombre').value;
+                var codigoP = document.getElementById('regProducto_codigo').value;
+                var precioP = document.getElementById('regProducto_precio_venta').value.replace(/[^\d]/g, '') || '0';
+                agregarProductoAListaAliado(nombreP, codigoP, precioP, false);
+
+                var codTienda = document.getElementById('regProducto_cod_tienda').value;
+                document.getElementById('formRegProductoAliado').reset();
+                document.getElementById('regProducto_cod_tienda').value = codTienda;
+
+                Swal.fire({ icon: 'success', title: '¡Producto Registrado!', text: 'El producto fue creado correctamente.', confirmButtonColor: '#3b82f6', background: '#1a1f2e', color: 'white', timer: 2500, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el producto', confirmButtonColor: '#3b82f6', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            }
+        },
+        error: function() {
+            Swal.close();
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor.', confirmButtonColor: '#3b82f6', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        }
+    });
+});
+
+// Navegación entre modales
+function volverAConfirmacionDesdeVendedor() {
+    cerrarModalRegVendedorAliado();
+    document.getElementById('modalConfirmacionRegistro').classList.add('show');
+}
+function volverAConfirmacionDesdeProducto() {
+    cerrarModalRegProductoAliado();
+    document.getElementById('modalConfirmacionRegistro').classList.add('show');
+}
+function finalizarRegistroDesdeModal() {
+    cerrarModalRegVendedorAliado();
+    cerrarModalRegProductoAliado();
+    document.getElementById('modalConfirmacionRegistro').classList.remove('show');
+    location.reload();
+}
+
+// Cerrar modales al clic fuera
+document.getElementById('modalRegVendedorAliado').addEventListener('click', function(e) {
+    if (e.target === this) { cerrarModalRegVendedorAliado(); }
+});
+document.getElementById('modalRegProductoAliado').addEventListener('click', function(e) {
+    if (e.target === this) { cerrarModalRegProductoAliado(); }
+});
 
 function escapeHtmlMovil(text) {
     if (!text) return '';

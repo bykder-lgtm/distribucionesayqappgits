@@ -203,22 +203,36 @@ if (isset($_POST['identificacion_tercero'])) {
             // CREAR TIENDA AUTOMÁTICAMENTE SI EL CHECKBOX ESTÁ ACTIVO
             // ========================================================================================
             $tienda_creada = false;
+            $tienda_ya_existia = false;
             $cod_tienda_creada = 0;
             if (isset($_POST['crear_tienda_al_guardar']) && $_POST['crear_tienda_al_guardar'] == '1') {
-                $nombre_tienda_auto = strtoupper($nombres_apellidos_tercero);
-                $abrev_tienda_auto = 'T' . $cod_administrador . '_' . time();
-                $fecha_creacion_tienda = date("Y-m-d H:i:s");
+                // Verificar si la tienda ya existe (por identificación del aliado)
+                $sql_check_tienda = "SELECT cod_tienda FROM tbl15_tienda WHERE identificacion_tercero = '$identificacion_tercero' LIMIT 1";
+                $res_check_tienda = mysqli_query($conectar, $sql_check_tienda);
+                
+                if (mysqli_num_rows($res_check_tienda) > 0) {
+                    $tienda_ya_existia = true;
+                    $data_check_tienda = mysqli_fetch_assoc($res_check_tienda);
+                    $cod_tienda_creada = $data_check_tienda['cod_tienda'];
+                } else {
+                    $nombre_tienda_auto = strtoupper($nombres_apellidos_tercero);
+                    $abrev_tienda_auto = 'T' . $cod_administrador . '_' . time();
+                    $fecha_creacion_tienda = date("Y-m-d H:i:s");
 
-                $sql_tienda = "INSERT INTO tbl15_tienda (nombre_tienda, abrev_tienda, nombre_tipo_tercero, nombre_tipo_identificacion, identificacion_tercero, nombre1_tercero,
-                direccion_tercero, telefono1_tercero, correo_tercero, barrio_tercero, cod_pais, cod_departamento, cod_municipio, nombre_tipo_cliente, nombre_tipo_regimen, 
-                nombre_tipo_impuesto, cod_administrador, cod_aliado_estrategico, nit_razon_social, nombre_razon_social, nombre_representante, documento_representante, 
-                correo_representante, numero_comercios, cod_tipo_sector, fecha_creacion, cod_estado) 
-                VALUES ('$nombre_tienda_auto', '$abrev_tienda_auto', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', '$identificacion_tercero', UPPER('$nombre1_tercero'),
-                '$direccion_tercero', '$telefono1_tercero', '$correo_tercero', '$barrio_tercero', '1', '$cod_departamento', '$cod_municipio', '$nombre_tipo_cliente', '$nombre_tipo_regimen', 
-                '$nombre_tipo_impuesto', '$cod_administrador', '$cod_administrador', '$nit_razon_social', UPPER('$nombre_razon_social'), UPPER('$nombre1_tercero'), '$identificacion_tercero', 
-                '$correo_tercero', '1', '$cod_tipo_sector', '$fecha_creacion_tienda', '1')";
-                $exec_tienda = mysqli_query($conectar, $sql_tienda);
-                if ($exec_tienda && mysqli_affected_rows($conectar) > 0) { $tienda_creada = true; $cod_tienda_creada = mysqli_insert_id($conectar); }
+                    $sql_tienda = "INSERT INTO tbl15_tienda (nombre_tienda, abrev_tienda, nombre_tipo_tercero, nombre_tipo_identificacion, identificacion_tercero, nombre1_tercero,
+                    direccion_tercero, telefono1_tercero, correo_tercero, barrio_tercero, cod_pais, cod_departamento, cod_municipio, nombre_tipo_cliente, nombre_tipo_regimen, 
+                    nombre_tipo_impuesto, cod_administrador, cod_aliado_estrategico, nit_razon_social, nombre_razon_social, nombre_representante, documento_representante, 
+                    correo_representante, numero_comercios, cod_tipo_sector, fecha_creacion, cod_estado) 
+                    VALUES ('$nombre_tienda_auto', '$abrev_tienda_auto', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', '$identificacion_tercero', UPPER('$nombre1_tercero'),
+                    '$direccion_tercero', '$telefono1_tercero', '$correo_tercero', '$barrio_tercero', '1', '$cod_departamento', '$cod_municipio', '$nombre_tipo_cliente', '$nombre_tipo_regimen', 
+                    '$nombre_tipo_impuesto', '$cod_administrador', '$cod_administrador', '$nit_razon_social', UPPER('$nombre_razon_social'), UPPER('$nombre1_tercero'), '$identificacion_tercero', 
+                    '$correo_tercero', '1', '$cod_tipo_sector', '$fecha_creacion_tienda', '1')";
+                    $exec_tienda = mysqli_query($conectar, $sql_tienda);
+                    if ($exec_tienda && mysqli_affected_rows($conectar) > 0) { 
+                        $tienda_creada = true; 
+                        $cod_tienda_creada = mysqli_insert_id($conectar); 
+                    }
+                }
             }
             // ========================================================================================
             // ENVIAR CORREO DE BIENVENIDA CON CREDENCIALES AL NUEVO ALIADO
@@ -250,9 +264,12 @@ if (isset($_POST['identificacion_tercero'])) {
         $respuesta_ajax['telefono']                = $telefono1_tercero;
         $respuesta_ajax['correo']                  = $correo_tercero;
         $respuesta_ajax['tienda_creada']            = isset($tienda_creada) ? $tienda_creada : false;
+        $respuesta_ajax['tienda_ya_existia']       = isset($tienda_ya_existia) ? $tienda_ya_existia : false;
         $respuesta_ajax['cod_tienda']               = isset($cod_tienda_creada) ? $cod_tienda_creada : 0;
         
         $msg_tienda = (isset($tienda_creada) && $tienda_creada) ? ' También se creó la tienda automáticamente.' : '';
+        if (isset($tienda_ya_existia) && $tienda_ya_existia) { $msg_tienda = ' La tienda asociada ya estaba registrada.'; }
+
         if (isset($correo_enviado) && $correo_enviado) {
             $respuesta_ajax['mensaje']             = 'Aliado registrado correctamente. Se ha enviado un correo con las credenciales de acceso.' . $msg_tienda;
             $respuesta_ajax['correo_enviado']      = true;
@@ -262,6 +279,19 @@ if (isset($_POST['identificacion_tercero'])) {
             $respuesta_ajax['error_correo']        = $error_correo;
         }
     } elseif ($afectado == "EXISTE") {
+        $respuesta_ajax['cod_aliado_cryp']         = DAXCODIFCRYPTOR::encriptardax(DAXCODIFCRYPTOR::encodifdax($cod_administrador));
+        $respuesta_ajax['nombre_completo']         = $nombres_apellidos_tercero;
+        $respuesta_ajax['telefono']                = $telefono1_tercero;
+
+        // Verificar si tiene tienda aun en caso de que el aliado ya exista
+        $sql_check_tienda = "SELECT cod_tienda FROM tbl15_tienda WHERE identificacion_tercero = '$identificacion_tercero' LIMIT 1";
+        $res_check_tienda = mysqli_query($conectar, $sql_check_tienda);
+        if (mysqli_num_rows($res_check_tienda) > 0) {
+            $data_check_tienda = mysqli_fetch_assoc($res_check_tienda);
+            $respuesta_ajax['tienda_ya_existia'] = true;
+            $respuesta_ajax['cod_tienda'] = $data_check_tienda['cod_tienda'];
+        }
+
         $respuesta_ajax['mensaje']                 = 'El aliado ya existe en el sistema.';
     } else {
         $respuesta_ajax['mensaje']                 = 'Error al registrar el aliado.';

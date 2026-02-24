@@ -1316,6 +1316,32 @@ body {
 .reg-tienda-badge strong {
     color: white;
 }
+
+.item-registrado-icon.vendedor-existente-bg {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+    color: #10b981;
+}
+
+.item-registrado-icon.producto-existente-bg {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+    color: #3b82f6;
+}
+
+.item-registrado.existente {
+    border-color: rgba(255, 255, 255, 0.05);
+    opacity: 0.85;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 </style>
 </head>
 <body>
@@ -1474,15 +1500,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <!-- Estadísticas y Botones de Acción Rápida -->
                 <div class="store-stats">
-                    <div class="store-stat-item">
+                    <div class="store-stat-item" id="contadorProductos">
                         <span class="store-stat-number"><?php echo $total_productos_tienda; ?></span>
                         <span class="store-stat-label">Productos</span>
                     </div>
-                    <div class="store-stat-item">
+                    <div class="store-stat-item" id="contadorVendedores">
                         <span class="store-stat-number"><?php echo $total_vendedores_tienda; ?></span>
                         <span class="store-stat-label">Vendedores</span>
                     </div>
-                    <div class="store-stat-item">
+                    <div class="store-stat-item" id="contadorCreditos">
                         <span class="store-stat-number"><?php echo $tienda['creditos_activos']; ?></span>
                         <span class="store-stat-label">Créditos</span>
                     </div>
@@ -2738,10 +2764,15 @@ window._productosRegistrados = [];
 function irCrearVendedores() {
     cerrarModalConfirmacion();
     if (window._tiendaRegistrada && window._tiendaRegistrada.cod_tienda) {
-        document.getElementById('vendedor_cod_tienda').value = window._tiendaRegistrada.cod_tienda;
-        document.getElementById('vendedorNombreTienda').textContent = window._tiendaRegistrada.nombre_tienda;
+        let codTienda = window._tiendaRegistrada.cod_tienda;
+        let nombreTienda = window._tiendaRegistrada.nombre_tienda;
+        
+        document.getElementById('vendedor_cod_tienda').value = codTienda;
+        document.getElementById('vendedorNombreTienda').textContent = nombreTienda;
         document.getElementById('formRegistroVendedor').reset();
-        document.getElementById('vendedor_cod_tienda').value = window._tiendaRegistrada.cod_tienda;
+        document.getElementById('vendedor_cod_tienda').value = codTienda;
+        
+        cargarVendedoresTienda(codTienda);
         document.getElementById('modalRegistroVendedor').classList.add('show');
     } else {
         location.reload();
@@ -2751,12 +2782,18 @@ function irCrearVendedores() {
 function irCrearProductos() {
     cerrarModalConfirmacion();
     if (window._tiendaRegistrada && window._tiendaRegistrada.cod_tienda) {
-        document.getElementById('producto_cod_tienda').value = window._tiendaRegistrada.cod_tienda;
-        document.getElementById('productoNombreTienda').textContent = window._tiendaRegistrada.nombre_tienda;
+        let codTienda = window._tiendaRegistrada.cod_tienda;
+        let nombreTienda = window._tiendaRegistrada.nombre_tienda;
+        
+        document.getElementById('producto_cod_tienda').value = codTienda;
+        document.getElementById('productoNombreTienda').textContent = nombreTienda;
         document.getElementById('formRegistroProducto').reset();
-        document.getElementById('producto_cod_tienda').value = window._tiendaRegistrada.cod_tienda;
+        document.getElementById('producto_cod_tienda').value = codTienda;
+        
         var previewImg = document.getElementById('preview_producto_img');
         if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+        
+        cargarProductosTienda(codTienda);
         document.getElementById('modalRegistroProducto').classList.add('show');
     } else {
         location.reload();
@@ -2777,6 +2814,8 @@ function abrirRegistroVendedorDirecto(codTienda, nombreTienda) {
     document.getElementById('vendedorNombreTienda').textContent = nombreTienda;
     document.getElementById('formRegistroVendedor').reset();
     document.getElementById('vendedor_cod_tienda').value = codTienda;
+    
+    cargarVendedoresTienda(codTienda);
     document.getElementById('modalRegistroVendedor').classList.add('show');
 }
 
@@ -2794,9 +2833,74 @@ function abrirRegistroProductoDirecto(codTienda, nombreTienda) {
     document.getElementById('productoNombreTienda').textContent = nombreTienda;
     document.getElementById('formRegistroProducto').reset();
     document.getElementById('producto_cod_tienda').value = codTienda;
+    
     var previewImg = document.getElementById('preview_producto_img');
     if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+    
+    cargarProductosTienda(codTienda);
     document.getElementById('modalRegistroProducto').classList.add('show');
+}
+
+function cargarVendedoresTienda(codTienda) {
+    var container = document.getElementById('listaVendedoresRegistrados');
+    var list = document.getElementById('vendedoresRegistradosList');
+    var counter = document.getElementById('contadorVendedores');
+    
+    list.innerHTML = '<div style="text-align:center; padding:1rem; opacity:0.5;"><i class="fa fa-spinner fa-spin"></i> Cargando...</div>';
+    container.style.display = 'block';
+    counter.textContent = '0';
+    window._vendedoresRegistrados = [];
+
+    $.ajax({
+        url: 'obtener_vendedores_por_tienda_ajax.php',
+        type: 'POST',
+        data: { cod_tienda: codTienda },
+        dataType: 'json',
+        success: function(response) {
+            list.innerHTML = '';
+            if (response.success && response.vendedores && response.vendedores.length > 0) {
+                response.vendedores.forEach(function(v) {
+                    agregarVendedorALista(v.nombres_apellidos_tercero, v.identificacion_tercero, v.cuenta, true);
+                });
+            } else {
+                list.innerHTML = '<div style="text-align:center; padding:1rem; opacity:0.5; font-size: 0.8rem;">No hay vendedores registrados aún</div>';
+            }
+        },
+        error: function() {
+            list.innerHTML = '<div style="text-align:center; padding:1rem; color:#ef4444; font-size: 0.8rem;">Error al cargar vendedores</div>';
+        }
+    });
+}
+
+function cargarProductosTienda(codTienda) {
+    var container = document.getElementById('listaProductosRegistrados');
+    var list = document.getElementById('productosRegistradosList');
+    var counter = document.getElementById('contadorProductos');
+    
+    list.innerHTML = '<div style="text-align:center; padding:1rem; opacity:0.5;"><i class="fa fa-spinner fa-spin"></i> Cargando...</div>';
+    container.style.display = 'block';
+    counter.textContent = '0';
+    window._productosRegistrados = [];
+
+    $.ajax({
+        url: 'obtener_productos_por_tienda_ajax.php',
+        type: 'POST',
+        data: { cod_tienda: codTienda },
+        dataType: 'json',
+        success: function(response) {
+            list.innerHTML = '';
+            if (response.success && response.productos && response.productos.length > 0) {
+                response.productos.forEach(function(p) {
+                    agregarProductoALista(p.nombre, p.codigo, p.precio, true);
+                });
+            } else {
+                list.innerHTML = '<div style="text-align:center; padding:1rem; opacity:0.5; font-size: 0.8rem;">No hay productos registrados aún</div>';
+            }
+        },
+        error: function() {
+            list.innerHTML = '<div style="text-align:center; padding:1rem; color:#ef4444; font-size: 0.8rem;">Error al cargar productos</div>';
+        }
+    });
 }
 
 function cerrarModalVendedor() { document.getElementById('modalRegistroVendedor').classList.remove('show'); }
@@ -2821,7 +2925,7 @@ function previewImageProducto(input) {
 }
 
 // Agregar vendedor registrado a la lista visual
-function agregarVendedorALista(nombre, identificacion, usuario) {
+function agregarVendedorALista(nombre, identificacion, usuario, esExistente) {
     window._vendedoresRegistrados.push({ nombre: nombre, identificacion: identificacion });
     var container = document.getElementById('listaVendedoresRegistrados');
     var list = document.getElementById('vendedoresRegistradosList');
@@ -2829,19 +2933,23 @@ function agregarVendedorALista(nombre, identificacion, usuario) {
     container.style.display = 'block';
     counter.textContent = window._vendedoresRegistrados.length;
     
-    var html = '<div class="item-registrado">' +
-        '<div class="item-registrado-icon vendedor-bg"><i class="fa-solid fa-user"></i></div>' +
+    var iconClass = esExistente ? 'fa-user-check' : 'fa-user';
+    var badgeClass = esExistente ? 'vendedor-existente-bg' : 'vendedor-bg';
+    var checkIcon = esExistente ? '' : '<i class="fa-solid fa-circle-check item-registrado-check"></i>';
+    
+    var html = '<div class="item-registrado' + (esExistente ? ' existente' : '') + '">' +
+        '<div class="item-registrado-icon ' + badgeClass + '"><i class="fa-solid ' + iconClass + '"></i></div>' +
         '<div class="item-registrado-info">' +
             '<h5>' + nombre + '</h5>' +
             '<span>CC: ' + identificacion + (usuario ? ' | Usuario: ' + usuario : '') + '</span>' +
         '</div>' +
-        '<i class="fa-solid fa-circle-check item-registrado-check"></i>' +
+        checkIcon +
     '</div>';
     list.insertAdjacentHTML('beforeend', html);
 }
 
 // Agregar producto registrado a la lista visual
-function agregarProductoALista(nombre, codigo, precioVenta) {
+function agregarProductoALista(nombre, codigo, precioVenta, esExistente) {
     window._productosRegistrados.push({ nombre: nombre, codigo: codigo });
     var container = document.getElementById('listaProductosRegistrados');
     var list = document.getElementById('productosRegistradosList');
@@ -2850,13 +2958,17 @@ function agregarProductoALista(nombre, codigo, precioVenta) {
     counter.textContent = window._productosRegistrados.length;
     
     var precioFormateado = Number(precioVenta).toLocaleString('es-CO');
-    var html = '<div class="item-registrado">' +
-        '<div class="item-registrado-icon producto-bg"><i class="fa-solid fa-box"></i></div>' +
+    var iconClass = esExistente ? 'fa-boxes-stacked' : 'fa-box';
+    var badgeClass = esExistente ? 'producto-existente-bg' : 'producto-bg';
+    var checkIcon = esExistente ? '' : '<i class="fa-solid fa-circle-check item-registrado-check"></i>';
+
+    var html = '<div class="item-registrado' + (esExistente ? ' existente' : '') + '">' +
+        '<div class="item-registrado-icon ' + badgeClass + '"><i class="fa-solid ' + iconClass + '"></i></div>' +
         '<div class="item-registrado-info">' +
             '<h5>' + nombre + '</h5>' +
             '<span>Código: ' + codigo + ' | $' + precioFormateado + '</span>' +
         '</div>' +
-        '<i class="fa-solid fa-circle-check item-registrado-check"></i>' +
+        checkIcon +
     '</div>';
     list.insertAdjacentHTML('beforeend', html);
 }
