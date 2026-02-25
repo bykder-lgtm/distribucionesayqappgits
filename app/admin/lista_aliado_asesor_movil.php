@@ -614,6 +614,17 @@ body {
     transform: translateY(-2px);
 }
 
+.action-btn.create-doc {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+}
+
+.action-btn.create-doc:hover {
+    background: #8b5cf6;
+    color: white;
+    transform: translateY(-2px);
+}
+
 /* Detail Modal Specifics */
 .detail-row {
     display: flex;
@@ -707,6 +718,9 @@ select[id^="edit_municipio_tienda_"] option {
 }
 .reg-modal-header-aliado.producto-theme {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+.reg-modal-header-aliado.firma-theme {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
 }
 .reg-modal-header-aliado h2 {
     color: white; font-size: 1.15rem; font-weight: 700;
@@ -909,8 +923,15 @@ $res_gestores = mysqli_query($conectar, $sql_gestores);
             </select>
         </div>
     </div>
-    <!-- Add Button -->
-    <button class="add-button animate-in delay-1" onclick="abrirModal()"><i class="fa-solid fa-plus"></i>Registrar Nuevo Aliado</button>
+    <!-- Botones de Acción -->
+    <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;" class="animate-in delay-1">
+        <button class="add-button" style="margin-bottom: 0; flex: 1.5;" onclick="abrirModal()">
+            <i class="fa-solid fa-plus"></i> Registrar Nuevo Aliado
+        </button>
+        <a href="lista_firma_digital_documentos_asesor_movil.php" class="add-button" style="margin-bottom: 0; flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; text-decoration: none;">
+            <i class="fa-solid fa-file-signature"></i> Ver Firmas
+        </a>
+    </div>
 
     <!-- List -->
     <div class="ally-list" id="allyList">
@@ -976,6 +997,8 @@ $res_gestores = mysqli_query($conectar, $sql_gestores);
                     <a href="ver_detalle_aliado_movil.php?cod_administrador=<?php echo $row['cod_administrador']; ?>" class="action-btn view"><i class="fa-solid fa-eye"></i> Detalles</a>
                     <button class="action-btn edit" onclick="abrirModalEditar(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)"><i class="fa-solid fa-edit"></i> Editar y Agregar</button>
                     <button class="action-btn share" onclick="compartirDocumentacion(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-share-nodes"></i> Compartir Docs</button>
+                    <button class="action-btn create-doc" onclick="crearDocumento(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-file-signature"></i> Crear Documento</button>
+
                 </div>
             </div>
             <?php endwhile; ?>
@@ -2482,6 +2505,83 @@ $res_gestores = mysqli_query($conectar, $sql_gestores);
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Crear Documento Firma -->
+<div class="reg-modal-overlay-aliado" id="modalCrearDocumentoFirma">
+    <div class="reg-modal-container-aliado" style="max-width: 500px;">
+        <div class="reg-modal-header-aliado firma-theme">
+            <h2><i class="fa-solid fa-file-signature"></i> Firma de Aliado</h2>
+            <button class="modal-close-reg" onclick="cerrarModalCrearDocumento()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        
+        <div class="reg-modal-body-aliado">
+            <!-- Paso 1: Confirmación -->
+            <div id="step_confirmar_firma" style="text-align: center; padding: 1rem 0;">
+                <div style="width: 80px; height: 80px; background: rgba(139, 92, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                    <i class="fa-solid fa-file-signature" style="font-size: 2.5rem; color: #8b5cf6;"></i>
+                </div>
+                <h3 style="color: white; margin-bottom: 1rem;">¿Crear documento de firma?</h3>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                    Se generará un nuevo registro para capturar la firma digital del aliado. 
+                </p>
+
+                <!-- Selección de Tienda -->
+                <div class="reg-form-group" style="text-align: left; margin-bottom: 2rem;">
+                    <label class="reg-form-label" style="color: rgba(255,255,255,0.6); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;">Seleccionar Tienda (Opcional)</label>
+                    <select id="firma_tienda_cod" class="reg-form-input" style="background: rgba(255,255,255,0.05); border-color: rgba(139, 92, 246, 0.3); color: white;">
+                        <option value="0">Cargando tiendas...</option>
+                    </select>
+                </div>
+                <input type="hidden" id="firma_aliado_cod" value="">
+                <button type="button" class="reg-submit-btn-aliado" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);" onclick="procesarCreacionDocumento()">
+                    <i class="fa-solid fa-check"></i> Sí, crear documento
+                </button>
+            </div>
+
+            <!-- Paso 2: Compartir (inicialmente oculto) -->
+            <div id="step_compartir_firma" style="display: none;">
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; text-align: center;">
+                    <i class="fa-solid fa-circle-check" style="font-size: 2rem; color: #10b981; margin-bottom: 0.5rem;"></i>
+                    <h4 style="color: #10b981; margin: 0;">¡Documento Generado!</h4>
+                </div>
+
+                <div class="reg-form-group">
+                    <label class="reg-form-label">Enlace de Firma</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" class="reg-form-input" id="input_enlace_signature" readonly style="flex: 1; font-size: 0.8rem;">
+                        <button onclick="copiarEnlaceSignature()" style="background: #8b5cf6; color: white; border: none; padding: 0 1rem; border-radius: 12px; cursor: pointer;">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button onclick="enviarSignaturePorWhatsApp()" style="background: #25d366; color: white; border: none; padding: 0.85rem; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button onclick="enviarSignaturePorEmail()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.85rem; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-envelope"></i> Email
+                    </button>
+                </div>
+                
+                <p style="text-align: center; color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-top: 1.5rem;">
+                    <i class="fa-solid fa-info-circle"></i> El aliado podrá firmar desde su dispositivo móvil usando este enlace.
+                </p>
+                
+                <!-- Datos ocultos para compartir -->
+                <input type="hidden" id="share_firma_aliado_nombre" value="">
+                <input type="hidden" id="share_firma_aliado_tel" value="">
+                <input type="hidden" id="share_firma_aliado_email" value="">
+            </div>
+        </div>
+        
+        <div class="reg-modal-footer-aliado">
+            <button class="reg-footer-btn-aliado back-btn" style="flex: 1;" onclick="cerrarModalCrearDocumento()">
+                <i class="fa-solid fa-times"></i> Cerrar
+            </button>
         </div>
     </div>
 </div>
@@ -5291,12 +5391,8 @@ $(document).ready(function() {
 
 function cargarNotificacionesMovil() {
     $.ajax({
-        url: '../admin/obtener_notificaciones_ajax.php',
-        type: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) actualizarUINotificacionesMovil(response.notificaciones, response.count);
-        }
+        url: '../admin/obtener_notificaciones_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) { if (response.success) actualizarUINotificacionesMovil(response.notificaciones, response.count); }
     });
 }
 
@@ -5331,42 +5427,21 @@ function getNotificationIconMovil(tipo) {
 }
 
 function toggleNotificationPanelMovil() { $('#notificationPanelMovil').toggleClass('show'); }
-
-$(document).on('click', function(e) {
-    if (!$(e.target).closest('#notificationPanelMovil, #notificationBellMovil').length) $('#notificationPanelMovil').removeClass('show');
-});
-
+$(document).on('click', function(e) { if (!$(e.target).closest('#notificationPanelMovil, #notificationBellMovil').length) $('#notificationPanelMovil').removeClass('show'); });
 function marcarNotificacionLeidaMovil(codNotificacion, element) {
     $.ajax({
-        url: '../admin/marcar_notificacion_leida_ajax.php',
-        type: 'POST',
-        data: { cod_notificacion: codNotificacion },
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) $(element).fadeOut(300, function() { $(this).remove(); cargarNotificacionesMovil(); });
-        }
+        url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { cod_notificacion: codNotificacion }, dataType: 'json',
+        success: function(response) { if (response.success) $(element).fadeOut(300, function() { $(this).remove(); cargarNotificacionesMovil(); }); }
     });
 }
 
 function marcarTodasLeidasMovil() {
     Swal.fire({
-        title: '¿Marcar todas como leídas?',
-        text: 'Se marcarán todas las notificaciones pendientes como leídas',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, marcar todas',
-        cancelButtonText: 'Cancelar',
-        background: '#1a1f2e',
-        color: 'white'
+        title: '¿Marcar todas como leídas?', text: 'Se marcarán todas las notificaciones pendientes como leídas', icon: 'question', showCancelButton: true, confirmButtonColor: '#10b981', cancelButtonColor: '#6c757d', confirmButtonText: 'Sí, marcar todas', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../admin/marcar_notificacion_leida_ajax.php',
-                type: 'POST',
-                data: { marcar_todas: 'si' },
-                dataType: 'json',
+                url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { marcar_todas: 'si' }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
                         cargarNotificacionesMovil();
@@ -5377,7 +5452,6 @@ function marcarTodasLeidasMovil() {
         }
     });
 }
-
 // ========== MODALES DE VENDEDORES Y PRODUCTOS (desde confirmación aliado) ==========
 window._regVendedoresAliado = [];
 window._regProductosAliado = [];
@@ -5410,10 +5484,7 @@ document.getElementById('btn_registrar_productos_tienda_rapida').addEventListene
 function obtenerNombreTiendaYAbrir(codTienda, callback) {
     // Intentar obtener nombre de la tienda
     $.ajax({
-        url: 'obtener_vendedores_por_tienda_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'obtener_vendedores_por_tienda_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(r) { callback(codTienda); },
         error: function() { callback(codTienda); }
     });
@@ -5444,10 +5515,7 @@ function cargarVendedoresTiendaAliado(codTienda) {
     window._regVendedoresAliado = [];
 
     $.ajax({
-        url: 'obtener_vendedores_por_tienda_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'obtener_vendedores_por_tienda_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             list.innerHTML = '';
             if (response.success && response.vendedores && response.vendedores.length > 0) {
@@ -5458,9 +5526,7 @@ function cargarVendedoresTiendaAliado(codTienda) {
                 list.innerHTML = '<div style="text-align:center; padding:0.75rem; opacity:0.4; font-size:0.78rem;">No hay vendedores registrados aún</div>';
             }
         },
-        error: function() {
-            list.innerHTML = '<div style="text-align:center; padding:0.75rem; color:#ef4444; font-size:0.78rem;">Error al cargar vendedores</div>';
-        }
+        error: function() { list.innerHTML = '<div style="text-align:center; padding:0.75rem; color:#ef4444; font-size:0.78rem;">Error al cargar vendedores</div>'; }
     });
 }
 
@@ -5498,12 +5564,7 @@ document.getElementById('formRegVendedorAliado').addEventListener('submit', func
     Swal.fire({ title: 'Registrando vendedor...', allowOutsideClick: false, didOpen: function() { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
     $.ajax({
-        url: 'agregar_vendedor_tienda_asesor_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: 'agregar_vendedor_tienda_asesor_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
@@ -5552,10 +5613,7 @@ function cargarProductosTiendaAliado(codTienda) {
     window._regProductosAliado = [];
 
     $.ajax({
-        url: 'obtener_productos_por_tienda_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'obtener_productos_por_tienda_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             list.innerHTML = '';
             if (response.success && response.productos && response.productos.length > 0) {
@@ -5627,12 +5685,7 @@ document.getElementById('formRegProductoAliado').addEventListener('submit', func
     Swal.fire({ title: 'Registrando producto...', allowOutsideClick: false, didOpen: function() { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
     $.ajax({
-        url: 'reg_producto_tienda_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: 'reg_producto_tienda_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
@@ -5658,28 +5711,12 @@ document.getElementById('formRegProductoAliado').addEventListener('submit', func
 });
 
 // Navegación entre modales
-function volverAConfirmacionDesdeVendedor() {
-    cerrarModalRegVendedorAliado();
-    document.getElementById('modalConfirmacionRegistro').classList.add('show');
-}
-function volverAConfirmacionDesdeProducto() {
-    cerrarModalRegProductoAliado();
-    document.getElementById('modalConfirmacionRegistro').classList.add('show');
-}
-function finalizarRegistroDesdeModal() {
-    cerrarModalRegVendedorAliado();
-    cerrarModalRegProductoAliado();
-    document.getElementById('modalConfirmacionRegistro').classList.remove('show');
-    location.reload();
-}
-
+function volverAConfirmacionDesdeVendedor() { cerrarModalRegVendedorAliado(); document.getElementById('modalConfirmacionRegistro').classList.add('show'); }
+function volverAConfirmacionDesdeProducto() { cerrarModalRegProductoAliado(); document.getElementById('modalConfirmacionRegistro').classList.add('show'); }
+function finalizarRegistroDesdeModal() { cerrarModalRegVendedorAliado(); cerrarModalRegProductoAliado(); document.getElementById('modalConfirmacionRegistro').classList.remove('show'); location.reload(); }
 // Cerrar modales al clic fuera
-document.getElementById('modalRegVendedorAliado').addEventListener('click', function(e) {
-    if (e.target === this) { cerrarModalRegVendedorAliado(); }
-});
-document.getElementById('modalRegProductoAliado').addEventListener('click', function(e) {
-    if (e.target === this) { cerrarModalRegProductoAliado(); }
-});
+document.getElementById('modalRegVendedorAliado').addEventListener('click', function(e) { if (e.target === this) { cerrarModalRegVendedorAliado(); } });
+document.getElementById('modalRegProductoAliado').addEventListener('click', function(e) { if (e.target === this) { cerrarModalRegProductoAliado(); } });
 
 function escapeHtmlMovil(text) {
     if (!text) return '';
@@ -5687,6 +5724,145 @@ function escapeHtmlMovil(text) {
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
 }
+// ========== SISTEMA DE FIRMA DIGITAL INDEPENDIENTE ==========
+function crearDocumento(codAliado) {
+    document.getElementById('firma_aliado_cod').value = codAliado;
+    
+    // Resetear y cargar tiendas
+    var selectTienda = document.getElementById('firma_tienda_cod');
+    selectTienda.innerHTML = '<option value="0">Cargando tiendas...</option>';
+    
+    $.ajax({
+        url: 'obtener_tiendas_aliado_ajax.php',
+        type: 'POST',
+        data: { cod_aliado: codAliado },
+        dataType: 'json',
+        success: function(res) {
+            if (res.success) {
+                //var html = '<option value="0">-- Seleccione una tienda --</option>';
+                var html = '';
+                if (res.tiendas.length > 0) {
+                    res.tiendas.forEach(function(t) {
+                        html += '<option value="'+t.cod_tienda+'">'+escapeHtmlMovil(t.nombre_tienda)+'</option>';
+                    });
+                } else {
+                    html = '<option value="0">El aliado no tiene tiendas registradas</option>';
+                }
+                selectTienda.innerHTML = html;
+            } else {
+                selectTienda.innerHTML = '<option value="0">Error al cargar tiendas</option>';
+            }
+        },
+        error: function() {
+            selectTienda.innerHTML = '<option value="0">Error de conexión</option>';
+        }
+    });
+
+    // Resetear vistas del modal
+    document.getElementById('step_confirmar_firma').style.display = 'block';
+    document.getElementById('step_compartir_firma').style.display = 'none';
+    // Abrir modal
+    document.getElementById('modalCrearDocumentoFirma').classList.add('show');
+}
+function cerrarModalCrearDocumento() { document.getElementById('modalCrearDocumentoFirma').classList.remove('show'); }
+
+function procesarCreacionDocumento() {
+    var codAliado = document.getElementById('firma_aliado_cod').value;
+    var codTienda = document.getElementById('firma_tienda_cod').value;
+
+    if (codTienda == "0" || !codTienda) {
+        return Swal.fire({
+            icon: 'warning',
+            title: 'Tienda requerida',
+            text: 'Debe seleccionar una tienda para continuar.',
+            confirmButtonColor: '#8b5cf6',
+            background: '#1a1f2e',
+            color: 'white',
+            customClass: { container: 'swal-high-zindex' }
+        });
+    }
+
+    Swal.fire({ title: 'Generando documento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+    $.ajax({
+        url: 'crear_documento_firma_aliado_ajax.php', type: 'POST', data: { cod_aliado: codAliado, cod_tienda: codTienda }, dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                // Llenar datos de compartir
+                document.getElementById('input_enlace_signature').value = response.url_firma_digital_documento;
+                document.getElementById('share_firma_aliado_nombre').value = response.aliado;
+                document.getElementById('share_firma_aliado_tel').value = response.telefono || '';
+                document.getElementById('share_firma_aliado_email').value = response.correo || '';
+                // Cambiar a vista de compartir
+                document.getElementById('step_confirmar_firma').style.display = 'none';
+                $('#step_compartir_firma').fadeIn();
+                
+                Swal.fire({ icon: 'success', title: '¡Listo!', text: 'El documento ha sido creado. Ahora puede compartir el enlace.', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            }
+        },
+        error: function() {
+            Swal.close();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo conectar con el servidor', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        }
+    });
+}
+function copiarEnlaceSignature() {
+    var input = document.getElementById('input_enlace_signature');
+    input.select();
+    input.setSelectionRange(0, 99999);
+    try {
+        document.execCommand('copy');
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'Enlace copiado al portapapeles', timer: 1500, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+    } catch (e) {}
+}
+function enviarSignaturePorWhatsApp() {
+    var enlace = document.getElementById('input_enlace_signature').value;
+    var nombre = document.getElementById('share_firma_aliado_nombre').value;
+    var tel = document.getElementById('share_firma_aliado_tel').value;
+    var msj = encodeURIComponent("Hola " + nombre + ", le envío el enlace para realizar la firma digital del documento de alianza comercial: " + enlace);
+    var url = "https://api.whatsapp.com/send?text=" + msj;
+    if (tel) { url = "https://api.whatsapp.com/send?phone=57" + tel + "&text=" + msj; }
+    window.open(url, '_blank');
+}
+function enviarSignaturePorEmail() {
+    var enlace = document.getElementById('input_enlace_signature').value;
+    var nombre = document.getElementById('share_firma_aliado_nombre').value;
+    var emailInicial = document.getElementById('share_firma_aliado_email').value || '';
+    
+    Swal.fire({
+        title: 'Enviar enlace por correo', text: 'Escriba o confirme el correo electrónico:', input: 'email', inputLabel: 'Correo del aliado', inputPlaceholder: 'ejemplo@correo.com', inputValue: emailInicial, showCancelButton: true, confirmButtonText: '<i class="fa-solid fa-paper-plane"></i> Enviar ahora', cancelButtonText: 'Cancelar', confirmButtonColor: '#8b5cf6', background: '#1a1f2e', color: 'white',
+        inputValidator: (value) => { if (!value) { return '¡El correo electrónico es obligatorio!'; } },
+        customClass: { container: 'swal-high-zindex', input: 'swal-custom-input' }
+    }).then((result) => {
+        if (result.isConfirmed && result.value) {
+            var emailFinal = result.value;
+
+            Swal.fire({ title: 'Enviando correo...', text: 'Procesando envío por PHPMailer', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+
+            $.ajax({
+                url: 'enviar_enlace_firma_aliado_email_ajax.php', type: 'POST',
+                data: { correo: emailFinal, nombre_aliado: nombre, enlace_firma: enlace },
+                dataType: 'json',
+                success: function(response) {
+                    Swal.close();
+                    if (response.success) {
+                        Swal.fire({ icon: 'success', title: '¡Enviado!', text: response.mensaje, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    }
+                },
+                error: function() {
+                    Swal.close();
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Ocurrió un error técnico al intentar enviar el correo.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                }
+            });
+        }
+    });
+}
+// Cerrar modal firma al clic fuera
+document.getElementById('modalCrearDocumentoFirma').addEventListener('click', function(e) { if (e.target === this) { cerrarModalCrearDocumento(); } });
 </script>
 
 </body>

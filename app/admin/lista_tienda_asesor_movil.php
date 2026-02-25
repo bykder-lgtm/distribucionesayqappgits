@@ -1458,6 +1458,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <span style="font-size: 0.8rem; font-weight: 700;">Rápidas (<?php echo $count_rapida; ?>)</span>
             </div>
         </a>
+        <a href="../admin/lista_firma_digital_documentos_asesor_movil.php" style="flex: 1.2; text-decoration: none;">
+            <div style="padding: 1rem; border-radius: 12px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: 1px solid rgba(99, 102, 241, 0.4); text-align: center; color: white; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); position: relative; overflow: hidden;">
+                <!-- Efecto de brillo -->
+                <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+                <i class="fa-solid fa-file-signature" style="margin-bottom: 5px; display: block; font-size: 1.3rem; color: #c7d2fe;"></i>
+                <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Panel de Firmas</span>
+            </div>
+        </a>
     </div>
 
     <!-- Search Bar -->
