@@ -5,22 +5,18 @@ include_once('../evitar_mensaje_error/error.php');
 date_default_timezone_set("America/Bogota");
 
 $cod_tienda_codifcryp = isset($_GET['cod']) ? $_GET['cod'] : '';
-
 if (empty($cod_tienda_codifcryp)) { die("Error: Código de tienda no válido"); }
-
 // Desencriptar código de tienda
 $cod_tienda_codif = DAXCODIFCRYPTOR::descriptardax($cod_tienda_codifcryp);
 $cod_tienda = DAXCODIFCRYPTOR::descodifdax($cod_tienda_codif);
-
 // Obtener información de la tienda
 $sql = "SELECT * FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
 $resultado = mysqli_query($conectar, $sql);
 $tienda = mysqli_fetch_assoc($resultado);
-
 if (!$tienda) { die("Error: Tienda no encontrada"); }
-
 $nombre_tienda = $tienda['nombre_tienda'];
 $ubicacion_gps_actual = $tienda['ubicacion_gps_tienda'];
+$direccion_gps_actual = isset($tienda['direccion_gps_tienda']) ? $tienda['direccion_gps_tienda'] : '';
 
 // Si ya existe ubicación GPS
 $gps_ya_registrado = !empty($ubicacion_gps_actual);
@@ -130,6 +126,34 @@ $gps_ya_registrado = !empty($ubicacion_gps_actual);
         .gps-info strong {
             color: #fbbf24;
         }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .form-label {
+            display: block;
+            color: #fbbf24;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .form-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            padding: 0.85rem;
+            color: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+        }
         .btn {
             width: 100%;
             padding: 1rem;
@@ -216,7 +240,12 @@ $gps_ya_registrado = !empty($ubicacion_gps_actual);
         </div>
         <div class="gps-info" style="text-align: center; margin-bottom: 1rem;">
             <strong>Coordenadas actuales:</strong><br>
-            <?php echo $ubicacion_gps_actual; ?>
+            <span style="font-size: 0.8rem; color: rgba(255,255,255,0.5);"><?php echo $ubicacion_gps_actual; ?></span>
+            <?php if (!empty($direccion_gps_actual)): ?>
+                <div style="margin-top: 5px; color: #fbbf24; font-weight: 600;">
+                    <i class="fa-solid fa-location-dot"></i> <?php echo $direccion_gps_actual; ?>
+                </div>
+            <?php endif; ?>
         </div>
         <?php else: ?>
         <div class="info-box">
@@ -225,10 +254,7 @@ $gps_ya_registrado = !empty($ubicacion_gps_actual);
         </div>
         <?php endif; ?>
 
-        <div class="loading" id="loading">
-            <i class="fa-solid fa-spinner"></i>
-            <p>Obteniendo ubicación...</p>
-        </div>
+        <div class="loading" id="loading"><i class="fa-solid fa-spinner"></i><p>Obteniendo ubicación...</p></div>
 
         <div class="status-message" id="statusMessage"></div>
 
@@ -242,9 +268,16 @@ $gps_ya_registrado = !empty($ubicacion_gps_actual);
             <div id="map"></div>
         </div>
 
-        <div class="gps-info" id="coordsDisplay" style="display: none;">
-            <strong>Latitud:</strong> <span id="latitud">-</span><br>
-            <strong>Longitud:</strong> <span id="longitud">-</span>
+        <div class="gps-info" id="coordsDisplay" style="display: none; margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.6; margin-bottom: 1rem;">
+                <span><strong>Lat:</strong> <span id="latitud">-</span></span>
+                <span><strong>Lng:</strong> <span id="longitud">-</span></span>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Dirección Detectada (Editable) *</label>
+                <input type="text" class="form-input" id="direccion_detectada" placeholder="Cargando dirección...">
+            </div>
         </div>
 
         <?php if (!$gps_ya_registrado): ?>
@@ -271,49 +304,26 @@ $gps_ya_registrado = !empty($ubicacion_gps_actual);
 
         // Si ya hay ubicación registrada, mostrar en el mapa
         <?php if ($gps_ya_registrado && !empty($ubicacion_gps_actual)): ?>
-        window.addEventListener('DOMContentLoaded', function() {
-            const coords = '<?php echo $ubicacion_gps_actual; ?>'.split(',');
-            if (coords.length === 2) {
-                const lat = parseFloat(coords[0]);
-                const lng = parseFloat(coords[1]);
-                mostrarMapa(lat, lng, false);
-            }
-        });
+        window.addEventListener('DOMContentLoaded', function() { const coords = '<?php echo $ubicacion_gps_actual; ?>'.split(','); if (coords.length === 2) { const lat = parseFloat(coords[0]); const lng = parseFloat(coords[1]); mostrarMapa(lat, lng, false); } });
         <?php endif; ?>
 
         function mostrarMapa(lat, lng, editable = true) {
             // Ocultar placeholder
             const placeholder = document.getElementById('mapPlaceholder');
             if (placeholder) placeholder.style.display = 'none';
-            
             // Mostrar mapa
             const mapDiv = document.getElementById('map');
             mapDiv.style.display = 'block';
             
             const mapContainer = document.getElementById('mapContainer');
             mapContainer.classList.add('with-map');
-
             // Crear mapa si no existe
             if (!mapa) {
                 mapa = L.map('map').setView([lat, lng], 16);
-                
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors',
-                    maxZoom: 19
-                }).addTo(mapa);
-
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors', maxZoom: 19 }).addTo(mapa);
                 // Icono personalizado
-                const iconoTienda = L.divIcon({
-                    className: 'custom-marker',
-                    html: '<div style="background: #fbbf24; width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-store" style="transform: rotate(45deg); color: #1a1f2e; font-size: 18px;"></i></div>',
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 40]
-                });
-
-                marcador = L.marker([lat, lng], { 
-                    icon: iconoTienda,
-                    draggable: editable 
-                }).addTo(mapa);
+                const iconoTienda = L.divIcon({ className: 'custom-marker', html: '<div style="background: #fbbf24; width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-store" style="transform: rotate(45deg); color: #1a1f2e; font-size: 18px;"></i></div>', iconSize: [40, 40], iconAnchor: [20, 40] });
+                marcador = L.marker([lat, lng], { icon: iconoTienda, draggable: editable }).addTo(mapa);
 
                 if (editable) {
                     marcador.on('dragend', function(e) {
@@ -323,29 +333,23 @@ $gps_ya_registrado = !empty($ubicacion_gps_actual);
                         document.getElementById('latitud').textContent = latitud.toFixed(6);
                         document.getElementById('longitud').textContent = longitud.toFixed(6);
                         mapa.setView([latitud, longitud], 16);
+                        obtenerDireccion(latitud, longitud);
                     });
-
                     // Agregar popup
                     marcador.bindPopup('<div style="text-align: center; padding: 5px;"><strong style="color: #fbbf24;">📍 Mi Tienda</strong><br><small>Arrastra el marcador para ajustar</small></div>').openPopup();
                 } else {
                     marcador.bindPopup('<div style="text-align: center; padding: 5px;"><strong style="color: #fbbf24;">📍 Ubicación Registrada</strong></div>').openPopup();
                 }
-
                 // Ajustar tamaño del mapa después de mostrarlo
                 setTimeout(() => mapa.invalidateSize(), 100);
             } else {
                 mapa.setView([lat, lng], 16);
-                if (marcador) {
-                    marcador.setLatLng([lat, lng]);
-                }
+                if (marcador) { marcador.setLatLng([lat, lng]); }
             }
         }
 
         function obtenerUbicacion() {
-            if (!navigator.geolocation) {
-                mostrarMensaje('Tu navegador no soporta geolocalización', 'error');
-                return;
-            }
+            if (!navigator.geolocation) { mostrarMensaje('Tu navegador no soporta geolocalización', 'error'); return; }
 
             document.getElementById('loading').style.display = 'block';
             document.getElementById('btnObtenerUbicacion').style.display = 'none';
@@ -362,9 +366,9 @@ $gps_ya_registrado = !empty($ubicacion_gps_actual);
                     document.getElementById('btnGuardarUbicacion').style.display = 'flex';
 
                     mostrarMensaje('Ubicación obtenida correctamente. Puedes ajustar el marcador arrastrándolo.', 'success');
-
                     // Mostrar mapa con la ubicación
                     mostrarMapa(latitud, longitud, true);
+                    obtenerDireccion(latitud, longitud);
                 },
                 function(error) {
                     document.getElementById('loading').style.display = 'none';
@@ -385,107 +389,48 @@ $gps_ya_registrado = !empty($ubicacion_gps_actual);
                             mensaje += 'Error desconocido.';
                     }
                     mostrarMensaje(mensaje, 'error');
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                }
+                }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
         }
 
-        function guardarUbicacion() {
-            if (!latitud || !longitud) {
-                mostrarMensaje('Primero obtén tu ubicación', 'warning');
-                return;
-            }
-
-            Swal.fire({
-                title: '¿Confirmar ubicación?',
-                text: 'Se guardará la ubicación GPS de tu tienda',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#10b981',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, guardar',
-                cancelButtonText: 'Cancelar',
-                background: '#1a1f2e',
-                color: 'white'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    procesarGuardado();
+        async function obtenerDireccion(lat, lng) {
+            const inputDireccion = document.getElementById('direccion_detectada');
+            inputDireccion.value = 'Buscando dirección...';
+            
+            try {
+                // Usamos el servicio de Nominatim (OpenStreetMap) para geocodificación inversa
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+                const data = await response.json();
+                
+                if (data && data.display_name) {
+                    // Limpiamos un poco la dirección (Nominatim suele ser muy detallado)
+                    const parts = data.display_name.split(',');
+                    const shortAddress = parts.slice(0, 3).join(',').trim();
+                    inputDireccion.value = shortAddress;
+                } else {
+                    inputDireccion.value = '';
                 }
-            });
+            } catch (error) {
+                console.error("Error al obtener dirección:", error);
+                inputDireccion.value = '';
+                inputDireccion.placeholder = 'No se pudo obtener la dirección automáticamente';
+            }
         }
 
-        function procesarGuardado() {
-            Swal.fire({
-                title: 'Guardando...',
-                text: 'Registrando ubicación GPS',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); },
-                background: '#1a1f2e',
-                color: 'white'
-            });
+        function guardarUbicacion() { if (!latitud || !longitud) { mostrarMensaje('Primero obtén tu ubicación', 'warning'); return; } Swal.fire({ title: '¿Confirmar ubicación?', text: 'Se guardará la ubicación GPS de tu tienda', icon: 'question', showCancelButton: true, confirmButtonColor: '#10b981', cancelButtonColor: '#6c757d', confirmButtonText: 'Sí, guardar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white' }).then((result) => { if (result.isConfirmed) { procesarGuardado(); } }); }
+        function procesarGuardado() { Swal.fire({ title: 'Guardando...', text: 'Registrando ubicación GPS', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
 
             const formData = new FormData();
             formData.append('cod_tienda', codTienda);
             formData.append('ubicacion_gps', latitud + ',' + longitud);
+            formData.append('direccion_gps', document.getElementById('direccion_detectada').value);
 
-            fetch('guardar_gps_tienda_ajax.php', {
-                method: 'POST',
-                body: formData
-            })
+            fetch('guardar_gps_tienda_ajax.php', { method: 'POST', body: formData })
             .then(response => response.json())
-            .then(data => {
-                Swal.close();
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Guardado!',
-                        text: 'La ubicación GPS ha sido registrada correctamente',
-                        confirmButtonColor: '#10b981',
-                        background: '#1a1f2e',
-                        color: 'white'
-                    }).then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: data.message || 'No se pudo guardar la ubicación',
-                        confirmButtonColor: '#ef4444',
-                        background: '#1a1f2e',
-                        color: 'white'
-                    });
-                }
-            })
-            .catch(error => {
-                Swal.close();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error de conexión',
-                    confirmButtonColor: '#ef4444',
-                    background: '#1a1f2e',
-                    color: 'white'
-                });
-            });
+            .then(data => { Swal.close(); if (data.success) { Swal.fire({ icon: 'success', title: '¡Guardado!', text: 'La ubicación GPS ha sido registrada correctamente', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white'  }).then(() => { location.reload(); }); } else { Swal.fire({ icon: 'error', title: 'Error', text: data.message || 'No se pudo guardar la ubicación', confirmButtonColor: '#ef4444', background: '#1a1f2e', color: 'white' }); } })
+            .catch(error => { Swal.close(); Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión', confirmButtonColor: '#ef4444', background: '#1a1f2e', color: 'white' }); });
         }
-
-        function mostrarMensaje(texto, tipo) {
-            const mensaje = document.getElementById('statusMessage');
-            mensaje.className = 'status-message ' + tipo;
-            mensaje.innerHTML = '<i class="fa-solid fa-' + 
-                (tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-circle' : 'info-circle') + 
-                '"></i> ' + texto;
-            mensaje.style.display = 'block';
-
-            setTimeout(() => {
-                mensaje.style.display = 'none';
-            }, 5000);
-        }
+        function mostrarMensaje(texto, tipo) { const mensaje = document.getElementById('statusMessage'); mensaje.className = 'status-message ' + tipo; mensaje.innerHTML = '<i class="fa-solid fa-' + (tipo === 'success' ? 'check-circle' : tipo === 'error' ? 'exclamation-circle' : 'info-circle') + '"></i> ' + texto; mensaje.style.display = 'block'; setTimeout(() => { mensaje.style.display = 'none'; }, 5000); }
     </script>
 </body>
 </html>

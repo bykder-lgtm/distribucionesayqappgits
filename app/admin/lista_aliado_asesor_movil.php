@@ -889,9 +889,6 @@ $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
-// Consulta de gestores operadores de crédito
-$sql_gestores = "SELECT cod_gestor_operador_credito, nombre_gestor_operador_credito FROM tbl15_gestor_operador_credito WHERE cod_estado = '1' ORDER BY nombre_gestor_operador_credito ASC";
-$res_gestores = mysqli_query($conectar, $sql_gestores);
 
 ?>
 
@@ -1072,18 +1069,6 @@ $res_gestores = mysqli_query($conectar, $sql_gestores);
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Gestor Operador de Crédito *</label>
-                    <select class="form-select" id="cod_gestor_operador_credito" name="cod_gestor_operador_credito" required>
-                        <option value="">Seleccione...</option>
-                        <?php 
-                        mysqli_data_seek($res_gestores, 0);
-                        while ($gestor = mysqli_fetch_assoc($res_gestores)): 
-                        ?>
-                        <option value="<?php echo $gestor['cod_gestor_operador_credito']; ?>"><?php echo $gestor['nombre_gestor_operador_credito']; ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
 
 
                 <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
@@ -1366,18 +1351,6 @@ $res_gestores = mysqli_query($conectar, $sql_gestores);
                     <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Gestor Operador de Crédito *</label>
-                    <select class="form-select" id="edit_cod_gestor_operador_credito" name="cod_gestor_operador_credito" required>
-                        <option value="">Seleccione...</option>
-                        <?php 
-                        mysqli_data_seek($res_gestores, 0);
-                        while ($gestor = mysqli_fetch_assoc($res_gestores)): 
-                        ?>
-                        <option value="<?php echo $gestor['cod_gestor_operador_credito']; ?>"><?php echo $gestor['nombre_gestor_operador_credito']; ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
 
                 <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
                     <i class="fa-solid fa-building-columns"></i> Datos del Administrador
@@ -2860,8 +2833,6 @@ function abrirModalEditar(data) {
     document.getElementById('edit_direccion_tercero').value = data.direccion_tercero || '';
     document.getElementById('edit_barrio_tercero').value = data.barrio_tercero || '';
     
-    // Cargar Gestor Operador de Crédito
-    document.getElementById('edit_cod_gestor_operador_credito').value = data.cod_gestor_operador_credito || '';
 
     // Cargar departamentos y preseleccionar departamento/municipio
     cargarDepartamentosEdicion(data.cod_departamento || '', data.cod_municipio || '');

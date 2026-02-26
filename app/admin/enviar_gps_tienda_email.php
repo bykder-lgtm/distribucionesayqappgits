@@ -1,19 +1,28 @@
 <?php
+ob_start();
 include_once('../conexiones/conexione.php'); 
 include_once('../admin/class_php/funcion_cryptor_descryptor_class.php');
 include_once('../evitar_mensaje_error/error.php');
 include_once('../admin/smtp_conf_correo.php');
 date_default_timezone_set("America/Bogota");
 include ("../session/funciones_admin.php");
-if (verificar_usuario()){ } else { header('Content-Type: application/json'); echo json_encode(['success' => false, 'mensaje' => 'Sesión no válida']); exit; }
-header('Content-Type: application/json');
+$log_file = 'debug_mail.txt';
+$log_prefix = date('Y-m-d H:i:s') . " - ";
+file_put_contents($log_file, $log_prefix . "Request received: " . json_encode($_POST) . "\n", FILE_APPEND);
 
+if (verificar_usuario()){ file_put_contents($log_file, $log_prefix . "Sesión válida\n", FILE_APPEND); } else { file_put_contents($log_file, $log_prefix . "Sesión no válida. Session ID: " . session_id() . " Session: " . json_encode($_SESSION) . "\n", FILE_APPEND); header('Content-Type: application/json'); echo json_encode(['success' => false, 'mensaje' => 'Sesión no válida']); exit; }
+header('Content-Type: application/json');
+// Verificar conexión DB
+if (!$conectar) { file_put_contents($log_file, $log_prefix . "Error de conexión DB\n", FILE_APPEND); }
 // Obtener información de la empresa
 $sql_infos_empresas = "SELECT * FROM tbl15_info_empresa WHERE cod_info_empresa = '1'";
 $resultado_infos_empresas = mysqli_query($conectar, $sql_infos_empresas);
+if (!$resultado_infos_empresas) { file_put_contents($log_file, $log_prefix . "Error SQL info empresa: " . mysqli_error($conectar) . "\n", FILE_APPEND); }
 $info_empresa_data = mysqli_fetch_assoc($resultado_infos_empresas);
-if (!$info_empresa_data) { echo json_encode(['success' => false, 'mensaje' => 'No se encontró información de la empresa']); exit; }
-
+if (!$info_empresa_data) { 
+    file_put_contents($log_file, $log_prefix . "No se encontró info empresa\n", FILE_APPEND);
+    echo json_encode(['success' => false, 'mensaje' => 'No se encontró información de la empresa']); exit; 
+}
 $titulo_emp                 = isset($info_empresa_data['titulo']) ? $info_empresa_data['titulo'] : '';
 $nombre_emp                 = isset($info_empresa_data['nombre']) ? $info_empresa_data['nombre'] : 'Sistema';
 $eslogan_emp                = isset($info_empresa_data['eslogan']) ? $info_empresa_data['eslogan'] : '';
@@ -27,15 +36,19 @@ $desarrollador_emp          = isset($info_empresa_data['desarrollador']) ? $info
 $pag_desarrollador_emp      = isset($info_empresa_data['pag_desarrollador']) ? $info_empresa_data['pag_desarrollador'] : '#';
 
 if (isset($_POST['correo']) && isset($_POST['nombre_tienda']) && isset($_POST['enlace_gps'])) {
+    // Log de depuración
+    $log_file = 'debug_mail.txt';
+    $log_data = date('Y-m-d H:i:s') . " - Inicio de proceso\n";
+    $log_data .= "POST: " . print_r($_POST, true) . "\n";
+    file_put_contents($log_file, $log_data, FILE_APPEND);
+
     $correo                 = trim($_POST['correo']);
     $nombre_tienda          = trim($_POST['nombre_tienda']);
     $enlace_gps             = trim($_POST['enlace_gps']);
     
     if (empty($correo) || empty($nombre_tienda) || empty($enlace_gps)) { echo json_encode(['success' => false, 'mensaje' => 'Datos incompletos']); exit; }
-    
     // Validar formato de correo
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) { echo json_encode(['success' => false, 'mensaje' => 'El correo electrónico no es válido']); exit; }
-    
     // Configuración del correo
     $nombre_emisor          = ucwords(strtolower($nombre_emp));
     $correo_emisor          = $Username;
@@ -222,8 +235,15 @@ if (isset($_POST['correo']) && isset($_POST['nombre_tienda']) && isset($_POST['e
         $mensaje_texto .= "© " . date('Y') . " Todos los derechos reservados.";
         
         // Configuración del servidor SMTP
-        require_once('../PHPMailer/class.phpmailer.php');
-        require_once('../PHPMailer/class.smtp.php');
+        $phpm1 = '../PHPMailer/class.phpmailer.php';
+        $phpm2 = '../PHPMailer/class.smtp.php';
+        if (!file_exists($phpm1) || !file_exists($phpm2)) {
+            file_put_contents($log_file, $log_prefix . "PHPMailer files NOT FOUND: $phpm1, $phpm2\n", FILE_APPEND);
+            echo json_encode(['success' => false, 'mensaje' => 'Error interno: Archivos de correo no encontrados']);
+            exit;
+        }
+        require_once($phpm1);
+        require_once($phpm2);
         
         $mail = new PHPMailer();
         $mail->SMTPDebug = 0;
@@ -243,16 +263,25 @@ if (isset($_POST['correo']) && isset($_POST['nombre_tienda']) && isset($_POST['e
         $mail->Body = $mensaje_html;        
         $mail->AltBody = $mensaje_texto;
         
+        // Log SMTP Config
+        $log_data = "SMTP Config: Host=$Host, User=$Username, Auth=$SMTPAuth, Secure=$SMTPSecure, Port=$Port\n";
+        file_put_contents($log_file, $log_data, FILE_APPEND);
+        
         // Enviar correo
         if ($mail->Send()) { 
+            file_put_contents($log_file, "Correo enviado correctamente\n\n", FILE_APPEND);
             echo json_encode(['success' => true, 'mensaje' => 'Correo enviado exitosamente a ' . $correo_receptor]); 
         } else { 
+            file_put_contents($log_file, "Error PHPMailer: " . $mail->ErrorInfo . "\n\n", FILE_APPEND);
             echo json_encode(['success' => false, 'mensaje' => 'No se pudo enviar el correo: ' . $mail->ErrorInfo]); 
         }
     } catch (Exception $e) {
+        file_put_contents($log_file, "Excepción: " . $e->getMessage() . "\n\n", FILE_APPEND);
         echo json_encode(['success' => false, 'mensaje' => 'Error al enviar el correo: ' . $e->getMessage()]);
     }
 } else {
+    // Log fallo de parámetros
+    file_put_contents('debug_mail.txt', date('Y-m-d H:i:s') . " - Datos incompletos: " . print_r($_POST, true) . "\n", FILE_APPEND);
     echo json_encode(['success' => false, 'mensaje' => 'Datos incompletos. Se requiere correo, nombre_tienda y enlace_gps.']);
 }
 ?>

@@ -25,9 +25,7 @@ if ($cod_tienda > 0) {
         $consulta = mysqli_query($conectar, $consulta_sql);
         
         if ($consulta) {
-            while ($row = mysqli_fetch_assoc($consulta)) {
-                $response['vendedores'][] = array('cod_vendedor' => $row['cod_administrador'], 'cuenta' => $row['identificacion_tercero'], 'nombres' => $row['nombres_apellidos_tercero'], 'apellidos' => '', 'cod_administrador' => $row['cod_administrador'], 'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'], 'identificacion_tercero' => $row['identificacion_tercero']);
-            }
+            while ($row = mysqli_fetch_assoc($consulta)) { $response['vendedores'][] = array('cod_vendedor' => $row['cod_administrador'], 'cuenta' => $row['identificacion_tercero'], 'nombres' => $row['nombres_apellidos_tercero'], 'apellidos' => '', 'cod_administrador' => $row['cod_administrador'], 'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'], 'identificacion_tercero' => $row['identificacion_tercero']); }
             $response['success'] = true;
         }
     }

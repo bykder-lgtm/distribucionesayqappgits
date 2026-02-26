@@ -469,6 +469,10 @@ body {
     justify-content: center;
 }
 
+.swal-high-zindex {
+    z-index: 10000 !important;
+}
+
 .modal-overlay.show {
     display: flex;
 }
@@ -1551,6 +1555,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="store-actions">
                     <button class="action-btn primary" onclick="editarTienda(<?php echo $tienda['cod_tienda']; ?>)"><i class="fa-solid fa-edit"></i> Editar</button>
+<!--
                     <button class="action-btn secondary" 
                         data-cod="<?php echo htmlspecialchars($cod_tienda_cryp, ENT_QUOTES); ?>"
                         data-nombre="<?php echo htmlspecialchars($tienda['nombre_tienda'], ENT_QUOTES); ?>"
@@ -1559,6 +1564,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         onclick="abrirModalRevisionFirma(this.getAttribute('data-cod'), this.getAttribute('data-nombre'), this.getAttribute('data-estado'), this.getAttribute('data-url'))">
                         <i class="fa-solid fa-signature"></i> Firma
                     </button>
+-->
                     <button class="action-btn <?php echo $tiene_gps ? 'info' : 'secondary'; ?>" 
                         data-cod="<?php echo htmlspecialchars($cod_tienda_cryp, ENT_QUOTES); ?>"
                         data-nombre="<?php echo htmlspecialchars($tienda['nombre_tienda'], ENT_QUOTES); ?>"
@@ -3540,6 +3546,33 @@ function enviarPorCorreo() {
     </div>
 </div>
 
+<!-- Modal Enviar GPS Email -->
+<div class="modal-overlay" id="modalEnviarGPSEmail" style="z-index: 6000;">
+    <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-header" style="background: #EA4335;">
+            <h2><i class="fa-solid fa-envelope"></i> Enviar Solicitud GPS</h2>
+            <button class="modal-close" onclick="cerrarModalEnviarGPSEmail()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div style="text-align: center; margin-bottom: 1.2rem;">
+                <p style="color: rgba(255,255,255,0.8); font-size: 0.95rem;">Ingrese el correo de destino para la tienda: <br><strong id="enviar_gps_tienda_nombre_display" style="color: #EA4335; font-size: 1.1rem; display: block; margin-top: 5px;"></strong></p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Correo Electrónico *</label>
+                <input type="email" class="form-input" id="gps_email_destinatario" placeholder="correo@ejemplo.com" required style="text-align: center;">
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button type="button" onclick="cerrarModalEnviarGPSEmail()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 0.85rem; border-radius: 12px; cursor: pointer; font-weight: 600;">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+                <button type="button" onclick="procesarEnviarGPSEmail()" style="flex: 1; background: #EA4335; color: white; border: none; padding: 0.85rem; border-radius: 12px; cursor: pointer; font-weight: 700;">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Confirmación Firma -->
 <div class="modal-overlay" id="modalConfirmacionFirma">
     <div class="modal-content" style="max-width: 450px;">
@@ -3828,15 +3861,26 @@ function compartirEmail() {
     var codTienda = codTiendaElem.value;
     var nombreTienda = nombreTiendaElem.textContent;
     
-    if (!codTienda) { Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró el código de la tienda', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }}); return;  }
+    if (!codTienda) { 
+        Swal.fire({ 
+            icon: 'error', title: 'Error', text: 'No se encontró el código de la tienda', 
+            background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', 
+            target: document.getElementById('modalRevisionFirma'),
+            customClass: { container: 'swal-high-zindex' }
+        }); 
+        return;  
+    }
+
     // Solicitar correo electrónico del destinatario
     Swal.fire({
-        title: 'Enviar por Correo', html: '<p style="margin-bottom: 15px;">Ingrese el correo electrónico del destinatario:</p>',
+        title: 'Enviar por Correo', 
+        html: '<p style="margin-bottom: 15px;">Ingrese el correo electrónico del destinatario:</p>',
         input: 'email', inputPlaceholder: 'ejemplo@correo.com', showCancelButton: true, confirmButtonText: 'Enviar', cancelButtonText: 'Cancelar',
         background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', cancelButtonColor: '#6b7280',
+        target: document.getElementById('modalRevisionFirma'),
         customClass: { container: 'swal-high-zindex' },
         inputAttributes: {
-            autocomplete: 'email', style: 'background: #2d3748; color: white; border: 1px solid #4a5568; padding: 10px; border-radius: 8px;'
+            autocomplete: 'off'
         },
         inputValidator: (value) => {
             if (!value) { return 'Debe ingresar un correo electrónico'; }
@@ -3846,15 +3890,22 @@ function compartirEmail() {
         if (result.isConfirmed && result.value) {
             // Construir URL de firma
             var currentPath = window.location.pathname;
-            var basePath = currentPath.substring(0, currentPath.lastIndexOf('/app/admin/') + '/app/admin/'.length);
+            var basePath = currentPath.substring(0, currentPath.lastIndexOf('/admin/') + 7);
             var enlaceFirma = window.location.origin + basePath + 'firma_tienda.php?cod=' + encodeURIComponent(codTienda);
             
             // Mostrar indicador de carga
-            Swal.fire({ title: 'Enviando correo...', html: 'Por favor espere', allowOutsideClick: false, allowEscapeKey: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }, didOpen: () => { Swal.showLoading(); } });
+            Swal.fire({ 
+                title: 'Enviando correo...', html: 'Por favor espere', 
+                allowOutsideClick: false, allowEscapeKey: false, 
+                background: '#1a1f2e', color: 'white', 
+                target: document.getElementById('modalRevisionFirma'),
+                customClass: { container: 'swal-high-zindex' }, 
+                didOpen: () => { Swal.showLoading(); } 
+            });
             
             // Enviar correo mediante AJAX
             $.ajax({
-                url: '../admin/enviar_firma_tienda_email.php',
+                url: 'enviar_firma_tienda_email.php',
                 type: 'POST',
                 dataType: 'json',
                 data: {
@@ -3863,22 +3914,18 @@ function compartirEmail() {
                 success: function(response) {
                     if (response.success) {
                         Swal.fire({
-                            icon: 'success',
-                            title: '¡Correo Enviado!',
+                            icon: 'success', title: '¡Correo Enviado!',
                             text: response.mensaje || 'El correo se envió exitosamente',
-                            background: '#1a1f2e',
-                            color: 'white',
-                            confirmButtonColor: '#10b981',
+                            background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981',
+                            target: document.getElementById('modalRevisionFirma'),
                             customClass: { container: 'swal-high-zindex' }
                         });
                     } else {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
+                            icon: 'error', title: 'Error',
                             text: response.mensaje || 'No se pudo enviar el correo',
-                            background: '#1a1f2e',
-                            color: 'white',
-                            confirmButtonColor: '#ef4444',
+                            background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444',
+                            target: document.getElementById('modalRevisionFirma'),
                             customClass: { container: 'swal-high-zindex' }
                         });
                     }
@@ -3886,12 +3933,10 @@ function compartirEmail() {
                 error: function(xhr, status, error) {
                     console.error('Error al enviar correo:', error);
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error de Conexión',
-                        text: 'No se pudo conectar con el servidor para enviar el correo',
-                        background: '#1a1f2e',
-                        color: 'white',
-                        confirmButtonColor: '#ef4444',
+                        icon: 'error', title: 'Error de Conexión',
+                        text: 'No se pudo conectar con el servidor',
+                        background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444',
+                        target: document.getElementById('modalRevisionFirma'),
                         customClass: { container: 'swal-high-zindex' }
                     });
                 }
@@ -4055,18 +4100,11 @@ function confirmarAccionFirma() {
     
     // Enviar petición AJAX con formato más explícito
     $.ajax({
-        url: '../admin/gestionar_firma_ajax.php',
-        type: 'POST',
-        data: {
-            'accion': accion,
-            'cod_tienda': codTienda
-        },
+        url: '../admin/gestionar_firma_ajax.php', type: 'POST',
+        data: { 'accion': accion, 'cod_tienda': codTienda },
         dataType: 'json',
         beforeSend: function() {
-            console.log('Enviando datos:', {
-                'accion': accion,
-                'cod_tienda': codTienda
-            });
+            console.log('Enviando datos:', { 'accion': accion, 'cod_tienda': codTienda });
         },
         success: function(response) {
             console.log('Respuesta del servidor:', response);
@@ -4155,45 +4193,19 @@ function abrirGoogleMaps() {
         var googleMapsUrl = 'https://www.google.com/maps?q=' + encodeURIComponent(window.currentGPSCoords);
         window.open(googleMapsUrl, '_blank');
     } else {
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error', 
-            text: 'No hay coordenadas disponibles', 
-            background: '#1a1f2e', 
-            color: 'white' 
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No hay coordenadas disponibles', background: '#1a1f2e', color: 'white' });
     }
 }
 
 function copiarCoordenadas() {
     if (window.currentGPSCoords) {
         navigator.clipboard.writeText(window.currentGPSCoords).then(function() {
-            Swal.fire({ 
-                icon: 'success', 
-                title: '¡Copiado!', 
-                text: 'Coordenadas copiadas al portapapeles', 
-                timer: 1500, 
-                showConfirmButton: false, 
-                background: '#1a1f2e', 
-                color: 'white' 
-            });
+            Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'Coordenadas copiadas al portapapeles', timer: 1500, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
         }).catch(function() {
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'No se pudo copiar las coordenadas', 
-                background: '#1a1f2e', 
-                color: 'white' 
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar las coordenadas', background: '#1a1f2e', color: 'white' });
         });
     } else {
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error', 
-            text: 'No hay coordenadas disponibles', 
-            background: '#1a1f2e', 
-            color: 'white' 
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No hay coordenadas disponibles', background: '#1a1f2e', color: 'white' });
     }
 }
 
@@ -4202,11 +4214,7 @@ function compartirGPSWhatsApp() {
     var codTienda = document.getElementById('revision_gps_cod_tienda').value;
     var nombreTienda = document.getElementById('revision_gps_nombre_tienda').textContent;
     
-    if (!codTienda) { 
-        alert('No se encontró el código de la tienda'); 
-        return; 
-    }
-    
+    if (!codTienda) { alert('No se encontró el código de la tienda'); return; }
     // Construir URL para capturar GPS (similar a firma_tienda.php)
     var currentPath = window.location.pathname;
     var basePath = currentPath.substring(0, currentPath.lastIndexOf('/app/admin/') + '/app/admin/'.length);
@@ -4222,65 +4230,93 @@ function compartirGPSEmail() {
     var nombreTienda = document.getElementById('revision_gps_nombre_tienda').textContent;
     
     if (!codTienda) { 
-        alert('No se encontró el código de la tienda'); 
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró el código de la tienda', background: '#1a1f2e', color: 'white' }); 
         return; 
     }
+
+    document.getElementById('enviar_gps_tienda_nombre_display').textContent = nombreTienda;
+    document.getElementById('gps_email_destinatario').value = '';
+    document.getElementById('modalEnviarGPSEmail').classList.add('show');
     
-    // Construir URL para capturar GPS
-    var currentPath = window.location.pathname;
-    var basePath = currentPath.substring(0, currentPath.lastIndexOf('/app/admin/') + '/app/admin/'.length);
-    var enlaceGPS = window.location.origin + basePath + 'gps_tienda.php?cod=' + encodeURIComponent(codTienda);
+    // Pequeño delay para asegurar que el teclado no interrumpa el renderizado
+    setTimeout(function() {
+        document.getElementById('gps_email_destinatario').focus();
+    }, 400);
+}
+
+function cerrarModalEnviarGPSEmail() {
+    document.getElementById('modalEnviarGPSEmail').classList.remove('show');
+}
+
+function procesarEnviarGPSEmail() {
+    var codTienda = document.getElementById('revision_gps_cod_tienda').value;
+    var nombreTienda = document.getElementById('revision_gps_nombre_tienda').textContent;
+    var correoDestino = document.getElementById('gps_email_destinatario').value.trim();
     
-    var asunto = 'Solicitud de Ubicación GPS - ' + nombreTienda;
-    var cuerpo = 'Estimado/a,\n\nPor favor registra la ubicación GPS accediendo al siguiente enlace:\n\n' + enlaceGPS + '\n\nGracias.';
-    var mailtoLink = 'mailto:?subject=' + encodeURIComponent(asunto) + '&body=' + encodeURIComponent(cuerpo);
-    window.location.href = mailtoLink;
+    if (!correoDestino || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoDestino)) {
+        Swal.fire({ icon: 'warning', title: 'Correo Inválido', text: 'Por favor ingrese un correo válido', background: '#1a1f2e', color: 'white', target: document.getElementById('modalEnviarGPSEmail') });
+        return;
+    }
+
+    // Mostrar indicador de carga dentro del modal actual
+    Swal.fire({ 
+        title: 'Enviando correo...', 
+        html: 'Por favor espere', 
+        allowOutsideClick: false, 
+        allowEscapeKey: false, 
+        background: '#1a1f2e', 
+        color: 'white', 
+        target: document.getElementById('modalEnviarGPSEmail'),
+        didOpen: () => { Swal.showLoading(); } 
+    });
+
+    var loc = window.location;
+    var path = loc.pathname;
+    var directory = path.substring(0, path.lastIndexOf('/admin/') + 7);
+    var baseUrl = loc.protocol + "//" + loc.host + directory;
+    var enlaceGPS = baseUrl + 'gps_tienda.php?cod=' + encodeURIComponent(codTienda);
+
+    $.ajax({
+        url: 'enviar_gps_tienda_email.php', 
+        type: 'POST', 
+        dataType: 'json',
+        data: { 
+            correo: correoDestino, 
+            nombre_tienda: nombreTienda, 
+            enlace_gps: enlaceGPS 
+        },
+        success: function(response) {
+            if (response.success) {
+                cerrarModalEnviarGPSEmail();
+                Swal.fire({ icon: 'success', title: '¡Correo Enviado!', text: response.mensaje, background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981' });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje, background: '#1a1f2e', color: 'white', target: document.getElementById('modalEnviarGPSEmail') });
+            }
+        },
+        error: function() {
+            Swal.fire({ icon: 'error', title: 'Error de Conexión', text: 'No se pudo conectar con el servidor', background: '#1a1f2e', color: 'white', target: document.getElementById('modalEnviarGPSEmail') });
+        }
+    });
 }
 
 function copiarEnlaceGPS() {
     var codTienda = document.getElementById('revision_gps_cod_tienda').value;
-    
-    if (!codTienda) { 
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error', 
-            text: 'No se encontró el código de la tienda', 
-            background: '#1a1f2e', 
-            color: 'white' 
-        }); 
-        return; 
-    }
-    
+    if (!codTienda) { Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró el código de la tienda', background: '#1a1f2e', color: 'white' }); return; }
     // Construir URL para capturar GPS
     var currentPath = window.location.pathname;
     var basePath = currentPath.substring(0, currentPath.lastIndexOf('/app/admin/') + '/app/admin/'.length);
     var enlaceGPS = window.location.origin + basePath + 'gps_tienda.php?cod=' + encodeURIComponent(codTienda);
     
     navigator.clipboard.writeText(enlaceGPS).then(function() {
-        Swal.fire({ 
-            icon: 'success', 
-            title: '¡Copiado!', 
-            text: 'Enlace copiado al portapapeles', 
-            timer: 1500, 
-            showConfirmButton: false, 
-            background: '#1a1f2e', 
-            color: 'white' 
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'Enlace copiado al portapapeles', timer: 1500, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
     }).catch(function() {
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error', 
-            text: 'No se pudo copiar el enlace', 
-            background: '#1a1f2e', 
-            color: 'white' 
-        });
-    });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace', background: '#1a1f2e', color: 'white' }); });
 }
-
 // Cerrar modal de revisión al hacer clic fuera
 document.getElementById('modalRevisionFirma').addEventListener('click', function(e) { if (e.target === this) { cerrarModalRevisionFirma(); } });
 document.getElementById('modalConfirmacionFirma').addEventListener('click', function(e) { if (e.target === this) { cerrarModalConfirmacion(); } });
 document.getElementById('modalRevisionGPS').addEventListener('click', function(e) { if (e.target === this) { cerrarModalRevisionGPS(); } });
+document.getElementById('modalEnviarGPSEmail').addEventListener('click', function(e) { if (e.target === this) { cerrarModalEnviarGPSEmail(); } });
 </script>
 
 <!-- ====================== SISTEMA DE NOTIFICACIONES ====================== -->

@@ -24,7 +24,6 @@ if ($cod_tienda > 0) {
 }
 // Cerrar conexión
 mysqli_close($conectar);
-
 // Enviar respuesta JSON
 echo json_encode($response);
 ?>

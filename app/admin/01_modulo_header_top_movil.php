@@ -11,9 +11,9 @@ if (isset($nombres_usuario)) {
     // Color principal según el módulo
     $color_top_header = '#8b5cf6'; // Violeta (Líder / Genérico)
     $pagina_ref = stripos($_SERVER['PHP_SELF'], 'vendedor') !== false ? 'vendedor' : 
-                 (stripos($_SERVER['PHP_SELF'], 'asesor') !== false ? 'asesor' : 
-                 (stripos($_SERVER['PHP_SELF'], 'coordinador') !== false ? 'coordinador' : 
-                 (stripos($_SERVER['PHP_SELF'], 'aliado') !== false ? 'aliado' : 'lider')));
+    (stripos($_SERVER['PHP_SELF'], 'asesor') !== false ? 'asesor' : 
+    (stripos($_SERVER['PHP_SELF'], 'coordinador') !== false ? 'coordinador' : 
+    (stripos($_SERVER['PHP_SELF'], 'aliado') !== false ? 'aliado' : 'lider')));
 
     switch($pagina_ref) {
         case 'vendedor': $color_top_header = '#f59e0b'; break; // Naranja
@@ -22,23 +22,13 @@ if (isset($nombres_usuario)) {
         case 'aliado': $color_top_header = '#ec4899'; break; // Rosa
         default: $color_top_header = '#8b5cf6'; break;
     }
-
     $es_placeholder = stripos($url_img_foto_prof_min_usuario, 'perfil-avatar') !== false || empty($url_img_foto_prof_min_usuario);
 ?>
 
 <div class="user-pill-floating">
     <div class="user-pill-content">
-        <div class="user-pill-info">
-            <span class="pill-welcome">Hola,</span>
-            <span class="pill-name"><?php echo ucwords(strtolower($primer_nombre)); ?></span>
-        </div>
-        <div class="user-pill-avatar" style="background: <?php echo $color_top_header; ?>;">
-            <?php if (!$es_placeholder): ?>
-                <img src="<?php echo $url_img_foto_prof_min_usuario; ?>" alt="U">
-            <?php else: ?>
-                <span><?php echo $iniciales_top; ?></span>
-            <?php endif; ?>
-        </div>
+        <div class="user-pill-info"><span class="pill-welcome">Hola,</span><span class="pill-name"><?php echo ucwords(strtolower($primer_nombre)); ?></span></div>
+        <div class="user-pill-avatar" style="background: <?php echo $color_top_header; ?>;"><?php if (!$es_placeholder): ?><img src="<?php echo $url_img_foto_prof_min_usuario; ?>" alt="U"><?php else: ?><span><?php echo $iniciales_top; ?></span><?php endif; ?></div>
     </div>
 </div>
 
