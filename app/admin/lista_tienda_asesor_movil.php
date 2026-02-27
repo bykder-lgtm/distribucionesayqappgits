@@ -1364,6 +1364,106 @@ body {
         transform: translateY(0);
     }
 }
+
+/* Custom Searchable Select */
+.custom-search-select {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-trigger {
+    padding: 0.85rem 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    color: white;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.custom-select-trigger:after {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 0.8rem;
+    color: #10b981;
+}
+
+.custom-search-select.open .custom-select-trigger {
+    border-color: #10b981;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.custom-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1a1f2e;
+    border: 1px solid #10b981;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    z-index: 1000;
+    display: none;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.custom-search-select.open .custom-select-dropdown {
+    display: block;
+}
+
+.custom-select-search-container {
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    background: #1a1f2e;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    z-index: 2;
+}
+
+.custom-select-search-input {
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.custom-select-option {
+    padding: 10px 15px;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.custom-select-option:hover {
+    background: rgba(16, 185, 129, 0.2);
+    color: white;
+}
+
+.custom-select-option.selected {
+    background: rgba(16, 185, 129, 0.3);
+    color: white;
+    font-weight: 600;
+}
+
+.custom-select-option.no-results {
+    padding: 20px;
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+    pointer-events: none;
+}
 </style>
 </head>
 <body>
@@ -1610,16 +1710,26 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 
                 <div class="form-group" id="containerAliado">
                     <label class="form-label">Aliado Estratégico *</label>
-                    <select class="form-select" name="cod_aliado_estrategico" id="cod_aliado_estrategico" onchange="actualizarBancosYComision(this)">
-                        <option value="">Seleccione un aliado</option>
-                        <?php 
-                        if ($resultado_aliados) { mysqli_data_seek($resultado_aliados, 0); }
-                        while ($aliado = mysqli_fetch_assoc($resultado_aliados)): ?>
-                        <option value="<?php echo $aliado['cod_administrador']; ?>" data-comision="<?php echo $aliado['comision_ptj']; ?>">
-                            <?php echo $aliado['nombres_apellidos_tercero'].' ('.$aliado['nombres'].' ' .$aliado['apellidos'].' - '.$aliado['cedula'].')'; ?>
-                        </option>
-                        <?php endwhile; ?>
-                    </select>
+                    <div class="custom-search-select" id="customAliadoSelect">
+                        <div class="custom-select-trigger" id="aliadoTrigger">Seleccione un aliado</div>
+                        <div class="custom-select-dropdown">
+                            <div class="custom-select-search-container" style="position: relative;">
+                                <input type="text" class="custom-select-search-input" id="inputBuscarAliado" placeholder="Buscar aliado..." style="padding-left: 2.5rem;">
+                                <i class="fa-solid fa-search" style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 0.8rem;"></i>
+                            </div>
+                            <div class="custom-select-options" id="listaOpcionesAliado">
+                                <div class="custom-select-option" data-value="">Seleccione un aliado</div>
+                                <?php 
+                                if ($resultado_aliados) { mysqli_data_seek($resultado_aliados, 0); }
+                                while ($aliado = mysqli_fetch_assoc($resultado_aliados)): ?>
+                                <div class="custom-select-option" data-value="<?php echo $aliado['cod_administrador']; ?>" data-comision="<?php echo $aliado['comision_ptj']; ?>">
+                                    <?php echo $aliado['nombres_apellidos_tercero'].' ('.$aliado['nombres'].' ' .$aliado['apellidos'].' - '.$aliado['cedula'].')'; ?>
+                                </div>
+                                <?php endwhile; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="cod_aliado_estrategico" id="cod_aliado_estrategico" required>
                 </div>
 
                 <div class="form-group">
@@ -2185,25 +2295,18 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 // Cargar departamentos en el modal de registro
 function cargarDepartamentosRegistro() {
     $.ajax({
-        url: '../admin/obtener_departamentos_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             if (response.success) {
                 var select = $('#cod_departamento');
                 select.empty();
                 select.append('<option value="">Seleccione un departamento *</option>');
-                $.each(response.departamentos, function(index, dept) {
-                    select.append('<option value="' + dept.cod_departamento + '">' +
-                                dept.nombre_departamento + '</option>');
-                });
+                $.each(response.departamentos, function(index, dept) { select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>'); });
             } else {
                 console.error('Error al cargar departamentos:', response.mensaje);
             }
         },
-        error: function(xhr, status, error) {
-            console.error('Error AJAX al cargar departamentos:', status, error);
-        }
+        error: function(xhr, status, error) { console.error('Error AJAX al cargar departamentos:', status, error); }
     });
 }
 
@@ -2214,26 +2317,14 @@ function cargarMunicipiosRegistro() {
     selectMuni.empty();
     selectMuni.append('<option value="">Seleccione un municipio *</option>');
     
-    if (!codDepartamento) {
-        return;
-    }
+    if (!codDepartamento) { return; }
     
     $.ajax({
-        url: '../admin/obtener_municipios_ajax.php',
-        type: 'GET',
-        data: { cod_departamento: codDepartamento },
-        dataType: 'json',
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
         success: function(response) {
-            if (response.success) {
-                $.each(response.municipios, function(index, muni) {
-                    selectMuni.append('<option value="' + muni.cod_municipio + '">' +
-                                    muni.nombre_municipio + '</option>');
-                });
-            }
+            if (response.success) { $.each(response.municipios, function(index, muni) { selectMuni.append('<option value="' + muni.cod_municipio + '">' +muni.nombre_municipio + '</option>'); }); }
         },
-        error: function() {
-            console.error('Error al cargar municipios');
-        }
+        error: function() { console.error('Error al cargar municipios'); }
     });
 }
 
@@ -2244,16 +2335,12 @@ function cargarMunicipiosRegistroConPreseleccion(codDepartamento, selectedMuni) 
     selectMuni.append('<option value="">Seleccione un municipio *</option>');
     if (!codDepartamento) return;
     $.ajax({
-        url: '../admin/obtener_municipios_ajax.php',
-        type: 'GET',
-        data: { cod_departamento: codDepartamento },
-        dataType: 'json',
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
         success: function(response) {
             if (response.success) {
                 $.each(response.municipios, function(index, muni) {
                     var isSelected = (selectedMuni && muni.cod_municipio == selectedMuni) ? ' selected' : '';
-                    selectMuni.append('<option value="' + muni.cod_municipio + '"' + isSelected + '>' +
-                                    muni.nombre_municipio + '</option>');
+                    selectMuni.append('<option value="' + muni.cod_municipio + '"' + isSelected + '>' + muni.nombre_municipio + '</option>');
                 });
             }
         }
@@ -2264,6 +2351,8 @@ function abrirModalRegistro(tipo = 'normal') {
     const form = document.getElementById('formRegistroTienda');
     form.reset();
     
+    // Resetear custom select de aliados
+    if (window.resetCustomAliadoSelect) window.resetCustomAliadoSelect();
     // Habilitar campos y mostrar botón
     Array.from(form.elements).forEach(ele => ele.disabled = false);
     document.querySelector('.submit-btn').style.display = 'block';
@@ -2277,18 +2366,13 @@ function abrirModalRegistro(tipo = 'normal') {
     const iconModal = document.getElementById('iconModalTienda');
     
     // Otros campos que podrían ser obligatorios
-    const camposOpcionales = [
-        { el: document.getElementById('cod_departamento'), label: 'Departamento' },
-        { el: document.getElementById('cod_municipio'), label: 'Municipio' },
-        { el: document.getElementById('direccion_tercero'), label: 'Dirección' },
-        { el: document.getElementById('barrio_tercero'), label: 'Barrio' }
-    ];
+    const camposOpcionales = [ { el: document.getElementById('cod_departamento'), label: 'Departamento' }, { el: document.getElementById('cod_municipio'), label: 'Municipio' }, { el: document.getElementById('direccion_tercero'), label: 'Dirección' }, { el: document.getElementById('barrio_tercero'), label: 'Barrio' } ];
     
     if (tipo === 'rapida') {
         containerAliado.style.display = 'none';
         selectAliado.removeAttribute('required');
+        if (window.resetCustomAliadoSelect) window.resetCustomAliadoSelect();
         selectAliado.value = '0';
-        
         // Quitar required y asteriscos de los labels para tienda rápida
         camposOpcionales.forEach(item => {
             if (item.el) {
@@ -2305,7 +2389,7 @@ function abrirModalRegistro(tipo = 'normal') {
     } else {
         containerAliado.style.display = 'block';
         selectAliado.setAttribute('required', 'required');
-        
+        if (window.resetCustomAliadoSelect) window.resetCustomAliadoSelect();
         // Restaurar required y asteriscos para tienda normal
         camposOpcionales.forEach(item => {
             if (item.el) {
@@ -2314,21 +2398,17 @@ function abrirModalRegistro(tipo = 'normal') {
                 if (label) label.innerHTML = item.label + ' *'; // Con asterisco
             }
         });
-        
         tituloModal.innerText = 'Nueva Tienda';
         iconModal.className = 'fa-solid fa-store';
         document.querySelector('.submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> Registrar Tienda Completa';
         document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
     }
-    
     // Limpiar previsualizaciones
     document.querySelectorAll('.image-preview').forEach(el => { el.src = ''; el.style.display = 'none'; });
-    
     // Cargar departamentos
     cargarDepartamentosRegistro();
     document.getElementById('modalRegistro').classList.add('show');
 }
-
 function cerrarModal() { document.getElementById('modalRegistro').classList.remove('show'); }
 // Cargar bancos al seleccionar aliado
 function actualizarBancosYComision(select) {
@@ -2340,15 +2420,11 @@ function actualizarBancosYComision(select) {
     if (codAliado) {
         if (bancoSelect) { bancoSelect.disabled = true; }
         if (loading) { loading.style.display = 'block'; }
-        
         // Pre-llenar datos del aliado
         prellenarDatosAliado(codAliado);
         
         $.ajax({
-            url: 'obtener_bancos_cuenta_por_aliado_ajax.php',
-            type: 'POST',
-            data: { cod_aliado_estrategico: codAliado },
-            dataType: 'json',
+            url: 'obtener_bancos_cuenta_por_aliado_ajax.php', type: 'POST', data: { cod_aliado_estrategico: codAliado }, dataType: 'json',
             success: function(response) {
                 if (bancoSelect) {
                     bancoSelect.innerHTML = '';
@@ -2371,10 +2447,7 @@ function actualizarBancosYComision(select) {
             },
             error: function() {
                 if (loading) { loading.style.display = 'none'; }
-                if (bancoSelect) {
-                    bancoSelect.innerHTML = '<option value="">-- Error al cargar bancos --</option>';
-                    bancoSelect.disabled = false;
-                }
+                if (bancoSelect) { bancoSelect.innerHTML = '<option value="">-- Error al cargar bancos --</option>'; bancoSelect.disabled = false; }
                 Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los bancos', background: '#1a1f2e', color: 'white' });
             }
         });
@@ -2388,15 +2461,11 @@ function actualizarBancosYComision(select) {
         camposLimpiar.forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
     }
 }
-
 // Pre-llenar campos del formulario con datos del aliado seleccionado
 function prellenarDatosAliado(codAliado) {
     if (!codAliado) return;
     $.ajax({
-        url: 'obtener_datos_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_aliado: codAliado },
-        dataType: 'json',
+        url: 'obtener_datos_aliado_ajax.php', type: 'POST', data: { cod_aliado: codAliado }, dataType: 'json',
         success: function(response) {
             if (response.success && response.aliado) {
                 var a = response.aliado;
@@ -2411,9 +2480,7 @@ function prellenarDatosAliado(codAliado) {
                 if (a.cod_departamento) {
                     $('#cod_departamento').val(a.cod_departamento).trigger('change');
                     // Cargar municipios con preselección
-                    setTimeout(function() {
-                        cargarMunicipiosRegistroConPreseleccion(a.cod_departamento, a.cod_municipio);
-                    }, 500);
+                    setTimeout(function() { cargarMunicipiosRegistroConPreseleccion(a.cod_departamento, a.cod_municipio); }, 500);
                 }
             }
         }
@@ -2484,16 +2551,17 @@ function editarTienda(codTienda) {
     Swal.fire({ title: 'Cargando...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
     
     $.ajax({
-        url: 'get_tienda_modal_asesor_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'get_tienda_modal_asesor_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             Swal.close();
             if(response.success) {
                 const t = response.tienda;
                 const form = document.getElementById('formRegistroTienda');
                 form.reset();
+
+                // Resetear custom select de aliados
+                if (window.resetCustomAliadoSelect) window.resetCustomAliadoSelect();
+
                 Array.from(form.elements).forEach(ele => ele.disabled = false);
                 document.querySelector('.submit-btn').style.display = 'block';
                 document.getElementById('accion').value = 'editar';
@@ -2507,12 +2575,13 @@ function editarTienda(codTienda) {
                 if (tipo === 'rapida') {
                     containerAliado.style.display = 'none';
                     selectAliado.removeAttribute('required');
+                    if (window.resetCustomAliadoSelect) window.resetCustomAliadoSelect();
                     selectAliado.value = '0';
                     document.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-bolt"></i> Editar Tienda Rápida';
                 } else {
                     containerAliado.style.display = 'block';
                     selectAliado.setAttribute('required', 'required');
-                    selectAliado.value = t.cod_aliado_estrategico;
+                    if (window.setCustomAliadoValue) window.setCustomAliadoValue(t.cod_aliado_estrategico);
                     document.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-edit"></i> Editar Tienda';
                 }
                 
@@ -2529,11 +2598,7 @@ function editarTienda(codTienda) {
                     if (t.cod_departamento) {
                         $('#cod_departamento').val(t.cod_departamento);
                         cargarMunicipiosRegistro();
-                        setTimeout(() => {
-                            if (t.cod_municipio) {
-                                $('#cod_municipio').val(t.cod_municipio);
-                            }
-                        }, 500);
+                        setTimeout(() => { if (t.cod_municipio) { $('#cod_municipio').val(t.cod_municipio); } }, 500);
                     }
                 }, 500);
 
@@ -2542,32 +2607,22 @@ function editarTienda(codTienda) {
                     actualizarBancosYComision(selectAliado);
                     setTimeout(() => { if(document.getElementById('cod_banco_cuenta')) { document.getElementById('cod_banco_cuenta').value = t.cod_banco_cuenta; } }, 1000);
                 }
-                
                 // ========== MOSTRAR DOCUMENTOS E IMÁGENES EXISTENTES ==========
                 mostrarDocumentosCargados(t);
                 mostrarImagenesCargadas(t);
                 
                 document.querySelector('.submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> Guardar Cambios';
-                if (tipo === 'rapida') {
-                     document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)';
-                } else {
-                     document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-                }
+                if (tipo === 'rapida') { document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)'; } else { document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)'; }
                 document.getElementById('modalRegistro').classList.add('show');
             } else {
                 Swal.fire({ icon:'error', title:'Error', text:response.message, background:'#1a1f2e', color:'white' });
             }
         },
-        error: function() {
-             Swal.fire({ icon:'error', title:'Error', text:'No se pudo obtener la información', background:'#1a1f2e', color:'white' });
-        }
+        error: function() { Swal.fire({ icon:'error', title:'Error', text:'No se pudo obtener la información', background:'#1a1f2e', color:'white' }); }
     });
 }
 
-function verDetalles(codTienda) {
-    // Redirigir a la página de detalles de tienda
-    window.location.href = 'ver_detalle_tienda_movil.php?cod_tienda=' + codTienda;
-}
+function verDetalles(codTienda) { /*Redirigir a la página de detalles de tienda*/ window.location.href = 'ver_detalle_tienda_movil.php?cod_tienda=' + codTienda; }
 
 // Función para mostrar documentos cargados
 function mostrarDocumentosCargados(tienda) {
@@ -2601,16 +2656,13 @@ function mostrarDocumentosCargados(tienda) {
 // Función para mostrar previsualización de documentos (PDF o imagen)
 function mostrarPreviewDocumento(url, contenedor, titulo) {
     if (!url || !contenedor) return;
-    
-    console.log('Mostrando preview de:', url);
+    //console.log('Mostrando preview de:', url);
     
     const extension = url.split('.').pop().toLowerCase();
     const esPDF = extension === 'pdf';
     const esImagen = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension);
-    
     // Limpiar contenedor
     contenedor.innerHTML = '';
-    
     // Crear encabezado
     const header = document.createElement('div');
     header.className = 'document-preview-header';
@@ -2673,22 +2725,14 @@ function mostrarPreviewDocumento(url, contenedor, titulo) {
         img.src = url;
         img.alt = titulo;
         img.style.cursor = 'pointer';
-        img.onclick = function() {
-            console.log('Clic en imagen:', url);
-            window.open(url, '_blank');
-        };
+        img.onclick = function() { console.log('Clic en imagen:', url); window.open(url, '_blank'); };
         contenedor.appendChild(img);
     } else {
         const mensaje = document.createElement('p');
         mensaje.style.cssText = 'color: rgba(255,255,255,0.7); text-align: center; padding: 2rem;';
-        mensaje.innerHTML = `
-            <i class="fa-solid fa-file" style="font-size: 3rem; color: #10b981; display: block; margin-bottom: 1rem;"></i>
-            Archivo no soportado para previsualización.<br>
-            Usa los botones de arriba para abrir o descargar.
-        `;
+        mensaje.innerHTML = `<i class="fa-solid fa-file" style="font-size: 3rem; color: #10b981; display: block; margin-bottom: 1rem;"></i>Archivo no soportado para previsualización.<br>Usa los botones de arriba para abrir o descargar.`;
         contenedor.appendChild(mensaje);
     }
-    
     contenedor.style.display = 'block';
 }
 
@@ -2717,7 +2761,6 @@ function mostrarImagenesCargadas(tienda) {
         previewLogo.style.cursor = 'pointer';
         previewLogo.onclick = function() { window.open(tienda.url_img_orig_tienda, '_blank'); };
     }
-    
     // Fachada
     if (tienda.url_img_fachada_tienda && tienda.url_img_fachada_tienda.trim() !== '') {
         const previewFachada = document.getElementById('preview_fachada');
@@ -2726,7 +2769,6 @@ function mostrarImagenesCargadas(tienda) {
         previewFachada.style.cursor = 'pointer';
         previewFachada.onclick = function() { window.open(tienda.url_img_fachada_tienda, '_blank'); };
     }
-    
     // Interna
     if (tienda.url_img_interna_tienda && tienda.url_img_interna_tienda.trim() !== '') {
         const previewInterna = document.getElementById('preview_interna');
@@ -2735,7 +2777,6 @@ function mostrarImagenesCargadas(tienda) {
         previewInterna.style.cursor = 'pointer';
         previewInterna.onclick = function() { window.open(tienda.url_img_interna_tienda, '_blank'); };
     }
-    
     // Selfie con Admin
     if (tienda.url_img_selfieadmin_tienda && tienda.url_img_selfieadmin_tienda.trim() !== '') {
         const previewSelfie = document.getElementById('preview_selfie');
@@ -2769,10 +2810,7 @@ function compartirEnlaceFirma(codTiendaCryp, nombreTienda, codEstadoFirma, urlFi
                 </a>
             </div>
         `,
-        showConfirmButton: false,
-        showCloseButton: true,
-        background: '#1a1f2e',
-        color: 'white'
+        showConfirmButton: false, showCloseButton: true, background: '#1a1f2e', color: 'white'
     });
 }
 
@@ -2813,11 +2851,7 @@ document.getElementById('formRegistroTienda').addEventListener('submit', functio
                     abrirModalConfirmacion(response.nombre_tienda);
                 } else {
                     // Para editar, mostrar mensaje de éxito y recargar
-                    Swal.fire({ 
-                        icon: 'success', title: successTitle, text: successMsg, confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true
-                    }).then(() => { 
-                        location.reload(); 
-                    });
+                    Swal.fire({ icon: 'success', title: successTitle, text: successMsg, confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true }).then(() => { location.reload(); });
                 }
             } else {
                 console.error('Error del servidor:', response.message);
@@ -2853,14 +2887,12 @@ function abrirModalFirma(codTiendaCryp, nombreTienda, correo, telefono) {
 }
 function cerrarModalFirma() { document.getElementById('modalFirmaElectronica').classList.remove('show'); }
 function cerrarModalFirmaYRecargar() { cerrarModalFirma(); location.reload(); }
-
 // =====================================================
 // FUNCIONES PARA MODAL DE CONFIRMACIÓN POST-REGISTRO
 // =====================================================
 function abrirModalConfirmacion(nombreTienda) { document.getElementById('confirmNombreTienda').textContent = nombreTienda; document.getElementById('modalConfirmacionRegistro').classList.add('show'); }
 function cerrarModalConfirmacion() { document.getElementById('modalConfirmacionRegistro').classList.remove('show'); }
 function cerrarConfirmacionYRecargar() { cerrarModalConfirmacion(); location.reload(); }
-
 // Contadores para items registrados en esta sesión
 window._vendedoresRegistrados = [];
 window._productosRegistrados = [];
@@ -2956,10 +2988,7 @@ function cargarVendedoresTienda(codTienda) {
     window._vendedoresRegistrados = [];
 
     $.ajax({
-        url: 'obtener_vendedores_por_tienda_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'obtener_vendedores_por_tienda_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             list.innerHTML = '';
             if (response.success && response.vendedores && response.vendedores.length > 0) {
@@ -2970,9 +2999,7 @@ function cargarVendedoresTienda(codTienda) {
                 list.innerHTML = '<div style="text-align:center; padding:1rem; opacity:0.5; font-size: 0.8rem;">No hay vendedores registrados aún</div>';
             }
         },
-        error: function() {
-            list.innerHTML = '<div style="text-align:center; padding:1rem; color:#ef4444; font-size: 0.8rem;">Error al cargar vendedores</div>';
-        }
+        error: function() { list.innerHTML = '<div style="text-align:center; padding:1rem; color:#ef4444; font-size: 0.8rem;">Error al cargar vendedores</div>'; }
     });
 }
 
@@ -2987,10 +3014,7 @@ function cargarProductosTienda(codTienda) {
     window._productosRegistrados = [];
 
     $.ajax({
-        url: 'obtener_productos_por_tienda_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'obtener_productos_por_tienda_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             list.innerHTML = '';
             if (response.success && response.productos && response.productos.length > 0) {
@@ -3001,9 +3025,7 @@ function cargarProductosTienda(codTienda) {
                 list.innerHTML = '<div style="text-align:center; padding:1rem; opacity:0.5; font-size: 0.8rem;">No hay productos registrados aún</div>';
             }
         },
-        error: function() {
-            list.innerHTML = '<div style="text-align:center; padding:1rem; color:#ef4444; font-size: 0.8rem;">Error al cargar productos</div>';
-        }
+        error: function() { list.innerHTML = '<div style="text-align:center; padding:1rem; color:#ef4444; font-size: 0.8rem;">Error al cargar productos</div>'; }
     });
 }
 // ========== FUNCIONES PARA VER LISTA DE VENDEDORES Y PRODUCTOS ==========
@@ -3014,10 +3036,7 @@ function verVendedoresTienda(codTienda, nombreTienda) {
     document.getElementById('modalVerVendedores').classList.add('show');
     
     $.ajax({
-        url: 'obtener_vendedores_por_tienda_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'obtener_vendedores_por_tienda_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             list.innerHTML = '';
             if (response.success && response.vendedores && response.vendedores.length > 0) {
@@ -3036,9 +3055,7 @@ function verVendedoresTienda(codTienda, nombreTienda) {
                 list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;">No hay vendedores registrados</div>';
             }
         },
-        error: function() {
-            list.innerHTML = '<div style="text-align:center; padding:2rem; color:#ef4444;">Error al cargar datos</div>';
-        }
+        error: function() { list.innerHTML = '<div style="text-align:center; padding:2rem; color:#ef4444;">Error al cargar datos</div>'; }
     });
 }
 
@@ -3049,10 +3066,7 @@ function verProductosTienda(codTienda, nombreTienda) {
     document.getElementById('modalVerProductos').classList.add('show');
     
     $.ajax({
-        url: 'obtener_productos_por_tienda_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'obtener_productos_por_tienda_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             list.innerHTML = '';
             if (response.success && response.productos && response.productos.length > 0) {
@@ -3189,12 +3203,10 @@ function agregarProductoALista(nombre, codigo, precioVenta, esExistente) {
     '</div>';
     list.insertAdjacentHTML('beforeend', html);
 }
-
 // ========== FORMULARIO REGISTRO VENDEDOR ==========
 document.getElementById('formRegistroVendedor').addEventListener('submit', function(e) {
     e.preventDefault();
     var formData = new FormData(this);
-    
     Swal.fire({ title: 'Registrando vendedor...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
@@ -3205,7 +3217,6 @@ document.getElementById('formRegistroVendedor').addEventListener('submit', funct
                 var nombreVendedor = document.getElementById('vendedor_nombre').value + ' ' + document.getElementById('vendedor_apellido').value;
                 var idVendedor = document.getElementById('vendedor_identificacion').value;
                 agregarVendedorALista(nombreVendedor, idVendedor, response.usuario || '');
-                
                 // Limpiar formulario pero mantener cod_tienda
                 var codTienda = document.getElementById('vendedor_cod_tienda').value;
                 document.getElementById('formRegistroVendedor').reset();
@@ -3242,12 +3253,7 @@ document.getElementById('formRegistroProducto').addEventListener('submit', funct
     Swal.fire({ title: 'Registrando producto...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: 'reg_producto_tienda_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: 'reg_producto_tienda_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
@@ -3263,17 +3269,7 @@ document.getElementById('formRegistroProducto').addEventListener('submit', funct
                 var previewImg = document.getElementById('preview_producto_img');
                 if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
                 
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Producto Registrado!',
-                    text: 'El producto fue creado correctamente.',
-                    confirmButtonColor: '#f59e0b',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    timer: 2500,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Producto Registrado!', text: 'El producto fue creado correctamente.', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white', timer: 2500, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el producto', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
@@ -3284,26 +3280,13 @@ document.getElementById('formRegistroProducto').addEventListener('submit', funct
         }
     });
 });
-
 // Cerrar modales al hacer clic fuera
-document.getElementById('modalConfirmacionRegistro').addEventListener('click', function(e) {
-    if (e.target === this) { cerrarConfirmacionYRecargar(); }
-});
-document.getElementById('modalRegistroVendedor').addEventListener('click', function(e) {
-    if (e.target === this) { cerrarModalVendedor(); }
-});
-document.getElementById('modalRegistroProducto').addEventListener('click', function(e) {
-    if (e.target === this) { cerrarModalProducto(); }
-});
-document.getElementById('modalVerVendedores').addEventListener('click', function(e) {
-    if (e.target === this) { cerrarModalVerVendedores(); }
-});
-document.getElementById('modalVerProductos').addEventListener('click', function(e) {
-    if (e.target === this) { cerrarModalVerProductos(); }
-});
-document.getElementById('modalVerCreditos').addEventListener('click', function(e) {
-    if (e.target === this) { cerrarModalVerCreditos(); }
-});
+document.getElementById('modalConfirmacionRegistro').addEventListener('click', function(e) { if (e.target === this) { cerrarConfirmacionYRecargar(); } });
+document.getElementById('modalRegistroVendedor').addEventListener('click', function(e) { if (e.target === this) { cerrarModalVendedor(); } });
+document.getElementById('modalRegistroProducto').addEventListener('click', function(e) { if (e.target === this) { cerrarModalProducto(); } });
+document.getElementById('modalVerVendedores').addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerVendedores(); } });
+document.getElementById('modalVerProductos').addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerProductos(); } });
+document.getElementById('modalVerCreditos').addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerCreditos(); } });
 
 function copiarEnlaceFirma() {
     var enlace = document.getElementById('firma_enlace').value;
@@ -3332,21 +3315,7 @@ function enviarPorWhatsApp() {
     var telefonoFormateado = telefono.replace(/[\s\-\(\)\.]/g, '');
     if (!telefonoFormateado.startsWith('+') && !telefonoFormateado.startsWith('57')) { telefonoFormateado = '57' + telefonoFormateado; }
     
-    var mensaje = encodeURIComponent(
-        'Hola!\n\n' +
-        '*EXCELENTES NOTICIAS*\n\n' +
-        'Su tienda *' + nombreTienda + '* ha sido registrada exitosamente.\n\n' +
-        '--------------------\n' +
-        '*FIRMA ELECTRONICA*\n' +
-        '--------------------\n\n' +
-        'Para completar el proceso, siga estos pasos:\n\n' +
-        '1. Haga clic en el enlace\n' +
-        '2. Dibuje su firma\n' +
-        '3. Confirme\n\n' +
-        '*Enlace de firma:*\n' +
-        enlace + '\n\n' +
-        'Gracias por confiar en nosotros!'
-    );
+    var mensaje = encodeURIComponent('Hola!\n\n' +'*EXCELENTES NOTICIAS*\n\n' +'Su tienda *' + nombreTienda + '* ha sido registrada exitosamente.\n\n' +'--------------------\n' +'*FIRMA ELECTRONICA*\n' +'--------------------\n\n' +'Para completar el proceso, siga estos pasos:\n\n' +'1. Haga clic en el enlace\n' +'2. Dibuje su firma\n' +'3. Confirme\n\n' + '*Enlace de firma:*\n' + enlace + '\n\n' +'Gracias por confiar en nosotros!');
     if (telefonoFormateado && telefonoFormateado.length >= 10) { window.open('https://wa.me/' + telefonoFormateado + '?text=' + mensaje, '_blank'); } else { window.open('https://wa.me/?text=' + mensaje, '_blank'); }
 }
 function enviarPorCorreo() {
@@ -3357,84 +3326,33 @@ function enviarPorCorreo() {
     
     // Validar que el correo esté completo
     if (!correo || correo.trim() === '') {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Correo Requerido',
-            text: 'Por favor ingrese el correo electrónico del cliente',
-            confirmButtonColor: '#667eea',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Correo Requerido', text: 'Por favor ingrese el correo electrónico del cliente', confirmButtonColor: '#667eea', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
     // Validar formato de correo
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Correo Inválido',
-            text: 'Por favor ingrese un correo electrónico válido',
-            confirmButtonColor: '#667eea',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Correo Inválido', text: 'Por favor ingrese un correo electrónico válido', confirmButtonColor: '#667eea', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
     // Mostrar loading
-    Swal.fire({
-        title: 'Enviando Correo...',
-        html: 'Por favor espere mientras se envía el correo electrónico',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        customClass: { container: 'swal-high-zindex' },
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-    
+    Swal.fire({ title: 'Enviando Correo...', html: 'Por favor espere mientras se envía el correo electrónico', allowOutsideClick: false, allowEscapeKey: false, customClass: { container: 'swal-high-zindex' }, didOpen: () => { Swal.showLoading(); } });
     // Enviar correo mediante AJAX
     $.ajax({
         url: 'enviar_enlace_firma_correo.php',
         type: 'POST',
-        data: {
-            correo: correo,
-            enlace: enlace,
-            nombre_tienda: nombreTienda,
-            cod_tienda: codTienda
-        },
-        dataType: 'json',
+        data: { correo: correo, enlace: enlace, nombre_tienda: nombreTienda, cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Correo Enviado!',
-                    html: '<p>' + response.mensaje + '</p><p style="font-size: 0.9rem; color: #6b7280; margin-top: 10px;">El cliente recibirá el enlace para firmar en su correo electrónico.</p>',
-                    confirmButtonColor: '#10b981',
-                    confirmButtonText: 'Entendido',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Correo Enviado!', html: '<p>' + response.mensaje + '</p><p style="font-size: 0.9rem; color: #6b7280; margin-top: 10px;">El cliente recibirá el enlace para firmar en su correo electrónico.</p>', confirmButtonColor: '#10b981', confirmButtonText: 'Entendido', customClass: { container: 'swal-high-zindex' } });
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al Enviar',
-                    text: response.mensaje || 'No se pudo enviar el correo electrónico',
-                    footer: response.error ? '<small style="color: #ef4444;">' + response.error + '</small>' : '',
-                    confirmButtonColor: '#ef4444',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error al Enviar', text: response.mensaje || 'No se pudo enviar el correo electrónico', footer: response.error ? '<small style="color: #ef4444;">' + response.error + '</small>' : '', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             Swal.close();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de Conexión',
-                text: 'No se pudo conectar con el servidor para enviar el correo',
-                footer: '<small style="color: #ef4444;">Error: ' + error + '</small>',
-                confirmButtonColor: '#ef4444',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de Conexión', text: 'No se pudo conectar con el servidor para enviar el correo', footer: '<small style="color: #ef4444;">Error: ' + error + '</small>', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -4947,6 +4865,116 @@ $('#formAgregarVendedor').on('submit', function(e) {
 document.getElementById('modalAgregarVendedor').addEventListener('click', function(e) {
     if (e.target === this) { cerrarModalAgregarVendedor(); }
 });
+
+// ============================================
+// LÓGICA SEARCHABLE SELECT CUSTOM
+// ============================================
+(function() {
+    const trigger = document.getElementById('aliadoTrigger');
+    const customSelect = document.getElementById('customAliadoSelect');
+    const searchInput = document.getElementById('inputBuscarAliado');
+    const options = document.querySelectorAll('#listaOpcionesAliado .custom-select-option');
+    const hiddenInput = document.getElementById('cod_aliado_estrategico');
+
+    if (!trigger || !customSelect) return;
+
+    // Toggle dropdown
+    trigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        customSelect.classList.toggle('open');
+        if (customSelect.classList.contains('open')) {
+            searchInput.focus();
+        }
+    });
+
+    // Handle search
+    searchInput.addEventListener('input', function(e) {
+        const term = e.target.value.toLowerCase();
+        let results = 0;
+        
+        options.forEach(opt => {
+            const text = opt.textContent.toLowerCase();
+            if (text.includes(term)) {
+                opt.style.display = 'block';
+                results++;
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+
+        // Handle no results
+        let noResults = customSelect.querySelector('.no-results');
+        if (results === 0) {
+            if (!noResults) {
+                noResults = document.createElement('div');
+                noResults.className = 'custom-select-option no-results';
+                noResults.textContent = 'No se encontraron resultados';
+                document.getElementById('listaOpcionesAliado').appendChild(noResults);
+            }
+        } else if (noResults) {
+            noResults.remove();
+        }
+    });
+
+    // Handle selection
+    options.forEach(opt => {
+        opt.addEventListener('click', function() {
+            const val = this.getAttribute('data-value');
+            const text = this.textContent.trim();
+            
+            // Update UI
+            trigger.textContent = text;
+            options.forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            
+            // Update hidden input
+            hiddenInput.value = val;
+            
+            // Trigger original logic
+            actualizarBancosYComision(hiddenInput);
+            
+            // Close
+            customSelect.classList.remove('open');
+            searchInput.value = '';
+            options.forEach(o => o.style.display = 'block');
+        });
+    });
+
+    // Close on click outside
+    document.addEventListener('click', function() {
+        customSelect.classList.remove('open');
+    });
+
+    // Stop propagation inside dropdown
+    customSelect.querySelector('.custom-select-dropdown').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // Función global para resetear el custom select
+    window.resetCustomAliadoSelect = function() {
+        trigger.textContent = 'Seleccione un aliado';
+        hiddenInput.value = '';
+        options.forEach(o => o.classList.remove('selected'));
+        searchInput.value = '';
+        options.forEach(o => o.style.display = 'block');
+    };
+
+    // Función global para establecer valor en el custom select
+    window.setCustomAliadoValue = function(val) {
+        let found = false;
+        options.forEach(opt => {
+            if (opt.getAttribute('data-value') == val) {
+                trigger.textContent = opt.textContent.trim();
+                opt.classList.add('selected');
+                hiddenInput.value = val;
+                found = true;
+            } else {
+                opt.classList.remove('selected');
+            }
+        });
+        if (!found) resetCustomAliadoSelect();
+    };
+})();
 
 </script>
 
