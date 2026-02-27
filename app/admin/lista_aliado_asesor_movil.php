@@ -296,7 +296,7 @@ body {
 
 .ally-role {
     padding: 0.25rem 0.5rem;
-    border-radius: 16px;
+    border-radius: 12px;
     font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
@@ -333,6 +333,82 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Ally Stats */
+.ally-stats {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.ally-stat-item {
+    flex: 1;
+    text-align: center;
+    padding: 0.4rem;
+    border-radius: 8px;
+    background: rgba(16, 185, 129, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(16, 185, 129, 0.05);
+}
+
+.ally-stat-item:hover {
+    background: rgba(16, 185, 129, 0.15);
+    transform: translateY(-1px);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.ally-stat-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #10b981;
+    display: block;
+}
+
+.ally-stat-label {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+}
+
+/* Quick Action Buttons */
+.ally-quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-quick-action {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.btn-quick-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-quick-action.btn-tienda {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.btn-quick-action.btn-banco {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
 }
 
 /* Modal */
@@ -865,6 +941,18 @@ if (!$resultado) {
     $resultado = mysqli_query($conectar, $sql);
 }
 $total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
+
+// --- TOTALES PARA EL HEADER ---
+// Tiendas totales de los aliados de este asesor
+$sql_total_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23')";
+$res_total_tiendas = mysqli_query($conectar, $sql_total_tiendas);
+$total_tiendas_header = ($res_total_tiendas) ? mysqli_fetch_assoc($res_total_tiendas)['total'] : 0;
+
+// Cuentas bancarias totales de los aliados de este asesor
+$sql_total_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23') AND cod_estado = '1'";
+$res_total_bancos = mysqli_query($conectar, $sql_total_bancos);
+$total_bancos_header = ($res_total_bancos) ? mysqli_fetch_assoc($res_total_bancos)['total'] : 0;
+// -----------------------------
 // Consultas para combos - Líder (20)
 $sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY nombres_apellidos_tercero ASC";
 $res_lider = mysqli_query($conectar, $sql_lider);
@@ -900,7 +988,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         <div class="header-stats">
             <div class="header-stat">
                 <div class="header-stat-value"><?php echo $total_registros; ?></div>
-                <div class="header-stat-label">Total</div>
+                <div class="header-stat-label">Aliados</div>
+            </div>
+            <div class="header-stat">
+                <div class="header-stat-value"><?php echo $total_tiendas_header; ?></div>
+                <div class="header-stat-label">Tiendas</div>
+            </div>
+            <div class="header-stat">
+                <div class="header-stat-value"><?php echo $total_bancos_header; ?></div>
+                <div class="header-stat-label">Cuentas</div>
             </div>
         </div>
     </div>
@@ -945,6 +1041,19 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 $tiendas_arr = [];
                 while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #10b981; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
                 $tiendas_texto = count($tiendas_arr) > 0 ? implode(', ', $tiendas_arr) : 'Sin tiendas';
+                
+                // --- NUEVAS ESTADÍSTICAS ---
+                // Contar tiendas totales de este aliado
+                $sql_count_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado'";
+                $res_count_tiendas = mysqli_query($conectar, $sql_count_tiendas);
+                $total_tiendas_aliado = ($res_count_tiendas) ? mysqli_fetch_assoc($res_count_tiendas)['total'] : 0;
+                
+                // Contar cuentas bancarias de este aliado
+                $sql_count_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico = '$cod_aliado' AND cod_estado = '1'";
+                $res_count_bancos = mysqli_query($conectar, $sql_count_bancos);
+                $total_bancos_aliado = ($res_count_bancos) ? mysqli_fetch_assoc($res_count_bancos)['total'] : 0;
+                // ---------------------------
+
                 // Obtener líneas de crédito asociadas a este aliado
                 $sql_lineas_credito = "SELECT ec.nombre_entidad_crediticia, peca.interes_ptj 
                 FROM tbl15_parametrizacion_entidad_crediticia_aliado peca INNER JOIN tbl15_entidad_crediticia ec ON peca.cod_entidad_crediticia = ec.cod_entidad_crediticia 
@@ -990,12 +1099,30 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     -->
                 </div>
 
+                <div class="ally-stats">
+                    <div class="ally-stat-item" onclick="window.location.href='lista_tienda_asesor_movil.php?busqueda=<?php echo urlencode($row['cedula']); ?>'">
+                        <span class="ally-stat-number"><?php echo $total_tiendas_aliado; ?></span>
+                        <span class="ally-stat-label">Tiendas</span>
+                    </div>
+                    <div class="ally-stat-item" onclick="abrirModalAgregarBanco(<?php echo $row['cod_administrador']; ?>)">
+                        <span class="ally-stat-number"><?php echo $total_bancos_aliado; ?></span>
+                        <span class="ally-stat-label">Cuentas</span>
+                    </div>
+                </div>
+
+                <div class="ally-quick-actions">
+                    <button class="btn-quick-action btn-tienda" onclick="window.location.href='lista_tienda_asesor_movil.php?registrar_tienda=1&cod_aliado=<?php echo $row['cod_administrador']; ?>'">
+                        <i class="fa-solid fa-store"></i> +Tienda
+                    </button>
+                    <button class="btn-quick-action btn-banco" onclick="abrirModalAgregarBanco(<?php echo $row['cod_administrador']; ?>)">
+                        <i class="fa-solid fa-university"></i> +Banco
+                    </button>
+                </div>
+
                 <div class="ally-actions">
                     <a href="ver_detalle_aliado_movil.php?cod_administrador=<?php echo $row['cod_administrador']; ?>" class="action-btn view"><i class="fa-solid fa-eye"></i> Detalles</a>
-                    <button class="action-btn edit" onclick="abrirModalEditar(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)"><i class="fa-solid fa-edit"></i> Editar y Agregar</button>
-                    <button class="action-btn share" onclick="compartirDocumentacion(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-share-nodes"></i> Compartir Docs</button>
-                    <button class="action-btn create-doc" onclick="crearDocumento(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-file-signature"></i> Crear Documento</button>
-
+                    <button class="action-btn edit" onclick="abrirModalEditar(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)"><i class="fa-solid fa-edit"></i> Editar Todo</button>
+                    <button class="action-btn create-doc" onclick="crearDocumento(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-file-signature"></i> Firma</button>
                 </div>
             </div>
             <?php endwhile; ?>
