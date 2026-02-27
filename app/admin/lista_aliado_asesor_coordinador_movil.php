@@ -1189,6 +1189,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     $count_lineas++;
                 }
                 $lineas_credito_texto = $count_lineas > 0 ? $lineas_credito_html : '<span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">Sin entidades</span>';
+
+                // Contar tiendas del aliado
+                $total_tiendas_aliado = mysqli_num_rows(mysqli_query($conectar, "SELECT cod_tienda FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado'"));
+                // Contar bancos del aliado
+                $total_bancos_aliado = mysqli_num_rows(mysqli_query($conectar, "SELECT cod_banco_cuenta FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico = '$cod_aliado'"));
             ?>
             <div class="ally-card animate-in delay-2">
                 <div class="ally-header">
@@ -1219,6 +1224,17 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         </div>
                     </div>
                     -->
+                </div>
+
+                <div class="ally-stats">
+                    <div class="ally-stat-item" onclick="abrirModalVerTiendas(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
+                        <span class="ally-stat-number"><?php echo $total_tiendas_aliado; ?></span>
+                        <span class="ally-stat-label">Tiendas</span>
+                    </div>
+                    <div class="ally-stat-item" onclick="abrirModalVerCuentas(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
+                        <span class="ally-stat-number"><?php echo $total_bancos_aliado; ?></span>
+                        <span class="ally-stat-label">Cuentas</span>
+                    </div>
                 </div>
 
                 <div class="ally-actions">
@@ -4772,6 +4788,122 @@ function escapeHtmlMovil(text) {
             }, 600);
         }
     }, 10000);
+</script>
+<!-- Modal Ver Tiendas -->
+<div class="modal-overlay" id="modalVerTiendas" style="align-items: flex-start; padding-top: 20px;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h2 style="font-size: 1rem;"><i class="fa-solid fa-store"></i> Tiendas: <span id="v_nombre_aliado_t"></span></h2>
+            <button class="modal-close" onclick="cerrarModalVerTiendas()" style="background: rgba(255,255,255,0.2); color: white;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div id="lista_tiendas_aliadas_v"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ver Cuentas -->
+<div class="modal-overlay" id="modalVerCuentas" style="align-items: flex-start; padding-top: 20px;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);">
+            <h2 style="font-size: 1rem;"><i class="fa-solid fa-university"></i> Cuentas: <span id="v_nombre_aliado_c"></span></h2>
+            <button class="modal-close" onclick="cerrarModalVerCuentas()" style="background: rgba(255,255,255,0.2); color: white;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div id="lista_cuentas_aliadas_v"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.ally-stats { display: flex; background: rgba(0,0,0,0.2); border-radius: 12px; margin-top: 0.75rem; overflow: hidden; }
+.ally-stat-item { flex: 1; padding: 0.75rem; text-align: center; border-right: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.3s ease; }
+.ally-stat-item:last-child { border-right: none; }
+.ally-stat-item:active { background: rgba(255,255,255,0.1); }
+.ally-stat-number { display: block; color: white; font-size: 1.1rem; font-weight: 800; line-height: 1; margin-bottom: 0.2rem; }
+.ally-stat-label { display: block; color: rgba(255,255,255,0.5); font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.view-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.view-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; transition: all 0.3s ease; }
+.view-item:active { background: rgba(255,255,255,0.1); transform: scale(0.98); }
+.view-item-title { color: white; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+.view-item-detail { color: rgba(255,255,255,0.6); font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+</style>
+
+<script>
+// Funciones para ver tiendas
+function abrirModalVerTiendas(codAliado, nombreAliado) {
+    document.getElementById('v_nombre_aliado_t').textContent = nombreAliado;
+    const container = document.getElementById('lista_tiendas_aliadas_v');
+    container.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #10b981;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.6);">Cargando tiendas...</p></div>';
+    $('#modalVerTiendas').fadeIn().css('display', 'flex');
+
+    $.ajax({
+        url: 'obtener_tiendas_por_aliado_ajax.php',
+        type: 'POST',
+        data: { cod_aliado_estrategico: codAliado },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.tiendas.length > 0) {
+                let html = '<div class="view-list">';
+                response.tiendas.forEach(tienda => {
+                    html += `
+                        <div class="view-item" onclick="window.location.href='lista_tienda_coordinador_movil.php?busqueda=${encodeURIComponent(tienda.identificacion_tercero)}'">
+                            <div class="view-item-title">${tienda.nombre_tienda}</div>
+                            <div class="view-item-detail"><i class="fa-solid fa-id-card"></i> ${tienda.identificacion_tercero}</div>
+                            <div class="view-item-detail"><i class="fa-solid fa-map-marker-alt"></i> ${tienda.direccion_tercero}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-store-slash" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>No hay tiendas registradas</p></div>';
+            }
+        },
+        error: function() {
+            container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al cargar tiendas</p></div>';
+        }
+    });
+}
+function cerrarModalVerTiendas() { $('#modalVerTiendas').fadeOut(); }
+
+// Funciones para ver cuentas
+function abrirModalVerCuentas(codAliado, nombreAliado) {
+    document.getElementById('v_nombre_aliado_c').textContent = nombreAliado;
+    const container = document.getElementById('lista_cuentas_aliadas_v');
+    container.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #f97316;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.6);">Cargando cuentas...</p></div>';
+    $('#modalVerCuentas').fadeIn().css('display', 'flex');
+
+    $.ajax({
+        url: 'obtener_bancos_cuenta_por_aliado_ajax.php',
+        type: 'POST',
+        data: { cod_aliado_estrategico: codAliado },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.bancos.length > 0) {
+                let html = '<div class="view-list">';
+                response.bancos.forEach(banco => {
+                    html += `
+                        <div class="view-item">
+                            <div class="view-item-title">${banco.nombre_banco_cuenta}</div>
+                            <div class="view-item-detail"><i class="fa-solid fa-hashtag"></i> No. ${banco.numero_banco_cuenta}</div>
+                            <div class="view-item-detail"><i class="fa-solid fa-user"></i> ${banco.nombre_titular_cuenta}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-university" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>No hay cuentas registradas</p></div>';
+            }
+        },
+        error: function() {
+            container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al cargar cuentas</p></div>';
+        }
+    });
+}
+function cerrarModalVerCuentas() { $('#modalVerCuentas').fadeOut(); }
 </script>
 </body>
 </html>
