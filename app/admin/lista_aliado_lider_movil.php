@@ -838,18 +838,10 @@ body {
 /* Actions */
 .ally-actions {
     display: flex;
-    flex-direction: column;
     gap: 0.5rem;
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-@media (min-width: 641px) {
-    .ally-actions {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
 }
 
 .action-btn {

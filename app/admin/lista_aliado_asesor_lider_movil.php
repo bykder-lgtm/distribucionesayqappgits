@@ -795,7 +795,6 @@ body {
 
 @media (max-width: 480px) {
     .ally-actions {
-        flex-direction: column;
         gap: 0.4rem;
     }
 }
