@@ -4908,6 +4908,15 @@ function abrirModalVerCuentas(codAliado, nombreAliado) {
     });
 }
 function cerrarModalVerCuentas() { $('#modalVerCuentas').fadeOut(); }
+
+// Cerrar modales al clic fuera
+$(document).ready(function() {
+    const modalTiendas = document.getElementById('modalVerTiendas');
+    if (modalTiendas) modalTiendas.addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerTiendas(); } });
+    
+    const modalCuentas = document.getElementById('modalVerCuentas');
+    if (modalCuentas) modalCuentas.addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerCuentas(); } });
+});
 </script>
 </body>
 </html>

@@ -914,13 +914,10 @@ select[id^="edit_municipio_tienda_"] option {
 // Obtener parámetros de búsqueda
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
-
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
-
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
-
 // Filtro de documentación
 if ($filtro_doc == '1') {
     $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
@@ -932,7 +929,6 @@ if ($filtro_doc == '1') {
 
 $sql .= " ORDER BY a.cod_administrador DESC";
 $resultado = mysqli_query($conectar, $sql);
-
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
@@ -966,13 +962,13 @@ $res_total_bancos = mysqli_query($conectar, $sql_total_bancos);
 $total_bancos_header = ($res_total_bancos) ? mysqli_fetch_assoc($res_total_bancos)['total'] : 0;
 // -----------------------------
 // Consultas para combos - Líder (20)
-$sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY nombres_apellidos_tercero ASC";
+$sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY cod_administrador DESC";
 $res_lider = mysqli_query($conectar, $sql_lider);
 // Consultas para combos - Coordinador (21)
-$sql_coord = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY nombres_apellidos_tercero ASC";
+$sql_coord = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY cod_administrador DESC";
 $res_coord = mysqli_query($conectar, $sql_coord);
 // Consultas para combos - Asesor (22)// Por defecto se preselecciona el actual
-$sql_asesor = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
+$sql_asesor = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' ORDER BY cod_administrador DESC";
 $res_asesor = mysqli_query($conectar, $sql_asesor);
 // Consulta de entidades crediticias
 $sql_entidades = "SELECT cod_entidad_crediticia, nombre_entidad_crediticia, url_pagina_web_consulta, aliado_estrategico_interes_ptj FROM tbl15_entidad_crediticia WHERE cod_estado = '1' ORDER BY cod_posicion ASC";
@@ -3098,8 +3094,8 @@ function abrirModalEditar(data) {
             }
         },
         error: function(xhr, status, error) {
-            console.log('Error en AJAX:', status, error);
-            console.log('Respuesta del servidor:', xhr.responseText);
+            //console.log('Error en AJAX:', status, error);
+            //console.log('Respuesta del servidor:', xhr.responseText);
             $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(239, 68, 68, 0.8);"><i class="fa-solid fa-exclamation-triangle" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Error al cargar entidades. Intente nuevamente.</p></div>');
         }
     });
@@ -4700,7 +4696,7 @@ function abrirModalAgregarBanco(codAliadoEstrategico) {
     // Asignar el código del aliado estratégico a los campos del formulario
     document.getElementById('agregar_banco_cod_administrador').value = codAliadoEstrategico;
     document.getElementById('agregar_banco_cod_aliado_estrategico').value = codAliadoEstrategico;
-    console.log('Modal Agregar Banco - Código Aliado:', codAliadoEstrategico);
+    //console.log('Modal Agregar Banco - Código Aliado:', codAliadoEstrategico);
     document.getElementById('modalAgregarBanco').classList.add('show');
 }
 
@@ -4958,7 +4954,7 @@ $('#formRegistro').on('submit', function(e) {
         url: '../admin/reg_aliado_modal_asesor_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(resp) {
             Swal.close();
-            console.log('Respuesta del servidor:', resp); // Debug
+            //console.log('Respuesta del servidor:', resp); // Debug
             
             if(resp.afectado === 'SI' || resp.afectado === 'EXISTE') {
                 cerrarModal();
@@ -5970,10 +5966,17 @@ function enviarSignaturePorEmail() {
         }
     });
 }
-// Cerrar modal firma al clic fuera
-document.getElementById('modalCrearDocumentoFirma').addEventListener('click', function(e) { if (e.target === this) { cerrarModalCrearDocumento(); } });
-document.getElementById('modalVerTiendas').addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerTiendas(); } });
-document.getElementById('modalVerCuentas').addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerCuentas(); } });
+// Cerrar modales al clic fuera
+$(document).ready(function() {
+    const modalFirma = document.getElementById('modalCrearDocumentoFirma');
+    if (modalFirma) modalFirma.addEventListener('click', function(e) { if (e.target === this) { cerrarModalCrearDocumento(); } });
+    
+    const modalTiendas = document.getElementById('modalVerTiendas');
+    if (modalTiendas) modalTiendas.addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerTiendas(); } });
+    
+    const modalCuentas = document.getElementById('modalVerCuentas');
+    if (modalCuentas) modalCuentas.addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerCuentas(); } });
+});
 
 // Funciones para ver tiendas
 function abrirModalVerTiendas(codAliado, nombreAliado) {
