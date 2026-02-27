@@ -29,7 +29,7 @@ $url_img_foto_prof_orig                                         = '';
 if (isset($cod_administrador) && !empty($cod_administrador)) {
     $cod_administrador = intval($cod_administrador);
     $sql_usuario = "SELECT cod_administrador, cedula, nombres, apellidos, correo, telefono, direccion_tercero, ciudad, departamento, fecha_nac_tercero,
-    nombre_sexo, url_img_foto_prof_min, url_img_foto_prof_orig FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador'";
+    nombre_sexo, url_img_foto_prof_min, url_img_foto_prof_orig, cod_estado_usuario_prueba, url_documentacion_cedula_aliado, url_documentacion_rut_aliado, url_documentacion_camaracomercio_aliado FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador'";
     $resultado_usuario = mysqli_query($conectar, $sql_usuario);
     if ($resultado_usuario && mysqli_num_rows($resultado_usuario) > 0) { 
         $datos_usuario = mysqli_fetch_assoc($resultado_usuario);
@@ -39,7 +39,7 @@ if (isset($cod_administrador) && !empty($cod_administrador)) {
         $apellidos                                                      = isset($datos_usuario['apellidos']) ? $datos_usuario['apellidos'] : '';
         $correo                                                         = isset($datos_usuario['correo']) ? $datos_usuario['correo'] : '';
         $telefono                                                       = isset($datos_usuario['telefono']) ? $datos_usuario['telefono'] : '';
-        $direccion_tercero                                               = isset($datos_usuario['direccion_tercero']) ? $datos_usuario['direccion_tercero'] : '';
+        $direccion_tercero                                              = isset($datos_usuario['direccion_tercero']) ? $datos_usuario['direccion_tercero'] : '';
         $ciudad                                                         = isset($datos_usuario['ciudad']) ? $datos_usuario['ciudad'] : '';
         $departamento                                                   = isset($datos_usuario['departamento']) ? $datos_usuario['departamento'] : '';
         $fecha_nac_tercero                                              = isset($datos_usuario['fecha_nac_tercero']) ? $datos_usuario['fecha_nac_tercero'] : '';
@@ -656,6 +656,64 @@ if (isset($cod_administrador) && !empty($cod_administrador)) {
                 </form>
             </div>
         </div>
+
+        <!-- Card: Documentación -->
+        <div class="perfil-card" id="cardDocumentacion">
+            <div class="perfil-card-header">
+                <div class="perfil-card-header-left"><i class="fa fa-file-contract"></i><h3>Documentación Legal</h3></div>
+                <button type="button" class="btn-edit-section view-mode" onclick="toggleEditMode('cardDocumentacion')"><i class="fa fa-upload"></i> Subir</button>
+            </div>
+
+            <!-- Modo Visualización -->
+            <div class="view-mode">
+                <?php 
+                $docs = [
+                    ['label' => 'Cédula', 'path' => $datos_usuario['url_documentacion_cedula_aliado'], 'icon' => 'id-card'],
+                    ['label' => 'RUT', 'path' => $datos_usuario['url_documentacion_rut_aliado'], 'icon' => 'file-pdf'],
+                    ['label' => 'Cámara de Comercio', 'path' => $datos_usuario['url_documentacion_camaracomercio_aliado'], 'icon' => 'building']
+                ];
+                foreach ($docs as $doc):
+                ?>
+                <div class="info-row">
+                    <span class="info-label"><?php echo $doc['label']; ?></span>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.25rem;">
+                        <span class="info-value <?php echo empty($doc['path']) ? 'empty' : ''; ?>">
+                            <?php echo !empty($doc['path']) ? '<i class="fa fa-check-circle" style="color: #10b981;"></i> Cargado' : 'Pendiente'; ?>
+                        </span>
+                        <?php if(!empty($doc['path'])): ?>
+                        <a href="<?php echo $doc['path']; ?>" target="_blank" style="color: #00d4ff; font-size: 0.8rem; text-decoration: none;"><i class="fa fa-external-link"></i> Ver documento</a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- Modo Edición -->
+            <div class="edit-mode">
+                <form id="formDocumentacion" enctype="multipart/form-data">
+                    <input type="hidden" name="cod_administrador" value="<?php echo $cod_administrador; ?>">
+                    <input type="hidden" name="seccion" value="documentacion">
+                    
+                    <div class="form-group-perfil">
+                        <label for="doc_cedula"><i class="fa fa-id-card"></i> Cédula (Imagen o PDF)</label>
+                        <input type="file" id="doc_cedula" name="url_documentacion_cedula_aliado" accept="image/*,.pdf">
+                    </div>
+                    <div class="form-group-perfil">
+                        <label for="doc_rut"><i class="fa fa-file-pdf"></i> RUT</label>
+                        <input type="file" id="doc_rut" name="url_documentacion_rut_aliado" accept="image/*,.pdf">
+                    </div>
+                    <div class="form-group-perfil">
+                        <label for="doc_camara"><i class="fa fa-building"></i> Cámara de Comercio</label>
+                        <input type="file" id="doc_camara" name="url_documentacion_camaracomercio_aliado" accept="image/*,.pdf">
+                    </div>
+                    
+                    <div class="btn-group-perfil">
+                        <button type="button" class="btn-perfil btn-perfil-secondary" onclick="toggleEditMode('cardDocumentacion')"><i class="fa fa-times"></i> Cancelar</button>
+                        <button type="submit" class="btn-perfil btn-perfil-primary"><i class="fa fa-save"></i> Subir Documentos</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </main>
 
@@ -671,20 +729,13 @@ function showAlert(message, type) {
     alertEl.className = 'alert-perfil ' + type;
     alertEl.innerHTML = '<i class="fa fa-' + (type === 'success' ? 'check-circle' : 'exclamation-circle') + '"></i> ' + message;
     alertEl.style.display = 'block';
-    
     // Scroll hacia arriba para ver la alerta
     window.scrollTo({top: 0, behavior: 'smooth'});
-    
     // Ocultar después de 5 segundos
-    setTimeout(function() {
-        alertEl.style.display = 'none';
-    }, 5000);
+    setTimeout(function() { alertEl.style.display = 'none'; }, 5000);
 }
-
 // ===================== CAMBIAR FOTO DE PERFIL =====================
-document.getElementById('btnCambiarFoto').addEventListener('click', function() {
-    document.getElementById('inputFotoPerfil').click();
-});
+document.getElementById('btnCambiarFoto').addEventListener('click', function() { document.getElementById('inputFotoPerfil').click(); });
 
 document.getElementById('inputFotoPerfil').addEventListener('change', function(e) {
     var file = e.target.files[0];
@@ -696,7 +747,6 @@ document.getElementById('inputFotoPerfil').addEventListener('change', function(e
             avatarPreview.innerHTML = '<img src="' + e.target.result + '" alt="Foto de perfil" id="avatarImg">';
         };
         reader.readAsDataURL(file);
-        
         // Subir foto
         var formData = new FormData();
         formData.append('foto_perfil', file);
@@ -705,25 +755,11 @@ document.getElementById('inputFotoPerfil').addEventListener('change', function(e
         document.getElementById('loadingOverlay').classList.add('active');
         
         $.ajax({
-            url: 'actualizar_foto_perfil_ajax.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
+            url: 'actualizar_foto_perfil_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
             success: function(response) {
-                if (response.success) {
-                    showAlert(response.message, 'success');
-                } else {
-                    showAlert(response.message, 'error');
-                }
+                if (response.success) { showAlert(response.message, 'success'); } else { showAlert(response.message, 'error'); }
             },
-            error: function() {
-                showAlert('Error de conexión al subir la foto', 'error');
-            },
-            complete: function() {
-                document.getElementById('loadingOverlay').classList.remove('active');
-            }
+            error: function() { showAlert('Error de conexión al subir la foto', 'error'); }, complete: function() { document.getElementById('loadingOverlay').classList.remove('active'); }
         });
     }
 });
@@ -742,28 +778,19 @@ function submitForm(formId, cardId) {
         submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Guardando...';
         
         $.ajax({
-            url: 'actualizar_perfil_ajax.php',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            dataType: 'json',
+            url: 'actualizar_perfil_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
             success: function(response) {
                 if (response.success) {
                     showAlert(response.message, 'success');
                     // Cerrar modo edición
                     toggleEditMode(cardId);
                     // Recargar página para mostrar los nuevos datos
-                    setTimeout(function() {
-                        location.reload();
-                    }, 1500);
+                    setTimeout(function() { location.reload(); }, 1500);
                 } else {
                     showAlert(response.message, 'error');
                 }
             },
-            error: function() {
-                showAlert('Error de conexión al guardar los datos', 'error');
-            },
+            error: function() { showAlert('Error de conexión al guardar los datos', 'error'); },
             complete: function() {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
@@ -776,6 +803,7 @@ function submitForm(formId, cardId) {
 submitForm('formInfoPersonal', 'cardInfoPersonal');
 submitForm('formContacto', 'cardContacto');
 submitForm('formUbicacion', 'cardUbicacion');
+submitForm('formDocumentacion', 'cardDocumentacion');
 </script>
 
 <?php include_once("../menu/05_modulo_menu_aliado_movil.php"); ?>

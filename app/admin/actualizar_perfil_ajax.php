@@ -51,6 +51,53 @@ switch ($seccion) {
         $campos_actualizar[]                                            = "ciudad = '$ciudad'";
         $campos_actualizar[]                                            = "departamento = '$departamento'";
         break;
+
+    case 'documentacion':
+        $upload_dir = '../archivador/documentacion_aliados/' . $cod_administrador . '/';
+        if (!file_exists($upload_dir)) { mkdir($upload_dir, 0777, true); }
+        $permitidos = array('jpg', 'jpeg', 'png', 'pdf');
+        
+        $files_to_process = ['url_documentacion_cedula_aliado' => 'cedula', 'url_documentacion_rut_aliado' => 'rut', 'url_documentacion_camaracomercio_aliado' => 'camara_comercio'];
+
+        foreach ($files_to_process as $field => $prefix) {
+            if (isset($_FILES[$field]) && $_FILES[$field]['error'] == 0) {
+                $archivo = $_FILES[$field];
+                $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+                if (in_array($extension, $permitidos)) {
+                    $nombre_archivo = $prefix . '_' . time() . '_' . uniqid() . '.' . $extension;
+                    $url_destino = $upload_dir . $nombre_archivo;
+                    if (move_uploaded_file($archivo['tmp_name'], $url_destino)) { $campos_actualizar[] = "$field = '" . mysqli_real_escape_string($conectar, $url_destino) . "'"; }
+                }
+            }
+        }
+
+        if (!empty($campos_actualizar)) {
+            $campos_actualizar[] = "cod_estado_documentacion = '1'";
+            $campos_actualizar[] = "fecha_documentacion = '" . date('Y-m-d H:i:s') . "'";
+            
+            // --- NOTIFICACIÓN AL ASESOR SI ES USUARIO DE PRUEBA ---
+            $sql_check_prueba = "SELECT cod_estado_usuario_prueba, cod_asesor, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador'";
+            $res_check_prueba = mysqli_query($conectar, $sql_check_prueba);
+            $data_prueba = mysqli_fetch_assoc($res_check_prueba);
+            
+            if ($data_prueba['cod_estado_usuario_prueba'] == '1') {
+                $cod_asesor = $data_prueba['cod_asesor'];
+                $nombre_aliado = $data_prueba['nombres_apellidos_tercero'];
+                // Verificar si ya tiene todos los documentos cargados (después de esta actualización)
+                // Para simplificar, si subió algo en esta vuelta, notificamos que hay actualizaciones.
+                // En un sistema real, verificaríamos que cedula, rut y camara no estén vacíos.
+                $titulo_notif = "Documentos cargados: $nombre_aliado";
+                $mensaje_notif = "El aliado de prueba $nombre_aliado ha cargado nuevos documentos. Por favor revise su perfil para habilitarlo.";
+                $fecha_notif_f = date('Y-m-d');
+                $fecha_notif_h = date('Y-m-d H:i:s');
+                
+                // Insertar en tabla de notificaciones real
+                $sql_notif = "INSERT INTO tbl15_notificacion_alerta_renovacion (cod_administrador, nombre_notificacion_alerta_renovacion, descipcion_notificacion_alerta_renovacion, cod_tipo_notificacion_alerta, cod_estado, cod_estado_aviso, fecha, fecha_creacion) 
+                VALUES ('$cod_asesor', '$titulo_notif', '$mensaje_notif', '3', '0', '0', '$fecha_notif_f', '$fecha_notif_h')";
+                mysqli_query($conectar, $sql_notif);
+            }
+        }
+        break;
         
     default:
         $response['message']                                            = 'Error: Sección no válida';

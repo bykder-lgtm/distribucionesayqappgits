@@ -916,7 +916,7 @@ $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GE
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.cod_estado_usuario_prueba, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 // Filtro de documentación
 if ($filtro_doc == '1') {
@@ -931,7 +931,7 @@ $sql .= " ORDER BY a.cod_administrador DESC";
 $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
-    $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
+    $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.cod_estado_usuario_prueba, a.comision_ptj, 
     a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
     
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
@@ -1029,6 +1029,9 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         <button class="add-button" style="margin-bottom: 0; flex: 1.5;" onclick="abrirModal()">
             <i class="fa-solid fa-plus"></i> Registrar Nuevo Aliado
         </button>
+        <button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" onclick="abrirModalRapido()">
+            <i class="fa-solid fa-bolt"></i> Registro Rápido
+        </button>
         <a href="lista_firma_digital_documentos_asesor_movil.php" class="add-button" style="margin-bottom: 0; flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; text-decoration: none;">
             <i class="fa-solid fa-file-signature"></i> Ver Firmas
         </a>
@@ -1084,6 +1087,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <span class="ally-role" style="background: <?php echo $estado_bg; ?>; color: <?php echo $estado_color; ?>;">
                         <?php echo $estado_texto; ?>
                     </span>
+                    <?php if ($row['cod_estado_usuario_prueba'] == '1'): ?>
+                    <span class="ally-role" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); margin-left: 0.5rem;">
+                        <i class="fa-solid fa-bolt" style="margin-right: 0.25rem;"></i> PRUEBA
+                    </span>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="ally-details">
@@ -1130,6 +1138,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="ally-actions">
                     <a href="ver_detalle_aliado_movil.php?cod_administrador=<?php echo $row['cod_administrador']; ?>" class="action-btn view"><i class="fa-solid fa-eye"></i> Detalles</a>
                     <button class="action-btn edit" onclick="abrirModalEditar(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)"><i class="fa-solid fa-edit"></i> Editar Todo</button>
+                    <?php if ($row['cod_estado_usuario_prueba'] == '1'): ?>
+                    <button class="action-btn" style="background: #10b981; color: white;" onclick="habilitarAliado(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
+                        <i class="fa-solid fa-check-circle"></i> Habilitar
+                    </button>
+                    <?php endif; ?>
                     <button class="action-btn create-doc" onclick="crearDocumento(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-file-signature"></i> Firma</button>
                 </div>
             </div>
@@ -6090,3 +6103,163 @@ function cerrarModalVerCuentas() { $('#modalVerCuentas').fadeOut(); }
 </body>
 </html>
 
+
+<!-- Modal Registro Rápido -->
+<div class="modal-overlay" id="modalRegistroRapido" style="align-items: center; z-index: 5000;">
+    <div class="modal-content" style="max-width: 450px; border-radius: 24px; padding: 0; background: #0f172a; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 1.5rem; position: relative;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 14px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+                    <i class="fa-solid fa-bolt" style="color: white; font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <h2 style="color: white; margin: 0; font-size: 1.25rem; font-weight: 700;">Registro Rápido</h2>
+                    <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 0.85rem;">Crear aliado de prueba en segundos</p>
+                </div>
+            </div>
+            <button class="modal-close" onclick="cerrarModalRapido()" style="background: rgba(0,0,0,0.2); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; top: 1.25rem; right: 1.25rem; color: white;">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body" style="padding: 1.5rem;">
+            <form id="formRegistroRapido">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Nombre Comercial del Aliado *</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-store" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
+                        <input type="text" class="form-input" name="nombres_apellidos_tercero" placeholder="Ej: Tienda La Bendición" required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Teléfono Móvil *</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-phone" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
+                        <input type="tel" class="form-input" name="telefono1_tercero" placeholder="Ej: 3001234567" required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Correo Electrónico *</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-envelope" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
+                        <input type="email" class="form-input" name="correo_tercero" placeholder="aliado@ejemplo.com" required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                    </div>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 16px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 0.75rem;">
+                        <i class="fa-solid fa-circle-info" style="color: #f59e0b; font-size: 1.1rem; margin-top: 0.15rem;"></i>
+                        <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 0.75rem; line-height: 1.5;">
+                            Este registro creará un <strong>Aliado de Prueba</strong> con un límite inicial de <strong>3 créditos</strong>. Podrá completar su información después.
+                        </p>
+                    </div>
+                </div>
+
+                <button type="submit" style="width: 100%; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 1.1rem; border-radius: 16px; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: all 0.3s ease; box-shadow: 0 10px 15px -3px rgba(217, 119, 6, 0.3);">
+                    <i class="fa-solid fa-bolt"></i> Crear Aliado de Prueba
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function abrirModalRapido() {
+    $('#modalRegistroRapido').fadeIn().css('display', 'flex');
+}
+
+function cerrarModalRapido() {
+    $('#modalRegistroRapido').fadeOut();
+}
+
+$(document).ready(function() {
+    $('#formRegistroRapido').on('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = $(this).serialize();
+        
+        Swal.fire({
+            title: 'Registrando...',
+            text: 'Estamos creando el aliado de prueba',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: 'reg_aliado_rapido_ajax_reg.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.afectado === "SI") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Aliado Creado!',
+                        text: response.mensaje,
+                        confirmButtonText: 'Perfecto'
+                    }).then(() => {
+                        cerrarModalRapido();
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.mensaje
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Red',
+                    text: 'No se pudo conectar con el servidor'
+                });
+            }
+        });
+    });
+});
+
+function habilitarAliado(cod_administrador, nombre_aliado) {
+    Swal.fire({
+        title: '¿Habilitar Aliado?',
+        text: "El aliado " + nombre_aliado + " pasará a ser un aliado normal sin límite de créditos.",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, habilitar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Procesando...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            $.ajax({
+                url: 'habilitar_aliado_prueba_ajax.php',
+                type: 'POST',
+                data: { cod_administrador: cod_administrador },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire('¡Habilitado!', response.message, 'success')
+                        .then(() => { location.reload(); });
+                    } else {
+                        Swal.fire('Error', response.message, 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'No se pudo procesar la solicitud', 'error');
+                }
+            });
+        }
+    });
+}
+</script>

@@ -584,6 +584,18 @@ $total_alertas                                                      = isset($dat
 $meses_esp = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 $mes_nombre = $meses_esp[date('n') - 1];
 $anio = date('Y');
+
+// --- DATOS USUARIO PRUEBA ---
+$sql_user_prueba = "SELECT cod_estado_usuario_prueba FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador'";
+$res_user_prueba = mysqli_query($conectar, $sql_user_prueba);
+$data_user_prueba = mysqli_fetch_assoc($res_user_prueba);
+$es_prueba = ($data_user_prueba['cod_estado_usuario_prueba'] == '1');
+$creditos_restantes = 0;
+if ($es_prueba) {
+    $total_creados = $total_creditos_activos + $total_creditos_cerrados;
+    $creditos_restantes = 3 - $total_creados;
+    if ($creditos_restantes < 0) $creditos_restantes = 0;
+}
 ?>
 
 <main class="dashboard-container">
@@ -593,6 +605,29 @@ $anio = date('Y');
         <p>Resumen ejecutivo de tu negocio</p>
         <div class="dashboard-date"><i class="fa fa-calendar"></i><?php echo "$mes_nombre $anio"; ?></div>
     </div>
+
+    <?php if ($es_prueba): ?>
+    <!-- Alerta Usuario de Prueba -->
+    <div class="animate-in" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3); position: relative; overflow: hidden;">
+        <div style="position: absolute; right: -20px; top: -20px; font-size: 8rem; color: rgba(255,255,255,0.1); transform: rotate(15deg);">
+            <i class="fa fa-bolt"></i>
+        </div>
+        <div style="position: relative; z-index: 2;">
+            <h3 style="color: white; margin: 0 0 0.5rem 0; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fa fa-info-circle"></i> Cuenta de Prueba
+            </h3>
+            <p style="color: rgba(255,255,255,0.9); font-size: 0.95rem; margin-bottom: 1rem; line-height: 1.4;">
+                Tienes una cuenta limitada. Te quedan <strong><?php echo $creditos_restantes; ?> créditos</strong> disponibles.
+            </p>
+            <div style="background: rgba(255,255,255,0.2); height: 8px; border-radius: 4px; margin-bottom: 1rem;">
+                <div style="background: white; height: 100%; border-radius: 4px; width: <?php echo ($total_creados / 3) * 100; ?>%;"></div>
+            </div>
+            <a href="perfil_aliado_movil.php" style="display: inline-flex; align-items: center; gap: 0.5rem; background: white; color: #d97706; padding: 0.75rem 1.25rem; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: all 0.3s ease;">
+                Completar Información <i class="fa fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- Acciones Rápidas -->
     <div class="quick-actions animate-in delay-1">

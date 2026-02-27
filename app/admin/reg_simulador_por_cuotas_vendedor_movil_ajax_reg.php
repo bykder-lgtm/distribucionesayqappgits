@@ -21,6 +21,34 @@ $cod_tienda                                                         = 0;
 //---------------------------------------------------------------------------------------------------------------------------------//
 if (isset($_POST['nombre_tipo_origen_simulacion'])) {
 
+    // --- VERIFICACIÓN DE LÍMITE DE CRÉDITOS PARA ALIADOS DE PRUEBA (DESDE VENDEDOR) ---
+    // Obtener el cod_aliado_estrategico del administrador (vendedor) actual
+    $sql_get_aliado = "SELECT cod_aliado_estrategico FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador'";
+    $res_get_aliado = mysqli_query($conectar, $sql_get_aliado);
+    $data_aliado = mysqli_fetch_assoc($res_get_aliado);
+    $cod_aliado_padre = $data_aliado['cod_aliado_estrategico'];
+
+    if ($cod_aliado_padre > 0) {
+        $sql_check_prueba = "SELECT cod_estado_usuario_prueba FROM tbl15_administrador WHERE cod_administrador = '$cod_aliado_padre'";
+        $res_check_prueba = mysqli_query($conectar, $sql_check_prueba);
+        $data_prueba = mysqli_fetch_assoc($res_check_prueba);
+        
+        if ($data_prueba['cod_estado_usuario_prueba'] == '1') {
+            // Contar créditos creados por este aliado
+            $sql_count_creditos = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta WHERE cod_administrador_aliado_estrategico = '$cod_aliado_padre'";
+            $res_count_creditos = mysqli_query($conectar, $sql_count_creditos);
+            $total_creditos = mysqli_fetch_assoc($res_count_creditos)['total'];
+            
+            if ($total_creditos >= 3) {
+                $respuesta_ajax['afectado'] = "NO";
+                $respuesta_ajax['mensaje'] = "El establecimiento aliado ha alcanzado el límite de 3 créditos permitido para usuarios de prueba. Por favor informe al administrador para completar la información y documentos.";
+                echo json_encode($respuesta_ajax);
+                exit;
+            }
+        }
+    }
+    // ----------------------------------------------------------------------------------
+
 	if (isset($_POST['nombre_tipo_origen_simulacion'])) { $nombre_tipo_origen_simulacion = addslashes($_POST['nombre_tipo_origen_simulacion']); } else { $nombre_tipo_origen_simulacion = ''; }
 	if (isset($_POST['nombre_tipo_identificacion'])) { $nombre_tipo_identificacion = addslashes($_POST['nombre_tipo_identificacion']); } else { $nombre_tipo_identificacion = 'CC'; }
 	if (isset($_POST['identificacion_tercero'])) { $identificacion_tercero = addslashes($_POST['identificacion_tercero']); } else { $identificacion_tercero = ''; }
