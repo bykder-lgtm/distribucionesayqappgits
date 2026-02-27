@@ -1898,24 +1898,28 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <input type="hidden" id="agregar_banco_cod_administrador" name="cod_administrador">
                 <input type="hidden" id="agregar_banco_cod_aliado_estrategico" name="cod_aliado_estrategico">
 
-                <div class="form-group">
-                    <label class="form-label">Banco *</label>
-                    <select class="form-select" id="agregar_banco" name="cod_banco" required><option value="">Cargando...</option></select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Banco *</label>
+                        <select class="form-select" id="agregar_banco" name="cod_banco" required><option value="">Cargando...</option></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Número de Cuenta *</label>
+                        <input type="text" class="form-input" id="agregar_numero_cuenta" name="numero_banco_cuenta" placeholder="Ej: 1234567890" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Número de Cuenta *</label>
-                    <input type="text" class="form-input" id="agregar_numero_cuenta" name="numero_banco_cuenta" placeholder="Ej: 1234567890" required>
-                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Cuenta *</label>
+                        <select class="form-select" id="agregar_tipo_cuenta" name="cod_tipo_cuenta_banco" required><option value="1">Ahorros</option><option value="2">Corriente</option></select>
+                    </div>
 
-                <div class="form-group">
-                    <label class="form-label">Tipo de Cuenta *</label>
-                    <select class="form-select" id="agregar_tipo_cuenta" name="cod_tipo_cuenta_banco" required><option value="1">Ahorros</option><option value="2">Corriente</option></select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Estado *</label>
-                    <select class="form-select" id="agregar_estado_cuenta" name="cod_estado" required><option value="1">Activo</option><option value="0">Inactivo</option></select>
+                    <div class="form-group">
+                        <label class="form-label">Estado *</label>
+                        <select class="form-select" id="agregar_estado_cuenta" name="cod_estado" required><option value="1">Activo</option><option value="0">Inactivo</option></select>
+                    </div>
                 </div>
                 
                 <div class="form-row">
