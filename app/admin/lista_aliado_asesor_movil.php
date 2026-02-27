@@ -524,10 +524,13 @@ body {
     gap: 1rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
     .form-row {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
+    }
+    .form-group {
+        margin-bottom: 0.75rem;
     }
 }
 
@@ -1179,7 +1182,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
                             <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; margin: 0;">
                                 <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer;">
-                                <span style="color: rgba(255,255,255,0.95); font-size: 0.85rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #10b981; margin-right: 0.25rem;"></i> Crear Tienda al guardar</span>
+                                <span style="color: rgba(255,255,255,0.95); font-size: 0.85rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #10b981; margin-right: 0.25rem;"></i> Crear Tienda</span>
                             </label>
                         </div>
                     </div>
@@ -1199,10 +1202,19 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
 
                 <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
-                <div class="form-group">
-                    <label class="form-label">Identificación *</label>
-                    <input type="number" class="form-input" id="identificacion_tercero" name="identificacion_tercero" required>
-                    <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación *</label>
+                        <input type="number" class="form-input" id="identificacion_tercero" name="identificacion_tercero" required>
+                        <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Persona *</label>
+                        <select class="form-select" id="cod_tipo_cliente_aliado" name="cod_tipo_cliente" required>
+                            <option value="1">Persona Natural</option>
+                            <option value="2">Persona Jurídica</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -1463,29 +1475,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
 
 
-                <div class="form-group">
-                    <label class="form-label" id="edit_label_nombre_comercial">Nombre Comercial *</label>
-                    <input type="text" class="form-input" name="nombres_apellidos_tercero" id="edit_nombres_apellidos_tercero" required>
-                </div>
-
-                <div class="form-group" id="edit_container_nit_razon_social" style="display:none;">
-                    <label class="form-label">NIT Razón Social *</label>
-                    <input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
-                </div>
-
-                <div class="form-group" id="edit_container_nombre_razon_social" style="display:none;">
-                    <label class="form-label">Razón Social *</label>
-                    <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
-                </div>
-
-
-                <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
-                    <i class="fa-solid fa-building-columns"></i> Datos del Administrador
-                </label>
-
-                <div class="form-group">
-                    <label class="form-label">Identificación *</label>
-                    <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" id="edit_label_nombre_comercial">Nombre Comercial *</label>
+                        <input type="text" class="form-input" name="nombres_apellidos_tercero" id="edit_nombres_apellidos_tercero" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Identificación *</label>
+                        <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                    </div>
                 </div>
 
                 <div class="form-row">

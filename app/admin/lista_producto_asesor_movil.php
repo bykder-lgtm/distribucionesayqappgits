@@ -392,6 +392,16 @@ body {
     gap: 1rem;
 }
 
+@media (max-width: 640px) {
+    .form-row {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
+    }
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+}
+
 .file-input-wrapper {
     position: relative;
     border: 2px dashed rgba(16, 185, 129, 0.3);
@@ -670,9 +680,21 @@ $next_code = isset($row_cod['cod_producto_barra']) ? $row_cod['cod_producto_barr
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Nombre Producto *</label>
-                    <input type="text" class="form-input" name="nombre_producto" id="nombre_producto" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre Producto *</label>
+                        <input type="text" class="form-input" name="nombre_producto" id="nombre_producto" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado *</label>
+                        <select class="form-select" name="cod_estado" id="cod_estado" required>
+                            <?php 
+                            mysqli_data_seek($res_estado, 0);
+                            while ($e = mysqli_fetch_assoc($res_estado)): ?>
+                            <option value="<?php echo $e['cod_estado']; ?>"><?php echo $e['nombre_estado']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -715,16 +737,7 @@ $next_code = isset($row_cod['cod_producto_barra']) ? $row_cod['cod_producto_barr
                     <textarea class="form-textarea" name="descripcion_producto" id="descripcion_producto" rows="2"></textarea>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="cod_estado" id="cod_estado" required>
-                        <?php 
-                        mysqli_data_seek($res_estado, 0);
-                        while ($e = mysqli_fetch_assoc($res_estado)): ?>
-                        <option value="<?php echo $e['cod_estado']; ?>"><?php echo $e['nombre_estado']; ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
+
 
                 <div class="form-group">
                     <label class="form-label">Imagen Producto</label>

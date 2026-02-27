@@ -723,9 +723,12 @@ body {
     gap: 0.75rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
     .detail-grid-3 {
         grid-template-columns: repeat(1, 1fr);
+    }
+    .detail-grid {
+        grid-template-columns: 1fr;
     }
 }
 

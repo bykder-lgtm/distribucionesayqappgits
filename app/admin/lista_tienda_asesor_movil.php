@@ -611,10 +611,14 @@ body {
     padding: 0.5rem;
 }
 
-.form-row {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+@media (max-width: 640px) {
+    .form-row {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
+    }
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
 }
 
 .file-input-wrapper {
@@ -1733,9 +1737,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <input type="hidden" name="cod_aliado_estrategico" id="cod_aliado_estrategico" required>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Nombre de la Tienda *</label>
-                    <input type="text" class="form-input" name="nombre1_tercero" id="nombre1_tercero" placeholder="Ej: Tienda El Éxito" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre de la Tienda *</label>
+                        <input type="text" class="form-input" name="nombre1_tercero" id="nombre1_tercero" placeholder="Ej: Tienda El Éxito" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-input" name="correo_tercero" id="correo_tercero_reg" placeholder="Ej: tienda@ejemplo.com">
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -1749,11 +1759,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Correo Electrónico</label>
-                    <input type="email" class="form-input" name="correo_tercero" id="correo_tercero_reg" placeholder="Ej: tienda@ejemplo.com">
-                </div>
-
+                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Departamento *</label>
                         <select class="form-select" name="cod_departamento" id="cod_departamento" onchange="cargarMunicipiosRegistro()" required>
@@ -1993,9 +1999,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             <form id="formRegistroVendedor">
                 <input type="hidden" id="vendedor_cod_tienda" name="cod_tienda" value="">
                 
-                <div class="form-group">
-                    <label class="form-label">Identificación (Cédula) *</label>
-                    <input type="text" class="form-input" name="identificacion_tercero" id="vendedor_identificacion" placeholder="Ej: 1234567890" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación (Cédula) *</label>
+                        <input type="text" class="form-input" name="identificacion_tercero" id="vendedor_identificacion" placeholder="Ej: 1234567890" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Usuario / Login</label>
+                        <input type="text" class="form-input" id="vendedor_usuario_login" placeholder="Generado automáticamente" readonly>
+                    </div>
                 </div>
                 
                 <div class="form-row">
@@ -2087,9 +2099,18 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Nombre del Producto *</label>
-                    <input type="text" class="form-input" name="nombre_producto" id="producto_nombre" placeholder="Ej: Arroz Diana x 500g" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Producto *</label>
+                        <input type="text" class="form-input" name="nombre_producto" id="producto_nombre" placeholder="Ej: Arroz Diana x 500g" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" id="producto_estado_select">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-row">

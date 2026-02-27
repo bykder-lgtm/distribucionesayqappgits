@@ -212,38 +212,47 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                     <i class="fa-solid fa-handshake"></i> Asociación
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Aliado Estratégico *</label>
-                    <select class="form-select" id="reg_cod_aliado" name="cod_aliado_estrategico" required onchange="cargarTiendasPorAliado(this.value)">
-                        <option value="">Seleccione un aliado...</option>
-                        <?php 
-                        if ($res_aliados && mysqli_num_rows($res_aliados) > 0) {
-                            mysqli_data_seek($res_aliados, 0);
-                            while ($aliado = mysqli_fetch_assoc($res_aliados)): 
-                        ?>
-                        <option value="<?php echo $aliado['cod_administrador']; ?>">
-                            <?php echo htmlspecialchars($aliado['nombres_apellidos_tercero'] . ' - CC: ' . $aliado['cedula']); ?>
-                        </option>
-                        <?php endwhile; } ?>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Tienda *</label>
-                    <select class="form-select" id="reg_cod_tienda" name="cod_tienda" required>
-                        <option value="">Primero seleccione un aliado</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Aliado Estratégico *</label>
+                        <select class="form-select" id="reg_cod_aliado" name="cod_aliado_estrategico" required onchange="cargarTiendasPorAliado(this.value)">
+                            <option value="">Seleccione un aliado...</option>
+                            <?php 
+                            if ($res_aliados && mysqli_num_rows($res_aliados) > 0) {
+                                mysqli_data_seek($res_aliados, 0);
+                                while ($aliado = mysqli_fetch_assoc($res_aliados)): 
+                            ?>
+                            <option value="<?php echo $aliado['cod_administrador']; ?>">
+                                <?php echo htmlspecialchars($aliado['nombres_apellidos_tercero'] . ' - CC: ' . $aliado['cedula']); ?>
+                            </option>
+                            <?php endwhile; } ?>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Tienda *</label>
+                        <select class="form-select" id="reg_cod_tienda" name="cod_tienda" required>
+                            <option value="">Primero seleccione un aliado</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-section-title">
                     <i class="fa-solid fa-user"></i> Datos Personales
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Identificación (CC) *</label>
-                    <input type="text" class="form-input" id="reg_identificacion" name="identificacion_tercero" 
-                           placeholder="Ej: 1234567890" required>
-                    <div class="validation-message" id="mensaje_identificacion"></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación (CC) *</label>
+                        <input type="text" class="form-input" id="reg_identificacion" name="identificacion_tercero" 
+                               placeholder="Ej: 1234567890" required>
+                        <div class="validation-message" id="mensaje_identificacion"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-input" id="reg_direccion" name="direccion_tercero" 
+                               placeholder="Ej: Cra 10 #20-30">
+                    </div>
                 </div>
                 
                 <div class="form-row">
@@ -304,9 +313,15 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                     <i class="fa-solid fa-user"></i> Datos Personales
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Identificación (CC) *</label>
-                    <input type="text" class="form-input" id="edit_identificacion" name="identificacion_tercero" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación (CC) *</label>
+                        <input type="text" class="form-input" id="edit_identificacion" name="identificacion_tercero" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" class="form-input" id="edit_direccion" name="direccion_tercero">
+                    </div>
                 </div>
                 
                 <div class="form-row">
@@ -331,10 +346,7 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Dirección</label>
-                    <input type="text" class="form-input" id="edit_direccion" name="direccion_tercero">
-                </div>
+
                 
                 <div class="form-section-title blue">
                     <i class="fa-solid fa-link"></i> Asociación
