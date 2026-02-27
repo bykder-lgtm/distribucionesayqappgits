@@ -27,8 +27,8 @@ if (isset($nombres_usuario)) {
 
 <div class="user-pill-floating">
     <div class="user-pill-content">
-        <div class="user-pill-info"><span class="pill-welcome">Hola,</span><span class="pill-name"><?php echo ucwords(strtolower($primer_nombre)); ?></span></div>
         <div class="user-pill-avatar" style="background: <?php echo $color_top_header; ?>;"><?php if (!$es_placeholder): ?><img src="<?php echo $url_img_foto_prof_min_usuario; ?>" alt="U"><?php else: ?><span><?php echo $iniciales_top; ?></span><?php endif; ?></div>
+        <div class="user-pill-info"><span class="pill-welcome">Hola,</span><span class="pill-name"><?php echo ucwords(strtolower($primer_nombre)); ?></span></div>
     </div>
 </div>
 
@@ -36,7 +36,8 @@ if (isset($nombres_usuario)) {
 .user-pill-floating {
     position: fixed;
     top: 12px;
-    right: 12px;
+    left: 12px;
+    right: auto;
     z-index: 10001; /* Asegurar que esté sobre todo */
     pointer-events: none; /* Dejar pasar clics si es necesario, pero el contenido los recupera */
 }
@@ -47,7 +48,7 @@ if (isset($nombres_usuario)) {
     -webkit-backdrop-filter: blur(12px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 40px;
-    padding: 4px 4px 4px 12px;
+    padding: 4px 12px 4px 4px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -64,7 +65,7 @@ if (isset($nombres_usuario)) {
 .user-pill-info {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* Alineado a la derecha */
+    align-items: flex-start; /* Alineado a la izquierda */
 }
 
 .pill-welcome {
