@@ -846,6 +846,16 @@ select[id^="edit_municipio_tienda_"] option {
 .reg-form-group { margin-bottom: 0.9rem; }
 .reg-form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
 
+@media (max-width: 640px) {
+    .reg-form-row {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
+    }
+    .reg-form-group {
+        margin-bottom: 0.7rem;
+    }
+}
+
 .reg-submit-btn-aliado {
     width: 100%; color: white; border: none; padding: 0.85rem;
     border-radius: 12px; font-size: 0.9rem; font-weight: 700;

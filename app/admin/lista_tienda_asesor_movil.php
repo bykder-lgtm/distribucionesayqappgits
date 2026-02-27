@@ -611,6 +611,12 @@ body {
     padding: 0.5rem;
 }
 
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
 @media (max-width: 640px) {
     .form-row {
         grid-template-columns: repeat(2, 1fr) !important;

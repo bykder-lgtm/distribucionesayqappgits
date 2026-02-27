@@ -374,7 +374,8 @@ $informacion_completa                             = $documentos_completos && $ti
         
         @media (max-width: 480px) {
             .form-row {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 0.5rem;
             }
         }
         

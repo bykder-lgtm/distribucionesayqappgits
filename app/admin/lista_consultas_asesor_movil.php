@@ -472,6 +472,22 @@ body {
     margin-bottom: 1rem;
 }
 
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 640px) {
+    .form-row {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem;
+    }
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+}
+
 .form-group label {
     display: block;
     color: #10b981;

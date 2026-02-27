@@ -125,8 +125,8 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
     .form-select option { background-color: #1a1f2e; color: white; }
 
     .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-    @media(max-width: 600px) {
-        .form-row { grid-template-columns: 1fr; }
+    @media(max-width: 640px) {
+        .form-row { grid-template-columns: repeat(2, 1fr) !important; gap: 0.5rem; }
     }
 
     .file-input-wrapper {

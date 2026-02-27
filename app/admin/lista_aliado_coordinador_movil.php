@@ -1034,7 +1034,7 @@ select[id^="edit_municipio_tienda_"] option {
     }
     
     .form-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr) !important;
         gap: 0.75rem;
     }
     
