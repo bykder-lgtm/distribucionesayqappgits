@@ -18,7 +18,6 @@ if (isset($_POST['nombres_apellidos_tercero'])) {
     $nombres_apellidos_tercero                                      = trim(addslashes($_POST['nombres_apellidos_tercero']));
     $telefono1_tercero                                              = trim(addslashes($_POST['telefono1_tercero']));
     $correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
-    
     // Para el registro rápido, usamos el teléfono como identificador temporal si no hay NIT
     // O generamos uno basado en el tiempo
     $identificacion_tercero                                         = time(); 
@@ -29,7 +28,7 @@ if (isset($_POST['nombres_apellidos_tercero'])) {
     $cod_seguridad                                                  = "23";
     $cod_estado_activacion_usuario                                  = "1"; // Activo por ser rápido
     $cod_estado_usuario_prueba                                      = "1"; // ES USUARIO DE PRUEBA
-    $contrasena                                                     = sha1($identificacion_tercero);
+    $contrasena                                                     = sha1($telefono1_tercero);
     $url_pag_redirec_ini_sesion                                     = '../admin/dashboard_aliado_movil.php';
     // Obtener autoincremento
     $sql_auto = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$base_datos' AND TABLE_NAME = 'tbl15_administrador'";

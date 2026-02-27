@@ -6124,27 +6124,29 @@ function cerrarModalVerCuentas() { $('#modalVerCuentas').fadeOut(); }
         
         <div class="modal-body" style="padding: 1.5rem;">
             <form id="formRegistroRapido">
-                <div class="form-group" style="margin-bottom: 1.25rem;">
-                    <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Nombre Comercial del Aliado *</label>
-                    <div style="position: relative;">
-                        <i class="fa-solid fa-store" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
-                        <input type="text" class="form-input" name="nombres_apellidos_tercero" placeholder="Ej: Tienda La Bendición" required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.25rem;">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Nombre Comercial del Aliado *</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-store" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
+                            <input type="text" class="form-input" name="nombres_apellidos_tercero" placeholder="Ej: Tienda La Bendición" required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group" style="margin-bottom: 1.25rem;">
-                    <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Teléfono Móvil *</label>
-                    <div style="position: relative;">
-                        <i class="fa-solid fa-phone" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
-                        <input type="tel" class="form-input" name="telefono1_tercero" placeholder="Ej: 3001234567" required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                    <div class="form-group">
+                        <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Teléfono Móvil *</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-phone" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
+                            <input type="tel" class="form-input" name="telefono1_tercero" placeholder="Ej: 300..." required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Correo Electrónico *</label>
-                    <div style="position: relative;">
-                        <i class="fa-solid fa-envelope" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
-                        <input type="email" class="form-input" name="correo_tercero" placeholder="aliado@ejemplo.com" required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                    <div class="form-group">
+                        <label class="form-label" style="color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem; display: block;">Correo Electrónico *</label>
+                        <div style="position: relative;">
+                            <i class="fa-solid fa-envelope" style="position: absolute; left: 1rem; top: 1rem; color: #f59e0b;"></i>
+                            <input type="email" class="form-input" name="correo_tercero" placeholder="Email..." required style="padding-left: 2.75rem; border-radius: 12px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                        </div>
                     </div>
                 </div>
 
