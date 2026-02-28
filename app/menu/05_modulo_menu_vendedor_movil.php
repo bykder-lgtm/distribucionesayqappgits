@@ -44,19 +44,19 @@ function esMenuActivoVendedor($paginas) {
       <div class="icon-container-menu"><i class="fa fa-bar-chart custom-icon-menu"></i><span class="menu-label">Inicio</span></div>
     </a>
 
-    <a href="../admin/lista_catalogo_tienda_productos_vendedor_movil.php" id="catalogo_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor('catalogo_tienda_productos_vendedor'); ?>">
+    <a href="../admin/catalogo_vendedor_movil.php" id="catalogo_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor('catalogo_vendedor'); ?>">
       <div class="icon-container-menu"><i class="fa fa-shopping-bag custom-icon-menu"></i><span class="menu-label">Catálogo</span></div>
     </a>
 
-    <a href="../admin/simulador_credito_vendedor_movil_libre.php" id="simulador_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor('simulador_credito_vendedor'); ?>">
+    <a href="../admin/simulador_vendedor_movil.php" id="simulador_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor('simulador_vendedor'); ?>">
       <div class="icon-container-menu"><i class="fa fa-calculator custom-icon-menu"></i><span class="menu-label">Simular</span></div>
     </a>
 
-    <a href="../admin/lista_info_factura_venta_siscredito_visitante_intern_vendedor_movil.php" id="lista_creditos_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor(['lista_info_factura_venta_siscredito_visitante_intern_vendedor', 'lista_info_factura_venta_abierta_siscredito_visitante_intern_vendedor', 'lista_info_factura_venta_cerrada_siscredito_visitante_intern_vendedor', 'lista_comprobantes_pago_siscredito_visitante_intern_vendedor']); ?>">
+    <a href="../admin/creditos_vendedor_movil.php" id="creditos_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor(['creditos_vendedor', 'creditos_abiertos_vendedor', 'creditos_cerrados_vendedor', 'comprobantes_vendedor']); ?>">
       <div class="icon-container-menu"><i class="fa fa-credit-card custom-icon-menu"></i><span class="menu-label">Créditos</span></div>
     </a>
 
-    <a href="../admin/lista_consultas_siscredito_visitante_intern_vendedor_movil.php" id="consultas_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor('consultas_siscredito_visitante_intern_vendedor'); ?>">
+    <a href="../admin/consultas_vendedor_movil.php" id="consultas_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor('consultas_vendedor'); ?>">
       <div class="icon-container-menu"><i class="fa fa-search custom-icon-menu"></i><span class="menu-label">Consultas</span></div>
     </a>
 
