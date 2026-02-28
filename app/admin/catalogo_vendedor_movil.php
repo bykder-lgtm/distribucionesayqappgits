@@ -710,7 +710,6 @@ if (!empty($cod_tienda_filtro)) {
         $cod_tienda_sesion = $matriz_tienda_vendedor['cod_tienda'];
     }
 }
-
 // Obtener nombre de la tienda para mostrarlo
 $nombre_tienda_mostrar = "Catálogo de Productos";
 if ($cod_tienda_sesion > 0) {
