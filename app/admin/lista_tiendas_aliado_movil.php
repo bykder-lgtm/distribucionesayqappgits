@@ -531,11 +531,11 @@ $cod_base_caja          = "1";
     }
     
     .form-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .form-row {
-        flex-direction: column;
+        flex-direction: row;
     }
     
     .modal-tienda-body {
@@ -549,6 +549,16 @@ $cod_base_caja          = "1";
     
     .modal-tienda-header h3 {
         font-size: 1rem;
+    }
+
+    /* For very small devices, one column is better */
+    @media (max-width: 380px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        .form-row {
+            flex-direction: column;
+        }
     }
 }
 
@@ -1397,6 +1407,45 @@ $cod_base_caja          = "1";
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+}
+
+/* ============================================ */
+/* RESPONSIVE MODALES REGISTRO                  */
+/* ============================================ */
+@media (max-width: 600px) {
+    .reg-modal-body .form-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .reg-modal-body .form-row .form-group {
+        margin-bottom: 0;
+    }
+    
+    /* Pequeño ajuste para labels largos */
+    .reg-modal-body .form-label {
+        font-size: 0.75rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .reg-modal-body .form-input,
+    .reg-modal-body .form-select {
+        padding: 0.6rem 0.75rem;
+    }
+    
+    .reg-modal-container {
+        border-radius: 12px;
+    }
+
+    /* En pantallas muy angostas, volvemos a una sola columna */
+    @media (max-width: 380px) {
+        .reg-modal-body .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
 }
 
 .reg-submit-btn.vendedor-theme {
