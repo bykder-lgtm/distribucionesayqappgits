@@ -72,7 +72,7 @@ try {
     $nombre_tipo_identificacion                                         = "CC";
     $cod_seguridad                                                      = "2";
     $cod_estado_activacion_usuario                                      = "1";
-    $url_pag_redirec_ini_sesion                                         = '../app/';
+    $url_pag_redirec_ini_sesion                                         = '../admin/dashboard_vendedor_movil.php';
     $cod_caja_virtual                                                   = 1;
     $cod_caja                                                           = 1;
     // ==================== INSERTAR VENDEDOR ====================
