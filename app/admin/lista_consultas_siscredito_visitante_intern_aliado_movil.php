@@ -315,7 +315,7 @@ $cod_base_caja          = "1";
             <div class="entidad-logo-simulador">
                 <img src="<?php echo $url_entidad_crediticia_imag_orig; ?>" alt="<?php echo $nombre_entidad_crediticia; ?>" title="<?php echo $nombre_entidad_crediticia; ?>">
             </div>
-            <div class="entidad-nombre"><?php echo $nombre_entidad_crediticia; ?></div>
+            <!--<div class="entidad-nombre"><?php echo $nombre_entidad_crediticia; ?></div>-->
             <div class="entidad-botones">
                 <?php if (!empty($url_pagina_web_consultar_cupo)) { ?>
                 <a href="<?php echo $url_pagina_web_consultar_cupo; ?>" target="_blank" class="btn-entidad btn-consultar-cupo"><i class="fa fa-search"></i> Consultar cupo</a>
@@ -1263,26 +1263,16 @@ document.getElementById('formAgregarVideo').addEventListener('submit', function(
     var formData = new FormData(this);
     
     $.ajax({
-        url: 'registrar_video_tutorial_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: 'registrar_video_tutorial_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             if (response.success) {
                 mostrarNotificacion('success', '¡Éxito!', 'Video tutorial registrado correctamente');
                 $('#modalAgregarVideo').modal('hide');
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
+                setTimeout(function() { location.reload(); }, 1500);
             } else {
                 mostrarNotificacion('error', 'Error', response.message);
             }
-        },
-        error: function() {
-            mostrarNotificacion('error', 'Error de conexión', 'No se pudo conectar con el servidor');
-        },
+        }, error: function() { mostrarNotificacion('error', 'Error de conexión', 'No se pudo conectar con el servidor'); },
         complete: function() {
             btn.disabled = false;
             btn.innerHTML = originalText;
