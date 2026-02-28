@@ -326,7 +326,7 @@ if(isset($_GET['cod_info_factura_venta']) && $_GET['cod_info_factura_venta'] != 
 
         <!-- Actions -->
         <div class="action-buttons">
-            <a href="../admin/lista_info_factura_venta_siscredito_visitante_intern_aliado_movil.php?cod_info_factura_venta=<?php echo $cod_info_factura_venta; ?>" class="btn-action btn-back">
+            <a href="../admin/lista_info_factura_venta_siscredito_visitante_intern_vendedor_movil.php?cod_info_factura_venta=<?php echo $cod_info_factura_venta; ?>" class="btn-action btn-back">
                 <i class="fa fa-arrow-left"></i>
                 <span>Volver</span>
             </a>

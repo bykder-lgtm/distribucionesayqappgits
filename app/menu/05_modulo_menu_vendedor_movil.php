@@ -52,7 +52,7 @@ function esMenuActivoVendedor($paginas) {
       <div class="icon-container-menu"><i class="fa fa-calculator custom-icon-menu"></i><span class="menu-label">Simular</span></div>
     </a>
 
-    <a href="../admin/lista_info_factura_venta_siscredito_visitante_intern_vendedor_movil.php" id="lista_creditos_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor(['lista_info_factura', 'factura_venta_siscredito_visitante_intern_vendedor']); ?>">
+    <a href="../admin/lista_info_factura_venta_siscredito_visitante_intern_vendedor_movil.php" id="lista_creditos_vendedor" class="menu-item-modern <?php echo esMenuActivoVendedor(['lista_info_factura_venta_siscredito_visitante_intern_vendedor', 'lista_info_factura_venta_abierta_siscredito_visitante_intern_vendedor', 'lista_info_factura_venta_cerrada_siscredito_visitante_intern_vendedor', 'lista_comprobantes_pago_siscredito_visitante_intern_vendedor']); ?>">
       <div class="icon-container-menu"><i class="fa fa-credit-card custom-icon-menu"></i><span class="menu-label">Créditos</span></div>
     </a>
 

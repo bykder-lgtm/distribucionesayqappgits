@@ -1,5 +1,5 @@
 <?php 
-$nombre_pagina          = "Gestión de Solicitudes";
+$nombre_pagina          = "Créditos Cerrados";
 $cod_seguridad_pag      = "1";
 $pagina_local           = $_SERVER['PHP_SELF'];
 $cod_base_caja          = "1";
@@ -9,7 +9,6 @@ $cod_base_caja          = "1";
 <!-- **************************************************** MODULO DE SESION ******************************************** -->
 <?php include_once("../admin/01_info_empresa_visitante_intern_movil.php"); ?>
 <!-- **************************************************** MODULO DE INFO EMPRESA ******************************************** -->
-<?php //include_once("../admin/01_rastreador.php"); ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -118,11 +117,7 @@ $cod_base_caja          = "1";
 $cod_seguridad                               = '25'; //CLIENTE 
 $nombre_tipo_tercero_text                    = ucfirst(strtolower('CLIENTE'));
 $buscar_por                                  = "nombre1_tercero_identificacion_tercero";
-$nombre_estado_factura                       = "ABIERTA";
-
-if (isset($_GET['desplegar_modal_id'])) { $desplegar_modal_id = addslashes($_GET['desplegar_modal_id']); } else { $desplegar_modal_id = ''; }
-if (isset($_GET['cod_info_factura_venta'])) { $cod_info_factura_venta = intval($_GET['cod_info_factura_venta']); } else { $cod_info_factura_venta = ''; }
-if (isset($_GET['cod_tercero'])) { $cod_tercero = intval($_GET['cod_tercero']); } else { $cod_tercero = ''; }
+$nombre_estado_factura                       = "CERRADA";
 ?>
     <!-- Buscador alineado con tarjetas -->
     <section class="search_bar_app_movil_enrollment">
@@ -145,54 +140,28 @@ if (isset($_GET['cod_tercero'])) { $cod_tercero = intval($_GET['cod_tercero']); 
     <main class="container py-3 mb-5">
         <div id="outer_div"></div>
     </main>
-
-
+    
 <?php include_once("../seguridad/seguridad_diseno_plantillas_visitante_intern.php"); ?>
-<?php include_once("../menu/05_modulo_menu_vendedor_movil.php"); ?>
 <?php include_once("../admin/10_modulo_sin_js_visitante_intern_movil.php"); ?>
 </body>
 </html>
 
 <script>
 $(document).ready(function(){
+    var tiempo_refresco_base = 30; //segundos
+    const base_milisegundo = 1000;
+    var tiempo_refresco = tiempo_refresco_base * base_milisegundo;
+    
+    // Cargar datos inicialmente
     load(1);
-    // Verificar si se debe abrir un modal específico
-    var desplegar_modal_id = "<?php echo $desplegar_modal_id; ?>";
-    var cod_info_factura_venta = "<?php echo $cod_info_factura_venta; ?>";
-    var cod_tercero = "<?php echo $cod_tercero; ?>";
-
-    if (desplegar_modal_id === "modalEstudioCredito") {
-        // Esperar un momento para que la página y los modales se carguen completamente
-        setTimeout(function() {            
-            // Verificar que las variables estén definidas
-            if (cod_info_factura_venta && cod_tercero) {
-                // Ejecutar la función procesarSolicitudCredito con los parámetros GET
-                procesarSolicitudCredito(cod_info_factura_venta, cod_tercero);
-            } else {
-                console.error('Error: Las variables cod_info_factura_venta y/o cod_tercero no están definidas');
-                alert('Error: Faltan parámetros requeridos para abrir el modal de estudio de crédito.');
-            }
-        }, 1500); // Aumentar a 1.5 segundos para asegurar que la función esté disponible
-    } else if (desplegar_modal_id === "modalListaCapturaImagenes") {
-        // Esperar un momento para que la página y los modales se carguen completamente
-        setTimeout(function() {           
-            // Verificar que las variables estén definidas
-            if (cod_info_factura_venta && cod_tercero) {
-                // Ejecutar la función procesarSolicitudCredito con los parámetros GET
-                $('#modalListaCapturaImagenes').modal('show');
-                
-                console.log('Desplegar modal: modalListaCapturaImagenes:', { codInfoFacturaVenta: cod_info_factura_venta, codTercero: cod_tercero  });   
-                $('#cod_info_factura_venta_modal_lista_captura_imagenes').val(cod_info_factura_venta);
-                $('#cod_tercero_modal_lista_captura_imagenes').val(cod_tercero);
-                $('#cod_tipo_metodo_aprobacion_modal_lista_captura_imagenes').val('1');
-            } else {
-                console.error('Error: Las variables cod_info_factura_venta y/o cod_tercero no están definidas');
-                alert('Error: Faltan parámetros requeridos para abrir el modal de estudio de crédito.');
-            }
-        }, 1500); // Aumentar a 1.5 segundos para asegurar que la función esté disponible
-    } else {
-        //console.log('No se requiere abrir ningún modal al cargar la página.');
-    }
+    
+    // Configurar auto-refresco
+    setInterval(function() {
+        var hayModalAbierto = $('.modal').hasClass('show') || $('.modal.in').length > 0 || $('body').hasClass('modal-open');
+        if (!hayModalAbierto) {
+            load(1);
+        }
+    }, tiempo_refresco);
 });
 
 function load(page){
@@ -207,32 +176,20 @@ function load(page){
 
     $("#loader").fadeIn('slow');
     $.ajax({
-        url:'../admin/tabla_busqueda_paginacion_info_factura_venta_siscredito_visitante_intern_vendedor_movil_ajax.php?action=ajax&page='+page+'&busqueda_ajax='+busqueda_ajax+'&buscar_por='+buscar_por+'&numero_registro_por_pagina='+numero_registro_por_pagina+'&cod_administrador='+cod_administrador+'&cod_seguridad='+cod_seguridad+'&tabla='+tabla+'&nombre_estado_factura='+nombre_estado_factura+'&pagina='+pagina, 
+        url:'../admin/tabla_busqueda_paginacion_info_factura_venta_cerrada_siscredito_visitante_intern_vendedor_movil_ajax.php?action=ajax&page='+page+'&busqueda_ajax='+busqueda_ajax+'&buscar_por='+buscar_por+'&numero_registro_por_pagina='+numero_registro_por_pagina+'&cod_administrador='+cod_administrador+'&cod_seguridad='+cod_seguridad+'&tabla='+tabla+'&nombre_estado_factura='+nombre_estado_factura+'&pagina='+pagina, 
         beforeSend: function(objeto){
             $('#loader').html('<img src="../imagenes/ajax-loader.gif"> Cargando...');
         },
         success:function(data){
             $("#outer_div").html(data).fadeIn('slow');
             $('#loader').html('');
+            
+            if (typeof window.configurarModalEventos === 'function') {
+                setTimeout(function() {
+                    window.configurarModalEventos();
+                }, 100);
+            }
         }
     })
-}
-</script>
-
-<script>
-function obtener_datos_tercero_factura_venta_modal(id){
-    var pagina = "<?php echo $pagina_local;?>";
-    var identificacion_tercero = "";
-    var nombre1_tercero = "";
-    var nombre2_tercero = "";
-    var apellido1_tercero = "";
-    var apellido2_tercero = "";
-
-    $("#mod_"+"pagina").val(pagina);
-    $("#mod_"+"identificacion_tercero").val(identificacion_tercero);
-    $("#mod_"+"nombre1_tercero").val(nombre1_tercero);
-    $("#mod_"+"nombre2_tercero").val(nombre2_tercero);
-    $("#mod_"+"apellido1_tercero").val(apellido1_tercero);
-    $("#mod_"+"apellido2_tercero").val(apellido2_tercero);
 }
 </script>
