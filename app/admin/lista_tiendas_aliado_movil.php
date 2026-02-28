@@ -1683,7 +1683,7 @@ $datos_aliado = ($res_datos_aliado && mysqli_num_rows($res_datos_aliado) > 0) ? 
                 $productos_inactivos = $total_productos - $productos_activos;
 
                 // Contar vendedores de esta tienda
-                $sql_total_vend = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE cod_seguridad = '2' AND cod_aliado_estrategico = '$cod_administrador' AND cod_estado_activacion_usuario = '1'";
+                $sql_total_vend = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE cod_seguridad = '2' AND cod_vendedor = '$cod_tienda_item' AND cod_estado_activacion_usuario = '1'";
                 $consulta_total_vend = mysqli_query($conectar, $sql_total_vend);
                 $datos_total_vend = mysqli_fetch_assoc($consulta_total_vend);
                 $total_vendedores = $datos_total_vend['total'];
@@ -1698,6 +1698,7 @@ $datos_aliado = ($res_datos_aliado && mysqli_num_rows($res_datos_aliado) > 0) ? 
             </div>
             <div class="tienda-card-body">
                 <h3 class="tienda-nombre"><?php echo ucwords(strtolower($nombre_tienda)); ?></h3>
+<!--
                 <?php if (!empty($abrev_tienda)) { ?>
                     <p class="tienda-info"><i class="fa fa-tag"></i><?php echo $abrev_tienda; ?></p>
                 <?php } ?>
@@ -1711,21 +1712,24 @@ $datos_aliado = ($res_datos_aliado && mysqli_num_rows($res_datos_aliado) > 0) ? 
                 <?php if(!empty($tienda['fecha_creacion'])): ?>
                 <p class="tienda-info"><i class="fa fa-calendar-plus" style="color: #f59e0b;"></i><?php echo date('d/m/Y', strtotime($tienda['fecha_creacion'])); ?></p>
                 <?php endif; ?>
+-->
                 
                 <!-- Estadísticas de productos y vendedores -->
                 <div class="tienda-stats">
-                    <div class="stat-item stat-total">
+                    <div class="stat-item stat-inactivos" onclick="verVendedoresTienda(<?php echo $cod_tienda_item; ?>, '<?php echo htmlspecialchars(addslashes($nombre_tienda), ENT_QUOTES); ?>')" style="cursor: pointer;">
+                        <span class="stat-number"><?php echo $total_vendedores; ?></span>
+                        <span class="stat-label">Vendedores</span>
+                    </div>
+                    <div class="stat-item stat-total" onclick="verProductosTienda(<?php echo $cod_tienda_item; ?>, '<?php echo htmlspecialchars(addslashes($nombre_tienda), ENT_QUOTES); ?>')" style="cursor: pointer;">
                         <span class="stat-number"><?php echo $total_productos; ?></span>
                         <span class="stat-label">Productos</span>
                     </div>
+<!--
                     <div class="stat-item stat-activos">
                         <span class="stat-number"><?php echo $productos_activos; ?></span>
                         <span class="stat-label">Activos</span>
                     </div>
-                    <div class="stat-item stat-inactivos">
-                        <span class="stat-number"><?php echo $total_vendedores; ?></span>
-                        <span class="stat-label">Vendedores</span>
-                    </div>
+-->
                 </div>
 
                 <!-- Botones de acción rápida -->
@@ -2138,12 +2142,6 @@ function cerrarModalTienda() {
 }
 
 // Cerrar modal al hacer clic fuera
-window.onclick = function(event) {
-    var modal = document.getElementById('modalNuevaTienda');
-    if (event.target == modal) {
-        cerrarModalTienda();
-    }
-}
 
 // Función para previsualizar imágenes
 function setupImagePreview(inputId, previewId) {
@@ -2277,16 +2275,10 @@ function mostrarModalNotificacion(tipo, titulo, mensaje, recargar) {
         iconSymbol.className = 'fa fa-exclamation-circle';
         titleEl.textContent = titulo || 'Error';
     }
-    
     messageEl.textContent = mensaje;
     modal.classList.add('show');
-    
     // Si debe recargar la página al cerrar
-    if (recargar) {
-        button.setAttribute('data-reload', 'true');
-    } else {
-        button.removeAttribute('data-reload');
-    }
+    if (recargar) { button.setAttribute('data-reload', 'true'); } else { button.removeAttribute('data-reload'); }
 }
 
 function cerrarModalNotificacion() {
@@ -2562,16 +2554,6 @@ function actualizarTienda(event) {
 }
 
 // Cerrar modales al hacer clic fuera
-window.onclick = function(event) {
-    var modalNueva = document.getElementById('modalNuevaTienda');
-    var modalEditar = document.getElementById('modalEditarTienda');
-    if (event.target == modalNueva) {
-        cerrarModalTienda();
-    }
-    if (event.target == modalEditar) {
-        cerrarModalEditarTienda();
-    }
-}
 
 // =====================================================
 // FUNCIONES PARA COMPARTIR URL DE TIENDA
@@ -3306,12 +3288,7 @@ if (_formVendedor) { _formVendedor.addEventListener('submit', function(e) {
     Swal.fire({ title: 'Registrando vendedor...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: 'agregar_vendedor_tienda_asesor_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: 'agregar_vendedor_tienda_asesor_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
@@ -3324,15 +3301,7 @@ if (_formVendedor) { _formVendedor.addEventListener('submit', function(e) {
                 document.getElementById('formRegistroVendedor').reset();
                 document.getElementById('vendedor_cod_tienda').value = codTienda;
                 
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Vendedor Registrado!',
-                    text: 'Credenciales: Usuario: ' + (response.usuario || '') + ' / Contraseña: ' + (response.contrasena_inicial || ''),
-                    confirmButtonColor: '#6366f1',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Vendedor Registrado!', text: 'Credenciales: Usuario: ' + (response.usuario || '') + ' / Contraseña: ' + (response.contrasena_inicial || ''), confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el vendedor', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
@@ -3365,12 +3334,7 @@ if (_formProducto) { _formProducto.addEventListener('submit', function(e) {
     Swal.fire({ title: 'Registrando producto...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: 'reg_producto_tienda_aliado_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: 'reg_producto_tienda_aliado_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
@@ -3386,17 +3350,7 @@ if (_formProducto) { _formProducto.addEventListener('submit', function(e) {
                 var previewImg = document.getElementById('preview_producto_img');
                 if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
                 
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Producto Registrado!',
-                    text: 'El producto fue creado correctamente.',
-                    confirmButtonColor: '#f59e0b',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    timer: 2500,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Producto Registrado!', text: 'El producto fue creado correctamente.', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white', timer: 2500, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el producto', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
@@ -3457,17 +3411,12 @@ $(document).ready(function() {
 
 function cargarNotificacionesMovil() {
     $.ajax({
-        url: '../admin/obtener_notificaciones_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../admin/obtener_notificaciones_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             if (response.success) {
                 actualizarUINotificacionesMovil(response.notificaciones, response.count);
             }
-        },
-        error: function() {
-            console.log('Error al cargar notificaciones');
-        }
+        }, error: function() { console.log('Error al cargar notificaciones'); }
     });
 }
 
@@ -3513,22 +3462,13 @@ function getNotificationIconMovil(tipo) {
     }
 }
 
-function toggleNotificationPanelMovil() {
-    $('#notificationPanelMovil').toggleClass('show');
-}
+function toggleNotificationPanelMovil() { $('#notificationPanelMovil').toggleClass('show'); }
 
-$(document).on('click', function(e) {
-    if (!$(e.target).closest('#notificationPanelMovil, #notificationBellMovil').length) {
-        $('#notificationPanelMovil').removeClass('show');
-    }
-});
+$(document).on('click', function(e) { if (!$(e.target).closest('#notificationPanelMovil, #notificationBellMovil').length) { $('#notificationPanelMovil').removeClass('show'); } });
 
 function marcarNotificacionLeidaMovil(codNotificacion, element) {
     $.ajax({
-        url: '../admin/marcar_notificacion_leida_ajax.php',
-        type: 'POST',
-        data: { cod_notificacion: codNotificacion },
-        dataType: 'json',
+        url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { cod_notificacion: codNotificacion }, dataType: 'json',
         success: function(response) {
             if (response.success) {
                 $(element).fadeOut(300, function() {
@@ -3544,33 +3484,15 @@ function marcarTodasLeidasMovil() {
     Swal.fire({
         title: '¿Marcar todas como leídas?',
         text: 'Se marcarán todas las notificaciones pendientes como leídas',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#4169e1',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, marcar todas',
-        cancelButtonText: 'Cancelar',
-        background: '#1a1f2e',
-        color: 'white'
+        icon: 'question', showCancelButton: true, confirmButtonColor: '#4169e1', cancelButtonColor: '#6c757d', confirmButtonText: 'Sí, marcar todas', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../admin/marcar_notificacion_leida_ajax.php',
-                type: 'POST',
-                data: { marcar_todas: 'si' },
-                dataType: 'json',
+                url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { marcar_todas: 'si' }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
                         cargarNotificacionesMovil();
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Listo!',
-                            text: 'Todas las notificaciones han sido marcadas como leídas',
-                            timer: 2000,
-                            showConfirmButton: false,
-                            background: '#1a1f2e',
-                            color: 'white'
-                        });
+                        Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Todas las notificaciones han sido marcadas como leídas', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
                     }
                 }
             });
@@ -3584,6 +3506,245 @@ function escapeHtmlMovil(text) {
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
 }
+</script>
+
+<!-- ===================================================== -->
+<!-- MODALES PARA LISTAS (VENDEDORES / PRODUCTOS)        -->
+<!-- ===================================================== -->
+
+<!-- Modal para ver Lista de Vendedores -->
+<div id="modalListVendedores" class="modal-tienda">
+    <div class="modal-tienda-content">
+        <div class="modal-tienda-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h3><i class="fas fa-users"></i> Vendedores: <span id="vendedor_store_name"></span></h3>
+            <button class="modal-close" onclick="cerrarModalListVendedores()">&times;</button>
+        </div>
+        <div class="modal-tienda-body">
+            <div id="vendedores_list_container" class="modal-list-container">
+                <!-- Se llenará vía AJAX -->
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando vendedores...</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-tienda-footer">
+            <button type="button" class="btn-modal btn-modal-secondary" onclick="cerrarModalListVendedores()" style="flex: 1;">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para ver Lista de Productos -->
+<div id="modalListProductos" class="modal-tienda">
+    <div class="modal-tienda-content">
+        <div class="modal-tienda-header" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);">
+            <h3><i class="fas fa-boxes"></i> Productos: <span id="producto_store_name"></span></h3>
+            <button class="modal-close" onclick="cerrarModalListProductos()">&times;</button>
+        </div>
+        <div class="modal-tienda-body">
+            <div id="productos_list_container" class="modal-list-container">
+                <!-- Se llenará vía AJAX -->
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Cargando productos...</p>
+                </div>
+            </div>
+        </div>
+        <div class="modal-tienda-footer">
+            <button type="button" class="btn-modal btn-modal-secondary" onclick="cerrarModalListProductos()" style="flex: 1;">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos para listas en modales */
+.modal-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+}
+
+.modal-list-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(65, 105, 225, 0.2);
+    border-radius: 12px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.modal-list-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+}
+
+.item-img-container {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    background: #1a1d3a;
+}
+
+.item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #4169e1 0%, #5b7ce6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.item-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-main-text {
+    display: block;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.item-sub-text {
+    display: block;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    margin-top: 1px;
+}
+
+.item-badge {
+    background: rgba(0, 212, 255, 0.1);
+    color: #00d4ff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+</style>
+
+<script>
+/**
+ * Funciones para el listado de Vendedores y Productos de una tienda
+ */
+function verVendedoresTienda(codTienda, nombreTienda) {
+    var storeNameEl = document.getElementById('vendedor_store_name');
+    var modalEl = document.getElementById('modalListVendedores');
+    var container = document.getElementById('vendedores_list_container');
+    
+    if (storeNameEl) storeNameEl.textContent = nombreTienda;
+    if (modalEl) modalEl.style.display = 'block';
+    if (container) container.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Cargando vendedores...</p></div>';
+    
+    $.ajax({
+        url: 'obtener_vendedores_tienda_ajax.php', type: 'GET', data: { cod_tienda: codTienda }, dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                if (response.vendedores && response.vendedores.length > 0) {
+                    var html = '';
+                    response.vendedores.forEach(function(v) {
+                        var nombre = (v.nombres_apellidos_tercero || '').toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                        html += '<div class="modal-list-item">';
+                        html += '    <div class="item-img-container">';
+                        if (v.url_img_foto_prof_min) {
+                            html += '        <img src="' + v.url_img_foto_prof_min + '" class="item-img" alt="' + nombre + '">';
+                        } else {
+                            html += '        <div class="item-placeholder"><i class="fas fa-user"></i></div>';
+                        }
+                        html += '    </div>';
+                        html += '    <div class="item-details">';
+                        html += '        <span class="item-main-text">' + nombre + '</span>';
+                        html += '        <span class="item-sub-text"><i class="fas fa-at"></i> Usuario: ' + (v.cuenta || v.usuario || '') + '</span>';
+                        if (v.telefono1_tercero) {
+                            html += '        <span class="item-sub-text"><i class="fas fa-phone"></i> ' + v.telefono1_tercero + '</span>';
+                        }
+                        html += '    </div>';
+                        html += '    <div><span class="item-badge">Activo</span></div>';
+                        html += '</div>';
+                    });
+                    if (container) container.innerHTML = html;
+                } else {
+                    if (container) container.innerHTML = '<div class="empty-state"><i class="fas fa-user-slash"></i><p>No hay vendedores registrados.</p></div>';
+                }
+            } else {
+                if (container) container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>' + (response.message || 'Error desconocido') + '</p></div>';
+            }
+        }, error: function() { if (container) container.innerHTML = '<div class="empty-state"><i class="fas fa-wifi"></i><p>Error de conexión</p></div>'; }
+    });
+}
+
+function cerrarModalListVendedores() {
+    var modal = document.getElementById('modalListVendedores');
+    if (modal) modal.style.display = 'none';
+}
+
+function verProductosTienda(codTienda, nombreTienda) {
+    var storeNameEl = document.getElementById('producto_store_name');
+    var modalEl = document.getElementById('modalListProductos');
+    var container = document.getElementById('productos_list_container');
+    
+    if (storeNameEl) storeNameEl.textContent = nombreTienda;
+    if (modalEl) modalEl.style.display = 'block';
+    if (container) container.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Cargando productos...</p></div>';
+    
+    $.ajax({
+        url: 'obtener_productos_tienda_ajax.php', type: 'GET', data: { cod_tienda: codTienda }, dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                if (response.productos && response.productos.length > 0) {
+                    var html = '';
+                    response.productos.forEach(function(p) {
+                        html += '<div class="modal-list-item">';
+                        html += '    <div class="item-img-container" style="border-radius: 8px;">';
+                        if (p.url_img_min_producto) { html += '        <img src="' + p.url_img_min_producto + '" class="item-img" alt="' + p.nombre_producto + '">'; } else { html += '        <div class="item-placeholder" style="border-radius: 8px;"><i class="fas fa-box"></i></div>'; }
+                        html += '    </div>';
+                        html += '    <div class="item-details">';
+                        html += '        <span class="item-main-text">' + p.nombre_producto + '</span>';
+                        html += '        <span class="item-sub-text"><i class="fas fa-barcode"></i> Ref: ' + p.cod_producto_barra + '</span>';
+                        html += '    </div>';
+                        html += '    <div><span class="item-badge">' + p.precio_formateado + '</span></div>';
+                        html += '</div>';
+                    });
+                    if (container) container.innerHTML = html;
+                } else {
+                    if (container) container.innerHTML = '<div class="empty-state"><i class="fas fa-archive"></i><p>No hay productos disponibles.</p></div>';
+                }
+            } else {
+                if (container) container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>' + (response.message || 'Error desconocido') + '</p></div>';
+            }
+        }, error: function() { if (container) container.innerHTML = '<div class="empty-state"><i class="fas fa-wifi"></i><p>Error de conexión</p></div>'; }
+    });
+}
+
+function cerrarModalListProductos() {
+    var modal = document.getElementById('modalListProductos');
+    if (modal) modal.style.display = 'none';
+}
+
+// Consolidar el cierre de modales al hacer clic fuera
+$(window).on('click', function(event) {
+    if (event.target.id === 'modalNuevaTienda') cerrarModalTienda();
+    if (event.target.id === 'modalEditarTienda') cerrarModalEditarTienda();
+    if (event.target.id === 'modalListVendedores') cerrarModalListVendedores();
+    if (event.target.id === 'modalListProductos') cerrarModalListProductos();
+});
 </script>
 
 </body>
