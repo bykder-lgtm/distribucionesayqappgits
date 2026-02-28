@@ -702,12 +702,12 @@ if (!empty($cod_tienda_filtro)) {
     // Si viene por GET, usar esa tienda
     $cod_tienda_sesion = $cod_tienda_filtro;
 } elseif (isset($cod_administrador)) {
-    // Si no, buscar la primera asociada al aliado
-    $sql_tienda_aliado = "SELECT cod_tienda FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_administrador' LIMIT 1";
-    $consulta_tienda_aliado = mysqli_query($conectar, $sql_tienda_aliado);
-    if ($consulta_tienda_aliado && mysqli_num_rows($consulta_tienda_aliado) > 0) {
-        $matriz_tienda_aliado = mysqli_fetch_assoc($consulta_tienda_aliado);
-        $cod_tienda_sesion = $matriz_tienda_aliado['cod_tienda'];
+    // Para el vendedor, buscar su cod_tienda directamente en tbl15_administrador
+    $sql_tienda_vendedor = "SELECT cod_tienda FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador' LIMIT 1";
+    $consulta_tienda_vendedor = mysqli_query($conectar, $sql_tienda_vendedor);
+    if ($consulta_tienda_vendedor && mysqli_num_rows($consulta_tienda_vendedor) > 0) {
+        $matriz_tienda_vendedor = mysqli_fetch_assoc($consulta_tienda_vendedor);
+        $cod_tienda_sesion = $matriz_tienda_vendedor['cod_tienda'];
     }
 }
 
@@ -830,12 +830,8 @@ $contador = 0;
 $sql_producto = "SELECT cod_producto, cod_producto_barra, nombre_producto, und_producto, precio_venta_producto, descripcion_producto, 
     precio_venta_producto2, url_img_min_producto, url_img_orig_producto, nombre_promocion, nombre_promocion_ing, 
     cod_categoria, cod_estado, cod_tienda FROM tbl15_producto WHERE (cod_estado = '1')";
-
-// Filtro por tienda (si viene por GET)
-if (!empty($cod_tienda_filtro)) {
-    $sql_producto .= " AND (cod_tienda = '$cod_tienda_filtro')";
-}
-
+// Filtro por tienda del vendedor (siempre filtra por su tienda)
+if ($cod_tienda_sesion > 0) { $sql_producto .= " AND (cod_tienda = '$cod_tienda_sesion')"; }
 // Filtro por categoría
 if (isset($_GET['cod_categoria']) && $_GET['cod_categoria'] != '') { $cod_categoria = intval($_GET['cod_categoria']); $sql_producto .= " AND (cod_categoria = '$cod_categoria')"; }
 // Filtro por búsqueda
@@ -947,7 +943,7 @@ if($total_productos > 0) {
                             <?php } ?>
                         </div>
                     </div>
-                    <a href="../admin/resultado_simulador_credito_aliado_movil.php?cod_producto_codifcryp=<?php echo $cod_producto_codifcryp ?>&cod_categoria=<?php echo $cod_categoria ?>&nombre_tipo_origen_simulacion=<?php echo $nombre_tipo_origen_simulacion ?>" id="btn-cotizar-producto-catalogo" class="btn-cotizar-producto-catalogo"><i class="fa fa-calculator"></i> Cotizar a Crédito</a>
+                    <a href="../admin/resultado_simulador_vendedor_movil.php?cod_producto_codifcryp=<?php echo $cod_producto_codifcryp ?>&cod_categoria=<?php echo $cod_categoria ?>&nombre_tipo_origen_simulacion=<?php echo $nombre_tipo_origen_simulacion ?>" id="btn-cotizar-producto-catalogo" class="btn-cotizar-producto-catalogo"><i class="fa fa-calculator"></i> Cotizar a Crédito</a>
                 </div>
             </div>
 <?php 
