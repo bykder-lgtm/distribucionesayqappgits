@@ -25,6 +25,7 @@
 <li class=""><a href="../admin/lista_aliado_lider_diseno_vertical.php"><i class="fa fa-users"></i> Lista de Aliados</a></li>
 <li class=""><a href="../admin/lista_tienda_lider_diseno_vertical.php"><i class="fa fa-store"></i> Lista de Tiendas</a></li>
 <li class=""><a href="../admin/lista_producto_lider_diseno_vertical.php"><i class="fa fa-boxes-stacked"></i> Lista de Productos</a></li>
+<li class=""><a href="../admin/parametrizacion_cuota_entidad_crediticia_lider_movil.php"><i class="fa fa-sliders"></i> Parametrización Cuotas</a></li>
                 </ul>
             </div>
         </div><!-- /sidebar menu -->

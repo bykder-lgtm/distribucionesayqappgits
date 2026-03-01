@@ -369,6 +369,17 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
                 <?php endif; ?>
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>
+            
+            <a href="parametrizacion_cuota_entidad_crediticia_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon purple">
+                    <i class="fa-solid fa-sliders"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Parametrización de Cuotas</div>
+                    <div class="menu-item-desc">Configurar cuotas por entidad crediticia</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
         </div>
     </div>
 
