@@ -208,7 +208,7 @@ body {
 .cuotas-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 450px;
+    min-width: 550px;
 }
 
 .cuotas-table thead th {
@@ -441,7 +441,7 @@ body {
 .existing-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 450px;
+    min-width: 550px;
 }
 
 .existing-table thead th {
@@ -624,6 +624,85 @@ body {
     font-weight: 600;
     pointer-events: none;
 }
+/* Quick Config Selection Area */
+.quick-config-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-end;
+    background: rgba(139, 92, 246, 0.05);
+    padding: 1rem;
+    border-radius: 16px;
+    border: 1px dashed rgba(139, 92, 246, 0.3);
+}
+
+.config-item {
+    flex: 1;
+    min-width: 140px;
+}
+
+.config-label-premium {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #c4b5fd;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.config-input-premium {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(15, 20, 25, 0.6);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.config-input-premium:focus {
+    border-color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.1);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+}
+
+.config-action {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.btn-primary-compact {
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.btn-primary-compact:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.btn-primary-compact:active { transform: scale(0.95); }
+
 </style>
 </head>
 <body>
@@ -686,33 +765,42 @@ $resultado_entidades_existentes = mysqli_query($conectar, $sql_entidades_existen
     </div>
 
     <!-- Step 2: Generar Cuotas (visible after entity selection) -->
-    <div class="form-card animate-in delay-2" id="cardGenerarCuotas" style="display:none;">
-        <div class="form-card-title" id="titleConfiguracion"><i class="fa-solid fa-gears"></i>Configurar Cuotas</div>
-        <div class="form-group">
-            <label class="form-label">Número de Cuotas a Parametrizar</label>
-            <div class="cuotas-input-wrapper">
-                <input type="number" class="form-input" id="inputNumeroCuotas" min="1" max="120" placeholder="Ej: 12" value="">
-                <button type="button" class="btn-generar" onclick="generarCuotas()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generar</button>
+    <div class="form-card animate-in delay-2" id="cardGenerarCuotas" style="display:none; padding: 1.25rem;">
+        <div class="form-card-title" id="titleConfiguracion" style="margin-bottom: 1rem;"><i class="fa-solid fa-gears"></i>Configurar Cuotas</div>
+        
+        <div class="quick-config-row" id="formulario_escoger_entidad">
+            <div class="config-item">
+                <div class="config-label-premium"><i class="fa-solid fa-hashtag"></i> N° Cuotas</div>
+                <input type="number" class="config-input-premium" id="inputNumeroCuotas" min="1" max="120" placeholder="0">
+            </div>
+
+            <div class="config-item">
+                <div class="config-label-premium"><i class="fa-solid fa-user-gear"></i> Adtvo (%)</div>
+                <input type="number" class="config-input-premium" id="inputAdminGlobal" step="0.00001" placeholder="0.00000">
+            </div>
+
+            <div class="config-action">
+                <button type="button" class="btn-primary-compact" onclick="generarCuotas()" title="Generar Cuotas">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> GENERAR CUOTAS
+                </button>
             </div>
         </div>
-
         <!-- Tabla de cuotas generada dinámicamente -->
         <div id="cuotasTableContainer" style="display:none;">
             <div class="cuotas-table-wrapper">
                 <table class="cuotas-table" id="cuotasTable">
                     <thead>
                         <tr>
-                            <th style="width: 15%"><i class="fa-solid fa-hashtag"></i> Cuota</th>
-                            <th style="width: 28%"><i class="fa-solid fa-percent"></i> Interés (%)</th>
-                            <th style="width: 28%"><i class="fa-solid fa-shield-halved"></i> Seguro</th>
-                            <th style="width: 29%"><i class="fa-solid fa-hand-holding-dollar"></i> Fondo Garantía</th>
+                            <th style="width: 10%"><i class="fa-solid fa-hashtag"></i> Cuota</th>
+                            <th style="width: 30%"><i class="fa-solid fa-percent"></i> Interés (%)</th>
+                            <th style="width: 30%"><i class="fa-solid fa-shield-halved"></i> Seguro</th>
+                            <th style="width: 30%"><i class="fa-solid fa-hand-holding-dollar"></i> Fondo G.</th>
                         </tr>
                     </thead>
                     <tbody id="cuotasBody">
                     </tbody>
                 </table>
             </div>
-
             <!-- Save/Cancel buttons -->
             <div class="btn-save-wrapper">
                 <button type="button" class="btn-save" id="btnGuardar" onclick="guardarParametrizacion()"><i class="fa-solid fa-floppy-disk"></i> Guardar Parametrización</button>
@@ -745,6 +833,7 @@ var codAdministrador = '<?php echo $cod_administrador; ?>';
 var codTienda = '<?php echo $cod_tienda; ?>';
 var currentCodEntidad = '';
 var currentNombreEntidad = '';
+var defaultAdminPtj = 0;
 
 // Funciones para manejar la selección de entidades
 function seleccionarNueva() {
@@ -786,12 +875,12 @@ function ejecutarCarga(codEntidad, nombreEntidad, esNueva) {
         url: '../admin/obtener_cuotas_entidad_crediticia_ajax.php', type: 'POST', data: { cod_entidad_crediticia: codEntidad }, dataType: 'json',
         success: function(response) {
             $('#loadingExistente').hide();
+            defaultAdminPtj = response.default_administrativo_ptj;
+            $('#inputAdminGlobal').val(defaultAdminPtj);
             
             if (response.success && response.cuotas.length > 0) {
-                // Si NO es nueva (es edición), cargamos los datos en los inputs del Step 2
                 if (!esNueva) {
                     $('#inputNumeroCuotas').val(response.cuotas.length);
-                    // Ocultamos el input y botón de generar para que sepa que está editando
                     $('.cuotas-input-wrapper').hide();
                     $('#titleConfiguracion').html('<i class="fa-solid fa-pen-to-square"></i> EDITANDO: ' + nombreEntidad);
                     
@@ -800,7 +889,6 @@ function ejecutarCarga(codEntidad, nombreEntidad, esNueva) {
                         tbody += '<tr>';
                         tbody += '<td><span class="cuota-number">' + c.cuota + '</span></td>';
                         tbody += '<td><div class="input-percent-wrapper"><input type="number" class="cuota-input" id="interes_' + c.cuota + '" step="0.00001" min="0" placeholder="0.00000" value="' + c.interes_ptj + '" required></div></td>';
-                        // Seguro con selector de tipo
                         tbody += '<td>';
                         tbody += '<input type="number" class="cuota-input" id="seguro_' + c.cuota + '" step="0.00001" min="0" placeholder="0.00000" value="' + c.ptj_seguro + '" required>';
                         tbody += '<div class="type-switcher" id="switcher_seguro_' + c.cuota + '">';
@@ -808,7 +896,6 @@ function ejecutarCarga(codEntidad, nombreEntidad, esNueva) {
                         tbody += '<button class="type-btn ' + (c.tipo_ptj_seguro == '$' ? 'active' : '') + '" data-type="$" onclick="toggleValueType(this, \'seguro\', ' + c.cuota + ')">$</button>';
                         tbody += '</div>';
                         tbody += '</td>';
-                        // Fondo con selector de tipo
                         tbody += '<td>';
                         tbody += '<input type="number" class="cuota-input" id="fondo_' + c.cuota + '" step="0.00001" min="0" placeholder="0.00000" value="' + c.ptj_fondo_garantia + '" required>';
                         tbody += '<div class="type-switcher" id="switcher_fondo_' + c.cuota + '">';
@@ -821,66 +908,45 @@ function ejecutarCarga(codEntidad, nombreEntidad, esNueva) {
                     $('#cuotasBody').html(tbody);
                     $('#cuotasTableContainer').show();
                 } else {
-                    // Si es nueva, mostramos el generador normal
                     $('.cuotas-input-wrapper').show();
-                    $('.form-card-title:eq(1)').html('<i class="fa-solid fa-table-cells"></i> Generar Cuotas');
+                    $('#titleConfiguracion').html('<i class="fa-solid fa-table-cells"></i> Generar Cuotas');
                     $('#inputNumeroCuotas').val('');
                 }
-                // También mostramos la vista previa abajo
+
+                // Vista previa
                 $('#badgeExistente').text(response.cuotas.length);
                 var html = '<div class="cuotas-table-wrapper"><table class="existing-table"><thead><tr>';
                 html += '<th><i class="fa-solid fa-hashtag"></i> Cuota</th>';
                 html += '<th><i class="fa-solid fa-percent"></i> Interés</th>';
                 html += '<th><i class="fa-solid fa-shield-halved"></i> Seguro</th>';
                 html += '<th><i class="fa-solid fa-hand-holding-dollar"></i> F. Garantía</th>';
+                html += '<th><i class="fa-solid fa-user-gear"></i> Adm.</th>';
                 html += '</tr></thead><tbody>';
                 
-                // Mapa de colores basado en el valor numérico para identificar duplicados en toda la tabla
-                var valColorMap = {};
-                var colorsList = [
-                    'rgba(139, 92, 246, 0.2)', // Violeta
-                    'rgba(52, 211, 153, 0.2)', // Esmeralda
-                    'rgba(59, 130, 246, 0.2)', // Azul
-                    'rgba(245, 158, 11, 0.2)', // Ámbar
-                    'rgba(239, 68, 68, 0.2)',  // Rojo
-                    'rgba(236, 72, 153, 0.2)', // Rosa
-                    'rgba(34, 211, 238, 0.2)', // Cian
-                    'rgba(249, 115, 22, 0.2)', // Naranja
-                    'rgba(168, 85, 247, 0.2)', // Morado
-                    'rgba(132, 204, 22, 0.2)'  // Lima
-                ];
+                var valColorMap = {}, colorsList = ['rgba(139, 92, 246, 0.2)', 'rgba(52, 211, 153, 0.2)', 'rgba(59, 130, 246, 0.2)', 'rgba(245, 158, 11, 0.2)', 'rgba(239, 68, 68, 0.2)', 'rgba(236, 72, 153, 0.2)', 'rgba(34, 211, 238, 0.2)', 'rgba(249, 115, 22, 0.2)', 'rgba(168, 85, 247, 0.2)', 'rgba(132, 204, 22, 0.2)'];
                 var colorIdx = 0;
 
                 response.cuotas.forEach(function(c) {
-                    // Extraemos los valores numéricos con precisión de 5 decimales
-                    var vI = parseFloat(c.interes_ptj).toFixed(5);
-                    var vS = parseFloat(c.ptj_seguro).toFixed(5);
-                    var vF = parseFloat(c.ptj_fondo_garantia).toFixed(5);
-
-                    // Asignamos color al valor si es la primera vez que aparece
+                    var vI = parseFloat(c.interes_ptj).toFixed(5), vS = parseFloat(c.ptj_seguro).toFixed(5), vF = parseFloat(c.ptj_fondo_garantia).toFixed(5), vA = parseFloat(c.administrativo_ptj).toFixed(5);
                     if (!valColorMap[vI]) valColorMap[vI] = colorsList[colorIdx++ % colorsList.length];
                     if (!valColorMap[vS]) valColorMap[vS] = colorsList[colorIdx++ % colorsList.length];
                     if (!valColorMap[vF]) valColorMap[vF] = colorsList[colorIdx++ % colorsList.length];
-
-                    var cI = valColorMap[vI], cS = valColorMap[vS], cF = valColorMap[vF];
+                    if (!valColorMap[vA]) valColorMap[vA] = colorsList[colorIdx++ % colorsList.length];
+                    var cI = valColorMap[vI], cS = valColorMap[vS], cF = valColorMap[vF], cA = valColorMap[vA];
                     
-                    html += '<tr>';
-                    html += '<td><span class="cuota-number">' + c.cuota + '</span></td>';
-                    // Celda Interés
+                    html += '<tr><td><span class="cuota-number">' + c.cuota + '</span></td>';
                     html += '<td style="background-color: ' + cI + '; border-left: 3px solid ' + cI.replace('0.2', '0.6') + '; font-weight: 700;">' + vI + '%</td>';
-                    // Celda Seguro
                     html += '<td style="background-color: ' + cS + '; border-left: 3px solid ' + cS.replace('0.2', '0.6') + '; font-weight: 700;">' + (c.tipo_ptj_seguro == '$' ? '$' : '') + vS + (c.tipo_ptj_seguro != '$' ? '%' : '') + '</td>';
-                    // Celda Fondo
                     html += '<td style="background-color: ' + cF + '; border-left: 3px solid ' + cF.replace('0.2', '0.6') + '; font-weight: 700;">' + (c.tipo_fondo_garantia == '$' ? '$' : '') + vF + (c.tipo_fondo_garantia != '$' ? '%' : '') + '</td>';
-                    html += '</tr>';
+                    html += '<td style="background-color: ' + cA + '; border-left: 3px solid ' + cA.replace('0.2', '0.6') + '; font-weight: 700;">' + vA + '%</td></tr>';
                 });
-                html += '</tbody></table></div>';
-                html += '<div style="text-align: center; margin-top: 1rem;">';
-                html += '<button type="button" class="btn-cancel" onclick="eliminarParametrizacionExistente()" style="width: 100%;">';
-                html += '<i class="fa-solid fa-trash-can"></i> Eliminar Parametrización Existente</button></div>';
+                html += '</tbody></table></div><div style="text-align: center; margin-top: 1rem;"><button type="button" class="btn-cancel" onclick="eliminarParametrizacionExistente()" style="width: 100%;"><i class="fa-solid fa-trash-can"></i> Eliminar Parametrización Existente</button></div>';
                 $('#existenteContent').html(html);
+                // Si hay datos, el administrativo global muestra el de la primera cuota como referencia
+                if(response.cuotas.length > 0) {
+                    $('#inputAdminGlobal').val(response.cuotas[0].administrativo_ptj);
+                }
             } else {
-                // Es nueva total (no tiene registros en el servidor)
                 $('.cuotas-input-wrapper').show();
                 $('#titleConfiguracion').html('<i class="fa-solid fa-table-cells"></i> Generar Cuotas');
                 $('#inputNumeroCuotas').val('');
@@ -888,10 +954,7 @@ function ejecutarCarga(codEntidad, nombreEntidad, esNueva) {
                 $('#existenteContent').html('<div class="empty-state"><i class="fa-solid fa-database"></i><p>No hay cuotas parametrizadas para esta entidad</p></div>');
             }
             
-            // Scroll suave para que el usuario vea que se cargó el formulario de edición
-            setTimeout(function() {
-                document.getElementById('cardGenerarCuotas').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
+            setTimeout(function() { document.getElementById('cardGenerarCuotas').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
         },
         error: function() {
             $('#loadingExistente').hide();
@@ -937,7 +1000,6 @@ function generarCuotas() {
     }
     $('#cuotasBody').html(tbody);
     $('#cuotasTableContainer').slideDown(300);
-    
     // Add input event listeners for visual feedback
     $('.cuota-input').on('input', function() {
         var val = $(this).val();
@@ -952,10 +1014,13 @@ function limpiarCuotas() {
 }
 // Save parametrizacion
 function guardarParametrizacion() {
+    var adminGlobal = parseFloat($('#inputAdminGlobal').val());
     var numCuotas = parseInt($('#inputNumeroCuotas').val());
     
     if (!currentCodEntidad) { Swal.fire({ icon: 'error', title: 'Error', text: 'Seleccione una entidad crediticia', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' }); return; }
     if (!numCuotas || numCuotas < 1) { Swal.fire({ icon: 'error', title: 'Error', text: 'Genere las cuotas primero', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' }); return; }
+    if (isNaN(adminGlobal)) { Swal.fire({ icon: 'error', title: 'Error', text: 'Ingrese un porcentaje administrativo válido', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' }); return; }
+
     // Validate all fields are filled
     var cuotasData = [];
     var hasError = false;
@@ -964,9 +1029,11 @@ function guardarParametrizacion() {
         var interes = $('#interes_' + i).val();
         var seguro = $('#seguro_' + i).val();
         var fondo = $('#fondo_' + i).val();
+        
         // Obtenemos los tipos seleccionados
         var tipo_seguro = $('#switcher_seguro_' + i + ' .type-btn.active').data('type');
         var tipo_fondo = $('#switcher_fondo_' + i + ' .type-btn.active').data('type');
+        
         // Check if any field is empty
         if (interes === '' || seguro === '' || fondo === '') {
             hasError = true;
@@ -974,7 +1041,15 @@ function guardarParametrizacion() {
             if (seguro === '') $('#seguro_' + i).addClass('error');
             if (fondo === '') $('#fondo_' + i).addClass('error');
         } else {
-            cuotasData.push({ cuota: i, interes_ptj: parseFloat(interes), ptj_seguro: parseFloat(seguro), ptj_fondo_garantia: parseFloat(fondo), tipo_ptj_seguro: tipo_seguro, tipo_fondo_garantia: tipo_fondo });
+            cuotasData.push({ 
+                cuota: i, 
+                interes_ptj: parseFloat(interes), 
+                ptj_seguro: parseFloat(seguro), 
+                ptj_fondo_garantia: parseFloat(fondo), 
+                administrativo_ptj: adminGlobal,
+                tipo_ptj_seguro: tipo_seguro, 
+                tipo_fondo_garantia: tipo_fondo 
+            });
         }
     }
     if (hasError) { Swal.fire({ icon: 'warning', title: 'Campos obligatorios', text: 'Todos los campos de porcentaje son obligatorios. Complete los campos marcados en rojo.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' }); return; }

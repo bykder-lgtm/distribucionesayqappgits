@@ -59,6 +59,7 @@ try {
         $interes_ptj   = number_format(floatval($cuota['interes_ptj']), 5, '.', '');
         $ptj_seguro    = number_format(floatval($cuota['ptj_seguro']), 5, '.', '');
         $ptj_fondo_garantia = number_format(floatval($cuota['ptj_fondo_garantia']), 5, '.', '');
+        $administrativo_ptj = number_format(floatval($cuota['administrativo_ptj']), 5, '.', '');
         $tipo_ptj_seguro = isset($cuota['tipo_ptj_seguro']) ? mysqli_real_escape_string($conectar, $cuota['tipo_ptj_seguro']) : '%';
         $tipo_fondo_garantia = isset($cuota['tipo_fondo_garantia']) ? mysqli_real_escape_string($conectar, $cuota['tipo_fondo_garantia']) : '%';
         // Check if record already exists for this entity and cuota
@@ -68,14 +69,15 @@ try {
         if ($res_check && mysqli_num_rows($res_check) > 0) {
             // UPDATING existing record
             $sql_save = "UPDATE tbl15_parametrizacion_entidad_crediticia_cuota SET interes_ptj = '$interes_ptj', ptj_seguro = '$ptj_seguro', ptj_fondo_garantia = '$ptj_fondo_garantia',
-            tipo_ptj_seguro = '$tipo_ptj_seguro', tipo_fondo_garantia = '$tipo_fondo_garantia', fecha_modificacion = NOW() WHERE cod_entidad_crediticia = '$cod_entidad_crediticia' AND cuota = '$num_cuota'";
+            administrativo_ptj = '$administrativo_ptj', tipo_ptj_seguro = '$tipo_ptj_seguro',  tipo_fondo_garantia = '$tipo_fondo_garantia', fecha_modificacion = NOW()
+            WHERE cod_entidad_crediticia = '$cod_entidad_crediticia' AND cuota = '$num_cuota'";
         } else {
             // INSERTING new record
-            $sql_save = "INSERT INTO tbl15_parametrizacion_entidad_crediticia_cuota (cod_administardor, cod_aliado_estrategico, cod_tienda, cod_entidad_crediticia, nombre_entidad_crediticia, cuota, interes_ptj, ptj_seguro, ptj_fondo_garantia,
+            $sql_save = "INSERT INTO tbl15_parametrizacion_entidad_crediticia_cuota (cod_administardor, cod_aliado_estrategico, cod_tienda, cod_entidad_crediticia, nombre_entidad_crediticia, cuota, interes_ptj, ptj_seguro, ptj_fondo_garantia, administrativo_ptj,
             tipo_ptj_seguro, tipo_fondo_garantia,
             aval_ptj, cod_posicion, cod_estado_entidad_predeterminada_interes_defect, meses_max_entidad_crediticia, quicenal_max_entidad_crediticia, cod_estado_entrar_portal,
             url_pagina_web_consulta, url_pagina_web_consultar_cupo, url_pagina_web_estudio_cupo, url_pagina_web_valor_pagar, url_pagina_web, cod_estado_activar_portal, fecha_creacion, cod_estado) 
-            VALUES ('$cod_administrador', '$cod_aliado_estrategico', '$cod_tienda', '$cod_entidad_crediticia', '$nombre_entidad_crediticia', '$num_cuota', '$interes_ptj', '$ptj_seguro', '$ptj_fondo_garantia',
+            VALUES ('$cod_administrador', '$cod_aliado_estrategico', '$cod_tienda', '$cod_entidad_crediticia', '$nombre_entidad_crediticia', '$num_cuota', '$interes_ptj', '$ptj_seguro', '$ptj_fondo_garantia', '$administrativo_ptj',
             '$tipo_ptj_seguro', '$tipo_fondo_garantia',
             '$aval_ptj', '$cod_posicion', '$cod_estado_entidad_predeterminada', '$meses_max', '$quincenal_max', '$cod_estado_entrar_portal', '$url_pagina_web_consulta',
             '$url_pagina_web_consultar_cupo', '$url_pagina_web_estudio_cupo', '$url_pagina_web_valor_pagar', '$url_pagina_web', '$cod_estado_activar_portal', '$fecha_creacion', '1')";
