@@ -282,6 +282,108 @@ body {
     border-color: #34d399;
 }
 
+/* Type Switcher Styles */
+.type-switcher {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+    background: rgba(139, 92, 246, 0.1);
+    padding: 2px;
+    border-radius: 8px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.type-btn {
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    background: transparent;
+}
+
+.type-btn.active {
+    background: #8b5cf6;
+    color: white;
+    box-shadow: 0 2px 5px rgba(139, 92, 246, 0.3);
+}
+
+.type-btn.active[data-type="$"] {
+    background: #34d399;
+    box-shadow: 0 2px 5px rgba(52, 211, 153, 0.3);
+}
+
+/* Entity Chips */
+.entity-chips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.entity-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 0.5rem;
+    background: rgba(139, 92, 246, 0.08);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 16px;
+    color: #c4b5fd;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 0.5rem;
+}
+
+.entity-chip i {
+    font-size: 1.2rem;
+    color: #8b5cf6;
+    transition: transform 0.3s ease;
+}
+
+.entity-chip:hover {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: #8b5cf6;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+.entity-chip:hover i {
+    transform: scale(1.1);
+}
+
+.entity-chip.active {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+}
+
+.entity-chip.active i {
+    color: white;
+}
+
+.empty-chips-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(139, 92, 246, 0.3);
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+}
+
 /* Save Button */
 .btn-save-wrapper {
     display: flex;
@@ -528,9 +630,14 @@ body {
 <?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 
 <?php
-// Obtener las entidades crediticias activas
-$sql_entidades = "SELECT cod_entidad_crediticia, nombre_entidad_crediticia FROM tbl15_entidad_crediticia WHERE cod_estado = '1' ORDER BY nombre_entidad_crediticia ASC";
-$resultado_entidades = mysqli_query($conectar, $sql_entidades);
+// Entidades SIN parametrizar
+$sql_entidades_nuevas = "SELECT cod_entidad_crediticia, nombre_entidad_crediticia FROM tbl15_entidad_crediticia 
+WHERE cod_estado = '1' AND cod_entidad_crediticia NOT IN (SELECT DISTINCT cod_entidad_crediticia FROM tbl15_parametrizacion_entidad_crediticia_cuota) ORDER BY nombre_entidad_crediticia ASC";
+$resultado_entidades_nuevas = mysqli_query($conectar, $sql_entidades_nuevas);
+// Entidades YA parametrizadas
+$sql_entidades_existentes = "SELECT DISTINCT e.cod_entidad_crediticia, e.nombre_entidad_crediticia FROM tbl15_entidad_crediticia e 
+INNER JOIN tbl15_parametrizacion_entidad_crediticia_cuota p ON e.cod_entidad_crediticia = p.cod_entidad_crediticia WHERE e.cod_estado = '1' ORDER BY e.nombre_entidad_crediticia ASC";
+$resultado_entidades_existentes = mysqli_query($conectar, $sql_entidades_existentes);
 ?>
 
 <main class="page-container">
@@ -542,18 +649,33 @@ $resultado_entidades = mysqli_query($conectar, $sql_entidades);
 
     <!-- Step 1: Seleccionar Entidad -->
     <div class="form-card animate-in delay-1">
-        <div class="form-card-title">
-            <i class="fa-solid fa-building-columns"></i>
-            Seleccionar Entidad Crediticia
-        </div>
+        <div class="form-card-title"><i class="fa-solid fa-plus-circle"></i>Nueva Parametrización</div>
         <div class="form-group">
-            <label class="form-label">Entidad Crediticia</label>
-            <select class="form-select" id="selectEntidadCrediticia" onchange="cargarParametrizacionExistente()">
+            <label class="form-label">Entidad SIN Configurar</label>
+            <select class="form-select" id="selectEntidadCrediticia" onchange="seleccionarNueva()">
                 <option value="">-- Seleccione una entidad --</option>
-                <?php while ($entidad = mysqli_fetch_assoc($resultado_entidades)): ?>
+                <?php while ($entidad = mysqli_fetch_assoc($resultado_entidades_nuevas)): ?>
                 <option value="<?php echo $entidad['cod_entidad_crediticia']; ?>"><?php echo $entidad['nombre_entidad_crediticia']; ?></option>
                 <?php endwhile; ?>
             </select>
+        </div>
+
+        <div style="margin: 1.5rem 0; height: 1px; background: rgba(139, 92, 246, 0.2);"></div>
+
+        <div class="form-card-title"><i class="fa-solid fa-clock-rotate-left"></i>Parametrizaciones Guardadas</div>
+        <div class="entity-chips-grid">
+            <?php if (mysqli_num_rows($resultado_entidades_existentes) > 0): ?>
+                <?php while ($entidad = mysqli_fetch_assoc($resultado_entidades_existentes)): ?>
+                <div class="entity-chip" 
+                     onclick="seleccionarChip(this, '<?php echo $entidad['cod_entidad_crediticia']; ?>', '<?php echo addslashes($entidad['nombre_entidad_crediticia']); ?>')">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span><?php echo $entidad['nombre_entidad_crediticia']; ?></span>
+                    <i class="fa-solid fa-pen-to-square" style="font-size: 0.7rem; opacity: 0.6; margin-left: auto; padding-right: 5px;"></i>
+                </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <div class="empty-chips-state"><p>No hay entidades parametrizadas aún</p></div>
+            <?php endif; ?>
         </div>
         <div id="entityInfoBadge" style="display:none;">
             <div class="entity-info-badge">
@@ -565,17 +687,12 @@ $resultado_entidades = mysqli_query($conectar, $sql_entidades);
 
     <!-- Step 2: Generar Cuotas (visible after entity selection) -->
     <div class="form-card animate-in delay-2" id="cardGenerarCuotas" style="display:none;">
-        <div class="form-card-title">
-            <i class="fa-solid fa-table-cells"></i>
-            Generar Cuotas
-        </div>
+        <div class="form-card-title" id="titleConfiguracion"><i class="fa-solid fa-gears"></i>Configurar Cuotas</div>
         <div class="form-group">
             <label class="form-label">Número de Cuotas a Parametrizar</label>
             <div class="cuotas-input-wrapper">
                 <input type="number" class="form-input" id="inputNumeroCuotas" min="1" max="120" placeholder="Ej: 12" value="">
-                <button type="button" class="btn-generar" onclick="generarCuotas()">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Generar
-                </button>
+                <button type="button" class="btn-generar" onclick="generarCuotas()"><i class="fa-solid fa-wand-magic-sparkles"></i> Generar</button>
             </div>
         </div>
 
@@ -587,8 +704,8 @@ $resultado_entidades = mysqli_query($conectar, $sql_entidades);
                         <tr>
                             <th style="width: 15%"><i class="fa-solid fa-hashtag"></i> Cuota</th>
                             <th style="width: 28%"><i class="fa-solid fa-percent"></i> Interés (%)</th>
-                            <th style="width: 28%"><i class="fa-solid fa-shield-halved"></i> Seguro (%)</th>
-                            <th style="width: 29%"><i class="fa-solid fa-hand-holding-dollar"></i> Fondo Garantía (%)</th>
+                            <th style="width: 28%"><i class="fa-solid fa-shield-halved"></i> Seguro</th>
+                            <th style="width: 29%"><i class="fa-solid fa-hand-holding-dollar"></i> Fondo Garantía</th>
                         </tr>
                     </thead>
                     <tbody id="cuotasBody">
@@ -598,23 +715,15 @@ $resultado_entidades = mysqli_query($conectar, $sql_entidades);
 
             <!-- Save/Cancel buttons -->
             <div class="btn-save-wrapper">
-                <button type="button" class="btn-save" id="btnGuardar" onclick="guardarParametrizacion()">
-                    <i class="fa-solid fa-floppy-disk"></i> Guardar Parametrización
-                </button>
-                <button type="button" class="btn-cancel" onclick="limpiarCuotas()">
-                    <i class="fa-solid fa-xmark"></i> Cancelar
-                </button>
+                <button type="button" class="btn-save" id="btnGuardar" onclick="guardarParametrizacion()"><i class="fa-solid fa-floppy-disk"></i> Guardar Parametrización</button>
+                <button type="button" class="btn-cancel" onclick="limpiarCuotas()"><i class="fa-solid fa-xmark"></i> Cancelar</button>
             </div>
         </div>
     </div>
 
     <!-- Step 3: Parametrización Existente -->
     <div class="form-card animate-in delay-3" id="cardExistente" style="display:none;">
-        <div class="form-card-title">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            Parametrización Existente
-            <span class="badge-count" id="badgeExistente">0</span>
-        </div>
+        <div class="form-card-title"><i class="fa-solid fa-clock-rotate-left"></i>Parametrización Existente <span class="badge-count" id="badgeExistente">0</span></div>
         <div class="loading-spinner" id="loadingExistente">
             <i class="fa-solid fa-circle-notch"></i>
             <p style="color: rgba(255,255,255,0.5); margin-top: 0.5rem;">Cargando datos...</p>
@@ -634,28 +743,41 @@ $resultado_entidades = mysqli_query($conectar, $sql_entidades);
 <script>
 var codAdministrador = '<?php echo $cod_administrador; ?>';
 var codTienda = '<?php echo $cod_tienda; ?>';
+var currentCodEntidad = '';
+var currentNombreEntidad = '';
 
-// When entity changes
-function cargarParametrizacionExistente() {
+// Funciones para manejar la selección de entidades
+function seleccionarNueva() {
     var codEntidad = $('#selectEntidadCrediticia').val();
-    
-    if (!codEntidad) {
-        $('#cardGenerarCuotas').slideUp(300);
-        $('#cardExistente').slideUp(300);
-        $('#entityInfoBadge').fadeOut(200);
-        return;
-    }
-
-    var nombreEntidad = $('#selectEntidadCrediticia option:selected').text();
+    if (!codEntidad) { resetUI(); return; }
+    currentCodEntidad = codEntidad;
+    currentNombreEntidad = $('#selectEntidadCrediticia option:selected').text();
+    // Deseleccionar chips
+    $('.entity-chip').removeClass('active');
+    ejecutarCarga(currentCodEntidad, currentNombreEntidad, true);
+}
+function seleccionarChip(el, codEntidad, nombreEntidad) {
+    // UI state
+    $('.entity-chip').removeClass('active');
+    $(el).addClass('active');
+    // Reset the "New" select
+    $('#selectEntidadCrediticia').val('');
+    currentCodEntidad = codEntidad;
+    currentNombreEntidad = nombreEntidad;
+    ejecutarCarga(currentCodEntidad, currentNombreEntidad, false);
+}
+function resetUI() {
+    $('#cardGenerarCuotas').slideUp(300);
+    $('#cardExistente').slideUp(300);
+    $('#entityInfoBadge').fadeOut(200);
+}
+function ejecutarCarga(codEntidad, nombreEntidad, esNueva) {
     $('#entityInfoText').text('Entidad seleccionada: ' + nombreEntidad);
     $('#entityInfoBadge').fadeIn(200);
-    
-    // Show generate quotas section
+    // Mostrar sección de configurar cuotas
     $('#cardGenerarCuotas').slideDown(300);
-    $('#inputNumeroCuotas').val('');
     limpiarCuotas();
-    
-    // Load existing data
+    // Cargar datos existentes (si los hay)
     $('#cardExistente').slideDown(300);
     $('#loadingExistente').show();
     $('#existenteContent').html('');
@@ -664,7 +786,47 @@ function cargarParametrizacionExistente() {
         url: '../admin/obtener_cuotas_entidad_crediticia_ajax.php', type: 'POST', data: { cod_entidad_crediticia: codEntidad }, dataType: 'json',
         success: function(response) {
             $('#loadingExistente').hide();
+            
             if (response.success && response.cuotas.length > 0) {
+                // Si NO es nueva (es edición), cargamos los datos en los inputs del Step 2
+                if (!esNueva) {
+                    $('#inputNumeroCuotas').val(response.cuotas.length);
+                    // Ocultamos el input y botón de generar para que sepa que está editando
+                    $('.cuotas-input-wrapper').hide();
+                    $('#titleConfiguracion').html('<i class="fa-solid fa-pen-to-square"></i> EDITANDO: ' + nombreEntidad);
+                    
+                    var tbody = '';
+                    response.cuotas.forEach(function(c) {
+                        tbody += '<tr>';
+                        tbody += '<td><span class="cuota-number">' + c.cuota + '</span></td>';
+                        tbody += '<td><div class="input-percent-wrapper"><input type="number" class="cuota-input" id="interes_' + c.cuota + '" step="0.00001" min="0" placeholder="0.00000" value="' + c.interes_ptj + '" required></div></td>';
+                        // Seguro con selector de tipo
+                        tbody += '<td>';
+                        tbody += '<input type="number" class="cuota-input" id="seguro_' + c.cuota + '" step="0.00001" min="0" placeholder="0.00000" value="' + c.ptj_seguro + '" required>';
+                        tbody += '<div class="type-switcher" id="switcher_seguro_' + c.cuota + '">';
+                        tbody += '<button class="type-btn ' + (c.tipo_ptj_seguro == '%' ? 'active' : '') + '" data-type="%" onclick="toggleValueType(this, \'seguro\', ' + c.cuota + ')">%</button>';
+                        tbody += '<button class="type-btn ' + (c.tipo_ptj_seguro == '$' ? 'active' : '') + '" data-type="$" onclick="toggleValueType(this, \'seguro\', ' + c.cuota + ')">$</button>';
+                        tbody += '</div>';
+                        tbody += '</td>';
+                        // Fondo con selector de tipo
+                        tbody += '<td>';
+                        tbody += '<input type="number" class="cuota-input" id="fondo_' + c.cuota + '" step="0.00001" min="0" placeholder="0.00000" value="' + c.ptj_fondo_garantia + '" required>';
+                        tbody += '<div class="type-switcher" id="switcher_fondo_' + c.cuota + '">';
+                        tbody += '<button class="type-btn ' + (c.tipo_fondo_garantia == '%' ? 'active' : '') + '" data-type="%" onclick="toggleValueType(this, \'fondo\', ' + c.cuota + ')">%</button>';
+                        tbody += '<button class="type-btn ' + (c.tipo_fondo_garantia == '$' ? 'active' : '') + '" data-type="$" onclick="toggleValueType(this, \'fondo\', ' + c.cuota + ')">$</button>';
+                        tbody += '</div>';
+                        tbody += '</td>';
+                        tbody += '</tr>';
+                    });
+                    $('#cuotasBody').html(tbody);
+                    $('#cuotasTableContainer').show();
+                } else {
+                    // Si es nueva, mostramos el generador normal
+                    $('.cuotas-input-wrapper').show();
+                    $('.form-card-title:eq(1)').html('<i class="fa-solid fa-table-cells"></i> Generar Cuotas');
+                    $('#inputNumeroCuotas').val('');
+                }
+                // También mostramos la vista previa abajo
                 $('#badgeExistente').text(response.cuotas.length);
                 var html = '<div class="cuotas-table-wrapper"><table class="existing-table"><thead><tr>';
                 html += '<th><i class="fa-solid fa-hashtag"></i> Cuota</th>';
@@ -673,27 +835,63 @@ function cargarParametrizacionExistente() {
                 html += '<th><i class="fa-solid fa-hand-holding-dollar"></i> F. Garantía</th>';
                 html += '</tr></thead><tbody>';
                 
+                // Mapa de colores basado en el valor numérico para identificar duplicados en toda la tabla
+                var valColorMap = {};
+                var colorsList = [
+                    'rgba(139, 92, 246, 0.2)', // Violeta
+                    'rgba(52, 211, 153, 0.2)', // Esmeralda
+                    'rgba(59, 130, 246, 0.2)', // Azul
+                    'rgba(245, 158, 11, 0.2)', // Ámbar
+                    'rgba(239, 68, 68, 0.2)',  // Rojo
+                    'rgba(236, 72, 153, 0.2)', // Rosa
+                    'rgba(34, 211, 238, 0.2)', // Cian
+                    'rgba(249, 115, 22, 0.2)', // Naranja
+                    'rgba(168, 85, 247, 0.2)', // Morado
+                    'rgba(132, 204, 22, 0.2)'  // Lima
+                ];
+                var colorIdx = 0;
+
                 response.cuotas.forEach(function(c) {
+                    // Extraemos los valores numéricos con precisión de 5 decimales
+                    var vI = parseFloat(c.interes_ptj).toFixed(5);
+                    var vS = parseFloat(c.ptj_seguro).toFixed(5);
+                    var vF = parseFloat(c.ptj_fondo_garantia).toFixed(5);
+
+                    // Asignamos color al valor si es la primera vez que aparece
+                    if (!valColorMap[vI]) valColorMap[vI] = colorsList[colorIdx++ % colorsList.length];
+                    if (!valColorMap[vS]) valColorMap[vS] = colorsList[colorIdx++ % colorsList.length];
+                    if (!valColorMap[vF]) valColorMap[vF] = colorsList[colorIdx++ % colorsList.length];
+
+                    var cI = valColorMap[vI], cS = valColorMap[vS], cF = valColorMap[vF];
+                    
                     html += '<tr>';
                     html += '<td><span class="cuota-number">' + c.cuota + '</span></td>';
-                    html += '<td>' + parseFloat(c.interes_ptj).toFixed(2) + '%</td>';
-                    html += '<td>' + parseFloat(c.ptj_seguro).toFixed(2) + '%</td>';
-                    html += '<td>' + parseFloat(c.ptj_fondo_garantia).toFixed(2) + '%</td>';
+                    // Celda Interés
+                    html += '<td style="background-color: ' + cI + '; border-left: 3px solid ' + cI.replace('0.2', '0.6') + '; font-weight: 700;">' + vI + '%</td>';
+                    // Celda Seguro
+                    html += '<td style="background-color: ' + cS + '; border-left: 3px solid ' + cS.replace('0.2', '0.6') + '; font-weight: 700;">' + (c.tipo_ptj_seguro == '$' ? '$' : '') + vS + (c.tipo_ptj_seguro != '$' ? '%' : '') + '</td>';
+                    // Celda Fondo
+                    html += '<td style="background-color: ' + cF + '; border-left: 3px solid ' + cF.replace('0.2', '0.6') + '; font-weight: 700;">' + (c.tipo_fondo_garantia == '$' ? '$' : '') + vF + (c.tipo_fondo_garantia != '$' ? '%' : '') + '</td>';
                     html += '</tr>';
                 });
-                
                 html += '</tbody></table></div>';
-                
-                // Add delete existing button
                 html += '<div style="text-align: center; margin-top: 1rem;">';
                 html += '<button type="button" class="btn-cancel" onclick="eliminarParametrizacionExistente()" style="width: 100%;">';
                 html += '<i class="fa-solid fa-trash-can"></i> Eliminar Parametrización Existente</button></div>';
-                
                 $('#existenteContent').html(html);
             } else {
+                // Es nueva total (no tiene registros en el servidor)
+                $('.cuotas-input-wrapper').show();
+                $('#titleConfiguracion').html('<i class="fa-solid fa-table-cells"></i> Generar Cuotas');
+                $('#inputNumeroCuotas').val('');
                 $('#badgeExistente').text('0');
                 $('#existenteContent').html('<div class="empty-state"><i class="fa-solid fa-database"></i><p>No hay cuotas parametrizadas para esta entidad</p></div>');
             }
+            
+            // Scroll suave para que el usuario vea que se cargó el formulario de edición
+            setTimeout(function() {
+                document.getElementById('cardGenerarCuotas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         },
         error: function() {
             $('#loadingExistente').hide();
@@ -701,7 +899,11 @@ function cargarParametrizacionExistente() {
         }
     });
 }
-
+// Function to toggle between % and $
+function toggleValueType(btn, field, cuota) {
+    $(btn).siblings().removeClass('active');
+    $(btn).addClass('active');
+}
 // Generate cuotas rows
 function generarCuotas() {
     var numCuotas = parseInt($('#inputNumeroCuotas').val());
@@ -710,17 +912,29 @@ function generarCuotas() {
         Swal.fire({ icon: 'warning', title: 'Valor inválido', text: 'Ingrese un número de cuotas válido (entre 1 y 120)', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' });
         return;
     }
-    
     var tbody = '';
     for (var i = 1; i <= numCuotas; i++) {
         tbody += '<tr>';
         tbody += '<td><span class="cuota-number">' + i + '</span></td>';
-        tbody += '<td><div class="input-percent-wrapper"><input type="number" class="cuota-input" id="interes_' + i + '" step="0.01" min="0" max="99.99" placeholder="0.00" required></div></td>';
-        tbody += '<td><div class="input-percent-wrapper"><input type="number" class="cuota-input" id="seguro_' + i + '" step="0.01" min="0" max="999.99" placeholder="0.00" required></div></td>';
-        tbody += '<td><div class="input-percent-wrapper"><input type="number" class="cuota-input" id="fondo_' + i + '" step="0.01" min="0" max="999.99" placeholder="0.00" required></div></td>';
+        tbody += '<td><div class="input-percent-wrapper"><input type="number" class="cuota-input" id="interes_' + i + '" step="0.00001" min="0" placeholder="0.00000" required></div></td>';
+        // Seguro con selector de tipo
+        tbody += '<td>';
+        tbody += '<input type="number" class="cuota-input" id="seguro_' + i + '" step="0.00001" min="0" placeholder="0.00000" required>';
+        tbody += '<div class="type-switcher" id="switcher_seguro_' + i + '">';
+        tbody += '<button class="type-btn active" data-type="%" onclick="toggleValueType(this, \'seguro\', ' + i + ')">%</button>';
+        tbody += '<button class="type-btn" data-type="$" onclick="toggleValueType(this, \'seguro\', ' + i + ')">$</button>';
+        tbody += '</div>';
+        tbody += '</td>'; 
+        // Fondo con selector de tipo
+        tbody += '<td>';
+        tbody += '<input type="number" class="cuota-input" id="fondo_' + i + '" step="0.00001" min="0" placeholder="0.00000" required>';
+        tbody += '<div class="type-switcher" id="switcher_fondo_' + i + '">';
+        tbody += '<button class="type-btn active" data-type="%" onclick="toggleValueType(this, \'fondo\', ' + i + ')">%</button>';
+        tbody += '<button class="type-btn" data-type="$" onclick="toggleValueType(this, \'fondo\', ' + i + ')">$</button>';
+        tbody += '</div>';
+        tbody += '</td>';
         tbody += '</tr>';
     }
-    
     $('#cuotasBody').html(tbody);
     $('#cuotasTableContainer').slideDown(300);
     
@@ -731,22 +945,17 @@ function generarCuotas() {
         if (val !== '' && !isNaN(val) && parseFloat(val) >= 0) { $(this).addClass('filled'); }
     });
 }
-
 // Clear cuotas table
 function limpiarCuotas() {
     $('#cuotasBody').html('');
     $('#cuotasTableContainer').slideUp(300);
 }
-
 // Save parametrizacion
 function guardarParametrizacion() {
-    var codEntidad = $('#selectEntidadCrediticia').val();
-    var nombreEntidad = $('#selectEntidadCrediticia option:selected').text();
     var numCuotas = parseInt($('#inputNumeroCuotas').val());
     
-    if (!codEntidad) { Swal.fire({ icon: 'error', title: 'Error', text: 'Seleccione una entidad crediticia', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' }); return; }
+    if (!currentCodEntidad) { Swal.fire({ icon: 'error', title: 'Error', text: 'Seleccione una entidad crediticia', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' }); return; }
     if (!numCuotas || numCuotas < 1) { Swal.fire({ icon: 'error', title: 'Error', text: 'Genere las cuotas primero', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' }); return; }
-    
     // Validate all fields are filled
     var cuotasData = [];
     var hasError = false;
@@ -755,7 +964,9 @@ function guardarParametrizacion() {
         var interes = $('#interes_' + i).val();
         var seguro = $('#seguro_' + i).val();
         var fondo = $('#fondo_' + i).val();
-        
+        // Obtenemos los tipos seleccionados
+        var tipo_seguro = $('#switcher_seguro_' + i + ' .type-btn.active').data('type');
+        var tipo_fondo = $('#switcher_fondo_' + i + ' .type-btn.active').data('type');
         // Check if any field is empty
         if (interes === '' || seguro === '' || fondo === '') {
             hasError = true;
@@ -763,19 +974,14 @@ function guardarParametrizacion() {
             if (seguro === '') $('#seguro_' + i).addClass('error');
             if (fondo === '') $('#fondo_' + i).addClass('error');
         } else {
-            cuotasData.push({ cuota: i, interes_ptj: parseFloat(interes), ptj_seguro: parseFloat(seguro), ptj_fondo_garantia: parseFloat(fondo) });
+            cuotasData.push({ cuota: i, interes_ptj: parseFloat(interes), ptj_seguro: parseFloat(seguro), ptj_fondo_garantia: parseFloat(fondo), tipo_ptj_seguro: tipo_seguro, tipo_fondo_garantia: tipo_fondo });
         }
     }
-    
-    if (hasError) {
-        Swal.fire({ icon: 'warning', title: 'Campos obligatorios', text: 'Todos los campos de porcentaje son obligatorios. Complete los campos marcados en rojo.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' });
-        return;
-    }
-    
+    if (hasError) { Swal.fire({ icon: 'warning', title: 'Campos obligatorios', text: 'Todos los campos de porcentaje son obligatorios. Complete los campos marcados en rojo.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' }); return; }
     // Confirm save
     Swal.fire({
         title: '¿Guardar parametrización?',
-        html: 'Se guardarán <strong>' + numCuotas + ' cuotas</strong> para la entidad <strong>' + nombreEntidad + '</strong>.<br><br><small style="color: rgba(255,255,255,0.6);">Si ya existe una parametrización previa, será reemplazada.</small>',
+        html: 'Se guardarán <strong>' + numCuotas + ' cuotas</strong> para la entidad <strong>' + currentNombreEntidad + '</strong>.<br><br><small style="color: rgba(255,255,255,0.6);">Si ya existe una parametrización previa, será reemplazada.</small>',
         icon: 'question', showCancelButton: true, confirmButtonColor: '#34d399', cancelButtonColor: '#6b7280', confirmButtonText: '<i class="fa-solid fa-floppy-disk"></i> Sí, Guardar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
@@ -783,22 +989,10 @@ function guardarParametrizacion() {
             $('#btnGuardar').prop('disabled', true).html('<i class="fa-solid fa-circle-notch fa-spin"></i> Guardando...');
             
             $.ajax({
-                url: '../admin/guardar_parametrizacion_cuota_entidad_crediticia_ajax.php',
-                type: 'POST',
-                data: { cod_administrador: codAdministrador, cod_tienda: codTienda, cod_entidad_crediticia: codEntidad, nombre_entidad_crediticia: nombreEntidad, cuotas: JSON.stringify(cuotasData) },
-                dataType: 'json',
+                url: '../admin/guardar_parametrizacion_cuota_entidad_crediticia_ajax.php', type: 'POST', data: { cod_administrador: codAdministrador, cod_tienda: codTienda, cod_entidad_crediticia: currentCodEntidad, nombre_entidad_crediticia: currentNombreEntidad, cuotas: JSON.stringify(cuotasData) }, dataType: 'json',
                 success: function(response) {
                     $('#btnGuardar').prop('disabled', false).html('<i class="fa-solid fa-floppy-disk"></i> Guardar Parametrización');
-                    
-                    if (response.success) {
-                        Swal.fire({ icon: 'success', title: '¡Guardado exitosamente!', text: 'La parametrización de ' + numCuotas + ' cuotas ha sido guardada.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#34d399', timer: 3000, showConfirmButton: true });
-                        
-                        // Reload existing data
-                        limpiarCuotas();
-                        cargarParametrizacionExistente();
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Error al guardar', text: response.message || 'Ocurrió un error al guardar la parametrización.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444' });
-                    }
+                    if (response.success) { Swal.fire({ icon: 'success', title: '¡Guardado exitosamente!', text: 'La parametrización de ' + numCuotas + ' cuotas ha sido guardada.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#34d399', timer: 3000, showConfirmButton: true }).then(() => { location.reload(); }); } else { Swal.fire({ icon: 'error', title: 'Error al guardar', text: response.message || 'Ocurrió un error al guardar la parametrización.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444' }); }
                 },
                 error: function() {
                     $('#btnGuardar').prop('disabled', false).html('<i class="fa-solid fa-floppy-disk"></i> Guardar Parametrización');
@@ -808,23 +1002,19 @@ function guardarParametrizacion() {
         }
     });
 }
-
 // Delete existing parameterizacion
 function eliminarParametrizacionExistente() {
-    var codEntidad = $('#selectEntidadCrediticia').val();
-    var nombreEntidad = $('#selectEntidadCrediticia option:selected').text();
-    
-    Swal.fire({ title: '¿Eliminar parametrización?', html: 'Se eliminarán todas las cuotas parametrizadas para <strong>' + nombreEntidad + '</strong>.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6b7280', confirmButtonText: '<i class="fa-solid fa-trash-can"></i> Sí, Eliminar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
+    Swal.fire({ 
+        title: '¿Eliminar parametrización?', 
+        html: 'Se eliminarán todas las cuotas parametrizadas para <strong>' + currentNombreEntidad + '</strong>.', 
+        icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6b7280', confirmButtonText: '<i class="fa-solid fa-trash-can"></i> Sí, Eliminar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../admin/guardar_parametrizacion_cuota_entidad_crediticia_ajax.php',
-                type: 'POST',
-                data: { accion: 'eliminar', cod_entidad_crediticia: codEntidad }, dataType: 'json',
+                url: '../admin/guardar_parametrizacion_cuota_entidad_crediticia_ajax.php', type: 'POST', data: { accion: 'eliminar', cod_entidad_crediticia: currentCodEntidad }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        Swal.fire({ icon: 'success', title: '¡Eliminado!', text: 'La parametrización ha sido eliminada.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#34d399', timer: 2000 });
-                        cargarParametrizacionExistente();
+                        Swal.fire({ icon: 'success', title: '¡Eliminado!', text: 'La parametrización ha sido eliminada.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#34d399', timer: 2000 }).then(() => { location.reload(); });
                     } else {
                         Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444' });
                     }
