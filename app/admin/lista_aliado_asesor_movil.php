@@ -916,7 +916,7 @@ $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GE
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.cod_estado_usuario_prueba, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.cod_estado_usuario_prueba, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 // Filtro de documentación
 if ($filtro_doc == '1') {
@@ -932,7 +932,7 @@ $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.cod_estado_usuario_prueba, a.comision_ptj, 
-    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
     
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
     
@@ -985,7 +985,9 @@ $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
-
+// Consulta de tipos de sector
+$sql_tipo_identificacion = "SELECT cod_tipo_doc, tipo_doc_abrev, nombre_tipo_doc FROM tbl15_tipo_doc ORDER BY cod_tipo_doc ASC";
+$res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 ?>
 
 <main class="page-container">
@@ -1227,10 +1229,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Tipo de Persona *</label>
-                        <select class="form-select" id="cod_tipo_cliente_aliado" name="cod_tipo_cliente" required>
-                            <option value="1">Persona Natural</option>
-                            <option value="2">Persona Jurídica</option>
+                        <label class="form-label">Tipo de Documento *</label>
+                        <select class="form-select" id="nombre_tipo_identificacion" name="nombre_tipo_identificacion" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_identificacion, 0);
+                            while ($tipo_identificacion = mysqli_fetch_assoc($res_tipo_identificacion)): 
+                            ?>
+                            <option value="<?php echo $tipo_identificacion['tipo_doc_abrev']; ?>" title="<?php echo htmlspecialchars($tipo_identificacion['tipo_doc_abrev']); ?>"><?php echo $tipo_identificacion['nombre_tipo_doc']; ?></option>
+                            <?php endwhile; ?>
                         </select>
                     </div>
                 </div>
@@ -1491,51 +1498,79 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-
-
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" id="edit_label_nombre_comercial">Nombre Comercial *</label>
-                        <input type="text" class="form-input" name="nombres_apellidos_tercero" id="edit_nombres_apellidos_tercero" required>
+                        <input type="text" class="form-input" id="edit_nombres_apellidos_tercero" name="nombres_apellidos_tercero" required>
                     </div>
+                    <div class="form-group" style="padding-top: 1.6rem;">
+                        <!-- Espacio para mantener simetría -->
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group" id="edit_container_nit_razon_social" style="display:none;">
+                        <label class="form-label">NIT Razón Social *</label>
+                        <input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
+                    </div>
+                    <div class="form-group" id="edit_container_nombre_razon_social" style="display:none;">
+                        <label class="form-label">Razón Social *</label>
+                        <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
+                    </div>
+                </div>
+
+                <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
+                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Identificación *</label>
-                        <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                        <input type="number" class="form-input" id="edit_identificacion" name="identificacion_tercero" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Documento *</label>
+                        <select class="form-select" id="edit_nombre_tipo_identificacion" name="nombre_tipo_identificacion" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_identificacion, 0);
+                            while ($tipo_identificacion = mysqli_fetch_assoc($res_tipo_identificacion)): 
+                            ?>
+                            <option value="<?php echo $tipo_identificacion['tipo_doc_abrev']; ?>" title="<?php echo htmlspecialchars($tipo_identificacion['tipo_doc_abrev']); ?>"><?php echo $tipo_identificacion['nombre_tipo_doc']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Nombre *</label>
-                        <input type="text" class="form-input" name="nombre1_tercero" id="edit_nombre" required>
+                        <input type="text" class="form-input" id="edit_nombre" name="nombre1_tercero" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Apellido *</label>
-                        <input type="text" class="form-input" name="apellido1_tercero" id="edit_apellido" required>
+                        <input type="text" class="form-input" id="edit_apellido" name="apellido1_tercero" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Teléfono *</label>
-                        <input type="tel" class="form-input" name="telefono1_tercero" id="edit_telefono" required>
+                        <input type="tel" class="form-input" id="edit_telefono" name="telefono1_tercero" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Correo *</label>
-                        <input type="email" class="form-input" name="correo_tercero" id="edit_correo" required>
+                        <input type="email" class="form-input" id="edit_correo" name="correo_tercero" required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Departamento</label>
-                        <select class="form-select" id="edit_cod_departamento" name="cod_departamento" onchange="cargarMunicipiosEdicion(this.value)">
+                        <label class="form-label">Departamento *</label>
+                        <select class="form-select" id="edit_cod_departamento" name="cod_departamento" required onchange="cargarMunicipiosEdicion(this.value)">
                             <option value="">Seleccione...</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Municipio</label>
-                        <select class="form-select" id="edit_cod_municipio" name="cod_municipio">
+                        <label class="form-label">Municipio *</label>
+                        <select class="form-select" id="edit_cod_municipio" name="cod_municipio" required>
                             <option value="">Primero seleccione departamento</option>
                         </select>
                     </div>
@@ -1543,12 +1578,12 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Dirección</label>
-                        <input type="text" class="form-input" id="edit_direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
+                        <label class="form-label">Dirección *</label>
+                        <input type="text" class="form-input" id="edit_direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Barrio</label>
-                        <input type="text" class="form-input" id="edit_barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
+                        <label class="form-label">Barrio *</label>
+                        <input type="text" class="form-input" id="edit_barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel..." required>
                     </div>
                 </div>
 
@@ -1985,28 +2020,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <span style="color: #10b981; font-weight: 600; font-size: 0.85rem;">Información Básica</span>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Tipo de Cliente *</label>
-                    <select class="form-select" id="tienda_nombre_tipo_cliente" name="nombre_tipo_cliente" required onchange="cambiarTipoClienteTienda()">
-                        <option value="">Seleccione...</option>
-                        <?php 
-                        mysqli_data_seek($res_tipo_cliente, 0);
-                        while ($tipo_cliente = mysqli_fetch_assoc($res_tipo_cliente)): 
-                        ?>
-                        <option value="<?php echo $tipo_cliente['nombre_tipo_cliente']; ?>"><?php echo $tipo_cliente['nombre_tipo_cliente']; ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
+
 
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" id="label_tienda_nombre_comercial">Nombre Comercial *</label>
                         <input type="text" class="form-input" name="nombre1_tercero" id="tienda_nombre" placeholder="Ej: Tienda El Éxito" required>
                     </div>
-                    <div class="form-group" id="container_tienda_nombre_razon_social" style="display:none;">
-                        <label class="form-label">Nombre Razón Social *</label>
-                        <input type="text" class="form-input" id="tienda_nombre_razon_social" name="nombre_razon_social">
-                    </div>
+
                 </div>
 
                 <div class="form-row">
@@ -2835,7 +2856,6 @@ function cerrarModal() {
     // Limpiar formulario
     $('#formRegistro')[0].reset();
 }
-
 // Función para habilitar/deshabilitar campos de banco
 function toggleBancoInputs(codBanco) {
     var checkbox = document.getElementById('banco_' + codBanco);
@@ -2875,7 +2895,6 @@ function toggleBancoInputs(codBanco) {
         }
     }
 }
-
 // Función para cambiar etiqueta y mostrar campo NIT cuando se selecciona PERSONA_JURIDICA
 function cambiarTipoCliente() {
     var tipoCliente = document.getElementById('nombre_tipo_cliente');
@@ -2902,101 +2921,68 @@ function cambiarTipoCliente() {
     }
 }
 
-function cambiarTipoClienteEditar(limpiarNit) {
+function cambiarTipoClienteEditar(limpiarCampos) {
     var tipoCliente = document.getElementById('edit_nombre_tipo_cliente');
-    var labelNombreComercial = document.getElementById('edit_label_nombre_comercial');
+    if (!tipoCliente) return;
+
     var containerNit = document.getElementById('edit_container_nit_razon_social');
     var inputNit = document.getElementById('edit_nit_razon_social');
     var containerRazonSocial = document.getElementById('edit_container_nombre_razon_social');
     var inputRazonSocial = document.getElementById('edit_nombre_razon_social');
     
-    if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        //labelNombreComercial.textContent = 'Razón Social *';
-        containerNit.style.display = 'block';
-        inputNit.required = true;
-        containerRazonSocial.style.display = 'block';
-        inputRazonSocial.required = true;
-    } else { // PERSONA_NATURAL u otro
-        //labelNombreComercial.textContent = 'Nombre Comercial *';
-        containerNit.style.display = 'none';
-        inputNit.required = false;
-        // Solo limpiar el NIT si se indica explícitamente (cuando el usuario cambia manualmente)
-        if (limpiarNit !== false) {
-            inputNit.value = '';
+    if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') {
+        if (containerNit) containerNit.style.display = 'block';
+        if (inputNit) inputNit.required = true;
+        if (containerRazonSocial) containerRazonSocial.style.display = 'block';
+        if (inputRazonSocial) inputRazonSocial.required = true;
+    } else {
+        if (containerNit) containerNit.style.display = 'none';
+        if (inputNit) {
+            inputNit.required = false;
+            if (limpiarCampos) inputNit.value = '';
         }
-        containerRazonSocial.style.display = 'none';
-        inputRazonSocial.required = false;
-        // Solo limpiar la Razón Social si se indica explícitamente (cuando el usuario cambia manualmente)
-        if (limpiarNit !== false) {
-            inputRazonSocial.value = '';
+        if (containerRazonSocial) containerRazonSocial.style.display = 'none';
+        if (inputRazonSocial) {
+            inputRazonSocial.required = false;
+            if (limpiarCampos) inputRazonSocial.value = '';
         }
     }
 }
-
 // Función para mostrar campo Nombre Razón Social cuando se selecciona PERSONA_JURIDICA en modal de Tienda
-function cambiarTipoClienteTienda() {
-    var tipoCliente = document.getElementById('tienda_nombre_tipo_cliente');
-    var containerRazonSocial = document.getElementById('container_tienda_nombre_razon_social');
-    var inputRazonSocial = document.getElementById('tienda_nombre_razon_social');
-    
-    if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        containerRazonSocial.style.display = 'block';
-        inputRazonSocial.required = true;
-    } else { // PERSONA_NATURAL u otro
-        containerRazonSocial.style.display = 'none';
-        inputRazonSocial.required = false;
-        inputRazonSocial.value = '';
-    }
-}
-
 function abrirModalEditar(data) {
     // Guardar el cod_administrador en la variable global para uso posterior
     currentCodAdministradorTienda = data.cod_administrador;
-    
     document.getElementById('edit_cod_administrador').value = data.cod_administrador;
-    
-    // Cargar Tipo de Cliente
     document.getElementById('edit_nombre_tipo_cliente').value = data.nombre_tipo_cliente || '';
-    
-    // Cargar Tipo de Sector
     document.getElementById('edit_cod_tipo_sector').value = data.cod_tipo_sector || '';
-    
-
-    // Cargar NIT primero
-    document.getElementById('edit_nit_razon_social').value = data.nit_razon_social || '';
-    
-    // Cargar Razón Social
-    document.getElementById('edit_nombre_razon_social').value = data.nombre_razon_social || '';
-    
-    // Actualizar el label y visibilidad según tipo de cliente (sin limpiar el NIT)
-    cambiarTipoClienteEditar(false);
-    
     document.getElementById('edit_nombres_apellidos_tercero').value = data.nombres_apellidos_tercero || '';
+    document.getElementById('edit_nit_razon_social').value = data.nit_razon_social || '';
+    document.getElementById('edit_nombre_razon_social').value = data.nombre_razon_social || '';
+
+    // Actualizar visibilidad según tipo de cliente
+    cambiarTipoClienteEditar(false);
+
     document.getElementById('edit_identificacion').value = data.cedula;
+    document.getElementById('edit_nombre_tipo_identificacion').value = data.nombre_tipo_identificacion || data.cod_tipo_cliente || '';
     document.getElementById('edit_nombre').value = data.nombres;
     document.getElementById('edit_apellido').value = data.apellidos;
     document.getElementById('edit_telefono').value = data.telefono || '';
     document.getElementById('edit_correo').value = data.correo || '';
     document.getElementById('edit_direccion_tercero').value = data.direccion_tercero || '';
     document.getElementById('edit_barrio_tercero').value = data.barrio_tercero || '';
-    
-
     // Cargar departamentos y preseleccionar departamento/municipio
     cargarDepartamentosEdicion(data.cod_departamento || '', data.cod_municipio || '');
     document.getElementById('edit_cod_asesor').value = data.cod_asesor || '';
     document.getElementById('edit_cod_asesor_hidden').value = data.cod_asesor || '';
     document.getElementById('edit_estado').value = data.cod_estado_activacion_usuario;
     document.getElementById('edit_estado_hidden').value = data.cod_estado_activacion_usuario;
-    
     // Cargar nombre de usuario (el campo cuenta contiene el nombre de usuario)
     document.getElementById('edit_usuario').value = data.cuenta || data.cedula || '';
-    
     // Cargar documentación legal si existe
     var editRutActual = document.getElementById('edit_rut_actual');
     var editRutInput = document.getElementById('edit_rut_input');
     var editCamaraActual = document.getElementById('edit_camara_actual');
     var editCamaraInput = document.getElementById('edit_camara_input');
-    
     // Manejar RUT
     if (data.url_documentacion_rut_aliado && data.url_documentacion_rut_aliado.trim() !== '') {
         editRutActual.style.display = 'block';
@@ -3006,7 +2992,6 @@ function abrirModalEditar(data) {
         editRutActual.style.display = 'none';
         editRutInput.style.display = 'block'; // Mostrar input si no existe documento
     }
-    
     // Manejar Cámara de Comercio
     if (data.url_documentacion_camaracomercio_aliado && data.url_documentacion_camaracomercio_aliado.trim() !== '') {
         editCamaraActual.style.display = 'block';
@@ -3016,7 +3001,6 @@ function abrirModalEditar(data) {
         editCamaraActual.style.display = 'none';
         editCamaraInput.style.display = 'block'; // Mostrar input si no existe documento
     }
-    
     // Manejar Cédula
     var editCedulaActual = document.getElementById('edit_cedula_actual');
     var editCedulaInput = document.getElementById('edit_cedula_input');
@@ -3030,7 +3014,6 @@ function abrirModalEditar(data) {
             editCedulaInput.style.display = 'block'; // Mostrar input si no existe documento
         }
     }
-    
     // Limpiar el contenedor de entidades y mostrar loading
     $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando entidades...</p></div>');
     
@@ -3084,7 +3067,6 @@ function abrirModalEditar(data) {
                     html += '<label style="color: rgba(255,255,255,0.6); font-size: 0.65rem; display: block; margin-bottom: 0.2rem;">Portal</label>';
                     html += '<input type="checkbox" id="edit_portal_' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" ' + portal_checked + ' style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer;">';
                     html += '</div>';
-                    
                     // Estado
                     html += '<div style="background: rgba(0,0,0,0.2); padding: 0.4rem; border-radius: 6px;">';
                     html += '<label style="color: rgba(255,255,255,0.6); font-size: 0.65rem; display: block; margin-bottom: 0.2rem;">Estado</label>';
@@ -4354,16 +4336,7 @@ function copiarEnlaceDoc() {
     
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(enlace).then(function() {
-            Swal.fire({
-                icon: 'success',
-                title: '¡Copiado!',
-                text: 'El enlace ha sido copiado al portapapeles',
-                timer: 2000,
-                showConfirmButton: false,
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }).catch(function() {
             copiarEnlaceDocFallback(enlace);
         });
@@ -4382,19 +4355,12 @@ function copiarEnlaceDocFallback(enlace) {
     
     try {
         document.execCommand('copy');
-        Swal.fire({
-            icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000,  showConfirmButton: false, background: '#1a1f2e', color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000,  showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     } catch (err) {
-        Swal.fire({
-            icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace. Por favor cópialo manualmente: ' + enlace, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace. Por favor cópialo manualmente: ' + enlace, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     }
-    
     document.body.removeChild(textArea);
 }
-
 // ============================================
 // FUNCIONES PARA FIRMA DIGITAL
 // ============================================
@@ -4405,50 +4371,19 @@ function generarDocumentoFirma() {
     var telefono = document.getElementById('doc_telefono_aliado').value;
     
     if (!codAliadoCryp) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se encontró el código del aliado',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró el código del aliado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
     // Mostrar loading
-    Swal.fire({
-        title: 'Generando documento...',
-        html: 'Por favor espere mientras se genera el documento para firma digital.',
-        background: '#1a1f2e',
-        color: 'white',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        },
-        customClass: { container: 'swal-high-zindex' }
-    });
-    
+    Swal.fire({ title: 'Generando documento...', html: 'Por favor espere mientras se genera el documento para firma digital.', background: '#1a1f2e', color: 'white', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, customClass: { container: 'swal-high-zindex' } });
     // Llamar al PHP para generar el registro
     $.ajax({
-        url: '../ajax/generar_firma_digital.php',
-        type: 'POST',
-        data: {
-            cod_aliado_estrategico: codAliadoCryp
-        },
-        dataType: 'json',
+        url: '../ajax/generar_firma_digital.php', type: 'POST', data: { cod_aliado_estrategico: codAliadoCryp }, dataType: 'json',
         success: function(response) {
             Swal.close();
             
             if (response.error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.error,
-                    background: '#1a1f2e',
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.error, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 return;
             }
             
@@ -4467,14 +4402,7 @@ function generarDocumentoFirma() {
         },
         error: function(xhr, status, error) {
             Swal.close();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Error al generar el documento: ' + error,
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error al generar el documento: ' + error, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -4491,14 +4419,7 @@ function compartirFirmaWhatsApp() {
     var enlace = document.getElementById('firma_url').value;
     
     if (!enlace) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se encontró el enlace del documento',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró el enlace del documento', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
@@ -4513,14 +4434,7 @@ function compartirFirmaEmail() {
     var enlace = document.getElementById('firma_url').value;
     
     if (!enlace) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se encontró el enlace del documento',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró el enlace del documento', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
@@ -4534,29 +4448,14 @@ function copiarEnlaceFirma() {
     var enlace = document.getElementById('firma_url').value;
     
     if (!enlace) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se encontró el enlace del documento',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontró el enlace del documento', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(enlace).then(function() {
             Swal.fire({
-                icon: 'success',
-                title: '¡Copiado!',
-                text: 'El enlace ha sido copiado al portapapeles',
-                timer: 2000,
-                showConfirmButton: false,
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+                icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }).catch(function() {
             copiarEnlaceFirmaFallback(enlace);
         });
@@ -4575,51 +4474,17 @@ function copiarEnlaceFirmaFallback(enlace) {
     
     try {
         document.execCommand('copy');
-        Swal.fire({
-            icon: 'success',
-            title: '¡Copiado!',
-            text: 'El enlace ha sido copiado al portapapeles',
-            timer: 2000,
-            showConfirmButton: false,
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     } catch (err) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo copiar el enlace. Por favor cópialo manualmente: ' + enlace,
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace. Por favor cópialo manualmente: ' + enlace, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     }
-    
     document.body.removeChild(textArea);
 }
-
 // Cerrar modales al hacer clic fuera
-document.getElementById('modalConfirmacionRegistro').addEventListener('click', function(e) { 
-    if (e.target === this) { 
-        cerrarModalConfirmacionRegistro(); 
-    } 
-});
-
-document.getElementById('modalDocumentacionAliado').addEventListener('click', function(e) { 
-    if (e.target === this) { 
-        cerrarModalDocumentacionAliado(); 
-    } 
-});
-
-document.getElementById('modalFirmaDigital').addEventListener('click', function(e) { 
-    if (e.target === this) { 
-        cerrarModalFirmaDigital(); 
-    } 
-});
-
+document.getElementById('modalConfirmacionRegistro').addEventListener('click', function(e) { if (e.target === this) { cerrarModalConfirmacionRegistro(); } });
+document.getElementById('modalDocumentacionAliado').addEventListener('click', function(e) { if (e.target === this) { cerrarModalDocumentacionAliado(); } });
+document.getElementById('modalFirmaDigital').addEventListener('click', function(e) { if (e.target === this) { cerrarModalFirmaDigital(); } });
 // ===== FIN FUNCIONES PARA MODAL DE CONFIRMACIÓN Y DOCUMENTACIÓN =====
-
 // Funciones para agregar nueva entidad
 var codAdministradorActual = null;
 
@@ -4631,10 +4496,7 @@ function abrirModalAgregarEntidad() {
     $('#agregar_cod_entidad').html('<option value="">Cargando...</option>');
     
     $.ajax({
-        url: '../admin/obtener_entidades_disponibles_ajax.php',
-        type: 'POST',
-        data: { cod_administrador: codAdministradorActual },
-        dataType: 'json',
+        url: '../admin/obtener_entidades_disponibles_ajax.php', type: 'POST', data: { cod_administrador: codAdministradorActual }, dataType: 'json',
         success: function(response) {
             if (response.success && response.entidades && response.entidades.length > 0) {
                 var options = '<option value="">Seleccione una entidad</option>';
@@ -4645,40 +4507,19 @@ function abrirModalAgregarEntidad() {
                 $('#agregar_cod_entidad').html(options);
             } else {
                 $('#agregar_cod_entidad').html('<option value="">No hay entidades disponibles</option>');
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Sin entidades disponibles',
-                    text: 'Todas las entidades ya han sido asignadas a este aliado',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    customClass: {
-                        container: 'swal-high-zindex'
-                    }
-                });
+                Swal.fire({ icon: 'info', title: 'Sin entidades disponibles', text: 'Todas las entidades ya han sido asignadas a este aliado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
             $('#agregar_cod_entidad').html('<option value="">Error al cargar</option>');
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudieron cargar las entidades disponibles',
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: {
-                    container: 'swal-high-zindex'
-                }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar las entidades disponibles', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
-    
     // Limpiar formulario
     $('#formAgregarEntidad')[0].reset();
     document.getElementById('agregar_cod_administrador').value = codAdministradorActual;
-    
     document.getElementById('modalAgregarEntidad').classList.add('show');
 }
-
 function cerrarModalAgregarEntidad() {
     document.getElementById('modalAgregarEntidad').classList.remove('show');
     $('#formAgregarEntidad')[0].reset();
@@ -4694,9 +4535,7 @@ function abrirModalAgregarBanco(codAliadoEstrategico) {
     }
     // Cargar bancos disponibles si no se han cargado
     $.ajax({
-        url: '../admin/obtener_bancos_disponibles_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../admin/obtener_bancos_disponibles_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             if (response.success) {
                 var options = '<option value="">Seleccione un banco</option>';
@@ -4739,7 +4578,6 @@ $('#formAgregarBanco').on('submit', function(e) {
     e.preventDefault();
     
     var formData = new FormData(this);
-    
     Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
@@ -4768,14 +4606,9 @@ $(document).on('change', '#agregar_cod_entidad', function() {
     var url = selectedOption.attr('data-url');
     var interesDefault = selectedOption.attr('data-interes-default');
     
-    if (url && url !== '') {
-        $('#agregar_url').val(url);
-    }
-    
+    if (url && url !== '') { $('#agregar_url').val(url); }
     // Auto-rellenar el campo de interés con el valor por defecto
-    if (interesDefault && interesDefault !== '') {
-        $('#agregar_interes').val(interesDefault);
-    }
+    if (interesDefault && interesDefault !== '') { $('#agregar_interes').val(interesDefault); }
 });
 
 // Guardar nueva entidad
@@ -4785,10 +4618,7 @@ $('#formAgregarEntidad').on('submit', function(e) {
     Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: '../admin/agregar_entidad_aliado_ajax.php',
-        type: 'POST',
-        data: data,
-        dataType: 'json',
+        url: '../admin/agregar_entidad_aliado_ajax.php', type: 'POST', data: data, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
@@ -4802,9 +4632,7 @@ $('#formAgregarEntidad').on('submit', function(e) {
                     recargarEntidadesEditar(codAdmin);
                 });
             } else {
-                Swal.fire({
-                    icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo agregar la entidad', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo agregar la entidad', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
@@ -4819,10 +4647,7 @@ function recargarEntidadesEditar(codAdministrador) {
     $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando entidades...</p></div>');
     
     $.ajax({
-        url: '../admin/obtener_entidades_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_administrador: codAdministrador },
-        dataType: 'json',
+        url: '../admin/obtener_entidades_aliado_ajax.php', type: 'POST', data: { cod_administrador: codAdministrador }, dataType: 'json',
         success: function(response) {
             if (response.success && response.entidades && response.entidades.length > 0) {
                 var html = '';
@@ -4889,10 +4714,7 @@ $(document).on('blur', '#identificacion_tercero', function() {
     }
     
     $.ajax({
-        url: '../admin/verificar_identificacion_aliado.php',
-        type: 'POST',
-        data: { identificacion: identificacion },
-        dataType: 'json',
+        url: '../admin/verificar_identificacion_aliado.php', type: 'POST', data: { identificacion: identificacion }, dataType: 'json',
         success: function(response) {
             if(response.existe) {
                 inputField.css('border-color', '#ef4444');
@@ -4934,10 +4756,7 @@ $('#formRegistro').on('submit', function(e) {
         Swal.fire({ title: 'Verificando identificación...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         
         $.ajax({
-            url: '../ajax/verificar_identificacion_aliado.php',
-            type: 'POST',
-            data: { identificacion: identificacion },
-            dataType: 'json',
+            url: '../ajax/verificar_identificacion_aliado.php', type: 'POST', data: { identificacion: identificacion }, dataType: 'json',
             success: function(response) {
                 Swal.close();
                 if(response.existe) {
@@ -4960,9 +4779,7 @@ $('#formRegistro').on('submit', function(e) {
     }
     
     var formData = new FormData(this);
-    
     Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-    
     $.ajax({
         url: '../admin/reg_aliado_modal_asesor_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(resp) {
@@ -5010,7 +4827,6 @@ $('#formRegistro').on('submit', function(e) {
                 } else {
                     document.getElementById('section_confirm_tienda').style.display = 'none';
                 }
-
                 // Abrir modal de confirmación
                 document.getElementById('modalConfirmacionRegistro').classList.add('show');
             } else {
@@ -5024,87 +4840,34 @@ $('#formRegistro').on('submit', function(e) {
         error: function(xhr, status, error) {
             Swal.close();
             console.log('Error AJAX:', xhr.responseText); // Debug
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'Error de conexión. Intenta nuevamente.', 
-                background: '#1a1f2e', 
-                color: 'white',
-                customClass: {
-                    container: 'swal-high-zindex'
-                }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
-
 // Guardar Aliado (Editar)
 $('#formEditar').on('submit', function(e) {
     e.preventDefault();
-    
     // Usar FormData para soportar archivos
     var formData = new FormData(this);
-    
-    Swal.fire({
-        title: 'Actualizando...',
-        didOpen: () => { Swal.showLoading() },
-        allowOutsideClick: false,
-        background: '#1a1f2e', 
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Actualizando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: '../admin/act_aliado_modal_asesor_ajax_reg.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        success: function(resp) {
+        url: '../admin/act_aliado_modal_asesor_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json', success: function(resp) {
             Swal.close();
-            
             if(resp.afectado === 'SI') {
                 cerrarModalEditar(); 
-                Swal.fire({ 
-                    icon: 'success', 
-                    title: '¡Actualizado!', 
-                    text: resp.mensaje || 'Datos del aliado actualizados correctamente', 
-                    confirmButtonColor: '#10b981', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    timer: 2000,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                }).then(() => { 
-                    location.reload(); 
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualizado!', text: resp.mensaje || 'Datos del aliado actualizados correctamente', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); });
             } else {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Error', 
-                    text: resp.mensaje || 'No se pudo actualizar el aliado', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' } 
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: resp.mensaje || 'No se pudo actualizar el aliado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             Swal.close();
             console.log('Error AJAX:', xhr.responseText);
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'Error de conexión. Intenta nuevamente.', 
-                background: '#1a1f2e', 
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' } 
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
-
 // Cerrar modales al hacer clic fuera
 $('.modal-overlay').on('click', function(e) {
     if (e.target === this) {
@@ -5130,11 +4893,7 @@ function compartirDocumentacion(cod_aliado) {
     
     // Hacer petición AJAX para generar el ZIP
     $.ajax({
-        url: 'generar_zip_documentacion.php',
-        type: 'POST',
-        data: { cod_aliado: cod_aliado },
-        dataType: 'json',
-        success: function(response) {
+        url: 'generar_zip_documentacion.php', type: 'POST', data: { cod_aliado: cod_aliado }, dataType: 'json', success: function(response) {
             $('#loadingCompartir').hide();
             
             if (response.success) {
@@ -5142,27 +4901,13 @@ function compartirDocumentacion(cod_aliado) {
                 mostrarContenidoCompartir(response);
                 $('#contenidoCompartir').fadeIn();
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.message || 'No se pudo generar el archivo ZIP',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo generar el archivo ZIP', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 cerrarModalCompartirDocs();
             }
         },
         error: function(xhr, status, error) {
             $('#loadingCompartir').hide();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Error al generar el archivo ZIP: ' + error,
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error al generar el archivo ZIP: ' + error, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             cerrarModalCompartirDocs();
         }
     });
@@ -5220,60 +4965,23 @@ function enviarEmail() {
     
     var email = $('#email_destino').val().trim();
     if (email === '' || !validarEmail(email)) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Email inválido',
-            text: 'Por favor ingrese un email válido',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Email inválido', text: 'Por favor ingrese un email válido', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     var mensaje = $('#mensaje_email').val().trim();
     
-    Swal.fire({
-        title: 'Enviando email...',
-        didOpen: () => { Swal.showLoading() },
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Enviando email...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white',  customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: 'enviar_email_documentacion.php',
-        type: 'POST',
-        data: {
-            zip_path: datosZipActual.zip_path,
-            email_destino: email,
-            mensaje: mensaje,
-            aliado_nombre: datosZipActual.aliado_nombre
-        },
-        dataType: 'json',
-        timeout: 60000,
+        url: 'enviar_email_documentacion.php', type: 'POST', data: { zip_path: datosZipActual.zip_path, email_destino: email, mensaje: mensaje, aliado_nombre: datosZipActual.aliado_nombre }, dataType: 'json', timeout: 60000,
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Email enviado!',
-                    text: response.message,
-                    background: '#1a1f2e',
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Email enviado!', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 ocultarFormularioEmail();
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.message,
-                    background: '#1a1f2e',
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
@@ -5290,15 +4998,7 @@ function enviarEmail() {
                     mensajeError = 'Error del servidor: ' + xhr.status;
                 }
             }
-            
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: mensajeError, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -5311,8 +5011,7 @@ function descargarZip() {
             text: 'No hay un archivo ZIP generado',
             background: '#1a1f2e',
             color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+            customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
