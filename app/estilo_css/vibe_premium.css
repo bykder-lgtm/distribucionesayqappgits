@@ -1,0 +1,505 @@
+/* ================================================
+   DISTRIBUCIONES AYQ — VIBE PREMIUM
+   Exact Design Implementation CSS
+   ================================================ */
+
+:root {
+    --vp-navy: #0A1628;
+    --vp-gold: #D4A843;
+    --vp-gold-glow: rgba(212, 168, 67, 0.4);
+    --vp-card-bg: rgba(255, 255, 255, 0.05);
+    --vp-card-border: rgba(255, 255, 255, 0.1);
+    --vp-text-dim: #94A3B8;
+}
+
+/* ═══════════════ 1. ARQUITECTURA FINANCIAMIENTO (Circular) ═══════════════ */
+.vp-architecture {
+    background: radial-gradient(circle at center, #132241 0%, #0A1628 100%);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.vp-architecture .sn-star-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('../imagenes/hero_background.png');
+    background-size: cover;
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.vp-arch-header {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 60px;
+}
+
+.vp-arch-header h2 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.vp-arch-header p {
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--vp-text-dim);
+}
+
+.vp-arch-diagram {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    height: 700px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.vp-arch-center {
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, #1B2D50, #0A1628);
+    border: 2px solid var(--vp-card-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.1);
+    z-index: 10;
+    padding: 20px;
+}
+
+.vp-arch-center img {
+    max-width: 80%;
+}
+
+/* Connecting rings */
+.vp-arch-rings {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vp-arch-ring {
+    position: absolute;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 50%;
+}
+
+.vp-arch-ring-1 { width: 300px; height: 300px; }
+.vp-arch-ring-2 { width: 500px; height: 500px; border-color: rgba(255,255,255,0.1); }
+.vp-arch-ring-3 { width: 700px; height: 700px; border-color: rgba(255,255,255,0.03); }
+
+/* Financial entity cards */
+.vp-arch-node {
+    position: absolute;
+    width: 200px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    transition: 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.vp-arch-node:hover {
+    transform: scale(1.05);
+    border-color: var(--vp-gold);
+    box-shadow: 0 10px 40px rgba(212, 168, 67, 0.2);
+}
+
+.vp-arch-node h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.vp-arch-node p {
+    font-size: 0.75rem;
+    color: var(--vp-text-dim);
+    line-height: 1.3;
+}
+
+/* Distribution center */
+.vpan-1 { top: 0; }
+.vpan-2 { top: 15%; right: 5%; }
+.vpan-3 { bottom: 25%; right: 0; }
+.vpan-4 { bottom: 0; right: 25%; }
+.vpan-5 { bottom: 0; left: 25%; }
+.vpan-6 { bottom: 25%; left: 0; }
+.vpan-7 { top: 15%; left: 5%; }
+
+/* Connections (simplified with lines) */
+.vp-arch-line {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, var(--vp-gold), transparent);
+    height: 1px;
+    width: 150px;
+    transform-origin: left center;
+    z-index: 1;
+    opacity: 0.3;
+}
+
+/* ═══════════════ 2. SOLICITA POR EL CANAL ═══════════════ */
+.vp-canales {
+    background: #F8FAFC;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.vp-canales h2 {
+    color: #000;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    position: relative;
+    display: inline-block;
+}
+
+.vp-canales h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 10%;
+    width: 80%;
+    height: 4px;
+    background: var(--vp-gold);
+    border-radius: 2px;
+}
+
+.vp-canales-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.vp-canal-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 20px 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+    position: relative;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.vp-canal-card:hover {
+    transform: translateY(-10px);
+}
+
+.vp-canal-icon-circle {
+    width: 70px;
+    height: 70px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.vp-canal-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+}
+
+.vp-canal-card p {
+    font-size: 0.9rem;
+    color: #64748B;
+    line-height: 1.4;
+}
+
+.vp-canal-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 15%;
+    width: 70%;
+    height: 6px;
+    border-radius: 3px 3px 0 0;
+}
+
+.vp-cc-whatsapp { color: #25D366; } .vp-cc-whatsapp + h3 { color: #25D366; } .vp-cc-whatsapp-card::after { background: #25D366; }
+.vp-cc-tienda { color: #8B5FC8; } .vp-cc-tienda + h3 { color: #8B5FC8; } .vp-cc-tienda-card::after { background: #8B5FC8; }
+.vp-cc-web { color: #2E86DE; } .vp-cc-web + h3 { color: #2E86DE; } .vp-cc-web-card::after { background: #2E86DE; }
+.vp-cc-call { color: #D4A843; } .vp-cc-call + h3 { color: #D4A843; } .vp-cc-call-card::after { background: #D4A843; }
+
+/* ═══════════════ 3. CENTROS DE EXPERIENCIA (Premium Glass) ═══════════════ */
+.vp-centros {
+    background: #0A1628;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.vp-centros h2 {
+    font-size: 2.8rem;
+    margin-bottom: 60px;
+    position: relative;
+    display: inline-block;
+}
+
+.vp-centros h2::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 20%;
+    width: 60%;
+    height: 4px;
+    background: var(--vp-gold);
+    box-shadow: 0 0 15px var(--vp-gold);
+}
+
+.vp-centros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.vp-centro-glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 20px;
+    text-align: center;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.vp-centro-glass-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--vp-gold);
+}
+
+.vp-centro-img {
+    width: 100%;
+    height: 200px;
+    border-radius: 18px;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.vp-centro-glass-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.vp-centro-glass-card p {
+    color: var(--vp-text-dim);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+.vp-btn-gold {
+    display: inline-block;
+    background: linear-gradient(135deg, #FFD700, #D4A843);
+    color: #000;
+    padding: 10px 30px;
+    border-radius: 30px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 5px 15px rgba(212, 168, 67, 0.3);
+    transition: 0.3s;
+}
+
+.vp-btn-gold:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(212, 168, 67, 0.5);
+}
+
+.vp-map-container {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.vp-map-container img {
+    max-width: 100%;
+    border-radius: 12px;
+}
+
+/* ═══════════════ 4. METRICAS SPLIT ═══════════════ */
+.vp-metricas-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 600px;
+}
+
+.vp-ms-dark {
+    background: #050B15;
+    background-image: url('../imagenes/hero_background.png');
+    background-size: cover;
+    background-blend-mode: overlay;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 60px;
+}
+
+.vp-ms-gold {
+    background: radial-gradient(circle at center, #D4A843, #0A1628);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 60px;
+}
+
+.vp-metrica-glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px 50px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.vp-metrica-glass-card h4 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.vp-metrica-glass-card .content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.vp-metrica-glass-card i {
+    font-size: 1.8rem;
+    color: var(--vp-gold);
+}
+
+.vp-metrica-glass-card label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-align: left;
+}
+
+/* ═══════════════ 5. STICKY & FLOATING ═══════════════ */
+.vp-sticky-bar {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(212, 168, 67, 0.15);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(212, 168, 67, 0.3);
+    border-radius: 50px;
+    padding: 12px 30px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    z-index: 1000;
+    transition: 0.5s ease;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+.vp-sticky-bar.visible {
+    transform: translateX(-50%) translateY(0);
+}
+
+.vp-sticky-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.vp-sticky-text span {
+    color: var(--vp-gold);
+}
+
+.vp-floating-actions {
+    position: fixed;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    z-index: 1001;
+    background: rgba(10, 22, 40, 0.6);
+    backdrop-filter: blur(15px);
+    padding: 20px 15px;
+    border-radius: 40px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.vp-float-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 1.5rem;
+    transition: 0.3s;
+    position: relative;
+    color: #fff;
+}
+
+.vp-float-btn span {
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.vp-float-btn:hover {
+    transform: scale(1.15);
+}
+
+.vp-fb-whatsapp { background: #25D366; box-shadow: 0 0 20px rgba(37, 211, 102, 0.3); }
+.vp-fb-simular { background: #D4A843; box-shadow: 0 0 20px rgba(212, 168, 67, 0.3); }
+.vp-fb-llamar { background: #8B5FC8; box-shadow: 0 0 20px rgba(139, 95, 200, 0.3); }
+
+.vp-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #EF4444;
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border: 2px solid #fff;
+}

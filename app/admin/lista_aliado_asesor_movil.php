@@ -914,48 +914,47 @@ select[id^="edit_municipio_tienda_"] option {
 // Obtener parámetros de búsqueda
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
+// --- CONFIGURACIÓN DE PAGINACIÓN ---
+$registros_por_pagina = 12;
+$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina_actual < 1) $pagina_actual = 1;
+$offset = ($pagina_actual - 1) * $registros_por_pagina;
+// Primero obtenemos el TOTAL DE REGISTROS para la paginación (con filtros)
+$sql_count = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
+if (!empty($busqueda)) { $sql_count .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+if ($filtro_doc == '1') { $sql_count .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '2') { $sql_count .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '3') { $sql_count .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')"; }
+$res_count = mysqli_query($conectar, $sql_count);
+$total_registros_filtrados = ($res_count) ? mysqli_fetch_assoc($res_count)['total'] : 0;
+$total_paginas = ceil($total_registros_filtrados / $registros_por_pagina);
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.cod_estado_usuario_prueba, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 // Filtro de documentación
-if ($filtro_doc == '1') {
-    $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
-} elseif ($filtro_doc == '2') {
-    $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '' AND (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
-} elseif ($filtro_doc == '3') {
-    $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))";
-}
-
-$sql .= " ORDER BY a.cod_administrador DESC";
+if ($filtro_doc == '1') { $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))"; } elseif ($filtro_doc == '2') { $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '' AND (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))"; } elseif ($filtro_doc == '3') { $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))"; }
+$sql .= " ORDER BY a.cod_administrador DESC LIMIT $registros_por_pagina OFFSET $offset";
 $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.cod_estado_usuario_prueba, a.comision_ptj, 
     a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_asesor = '$cod_administrador' AND a.cod_seguridad = '23'";
-    
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
-    
     // Filtro de documentación (sin el campo de cédula)
-    if ($filtro_doc == '1') {
-        $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')";
-    } elseif ($filtro_doc == '2') {
-        $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')";
-    } elseif ($filtro_doc == '3') {
-        $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')";
-    }
-    
-    $sql .= " ORDER BY a.cod_administrador DESC";
+    if ($filtro_doc == '1') { $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '2') { $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '3') { $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')"; }
+    $sql .= " ORDER BY a.cod_administrador DESC LIMIT $registros_por_pagina OFFSET $offset";
     $resultado = mysqli_query($conectar, $sql);
 }
-$total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
+$registros_en_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
 
+// Consulta original sin LIMIT para saber el TOTAL TOTAL (para el header)
+$sql_total_base = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23'";
+$res_total_base = mysqli_query($conectar, $sql_total_base);
+$total_aliados_header = ($res_total_base) ? mysqli_fetch_assoc($res_total_base)['total'] : 0;
 // --- TOTALES PARA EL HEADER ---
 // Tiendas totales de los aliados de este asesor
 $sql_total_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23')";
 $res_total_tiendas = mysqli_query($conectar, $sql_total_tiendas);
 $total_tiendas_header = ($res_total_tiendas) ? mysqli_fetch_assoc($res_total_tiendas)['total'] : 0;
-
 // Cuentas bancarias totales de los aliados de este asesor
 $sql_total_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23') AND cod_estado = '1'";
 $res_total_bancos = mysqli_query($conectar, $sql_total_bancos);
@@ -993,13 +992,10 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 <main class="page-container">
     <!-- Header -->
     <div class="page-header animate-in">
-        <h1><i class="fa-solid fa-users"></i> Mis Aliados</h1>
-        <p>Gestiona tu red de aliados estratégicos</p>
+        <h1><i class="fa-solid fa-users"></i> Mis Aliados</h1><p>Gestiona tu red de aliados estratgicos (Total: <?php echo $total_aliados_header; ?>)</p>
         <div class="header-stats">
             <div class="header-stat">
-                <div class="header-stat-value"><?php echo $total_registros; ?></div>
-                <div class="header-stat-label">Aliados</div>
-            </div>
+                <div class="header-stat-value"><?php echo $total_registros_filtrados; ?></div><div class="header-stat-label">Encontrados</div></div>
             <div class="header-stat">
                 <div class="header-stat-value"><?php echo $total_tiendas_header; ?></div>
                 <div class="header-stat-label">Tiendas</div>
@@ -1041,7 +1037,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
     <!-- List -->
     <div class="ally-list" id="allyList">
-        <?php if ($total_registros > 0): ?>
+        <?php if ($registros_en_pagina > 0): ?>
             <?php while ($row = mysqli_fetch_assoc($resultado)): 
                 $nombre_completo = !empty($row['nombres_apellidos_tercero']) ? $row['nombres_apellidos_tercero'].' ('.$row['nombres'].' '.$row['apellidos'].')' : trim($row['nombres'].' '.$row['apellidos']);
                 $cod_estado = $row['cod_estado_activacion_usuario'];
@@ -1153,6 +1149,35 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             <div class="empty-state"><i class="fa-solid fa-users-slash"></i><h3>No hay aliados</h3><p>No se encontraron registros</p></div>
         <?php endif; ?>
     </div>
+
+    <!-- Pagination -->
+    <?php if ($total_paginas > 1): ?>
+    <div class="pagination-container animate-in delay-3">
+        <a href="?pagina=1<?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
+           class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>" title="Primera página">
+            <i class="fa-solid fa-angles-left"></i>
+        </a>
+        
+        <a href="?pagina=<?php echo $pagina_actual - 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
+           class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-chevron-left"></i> <span>Anterior</span>
+        </a>
+        
+        <div class="pagination-info">
+            Pág. <?php echo $pagina_actual; ?> de <?php echo $total_paginas; ?>
+        </div>
+        
+        <a href="?pagina=<?php echo $pagina_actual + 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
+           class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>">
+            <span>Siguiente</span> <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        
+        <a href="?pagina=<?php echo $total_paginas; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
+           class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>" title="Última página">
+            <i class="fa-solid fa-angles-right"></i>
+        </a>
+    </div>
+    <?php endif; ?>
 </main>
 <!-- Modal Registro -->
 <div class="modal-overlay" id="modalRegistro" style="align-items: flex-start; padding-top: 20px;">
@@ -5797,6 +5822,65 @@ function cerrarModalVerCuentas() { $('#modalVerCuentas').fadeOut(); }
 .view-item:active { background: rgba(255,255,255,0.1); transform: scale(0.98); }
 .view-item-title { color: white; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
 .view-item-detail { color: rgba(255,255,255,0.6); font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
+.pagination-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+    background: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.pagination-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination-info {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    margin: 0 0.5rem;
+}
+
+@media (max-width: 480px) {
+    .pagination-btn span {
+        display: none;
+    }
+    .pagination-btn {
+        padding: 0.6rem 0.8rem;
+    }
+}
 </style>
 
 </body>

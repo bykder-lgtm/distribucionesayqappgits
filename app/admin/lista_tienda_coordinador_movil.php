@@ -116,7 +116,7 @@ body {
 /* Search Bar */
 .search-bar {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 16px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -139,13 +139,13 @@ body {
 }
 
 .search-bar i {
-    color: #6366f1;
+    color: #10b981;
     font-size: 1.1rem;
 }
 
 /* Add Button */
 .add-button {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     border: none;
     border-radius: 16px;
@@ -184,8 +184,8 @@ body {
 }
 
 .store-card:hover {
-    border-color: #6366f1;
-    box-shadow: 0 5px 20px rgba(99, 102, 241, 0.2);
+    border-color: #10b981;
+    box-shadow: 0 5px 20px rgba(16, 185, 129, 0.2);
 }
 
 .store-card-header {
@@ -243,7 +243,7 @@ body {
 }
 
 .store-detail i {
-    color: #6366f1;
+    color: #10b981;
     font-size: 0.85rem;
     width: 20px;
 }
@@ -281,7 +281,7 @@ body {
 }
 
 .action-btn.primary:hover {
-    background: #6366f1;
+    background: #10b981;
     color: white;
 }
 
@@ -363,7 +363,7 @@ body {
 }
 
 .btn-quick-action.btn-vendedor {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
 }
 
@@ -693,7 +693,7 @@ body {
 }
 
 .document-preview-btn {
-    background: #6366f1;
+    background: #10b981;
     color: white;
     border: none;
     padding: 0.4rem 0.8rem;
@@ -711,7 +711,7 @@ body {
 }
 
 .gps-btn {
-    background: #6366f1;
+    background: #10b981;
     color: white;
     border: none;
     padding: 0.85rem;
@@ -735,7 +735,7 @@ body {
 
 .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     border: none;
     padding: 1rem;
@@ -779,6 +779,65 @@ body {
 .swal2-container.swal-high-zindex {
     z-index: 9999 !important;
 }
+
+/* Pagination Styles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
+.pagination-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    transform: translateY(-2px);
+}
+
+.pagination-btn.active {
+    background: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.pagination-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination-info {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    margin: 0 0.5rem;
+}
+
+@media (max-width: 480px) {
+    .pagination-btn span {
+        display: none;
+    }
+    .pagination-btn {
+        padding: 0.6rem 0.8rem;
+    }
+}
 </style>
 </head>
 <body>
@@ -786,18 +845,35 @@ body {
 
 <?php
 // Obtener tiendas del coordinador
-// Cadena: coordinador → aliados (cod_coordinador = coordinador) → tiendas (cod_aliado_estrategico = aliado)
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
+
+// --- CONFIGURACIǸN DE PAGINACIǸN ---
+$registros_por_pagina = 12;
+$pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
+if ($pagina_actual < 1) $pagina_actual = 1;
+$offset = ($pagina_actual - 1) * $registros_por_pagina;
 
 // Subquery para obtener los cod_administrador de los aliados que pertenecen a este coordinador
 $subquery_aliados_coord = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_coordinador = '$cod_administrador'";
 
+// Contador para paginacin
+$sql_count = "SELECT COUNT(*) as total FROM tbl15_tienda t WHERE t.cod_aliado_estrategico IN ($subquery_aliados_coord)";
+if (!empty($busqueda)) { $sql_count .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
+$res_count = mysqli_query($conectar, $sql_count);
+$total_tiendas_filtradas = ($res_count) ? mysqli_fetch_assoc($res_count)['total'] : 0;
+$total_paginas = ceil($total_tiendas_filtradas / $registros_por_pagina);
+
 $sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_coord)";
 if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
 
-$sql_tiendas .= " ORDER BY t.fecha_creacion DESC";
+$sql_tiendas .= " ORDER BY t.fecha_creacion DESC LIMIT $registros_por_pagina OFFSET $offset";
 $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
-$total_tiendas = ($resultado_tiendas) ? mysqli_num_rows($resultado_tiendas) : 0;
+$registros_en_pagina = ($resultado_tiendas) ? mysqli_num_rows($resultado_tiendas) : 0;
+
+// Consulta original sin LIMIT para saber el TOTAL TOTAL (para el header)
+$sql_total_base = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_coord)";
+$res_total_base = mysqli_query($conectar, $sql_total_base);
+$total_tiendas_header = ($res_total_base) ? mysqli_fetch_assoc($res_total_base)['total'] : 0;
 
 // Contar tiendas con firma
 $sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_coord) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
@@ -809,7 +885,7 @@ $sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estr
 $resultado_con_gps = mysqli_query($conectar, $sql_con_gps);
 $tiendas_con_gps = 0;
 if ($resultado_con_gps) { $datos_con_gps = mysqli_fetch_assoc($resultado_con_gps); $tiendas_con_gps = isset($datos_con_gps['total']) ? intval($datos_con_gps['total']) : 0; }
-// Obtener aliados estratégicos para el select (cod_seguridad = 23)
+// Obtener aliados estratgicos para el select (cod_seguridad = 23)
 $sql_aliados = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, comision_ptj FROM tbl15_administrador WHERE (cod_seguridad = '23' AND cod_coordinador = '$cod_administrador') ORDER BY nombres_apellidos_tercero ASC";
 $resultado_aliados = mysqli_query($conectar, $sql_aliados);
 // Consulta de tipos de sector para el formulario de registro de tienda
@@ -820,11 +896,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     <!-- Header -->
     <div class="page-header animate-in">
         <h1><i class="fa-solid fa-store"></i> Mis Tiendas</h1>
-        <p>Gestiona tus tiendas afiliadas</p>
+        <p>Gestiona tus tiendas afiliadas (Total: <?php echo $total_tiendas_header; ?>)</p>
         <div class="header-stats">
             <div class="header-stat">
-                <div class="header-stat-value"><?php echo $total_tiendas; ?></div>
-                <div class="header-stat-label">Total</div>
+                <div class="header-stat-value"><?php echo $total_tiendas_filtradas; ?></div>
+                <div class="header-stat-label">Encontradas</div>
             </div>
             <div class="header-stat">
                 <div class="header-stat-value"><?php echo $tiendas_con_firma; ?></div>
@@ -846,8 +922,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     <button class="add-button animate-in delay-1" onclick="abrirModalRegistro()"><i class="fa-solid fa-plus"></i>Registrar Nueva Tienda</button>
     <!-- Store List -->
     <div class="store-list" id="storeList">
-        <?php if ($total_tiendas > 0 && $resultado_tiendas): ?>
-            <?php while ($tienda = mysqli_fetch_assoc($resultado_tiendas)): 
+        <?php if ($registros_en_pagina > 0): ?>
+            <?php while ($tienda = mysqli_fetch_assoc($resultado_tiendas)):
                 $tiene_firma = !empty($tienda['url_firma_electronica']);
                 $tiene_gps = !empty($tienda['ubicacion_gps_tienda']);
                 $cod_tienda_cryp = DAXCODIFCRYPTOR::encriptardax(DAXCODIFCRYPTOR::encodifdax($tienda['cod_tienda']));
@@ -951,6 +1027,35 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- Pagination -->
+    <?php if ($total_paginas > 1): ?>
+    <div class="pagination-container animate-in delay-3">
+        <a href="?pagina=1<?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : ''); ?>" 
+           class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>" title="Primera página">
+            <i class="fa-solid fa-angles-left"></i>
+        </a>
+        
+        <a href="?pagina=<?php echo $pagina_actual - 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : ''); ?>" 
+           class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>">
+            <i class="fa-solid fa-chevron-left"></i> <span>Anterior</span>
+        </a>
+        
+        <div class="pagination-info">
+            Pág. <?php echo $pagina_actual; ?> de <?php echo $total_paginas; ?>
+        </div>
+        
+        <a href="?pagina=<?php echo $pagina_actual + 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : ''); ?>" 
+           class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>">
+            <span>Siguiente</span> <i class="fa-solid fa-chevron-right"></i>
+        </a>
+        
+        <a href="?pagina=<?php echo $total_paginas; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : ''); ?>" 
+           class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>" title="Última página">
+            <i class="fa-solid fa-angles-right"></i>
+        </a>
+    </div>
+    <?php endif; ?>
 </main>
 
 <!-- Modal Registro -->
@@ -2565,7 +2670,7 @@ function gestionarFirma(accion) {
                 text: detalle || mensaje,
                 background: '#1a1f2e',
                 color: 'white',
-                confirmButtonColor: '#6366f1'
+                confirmButtonColor: '#10b981'
             });
             return;
         }
@@ -2861,7 +2966,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
     right: 20px;
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -2948,7 +3053,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 }
 
 .notification-header-movil {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     padding: 15px 18px;
     display: flex;
@@ -3020,7 +3125,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 }
 
 .notification-icon-movil.type-1 {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
 }
 
