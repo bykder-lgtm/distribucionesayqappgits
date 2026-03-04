@@ -1,4 +1,4 @@
-ï»¿<?php 
+<?php 
 $nombre_pagina          = "Mis Aliados";
 $cod_seguridad_pag      = "1";
 $pagina_local           = $_SERVER['PHP_SELF'];
@@ -36,12 +36,12 @@ $cod_base_caja          = "1";
 .ql-toolbar.ql-snow {
     background: #f3f4f6;
     border-radius: 12px 12px 0 0;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 .ql-container.ql-snow {
-    background: rgba(99, 102, 241, 0.05);
+    background: rgba(16, 185, 129, 0.05);
     border-radius: 0 0 12px 12px;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.3);
     color: white;
     font-family: 'Inter', sans-serif;
     min-height: 150px;
@@ -96,13 +96,14 @@ body {
 
 /* Header */
 .page-header {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #4338ca 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border-radius: 20px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
 }
 
 @media (max-width: 768px) {
@@ -241,7 +242,7 @@ body {
 /* Search Bar */
 .search-bar {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 16px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -279,13 +280,13 @@ body {
 }
 
 .search-bar i {
-    color: #6366f1;
+    color: #10b981;
     font-size: 1.1rem;
 }
 
 /* Add Button */
 .add-button {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     border: none;
     border-radius: 16px;
@@ -300,7 +301,7 @@ body {
     cursor: pointer;
     margin-bottom: 1.5rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -322,7 +323,7 @@ body {
 
 .add-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 6px 30px rgba(16, 185, 129, 0.5);
 }
 
 /* Ally List */
@@ -348,7 +349,7 @@ body {
 
 .ally-card {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 16px;
     padding: 1rem;
     transition: all 0.3s ease;
@@ -369,8 +370,8 @@ body {
 }
 
 .ally-card:hover {
-    border-color: #6366f1;
-    box-shadow: 0 5px 20px rgba(99, 102, 241, 0.2);
+    border-color: #10b981;
+    box-shadow: 0 5px 20px rgba(16, 185, 129, 0.2);
 }
 
 .ally-header {
@@ -406,8 +407,8 @@ body {
     font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
-    background: rgba(99, 102, 241, 0.2);
-    color: #6366f1;
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
     white-space: nowrap;
 }
 
@@ -427,7 +428,7 @@ body {
 }
 
 .ally-detail i {
-    color: #6366f1;
+    color: #10b981;
     width: 16px;
     font-size: 0.8rem;
     text-align: center;
@@ -439,6 +440,88 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* Ally Stats */
+.ally-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 1rem;
+}
+
+.ally-stat-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.ally-stat-item:hover {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+}
+
+.ally-stat-number {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #10b981;
+    margin-bottom: 0.15rem;
+}
+
+.ally-stat-label {
+    display: block;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Ally Quick Actions */
+.ally-quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.btn-quick-action {
+    padding: 0.55rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.9);
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: all 0.3s ease;
+}
+
+.btn-quick-action.btn-tienda:hover {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.btn-quick-action.btn-banco:hover {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.btn-quick-action i {
+    font-size: 0.8rem;
 }
 
 /* Modal */
@@ -503,7 +586,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.2);
     position: sticky;
     top: 0;
     background: #1a1f2e;
@@ -602,8 +685,8 @@ body {
 
 .form-input, .form-select {
     width: 100%;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 12px;
     padding: 0.85rem 1rem;
     color: white;
@@ -626,8 +709,8 @@ body {
 }
 
 .form-input:focus, .form-select:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
 .form-row {
@@ -638,7 +721,7 @@ body {
 
 .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     border: none;
     padding: 1rem;
@@ -661,7 +744,7 @@ body {
 
 .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
 }
 
 /* Bottom Navigation */
@@ -671,7 +754,7 @@ body {
     left: 0;
     right: 0;
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border-top: 1px solid rgba(99, 102, 241, 0.2);
+    border-top: 1px solid rgba(16, 185, 129, 0.2);
     display: flex;
     justify-content: space-around;
     padding: 0.75rem 0;
@@ -704,12 +787,12 @@ body {
 }
 
 .nav-item:hover, .nav-item.active {
-    color: #6366f1;
+    color: #10b981;
     text-decoration: none;
 }
 
 .nav-item.active {
-    background: rgba(99, 102, 241, 0.1);
+    background: rgba(16, 185, 129, 0.1);
 }
 
 .nav-item i {
@@ -750,7 +833,7 @@ body {
 
 .empty-state i {
     font-size: 4rem;
-    color: rgba(99, 102, 241, 0.3);
+    color: rgba(16, 185, 129, 0.3);
     margin-bottom: 1rem;
 }
 
@@ -849,12 +932,12 @@ body {
 }
 
 .action-btn.view {
-    background: rgba(99, 102, 241, 0.2);
-    color: #6366f1;
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
 }
 
 .action-btn.view:hover {
-    background: #6366f1;
+    background: #10b981;
     color: white;
 }
 
@@ -924,7 +1007,7 @@ select option {
 select option:hover,
 select option:focus,
 select option:checked {
-    background-color: #6366f1 !important;
+    background-color: #10b981 !important;
     color: #ffffff !important;
 }
 
@@ -934,7 +1017,7 @@ select option:checked {
     color: #ffffff !important;
 }
 
-/* Selects inline de ediciÃ³n */
+/* Selects inline de edición */
 select[id^="edit_departamento_tienda_"] option,
 select[id^="edit_municipio_tienda_"] option {
     background-color: #1a1f2e !important;
@@ -963,14 +1046,14 @@ select[id^="edit_municipio_tienda_"] option {
     width: 56px;
     height: 56px;
     border: 5px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #6366f1;
-    border-right-color: #4f46e5;
+    border-top-color: #10b981;
+    border-right-color: #059669;
     border-radius: 50%;
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 0.8s linear infinite;
     margin-bottom: 24px;
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
 }
 
 @media (max-width: 480px) {
@@ -990,7 +1073,7 @@ select[id^="edit_municipio_tienda_"] option {
     letter-spacing: 1.5px;
     text-transform: uppercase;
     animation: pulse 1.5s ease-in-out infinite;
-    text-shadow: 0 2px 10px rgba(99, 102, 241, 0.5);
+    text-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
 }
 
 @media (max-width: 480px) {
@@ -1050,8 +1133,8 @@ select[id^="edit_municipio_tienda_"] option {
     gap: 0.75rem;
     margin-bottom: 0.5rem;
     padding: 0.75rem;
-    background: rgba(99, 102, 241, 0.08);
-    border: 1px solid rgba(99, 102, 241, 0.15);
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.15);
     border-radius: 10px;
 }
 
@@ -1108,17 +1191,17 @@ select[id^="edit_municipio_tienda_"] option {
 </div>
 
 <?php
-// Obtener parÃ¡metros de bÃºsqueda
+// Obtener parámetros de búsqueda
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
 
 // Consulta de aliados asignados a este asesor
-// La versiÃ³n de escritorio filtra por cod_asesor = $cod_administrador
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+// La versión de escritorio filtra por cod_asesor = $cod_administrador
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
 
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
-// Filtro de documentaciÃ³n
+// Filtro de documentación
 if ($filtro_doc == '1') {
     $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
 } elseif ($filtro_doc == '2') {
@@ -1133,11 +1216,11 @@ $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
-    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
     
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
     
-    // Filtro de documentaciÃ³n (sin el campo de cÃ©dula)
+    // Filtro de documentación (sin el campo de cédula)
     if ($filtro_doc == '1') {
         $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')";
     } elseif ($filtro_doc == '2') {
@@ -1150,7 +1233,18 @@ if (!$resultado) {
     $resultado = mysqli_query($conectar, $sql);
 }
 $total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
-// Consultas para combos - LÃ­der (20)
+// --- TOTALES PARA EL HEADER ---
+// Tiendas totales de los aliados de este coordinador
+$sql_total_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23')";
+$res_total_tiendas = mysqli_query($conectar, $sql_total_tiendas);
+$total_tiendas_header = ($res_total_tiendas) ? mysqli_fetch_assoc($res_total_tiendas)['total'] : 0;
+
+// Cuentas bancarias totales de los aliados de este coordinador
+$sql_total_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23') AND cod_estado = '1'";
+$res_total_bancos = mysqli_query($conectar, $sql_total_bancos);
+$total_bancos_header = ($res_total_bancos) ? mysqli_fetch_assoc($res_total_bancos)['total'] : 0;
+// -----------------------------
+// Consultas para combos - Líder (20)
 $sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY nombres_apellidos_tercero ASC";
 $res_lider = mysqli_query($conectar, $sql_lider);
 // Consultas para combos - Coordinador (21)
@@ -1174,17 +1268,28 @@ $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
+// Consulta de tipos de identificación
+$sql_tipo_identificacion = "SELECT cod_tipo_doc, tipo_doc_abrev, nombre_tipo_doc FROM tbl15_tipo_doc ORDER BY cod_tipo_doc ASC";
+$res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 ?>
 
 <main class="page-container">
     <!-- Header -->
     <div class="page-header animate-in">
         <h1><i class="fa-solid fa-users"></i> Mis Aliados</h1>
-        <p>Gestiona tu red de aliados estratÃ©gicos</p>
+        <p>Gestiona tu red de aliados estratégicos</p>
         <div class="header-stats">
             <div class="header-stat">
                 <div class="header-stat-value"><?php echo $total_registros; ?></div>
-                <div class="header-stat-label">Total</div>
+                <div class="header-stat-label">Aliados</div>
+            </div>
+            <div class="header-stat">
+                <div class="header-stat-value"><?php echo $total_tiendas_header; ?></div>
+                <div class="header-stat-label">Tiendas</div>
+            </div>
+            <div class="header-stat">
+                <div class="header-stat-value"><?php echo $total_bancos_header; ?></div>
+                <div class="header-stat-label">Cuentas</div>
             </div>
         </div>
     </div>
@@ -1198,14 +1303,24 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         <div class="filter-group">
             <select id="filtroDoc" class="form-select" onchange="filtrar()" style="height: 100%;">
                 <option value="" <?php echo $filtro_doc == '' ? 'selected' : ''; ?>>Todos los documentos</option>
-                <option value="1" <?php echo $filtro_doc == '1' ? 'selected' : ''; ?>>Con documentaciÃ³n (Al menos uno)</option>
-                <option value="2" <?php echo $filtro_doc == '2' ? 'selected' : ''; ?>>DocumentaciÃ³n completa (Los 3)</option>
-                <option value="3" <?php echo $filtro_doc == '3' ? 'selected' : ''; ?>>Sin documentaciÃ³n</option>
+                <option value="1" <?php echo $filtro_doc == '1' ? 'selected' : ''; ?>>Con documentación (Al menos uno)</option>
+                <option value="2" <?php echo $filtro_doc == '2' ? 'selected' : ''; ?>>Documentación completa (Los 3)</option>
+                <option value="3" <?php echo $filtro_doc == '3' ? 'selected' : ''; ?>>Sin documentación</option>
             </select>
         </div>
     </div>
-    <!-- Add Button -->
-    <button class="add-button animate-in delay-1" onclick="abrirModal()"><i class="fa-solid fa-plus"></i>Registrar Nuevo Aliado</button>
+    <!-- Botones de Acción -->
+    <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;" class="animate-in delay-1">
+        <button class="add-button" style="margin-bottom: 0; flex: 1.5;" onclick="abrirModal()">
+            <i class="fa-solid fa-plus"></i> Registrar Nuevo Aliado
+        </button>
+        <!-- Registro rápido deshabilitado para coordinador por ahora si no tiene el modal, pero dejo la estructura -->
+        <!--
+        <button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" onclick="abrirModalRapido()">
+            <i class="fa-solid fa-bolt"></i> Registro Rápido
+        </button>
+        -->
+    </div>
 
     <!-- List -->
     <div class="ally-list" id="allyList">
@@ -1214,15 +1329,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 $nombre_completo = !empty($row['nombres_apellidos_tercero']) ? $row['nombres_apellidos_tercero'].' ('.$row['nombres'].' '.$row['apellidos'].')' : trim($row['nombres'].' '.$row['apellidos']);
                 $cod_estado = $row['cod_estado_activacion_usuario'];
                 // Determinar estado y colores
-                if ($cod_estado == '1') { $estado_texto = 'Activo'; $estado_bg = 'rgba(99, 102, 241, 0.2)'; $estado_color = '#6366f1'; } elseif ($cod_estado == '2') { $estado_texto = 'En Espera'; $estado_bg = 'rgba(245, 158, 11, 0.2)'; $estado_color = '#f59e0b'; } else { $estado_texto = 'Inactivo'; $estado_bg = 'rgba(239, 68, 68, 0.2)'; $estado_color = '#ef4444'; }
+                if ($cod_estado == '1') { $estado_texto = 'Activo'; $estado_bg = 'rgba(16, 185, 129, 0.2)'; $estado_color = '#10b981'; } elseif ($cod_estado == '2') { $estado_texto = 'En Espera'; $estado_bg = 'rgba(245, 158, 11, 0.2)'; $estado_color = '#f59e0b'; } else { $estado_texto = 'Inactivo'; $estado_bg = 'rgba(239, 68, 68, 0.2)'; $estado_color = '#ef4444'; }
                 // Obtener tiendas asociadas a este aliado
                 $cod_aliado = $row['cod_administrador'];
                 $sql_tiendas = "SELECT cod_tienda, nombre_tienda FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado' LIMIT 3";
                 $res_tiendas = mysqli_query($conectar, $sql_tiendas);
                 $tiendas_arr = [];
-                while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_coordinador_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #6366f1; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
+                while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_coordinador_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #10b981; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
                 $tiendas_texto = count($tiendas_arr) > 0 ? implode(', ', $tiendas_arr) : 'Sin tiendas';
-                // Obtener lÃ­neas de crÃ©dito asociadas a este aliado
+                // Obtener líneas de crédito asociadas a este aliado
                 $sql_lineas_credito = "SELECT ec.nombre_entidad_crediticia, peca.interes_ptj 
                 FROM tbl15_parametrizacion_entidad_crediticia_aliado peca INNER JOIN tbl15_entidad_crediticia ec ON peca.cod_entidad_crediticia = ec.cod_entidad_crediticia 
                 WHERE peca.cod_aliado_estrategico = '$cod_aliado' AND peca.cod_estado = '1' ORDER BY ec.cod_posicion ASC";
@@ -1230,10 +1345,22 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 $lineas_credito_html = '';
                 $count_lineas = 0;
                 while($lc = mysqli_fetch_assoc($res_lineas_credito)) { 
-                    $lineas_credito_html .= '<span style="display: inline-block; background: rgba(99, 102, 241, 0.15); color: #6366f1; padding: 0.2rem 0.5rem; border-radius: 8px; font-size: 0.7rem; font-weight: 600; margin: 0.15rem;">' . htmlspecialchars($lc['nombre_entidad_crediticia']) . ' <strong>' . number_format($lc['interes_ptj'], 2) . '%</strong></span> ';
+                    $lineas_credito_html .= '<span style="display: inline-block; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 0.2rem 0.5rem; border-radius: 8px; font-size: 0.7rem; font-weight: 600; margin: 0.15rem;">' . htmlspecialchars($lc['nombre_entidad_crediticia']) . ' <strong>' . number_format($lc['interes_ptj'], 2) . '%</strong></span> ';
                     $count_lineas++;
                 }
                 $lineas_credito_texto = $count_lineas > 0 ? $lineas_credito_html : '<span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">Sin entidades</span>';
+
+                // --- NUEVAS ESTADÍSTICAS ---
+                // Contar tiendas totales de este aliado
+                $sql_count_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado'";
+                $res_count_tiendas = mysqli_query($conectar, $sql_count_tiendas);
+                $total_tiendas_aliado = ($res_count_tiendas) ? mysqli_fetch_assoc($res_count_tiendas)['total'] : 0;
+                
+                // Contar cuentas bancarias de este aliado
+                $sql_count_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico = '$cod_aliado' AND cod_estado = '1'";
+                $res_count_bancos = mysqli_query($conectar, $sql_count_bancos);
+                $total_bancos_aliado = ($res_count_bancos) ? mysqli_fetch_assoc($res_count_bancos)['total'] : 0;
+                // ---------------------------
             ?>
             <div class="ally-card animate-in delay-2">
                 <div class="ally-header">
@@ -1244,6 +1371,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <span class="ally-role" style="background: <?php echo $estado_bg; ?>; color: <?php echo $estado_color; ?>;">
                         <?php echo $estado_texto; ?>
                     </span>
+                    <?php if (isset($row['cod_estado_usuario_prueba']) && $row['cod_estado_usuario_prueba'] == '1'): ?>
+                    <span class="ally-role" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); margin-left: 0.5rem;">
+                        <i class="fa-solid fa-bolt" style="margin-right: 0.25rem;"></i> PRUEBA
+                    </span>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="ally-details">
@@ -1255,9 +1387,9 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <!--
                     <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 0.5rem; padding-top: 0.5rem;">
                         <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.25rem;">
-                            <i class="fa-solid fa-credit-card" style="color: #6366f1; font-size: 0.8rem; margin-top: 0.25rem; flex-shrink: 0;"></i>
+                            <i class="fa-solid fa-credit-card" style="color: #10b981; font-size: 0.8rem; margin-top: 0.25rem; flex-shrink: 0;"></i>
                             <div style="flex: 1; min-width: 0;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600; margin-bottom: 0.35rem;">LÃ­neas de CrÃ©dito:</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600; margin-bottom: 0.35rem;">Líneas de Crédito:</div>
                                 <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; line-height: 1.4;">
                                     <?php echo $lineas_credito_texto; ?>
                                 </div>
@@ -1265,6 +1397,26 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         </div>
                     </div>
                     -->
+                </div>
+
+                <div class="ally-stats">
+                    <div class="ally-stat-item" onclick="window.location.href='lista_tienda_coordinador_movil.php?cod_aliado_estrategico=<?php echo $row['cod_administrador']; ?>'">
+                        <span class="ally-stat-number"><?php echo $total_tiendas_aliado; ?></span>
+                        <span class="ally-stat-label">Tiendas</span>
+                    </div>
+                    <div class="ally-stat-item" onclick="abrirModalVerCuentas(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
+                        <span class="ally-stat-number"><?php echo $total_bancos_aliado; ?></span>
+                        <span class="ally-stat-label">Cuentas</span>
+                    </div>
+                </div>
+
+                <div class="ally-quick-actions">
+                    <button class="btn-quick-action btn-tienda" onclick="window.location.href='lista_tienda_coordinador_movil.php?registrar_tienda=1&cod_aliado=<?php echo $row['cod_administrador']; ?>'">
+                        <i class="fa-solid fa-store"></i> +Tienda
+                    </button>
+                    <button class="btn-quick-action btn-banco" onclick="abrirModalAgregarBanco(<?php echo $row['cod_administrador']; ?>)">
+                        <i class="fa-solid fa-university"></i> +Banco
+                    </button>
                 </div>
 
                 <div class="ally-actions">
@@ -1325,20 +1477,34 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="group-group" id="container_nit_razon_social" style="display:none;">
-                        <label class="form-label">NIT RazÃ³n Social *</label>
+                        <label class="form-label">NIT Razón Social *</label>
                         <input type="text" class="form-input" id="nit_razon_social" name="nit_razon_social">
                     </div>
                     <div class="form-group" id="container_nombre_razon_social" style="display:none;">
-                        <label class="form-label">RazÃ³n Social *</label>
+                        <label class="form-label">Razón Social *</label>
                         <input type="text" class="form-input" id="nombre_razon_social" name="nombre_razon_social">
                     </div>
                 </div>
 
-                <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
-                <div class="form-group">
-                    <label class="form-label">IdentificaciÃ³n *</label>
-                    <input type="number" class="form-input" id="identificacion_tercero" name="identificacion_tercero" required>
-                    <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación *</label>
+                        <input type="number" class="form-input" id="identificacion_tercero" name="identificacion_tercero" required>
+                        <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Documento *</label>
+                        <select class="form-select" id="nombre_tipo_identificacion" name="nombre_tipo_identificacion" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_identificacion, 0);
+                            while ($tipo_identificacion = mysqli_fetch_assoc($res_tipo_identificacion)): 
+                            ?>
+                            <option value="<?php echo $tipo_identificacion['tipo_doc_abrev']; ?>" title="<?php echo htmlspecialchars($tipo_identificacion['tipo_doc_abrev']); ?>"><?php echo $tipo_identificacion['nombre_tipo_doc']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -1354,7 +1520,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">TelÃ©fono *</label>
+                        <label class="form-label">Teléfono *</label>
                         <input type="tel" class="form-input" name="telefono1_tercero" required>
                     </div>
                     <div class="form-group">
@@ -1380,7 +1546,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">DirecciÃ³n</label>
+                        <label class="form-label">Dirección</label>
                         <input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
                     </div>
                     <div class="form-group">
@@ -1389,17 +1555,17 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <!-- ParametrizaciÃ³n de Lineas de Credito -->
+                <!-- Parametrización de Lineas de Credito -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
-                    <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
-                    <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
+                    <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
+                    <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
                         <?php 
                         mysqli_data_seek($res_entidades, 0);
                         while ($entidad = mysqli_fetch_assoc($res_entidades)): 
                         ?>
                         <div class="credit-line-item">
                             <div class="credit-line-check">
-                                <input type="checkbox" name="entidades[]" value="<?php echo $entidad['cod_entidad_crediticia']; ?>" id="ent_<?php echo $entidad['cod_entidad_crediticia']; ?>" style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer; margin: 0;">
+                                <input type="checkbox" name="entidades[]" value="<?php echo $entidad['cod_entidad_crediticia']; ?>" id="ent_<?php echo $entidad['cod_entidad_crediticia']; ?>" style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer; margin: 0;">
                                 <label for="ent_<?php echo $entidad['cod_entidad_crediticia']; ?>" style="color: rgba(255,255,255,0.95); font-size: 0.9rem; font-weight: 600; cursor: pointer; margin: 0; word-break: break-word;">
                                     <?php echo $entidad['nombre_entidad_crediticia']; ?>
                                 </label>
@@ -1418,38 +1584,38 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         </div>
                         <?php endwhile; ?>
                     </div>
-                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Selecciona las lineas de credito disponibles para este aliado e ingresa el porcentaje de interÃ©s correspondiente.
+                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <strong>Nota:</strong> Selecciona las lineas de credito disponibles para este aliado e ingresa el porcentaje de interés correspondiente.
                         </div>
                     </div>
                 </div>
 
-                <!-- ParametrizaciÃ³n de Bancos -->
+                <!-- Parametrización de Bancos -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
-                    <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                    <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
                         <i class="fa-solid fa-university"></i> Cuentas Bancarias
                     </label>
-                    <div id="contenedor_bancos" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
+                    <div id="contenedor_bancos" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
                         <?php 
                         if ($res_bancos && mysqli_num_rows($res_bancos) > 0) {
                             mysqli_data_seek($res_bancos, 0);
                             while ($banco = mysqli_fetch_assoc($res_bancos)): 
                         ?>
-                        <div style="margin-bottom: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 10px;">
+                        <div style="margin-bottom: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 10px;">
                             <div style="display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 0.75rem;">
-                                <input type="checkbox" name="bancos[]" value="<?php echo $banco['cod_banco']; ?>" id="banco_<?php echo $banco['cod_banco']; ?>" style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer; margin: 0;" onchange="toggleBancoInputs(<?php echo $banco['cod_banco']; ?>)">
+                                <input type="checkbox" name="bancos[]" value="<?php echo $banco['cod_banco']; ?>" id="banco_<?php echo $banco['cod_banco']; ?>" style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer; margin: 0;" onchange="toggleBancoInputs(<?php echo $banco['cod_banco']; ?>)">
                                 <label for="banco_<?php echo $banco['cod_banco']; ?>" style="color: rgba(255,255,255,0.95); font-size: 0.9rem; font-weight: 600; cursor: pointer; margin: 0;">
                                     <?php echo $banco['nombre_banco']; ?>
                                 </label>
                                 <div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">
-                                    <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">NÃºmero:</label>
+                                    <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Número:</label>
                                     <input type="number" class="form-input banco-input" name="numero_cuenta_<?php echo $banco['cod_banco']; ?>" id="numero_cuenta_<?php echo $banco['cod_banco']; ?>" placeholder="123456789" style="width: 120px; padding: 0.3rem 0.4rem; font-size: 0.8rem;" disabled>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Tipo:</label>
-                                    <select class="form-select banco-input" name="tipo_cuenta_<?php echo $banco['cod_banco']; ?>" id="tipo_cuenta_<?php echo $banco['cod_banco']; ?>" style="width: 110px; padding: 0.3rem 0.4rem; font-size: 0.8rem; background-color: rgba(99, 102, 241, 0.1);" disabled>
+                                    <select class="form-select banco-input" name="tipo_cuenta_<?php echo $banco['cod_banco']; ?>" id="tipo_cuenta_<?php echo $banco['cod_banco']; ?>" style="width: 110px; padding: 0.3rem 0.4rem; font-size: 0.8rem; background-color: rgba(16, 185, 129, 0.1);" disabled>
                                         <option value="1">Ahorros</option>
                                         <option value="2">Corriente</option>
                                     </select>
@@ -1470,7 +1636,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <div id="cert_container_<?php echo $banco['cod_banco']; ?>" style="display: none; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;"><i class="fa-solid fa-file-certificate"></i> Certificado:</label>
-                                    <input type="file" class="banco-input" name="certificado_banco_<?php echo $banco['cod_banco']; ?>" id="certificado_banco_<?php echo $banco['cod_banco']; ?>" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="flex: 1; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.3rem; border-radius: 6px; font-size: 0.7rem;" disabled>
+                                    <input type="file" class="banco-input" name="certificado_banco_<?php echo $banco['cod_banco']; ?>" id="certificado_banco_<?php echo $banco['cod_banco']; ?>" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.3rem; border-radius: 6px; font-size: 0.7rem;" disabled>
                                 </div>
                             </div>
                         </div>
@@ -1479,42 +1645,42 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         }
                         ?>
                     </div>
-                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Selecciona los bancos e ingresa el nÃºmero de cuenta y tipo de cuenta para este aliado.
+                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <strong>Nota:</strong> Selecciona los bancos e ingresa el número de cuenta y tipo de cuenta para este aliado.
                         </div>
                     </div>
                 </div>
 
-                <!-- DocumentaciÃ³n Legal -->
+                <!-- Documentación Legal -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
-                    <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
-                        <i class="fa-solid fa-file-contract"></i> DocumentaciÃ³n Legal
+                    <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                        <i class="fa-solid fa-file-contract"></i> Documentación Legal
                     </label>
-                    <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem;">
+                    <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem;">
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
-                                <i class="fa-solid fa-id-card"></i> CÃ©dula
+                                <i class="fa-solid fa-id-card"></i> Cédula
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
-                                <i class="fa-solid fa-file-pdf"></i> RUT (Registro Ãšnico Tributario)
+                                <i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
-                                <i class="fa-solid fa-building"></i> CÃ¡mara de Comercio
+                                <i class="fa-solid fa-building"></i> Cámara de Comercio
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -1523,7 +1689,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-signature"></i> Contrato Firmado
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_contratofirma_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_contratofirma_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -1531,7 +1697,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-alt"></i> Documento Extra 1 (Opcional)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_extra1_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_extra1_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -1539,26 +1705,26 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-alt"></i> Documento Extra 2 (Opcional)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_extra2_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_extra2_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
                         -->
 
                     </div>
-                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Adjunta la documentaciÃ³n legal requerida para el aliado estratÃ©gico.
+                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <strong>Nota:</strong> Adjunta la documentación legal requerida para el aliado estratégico.
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
+                <div class="form-group" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
                     <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; margin: 0;">
-                        <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #6366f1; width: 20px; height: 20px; cursor: pointer;">
-                        <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #6366f1; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
+                        <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #10b981; width: 20px; height: 20px; cursor: pointer;">
+                        <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #10b981; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
                     </label>
-                    <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se crearÃ¡ automÃ¡ticamente una tienda con los datos del aliado</small>
+                    <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se creará automáticamente una tienda con los datos del aliado</small>
                 </div>
                 
                 <button type="submit" class="submit-btn" id="btnGuardar"><i class="fa-solid fa-save"></i> Guardar Aliado</button>
@@ -1614,22 +1780,36 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
 
                 <div class="form-group" id="edit_container_nit_razon_social" style="display:none;">
-                    <label class="form-label">NIT RazÃ³n Social *</label>
+                    <label class="form-label">NIT Razón Social *</label>
                     <input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
                 </div>
 
                 <div class="form-group" id="edit_container_nombre_razon_social" style="display:none;">
-                    <label class="form-label">RazÃ³n Social *</label>
+                    <label class="form-label">Razón Social *</label>
                     <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
                 </div>
 
-                <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
                     <i class="fa-solid fa-building-columns"></i> Datos del Representante Legal
                 </label>
 
-                <div class="form-group">
-                    <label class="form-label">IdentificaciÃ³n *</label>
-                    <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación *</label>
+                        <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Documento *</label>
+                        <select class="form-select" id="edit_nombre_tipo_identificacion" name="nombre_tipo_identificacion" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_identificacion, 0);
+                            while ($tipo_identificacion = mysqli_fetch_assoc($res_tipo_identificacion)): 
+                            ?>
+                            <option value="<?php echo $tipo_identificacion['tipo_doc_abrev']; ?>" title="<?php echo htmlspecialchars($tipo_identificacion['tipo_doc_abrev']); ?>"><?php echo $tipo_identificacion['nombre_tipo_doc']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -1645,7 +1825,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">TelÃ©fono *</label>
+                        <label class="form-label">Teléfono *</label>
                         <input type="tel" class="form-input" name="telefono1_tercero" id="edit_telefono" required>
                     </div>
                     <div class="form-group">
@@ -1671,7 +1851,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">DirecciÃ³n</label>
+                        <label class="form-label">Dirección</label>
                         <input type="text" class="form-input" id="edit_direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
                     </div>
                     <div class="form-group">
@@ -1692,10 +1872,10 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <input type="hidden" name="cod_asesor" id="edit_cod_asesor_hidden">
                 </div>
 
-                <!-- SecciÃ³n de Credenciales de Acceso -->
+                <!-- Sección de Credenciales de Acceso -->
                 <div class="form-group">
                     <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0; padding-top: 1rem;">
-                        <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                        <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
                             <i class="fa-solid fa-key"></i> Credenciales de Acceso
                         </label>
                         
@@ -1711,19 +1891,19 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             </div>
                         </div>
 
-                        <!-- Cambio de ContraseÃ±a por Correo -->
+                        <!-- Cambio de Contraseña por Correo -->
                         <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
                             <label class="form-label" style="color: #f59e0b; font-weight: 700; margin-bottom: 0.75rem; display: block;">
-                                <i class="fa-solid fa-key"></i> Cambiar ContraseÃ±a
+                                <i class="fa-solid fa-key"></i> Cambiar Contraseña
                             </label>
                             <div style="text-align: center;">
                                 <button type="button" onclick="enviarRecuperacionPassword()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(245, 158, 11, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(245, 158, 11, 0.3)'">
-                                    <i class="fa-solid fa-envelope"></i> Enviar Nueva ContraseÃ±a por Correo
+                                    <i class="fa-solid fa-envelope"></i> Enviar Nueva Contraseña por Correo
                                 </button>
                                 <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.75rem;">
                                     <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem; line-height: 1.4;">
                                         <i class="fa-solid fa-lightbulb" style="color: #f59e0b; margin-right: 0.35rem;"></i>
-                                        Se generarÃ¡ una nueva contraseÃ±a temporal y se enviarÃ¡ al correo registrado del aliado.
+                                        Se generará una nueva contraseña temporal y se enviará al correo registrado del aliado.
                                     </div>
                                 </div>
                             </div>
@@ -1733,131 +1913,131 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-group">
                     <label class="form-label">Estado</label>
-                    <select class="form-select" name="cod_estado_activacion_usuario" id="edit_estado" disabled style="background: rgba(100, 116, 139, 0.2); cursor: not-allowed; opacity: 0.7;"><option value="1">Activo</option><option value="2">En Espera para ActivaciÃ³n</option><option value="3">Inactivo</option></select>
+                    <select class="form-select" name="cod_estado_activacion_usuario" id="edit_estado" disabled style="background: rgba(100, 116, 139, 0.2); cursor: not-allowed; opacity: 0.7;"><option value="1">Activo</option><option value="2">En Espera para Activación</option><option value="3">Inactivo</option></select>
                     <input type="hidden" name="cod_estado_activacion_usuario" id="edit_estado_hidden">
                     <div style="background: rgba(100, 116, 139, 0.1); border: 1px solid rgba(100, 116, 139, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem;">
                             <i class="fa-solid fa-info-circle" style="color: #94a3b8; margin-right: 0.35rem;"></i>
-                            El estado no se puede modificar desde aquÃ­.
+                            El estado no se puede modificar desde aquí.
                         </div>
                     </div>
                 </div>
 
-                <!-- ParametrizaciÃ³n de Lineas de Credito -->
+                <!-- Parametrización de Lineas de Credito -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <label class="form-label" style="color: #6366f1; font-weight: 700; margin: 0;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
+                        <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
                         <button type="button" onclick="abrirModalAgregarEntidad()" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.3s ease; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fa-solid fa-plus-circle"></i> Agregar
                         </button>
                     </div>
-                    <div id="contenedor_entidades_editar" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.5rem; max-height: 300px; overflow-y: auto;">
+                    <div id="contenedor_entidades_editar" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.5rem; max-height: 300px; overflow-y: auto;">
                         <div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);">
                             <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; font-size: 0.85rem;">Cargando entidades...</p>
                         </div>
                     </div>
-                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.3;">
-                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> AquÃ­ se muestran las lineas de credito asignadas a este aliado.
+                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <strong>Nota:</strong> Aquí se muestran las lineas de credito asignadas a este aliado.
                         </div>
                     </div>
                 </div>
 
-                <!-- ParametrizaciÃ³n de Bancos -->
+                <!-- Parametrización de Bancos -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <label class="form-label" style="color: #6366f1; font-weight: 700; margin: 0;">
+                        <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;">
                             <i class="fa-solid fa-university"></i> Cuentas Bancarias
                         </label>
                         <button type="button" onclick="abrirModalAgregarBanco(document.getElementById('edit_cod_administrador').value)" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.3s ease; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fa-solid fa-plus-circle"></i> Agregar
                         </button>
                     </div>
-                    <div id="contenedor_bancos_editar" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
+                    <div id="contenedor_bancos_editar" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
                         <div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);">
                             <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; font-size: 0.85rem;">Cargando bancos...</p>
                         </div>
                     </div>
-                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> AquÃ­ se muestran las cuentas bancarias asignadas a este aliado.
+                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <strong>Nota:</strong> Aquí se muestran las cuentas bancarias asignadas a este aliado.
                         </div>
                     </div>
                 </div>
 
-                <!-- ParametrizaciÃ³n de Tiendas -->
+                <!-- Parametrización de Tiendas -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <label class="form-label" style="color: #6366f1; font-weight: 700; margin: 0;">
+                        <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;">
                             <i class="fa-solid fa-store"></i> Tiendas Asociadas
                         </label>
                         <button type="button" onclick="abrirModalAgregarTienda()" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.3s ease; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fa-solid fa-plus-circle"></i> Agregar
                         </button>
                     </div>
-                    <div id="contenedor_tiendas_editar" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
+                    <div id="contenedor_tiendas_editar" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
                         <div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);">
                             <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; font-size: 0.85rem;">Cargando tiendas...</p>
                         </div>
                     </div>
-                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> AquÃ­ se muestran las tiendas asociadas a este aliado.
+                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <strong>Nota:</strong> Aquí se muestran las tiendas asociadas a este aliado.
                         </div>
                     </div>
                 </div>
 
-                <!-- DocumentaciÃ³n Legal -->
+                <!-- Documentación Legal -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
-                    <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
-                        <i class="fa-solid fa-file-contract"></i> DocumentaciÃ³n Legal
+                    <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                        <i class="fa-solid fa-file-contract"></i> Documentación Legal
                     </label>
-                    <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem;">
+                    <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem;">
 
                         <div class="form-group">
-                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-id-card"></i> CÃ©dula</label>
+                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-id-card"></i> Cédula</label>
                             <!-- Documento existente -->
-                            <div id="edit_cedula_actual" style="display: none; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; text-align: center;">
-                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
-                                    <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver CÃ©dula Cargada</a>
+                            <div id="edit_cedula_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
+                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+                                    <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver Cédula Cargada</a>
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_cedula_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                                 <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-file-pdf"></i> RUT (Registro Ãšnico Tributario)</label>
+                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)</label>
                             <!-- Documento existente -->
-                            <div id="edit_rut_actual" style="display: none; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; text-align: center;">
-                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+                            <div id="edit_rut_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
+                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
                                     <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver Documento RUT Cargado</a>
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_rut_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                                 <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-building"></i> CÃ¡mara de Comercio</label>
+                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-building"></i> Cámara de Comercio</label>
                             <!-- Documento existente -->
-                            <div id="edit_camara_actual" style="display: none; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; text-align: center;">
-                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
-                                    <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver CÃ¡mara de Comercio Cargada</a>
+                            <div id="edit_camara_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
+                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+                                    <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver Cámara de Comercio Cargada</a>
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_camara_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                                 <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                             </div>
                         </div>
@@ -1867,12 +2047,12 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-signature"></i> Contrato Firmado
                             </label>
-                            <div id="edit_contrato_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(99, 102, 241, 0.1); border-radius: 6px;">
-                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.75rem;">
+                            <div id="edit_contrato_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px;">
+                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.75rem;">
                                     <i class="fa-solid fa-file-check"></i> Ver documento actual
                                 </a>
                             </div>
-                            <input type="file" class="form-input" name="url_documentacion_contratofirma_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_contratofirma_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -1880,12 +2060,12 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-alt"></i> Documento Extra 1 (Opcional)
                             </label>
-                            <div id="edit_extra1_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(99, 102, 241, 0.1); border-radius: 6px;">
-                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.75rem;">
+                            <div id="edit_extra1_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px;">
+                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.75rem;">
                                     <i class="fa-solid fa-file-check"></i> Ver documento actual
                                 </a>
                             </div>
-                            <input type="file" class="form-input" name="url_documentacion_extra1_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_extra1_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -1893,21 +2073,21 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-alt"></i> Documento Extra 2 (Opcional)
                             </label>
-                            <div id="edit_extra2_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(99, 102, 241, 0.1); border-radius: 6px;">
-                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.75rem;">
+                            <div id="edit_extra2_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px;">
+                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.75rem;">
                                     <i class="fa-solid fa-file-check"></i> Ver documento actual
                                 </a>
                             </div>
-                            <input type="file" class="form-input" name="url_documentacion_extra2_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_extra2_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
                         -->
 
                     </div>
-                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Si carga un nuevo documento, reemplazarÃ¡ el actual. Deje vacÃ­o para mantener el documento existente.
+                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <strong>Nota:</strong> Si carga un nuevo documento, reemplazará el actual. Deje vacío para mantener el documento existente.
                         </div>
                     </div>
                 </div>
@@ -1928,19 +2108,19 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         
         <div class="modal-body">
             <div style="text-align: center; margin-bottom: 2rem;">
-                <div style="width: 80px; height: 80px; background: rgba(99, 102, 241, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
-                    <i class="fa-solid fa-user" style="font-size: 2.5rem; color: #6366f1;"></i>
+                <div style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                    <i class="fa-solid fa-user" style="font-size: 2.5rem; color: #10b981;"></i>
                 </div>
                 <h3 id="detNombre" style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem;"></h3>
                 <span id="detEstado" style="padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600;"></span>
             </div>
 
             <div class="detail-row">
-                <span class="detail-label-modal">IdentificaciÃ³n</span>
+                <span class="detail-label-modal">Identificación</span>
                 <span class="detail-value-modal" id="detCedula"></span>
             </div>
             <div class="detail-row">
-                <span class="detail-label-modal">TelÃ©fono</span>
+                <span class="detail-label-modal">Teléfono</span>
                 <span class="detail-value-modal" id="detTelefono"></span>
             </div>
             <div class="detail-row">
@@ -1948,7 +2128,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <span class="detail-value-modal" id="detCorreo"></span>
             </div>
             <div class="detail-row">
-                <span class="detail-label-modal">DirecciÃ³n</span>
+                <span class="detail-label-modal">Dirección</span>
                 <span class="detail-value-modal" id="detDireccion"></span>
             </div>
             <div class="detail-row">
@@ -1956,7 +2136,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <span class="detail-value-modal" id="detCuenta"></span>
             </div>
             <div class="detail-row">
-                <span class="detail-label-modal">ComisiÃ³n</span>
+                <span class="detail-label-modal">Comisión</span>
                 <span class="detail-value-modal" id="detComision"></span>
             </div>
             <div class="detail-row">
@@ -1991,13 +2171,13 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Porcentaje de InterÃ©s *</label>
+                    <label class="form-label">Porcentaje de Interés *</label>
                     <input type="number" step="0.01" min="0" max="100" class="form-input" id="agregar_interes" name="interes_ptj" placeholder="0.00" required>
                 </div>
 
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: rgba(255,255,255,0.9); font-size: 0.9rem;">
-                        <input type="checkbox" id="agregar_cod_estado_entrar_portal" name="cod_estado_entrar_portal" value="1" style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer;">
+                        <input type="checkbox" id="agregar_cod_estado_entrar_portal" name="cod_estado_entrar_portal" value="1" style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer;">
                         <span>Habilitar acceso al portal</span>
                     </label>
                 </div>
@@ -2011,7 +2191,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <button type="button" onclick="cerrarModalAgregarEntidad()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-times"></i> Cancelar
                     </button>
-                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-save"></i> Guardar
                     </button>
                 </div>
@@ -2041,7 +2221,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">NÃºmero de Cuenta *</label>
+                    <label class="form-label">Número de Cuenta *</label>
                     <input type="text" class="form-input" id="agregar_numero_cuenta" name="numero_banco_cuenta" placeholder="Ej: 1234567890" required>
                 </div>
 
@@ -2068,10 +2248,10 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-group">
                     <label class="form-label"><i class="fa-solid fa-file-certificate"></i> Certificado Bancario</label>
-                    <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('agregar_certificado_banco').click()" onmouseover="this.style.borderColor='rgba(99, 102, 241, 0.6)'" onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.3)'">
+                    <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('agregar_certificado_banco').click()" onmouseover="this.style.borderColor='rgba(16, 185, 129, 0.6)'" onmouseout="this.style.borderColor='rgba(16, 185, 129, 0.3)'">
                         <input type="file" id="agregar_certificado_banco" name="certificado_banco" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="display: none;" onchange="mostrarNombreArchivoCertificado(this, 'preview_certificado_agregar')">
                         <div id="preview_certificado_agregar">
-                            <i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(99, 102, 241, 0.6); margin-bottom: 0.5rem;"></i>
+                            <i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(16, 185, 129, 0.6); margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p>
                             <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Imagen o documento (JPG, PNG, PDF, DOC)</p>
                         </div>
@@ -2103,15 +2283,15 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             <form id="formAgregarTienda" enctype="multipart/form-data">
                 <input type="hidden" id="agregar_tienda_cod_aliado" name="cod_aliado_estrategico">
                 
-                <!-- SecciÃ³n 1: InformaciÃ³n BÃ¡sica -->
-                <div style="background: rgba(99, 102, 241, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-info-circle" style="color: #6366f1;"></i>
-                    <span style="color: #6366f1; font-weight: 600; font-size: 0.85rem;">InformaciÃ³n BÃ¡sica</span>
+                <!-- Sección 1: Información Básica -->
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-info-circle" style="color: #10b981;"></i>
+                    <span style="color: #10b981; font-weight: 600; font-size: 0.85rem;">Información Básica</span>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Nombre de la Tienda *</label>
-                    <input type="text" class="form-input" name="nombre1_tercero" id="tienda_nombre" placeholder="Ej: Tienda El Ã‰xito" required>
+                    <input type="text" class="form-input" name="nombre1_tercero" id="tienda_nombre" placeholder="Ej: Tienda El Éxito" required>
                 </div>
 
                 <div class="form-row">
@@ -2120,18 +2300,18 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         <input type="number" class="form-input" name="identificacion_tercero" id="tienda_nit" required>
                     </div>
                      <div class="form-group">
-                        <label class="form-label">TelÃ©fono *</label>
+                        <label class="form-label">Teléfono *</label>
                         <input type="tel" class="form-input" name="telefono1_tercero" id="tienda_telefono" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Correo ElectrÃ³nico *</label>
+                    <label class="form-label">Correo Electrónico *</label>
                     <input type="email" class="form-input" name="correo_tercero" id="tienda_correo" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">DirecciÃ³n</label>
+                    <label class="form-label">Dirección</label>
                     <input type="text" class="form-input" name="direccion_tercero" id="tienda_direccion">
                 </div>
 
@@ -2150,7 +2330,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <!-- SecciÃ³n 2: Representante Legal -->
+                <!-- Sección 2: Representante Legal -->
                 <div style="background: rgba(59, 130, 246, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-user-tie" style="color: #3b82f6;"></i>
                     <span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">Representante Legal</span>
@@ -2172,26 +2352,26 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <!-- SecciÃ³n 3: InformaciÃ³n del Negocio -->
+                <!-- Sección 3: Información del Negocio -->
                 <div style="background: rgba(59, 130, 246, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-briefcase" style="color: #3b82f6;"></i>
-                    <span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">InformaciÃ³n del Negocio</span>
+                    <span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">Información del Negocio</span>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Â¿Existe en RUES?</label>
+                        <label class="form-label">¿Existe en RUES?</label>
                         <select class="form-select" name="existe_rues" id="tienda_existe_rues">
                             <option value="">-- Seleccione --</option>
-                            <option value="SI">SÃ­</option>
+                            <option value="SI">Sí</option>
                             <option value="NO">No</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Â¿Venta Presencial?</label>
+                        <label class="form-label">¿Venta Presencial?</label>
                         <select class="form-select" name="venta_presencial" id="tienda_venta_presencial">
                             <option value="">-- Seleccione --</option>
-                            <option value="SI">SÃ­</option>
+                            <option value="SI">Sí</option>
                             <option value="NO">No</option>
                         </select>
                     </div>
@@ -2199,10 +2379,10 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Â¿Venta Online?</label>
+                        <label class="form-label">¿Venta Online?</label>
                         <select class="form-select" name="venta_online" id="tienda_venta_online">
                             <option value="">-- Seleccione --</option>
-                            <option value="SI">SÃ­</option>
+                            <option value="SI">Sí</option>
                             <option value="NO">No</option>
                         </select>
                     </div>
@@ -2217,18 +2397,18 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <input type="text" class="form-input" name="nombre_sistema_contable" id="tienda_sistema_contable" placeholder="Ej: Siigo, World Office, Alegra...">
                 </div>
 
-                <!-- SecciÃ³n 4: ImÃ¡genes -->
+                <!-- Sección 4: Imágenes -->
                 <div style="background: rgba(236, 72, 153, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-camera" style="color: #ec4899;"></i>
-                    <span style="color: #ec4899; font-weight: 600; font-size: 0.85rem;">ImÃ¡genes del Establecimiento</span>
+                    <span style="color: #ec4899; font-weight: 600; font-size: 0.85rem;">Imágenes del Establecimiento</span>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Logo de la Tienda</label>
-                    <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_logo').click()">
+                    <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_logo').click()">
                         <input type="file" id="tienda_logo" name="imagen_tienda" accept="image/*" style="display: none;" onchange="mostrarImagenPreviewTienda(this, 'preview_logo_tienda')">
                         <div id="preview_logo_tienda">
-                            <i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(99, 102, 241, 0.6);"></i>
+                            <i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i>
                             <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>
                         </div>
                     </div>
@@ -2237,20 +2417,20 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Fachada</label>
-                        <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_fachada').click()">
+                        <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_fachada').click()">
                             <input type="file" id="tienda_fachada" name="url_img_fachada_tienda" accept="image/*" style="display: none;" onchange="mostrarImagenPreviewTienda(this, 'preview_fachada_tienda')">
                             <div id="preview_fachada_tienda">
-                                <i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(99, 102, 241, 0.6);"></i>
+                                <i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i>
                                 <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Fachada</p>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Interna</label>
-                        <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_interna').click()">
+                        <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_interna').click()">
                             <input type="file" id="tienda_interna" name="url_img_interna_tienda" accept="image/*" style="display: none;" onchange="mostrarImagenPreviewTienda(this, 'preview_interna_tienda')">
                             <div id="preview_interna_tienda">
-                                <i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(99, 102, 241, 0.6);"></i>
+                                <i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i>
                                 <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Interna</p>
                             </div>
                         </div>
@@ -2259,10 +2439,10 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-group">
                     <label class="form-label">Selfie con Admin</label>
-                    <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_selfie').click()">
+                    <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_selfie').click()">
                         <input type="file" id="tienda_selfie" name="url_img_selfieadmin_tienda" accept="image/*" style="display: none;" onchange="mostrarImagenPreviewTienda(this, 'preview_selfie_tienda')">
                         <div id="preview_selfie_tienda">
-                            <i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(99, 102, 241, 0.6);"></i>
+                            <i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i>
                             <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>
                         </div>
                     </div>
@@ -2272,7 +2452,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <button type="button" onclick="cerrarModalAgregarTienda()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-times"></i> Cancelar
                     </button>
-                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-save"></i> Registrar Tienda
                     </button>
                 </div>
@@ -2281,11 +2461,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     </div>
 </div>
 
-<!-- Modal ConfirmaciÃ³n Registro Exitoso -->
+<!-- Modal Confirmación Registro Exitoso -->
 <div class="modal-overlay" id="modalConfirmacionRegistro" style="z-index: 4000; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
-            <h2><i class="fa-solid fa-circle-check"></i> Â¡Aliado Registrado!</h2>
+        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h2><i class="fa-solid fa-circle-check"></i> ¡Aliado Registrado!</h2>
             <button class="modal-close" onclick="cerrarModalConfirmacionRegistro()"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -2295,8 +2475,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             <input type="hidden" id="confirm_telefono_aliado" value="">
             
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(99, 102, 241, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: #6366f1;"></i>
+                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: #10b981;"></i>
                 </div>
                 <h3 style="color: white; margin-bottom: 0.5rem;" id="confirm_nombre_display"></h3>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">El aliado ha sido registrado exitosamente.</p>
@@ -2304,7 +2484,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             
             <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
                 <h4 style="color: #8b5cf6; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-tasks"></i> Â¿QuÃ© deseas hacer ahora?
+                    <i class="fa-solid fa-tasks"></i> ¿Qué deseas hacer ahora?
                 </h4>
                 <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Selecciona una de las siguientes opciones:</p>
             </div>
@@ -2317,10 +2497,10 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <button onclick="abrirDocumentacionDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
                     <i class="fa-solid fa-file-contract"></i>
-                    Compartir Enlace de DocumentaciÃ³n
+                    Compartir Enlace de Documentación
                 </button>
                 
-                <button onclick="abrirRegistroTiendaDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                <button onclick="abrirRegistroTiendaDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
                     <i class="fa-solid fa-store"></i>
                     Registrar Nueva Tienda
                 </button>
@@ -2333,11 +2513,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     </div>
 </div>
 
-<!-- Modal ConfirmaciÃ³n Tienda Registrada -->
+<!-- Modal Confirmación Tienda Registrada -->
 <div class="modal-overlay" id="modalConfirmacionTienda" style="z-index: 4500; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
-            <h2><i class="fa-solid fa-store"></i> Â¡Tienda Registrada!</h2>
+        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h2><i class="fa-solid fa-store"></i> ¡Tienda Registrada!</h2>
             <button class="modal-close" onclick="cerrarModalConfirmacionTienda()"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -2346,16 +2526,16 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             <input type="hidden" id="confirm_tienda_cod_aliado" value="">
             
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(99, 102, 241, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-store" style="font-size: 3rem; color: #6366f1;"></i>
+                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-store" style="font-size: 3rem; color: #10b981;"></i>
                 </div>
                 <h3 style="color: white; margin-bottom: 0.5rem;" id="confirm_tienda_nombre_display"></h3>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">La tienda ha sido registrada exitosamente.</p>
             </div>
             
-            <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
-                <h4 style="color: #6366f1; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-tasks"></i> Â¿QuÃ© deseas hacer ahora?
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                <h4 style="color: #10b981; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-tasks"></i> ¿Qué deseas hacer ahora?
                 </h4>
                 <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Selecciona una de las siguientes opciones:</p>
             </div>
@@ -2366,7 +2546,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     Registrar Otra Tienda
                 </button>
 
-                <button onclick="irATiendaRegistrada()" style="width: 100%; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                <button onclick="irATiendaRegistrada()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
                     <i class="fa-solid fa-users-gear"></i>
                     Registrar Vendedores / Productos
                 </button>
@@ -2379,11 +2559,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     </div>
 </div>
 
-<!-- Modal DocumentaciÃ³n Aliado -->
+<!-- Modal Documentación Aliado -->
 <div class="modal-overlay" id="modalDocumentacionAliado" style="z-index: 5000; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.2));">
-            <h2><i class="fa-solid fa-file-lines"></i> DocumentaciÃ³n</h2>
+            <h2><i class="fa-solid fa-file-lines"></i> Documentación</h2>
             <button class="modal-close" onclick="cerrarModalDocumentacionAliado()"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -2392,7 +2572,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             
             <div style="text-align: center; margin-bottom: 1.5rem;">
                 <h3 style="color: white; margin-bottom: 0.5rem;" id="doc_nombre_aliado"></h3>
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Comparta el enlace para que el aliado suba su documentaciÃ³n legal.</p>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Comparta el enlace para que el aliado suba su documentación legal.</p>
             </div>
             
             <!-- Opciones de Compartir -->
@@ -2407,7 +2587,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <button onclick="compartirDocEmail()" style="background: #EA4335; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Compartir por Email">
                         <i class="fa-solid fa-envelope"></i> Email
                     </button>
-                    <button onclick="copiarEnlaceDoc()" style="background: #6366f1; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
+                    <button onclick="copiarEnlaceDoc()" style="background: #10b981; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
                         <i class="fa-solid fa-copy"></i> Copiar
                     </button>
                 </div>
@@ -2420,11 +2600,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     </div>
 </div>
 
-<!-- Modal Compartir DocumentaciÃ³n -->
+<!-- Modal Compartir Documentación -->
 <div class="modal-overlay" id="modalCompartirDocs" style="align-items: center; z-index: 3500;">
     <div class="modal-content" style="max-width: 600px; border-radius: 20px;">
         <div class="modal-header">
-            <h2><i class="fa-solid fa-share-nodes"></i> Compartir DocumentaciÃ³n</h2>
+            <h2><i class="fa-solid fa-share-nodes"></i> Compartir Documentación</h2>
             <button class="modal-close" onclick="cerrarModalCompartirDocs()">
                 <i class="fa-solid fa-times"></i>
             </button>
@@ -2432,18 +2612,18 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         
         <div class="modal-body">
             <div id="loadingCompartir" style="display: none; text-align: center; padding: 40px;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; color: #6366f1;"></i>
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; color: #10b981;"></i>
                 <p style="margin-top: 20px; color: rgba(255,255,255,0.7);">Generando archivo ZIP...</p>
             </div>
             
             <div id="contenidoCompartir" style="display: none;">
-                <!-- InformaciÃ³n del aliado -->
-                <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                <!-- Información del aliado -->
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
                     <h3 style="margin: 0 0 10px 0; color: white; font-size: 1rem;">
                         <i class="fa-solid fa-user"></i> <span id="compartir_aliado_nombre"></span>
                     </h3>
                     <p style="margin: 0; color: rgba(255,255,255,0.6); font-size: 0.85rem;">
-                        <i class="fa-solid fa-id-card"></i> CÃ©dula: <span id="compartir_aliado_cedula"></span>
+                        <i class="fa-solid fa-id-card"></i> Cédula: <span id="compartir_aliado_cedula"></span>
                     </p>
                 </div>
                 
@@ -2453,7 +2633,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         <i class="fa-solid fa-file-zipper"></i> Archivos incluidos:
                     </h4>
                     <div id="lista_archivos_zip" style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px;">
-                        <!-- Se llenarÃ¡ dinÃ¡micamente -->
+                        <!-- Se llenará dinámicamente -->
                     </div>
                 </div>
                 
@@ -2476,17 +2656,17 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
                 
                 <!-- Formulario de email (inicialmente oculto) -->
-                <div id="formularioEmail" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(99, 102, 241, 0.3);">
+                <div id="formularioEmail" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(16, 185, 129, 0.3);">
                     <h4 style="color: white; font-size: 0.9rem; margin-bottom: 15px;">
-                        <i class="fa-solid fa-paper-plane"></i> Enviar por correo electrÃ³nico
+                        <i class="fa-solid fa-paper-plane"></i> Enviar por correo electrónico
                     </h4>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 5px;">Email destino *</label>
-                        <input type="email" id="email_destino" placeholder="ejemplo@correo.com" style="width: 100%; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 12px; border-radius: 8px; font-size: 0.9rem;">
+                        <input type="email" id="email_destino" placeholder="ejemplo@correo.com" style="width: 100%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 12px; border-radius: 8px; font-size: 0.9rem;">
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 5px;">Mensaje adicional (opcional)</label>
-                        <textarea id="mensaje_email" rows="3" placeholder="Escribe un mensaje..." style="width: 100%; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 12px; border-radius: 8px; font-size: 0.9rem; resize: vertical;"></textarea>
+                        <textarea id="mensaje_email" rows="3" placeholder="Escribe un mensaje..." style="width: 100%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 12px; border-radius: 8px; font-size: 0.9rem; resize: vertical;"></textarea>
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <button onclick="ocultarFormularioEmail()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
@@ -2499,13 +2679,13 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
                 
                 <!-- Enlace generado (inicialmente oculto) -->
-                <div id="enlaceGenerado" style="display: none; margin-top: 20px; padding: 15px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px;">
+                <div id="enlaceGenerado" style="display: none; margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px;">
                     <h4 style="color: white; font-size: 0.9rem; margin-bottom: 10px;">
                         <i class="fa-solid fa-link"></i> Enlace generado
                     </h4>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="text" id="input_enlace" readonly style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 10px; border-radius: 8px; font-size: 0.85rem;">
-                        <button onclick="copiarEnlace()" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                        <input type="text" id="input_enlace" readonly style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 10px; border-radius: 8px; font-size: 0.85rem;">
+                        <button onclick="copiarEnlace()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
                             <i class="fa-solid fa-copy"></i> Copiar
                         </button>
                     </div>
@@ -2525,7 +2705,7 @@ var quill;
 $(document).ready(function() {
     quill = new Quill('#editor_garantia', {
         theme: 'snow',
-        placeholder: 'Escribe aquÃ­ los tÃ©rminos de la garantÃ­a...',
+        placeholder: 'Escribe aquí los términos de la garantía...',
         modules: {
             toolbar: [
                 ['bold', 'italic', 'underline'],
@@ -2549,17 +2729,17 @@ function abrirModal() {
 }
 function cerrarModal() { 
     document.getElementById('modalRegistro').classList.remove('show');
-    // Resetear validaciÃ³n de identificaciÃ³n
+    // Resetear validación de identificación
     identificacionValida = false;
     $('#identificacion_tercero').css('border-color', '');
     $('#mensaje_identificacion').hide();
-    // Habilitar botÃ³n de guardar
+    // Habilitar botón de guardar
     $('#btnGuardar').prop('disabled', false).css({'opacity': '1', 'cursor': 'pointer'});
     // Limpiar formulario
     $('#formRegistro')[0].reset();
 }
 
-// FunciÃ³n para habilitar/deshabilitar campos de banco
+// Función para habilitar/deshabilitar campos de banco
 function toggleBancoInputs(codBanco) {
     var checkbox = document.getElementById('banco_' + codBanco);
     var numeroInput = document.getElementById('numero_cuenta_' + codBanco);
@@ -2615,10 +2795,14 @@ function abrirModalEditar(data) {
     document.getElementById('edit_estado').value = data.cod_estado_activacion_usuario;
     document.getElementById('edit_estado_hidden').value = data.cod_estado_activacion_usuario;
     
-    // Cargar nombre de usuario (el campo cuenta contiene el nombre de usuario)
     document.getElementById('edit_usuario').value = data.cuenta || data.cedula || '';
+    
+    // Cargar Tipo de Identificación
+    if(document.getElementById('edit_nombre_tipo_identificacion')) {
+        document.getElementById('edit_nombre_tipo_identificacion').value = data.nombre_tipo_identificacion || 'CC';
+    }
 
-    // Cargar nuevos campos: Tipo Cliente, Sector, Nit RazÃ³n Social
+    // Cargar nuevos campos: Tipo Cliente, Sector, Nit Razón Social
     if(document.getElementById('edit_nombre_tipo_cliente')) {
         document.getElementById('edit_nombre_tipo_cliente').value = data.nombre_tipo_cliente || '';
     }
@@ -2628,15 +2812,20 @@ function abrirModalEditar(data) {
     if(document.getElementById('edit_nit_razon_social')) {
         document.getElementById('edit_nit_razon_social').value = data.nit_razon_social || '';
     }
-    // Cargar RazÃ³n Social
+    // Cargar Razón Social
     if(document.getElementById('edit_nombre_razon_social')) {
         document.getElementById('edit_nombre_razon_social').value = data.nombre_razon_social || '';
     }
     
-    // Mostrar/Ocultar Nit RazÃ³n Social al cargar (sin limpiar el valor)
+    // Mostrar/Ocultar Nit Razón Social al cargar (sin limpiar el valor)
     cambiarTipoClienteEdit(false);
+
+    // Cargar Tipo de Identificación en Registro (resetear al cerrar o abrir)
+    if(document.getElementById('nombre_tipo_identificacion')) {
+        // En abrirModal() ya se resetea el formulario, pero por si acaso
+    }
     
-    // Cargar DirecciÃ³n y Barrio
+    // Cargar Dirección y Barrio
     if(document.getElementById('edit_direccion_tercero')) {
         document.getElementById('edit_direccion_tercero').value = data.direccion_tercero || '';
     }
@@ -2646,7 +2835,7 @@ function abrirModalEditar(data) {
     // Cargar departamentos y preseleccionar departamento/municipio
     cargarDepartamentosEdicion(data.cod_departamento || '', data.cod_municipio || '');
     
-    // Cargar documentaciÃ³n legal si existe
+    // Cargar documentación legal si existe
     var editRutActual = document.getElementById('edit_rut_actual');
     var editRutInput = document.getElementById('edit_rut_input');
     var editCamaraActual = document.getElementById('edit_camara_actual');
@@ -2662,7 +2851,7 @@ function abrirModalEditar(data) {
         editRutInput.style.display = 'block'; // Mostrar input si no existe documento
     }
     
-    // Manejar CÃ¡mara de Comercio
+    // Manejar Cámara de Comercio
     if (data.url_documentacion_camaracomercio_aliado && data.url_documentacion_camaracomercio_aliado.trim() !== '') {
         editCamaraActual.style.display = 'block';
         editCamaraActual.querySelector('a').href = data.url_documentacion_camaracomercio_aliado;
@@ -2672,7 +2861,7 @@ function abrirModalEditar(data) {
         editCamaraInput.style.display = 'block'; // Mostrar input si no existe documento
     }
     
-    // Manejar CÃ©dula
+    // Manejar Cédula
     var editCedulaActual = document.getElementById('edit_cedula_actual');
     var editCedulaInput = document.getElementById('edit_cedula_input');
     if (editCedulaActual && editCedulaInput) {
@@ -2707,9 +2896,9 @@ function abrirModalEditar(data) {
                     var url = entidad.url_pagina_web_consulta || '';
                     var estado = entidad.cod_estado || '1';
                     
-                    // Colores segÃºn estado
-                    var bgColor = estado == '1' ? 'rgba(99, 102, 241, 0.08)' : 'rgba(239, 68, 68, 0.08)';
-                    var borderColor = estado == '1' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+                    // Colores según estado
+                    var bgColor = estado == '1' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)';
+                    var borderColor = estado == '1' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
                     
                     html += '<div id="entidad_item_' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" style="display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 0.5rem; padding: 0.75rem; background: ' + bgColor + '; border: 1px solid ' + borderColor + '; border-radius: 10px;">';
                     
@@ -2740,7 +2929,7 @@ function abrirModalEditar(data) {
                     // Portal
                     html += '<div style="background: rgba(0,0,0,0.2); padding: 0.4rem; border-radius: 6px; text-align: center;">';
                     html += '<label style="color: rgba(255,255,255,0.6); font-size: 0.65rem; display: block; margin-bottom: 0.2rem;">Portal</label>';
-                    html += '<input type="checkbox" id="edit_portal_' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" ' + portal_checked + ' style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer;">';
+                    html += '<input type="checkbox" id="edit_portal_' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" ' + portal_checked + ' style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer;">';
                     html += '</div>';
                     
                     // Estado
@@ -2752,8 +2941,8 @@ function abrirModalEditar(data) {
                     html += '</select>';
                     html += '</div>';
                     
-                    // BotÃ³n Guardar
-                    html += '<button type="button" onclick="guardarEntidadEditada(' + entidad.cod_parametrizacion_entidad_crediticia_aliado + ')" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.5rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; height: fit-content; align-self: end;" title="Guardar cambios"><i class="fa-solid fa-save"></i></button>';
+                    // Botón Guardar
+                    html += '<button type="button" onclick="guardarEntidadEditada(' + entidad.cod_parametrizacion_entidad_crediticia_aliado + ')" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.5rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; height: fit-content; align-self: end;" title="Guardar cambios"><i class="fa-solid fa-save"></i></button>';
                     html += '</div>';
                     
                     html += '</div>';
@@ -2761,7 +2950,7 @@ function abrirModalEditar(data) {
                 $('#contenedor_entidades_editar').html(html);
             } else {
                 console.log('No hay entidades o error:', response);
-                $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(99, 102, 241, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay entidades asignadas a este aliado.</p></div>');
+                $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(16, 185, 129, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay entidades asignadas a este aliado.</p></div>');
             }
         },
         error: function(xhr, status, error) {
@@ -2780,7 +2969,7 @@ function abrirModalEditar(data) {
     document.getElementById('modalEditar').classList.add('show');
 }
 
-// FunciÃ³n para cargar bancos del aliado en modal editar
+// Función para cargar bancos del aliado en modal editar
 function cargarBancosAliado(codAdministrador) {
     $('#contenedor_bancos_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando bancos...</p></div>');
     
@@ -2793,11 +2982,11 @@ function cargarBancosAliado(codAdministrador) {
             if (response.success && response.bancos && response.bancos.length > 0) {
                 var html = '';
                 response.bancos.forEach(function(banco) {
-                    // Colores segÃºn estado
+                    // Colores según estado
                     var isActive = banco.cod_estado == '1';
-                    var statusColor = isActive ? '#6366f1' : '#ef4444';
-                    var statusBg = isActive ? 'rgba(99, 102, 241, 0.1)' : 'rgba(239, 68, 68, 0.1)';
-                    var cardBorder = isActive ? 'rgba(99, 102, 241, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+                    var statusColor = isActive ? '#10b981' : '#ef4444';
+                    var statusBg = isActive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+                    var cardBorder = isActive ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
                     
                     html += '<div id="banco_item_' + banco.cod_banco_cuenta + '" style="background: rgba(255, 255, 255, 0.03); border: 1px solid ' + cardBorder + '; border-radius: 12px; margin-bottom: 1rem; overflow: hidden; position: relative;">';
                     
@@ -2815,10 +3004,10 @@ function cargarBancosAliado(codAdministrador) {
                     // Cuerpo de la tarjeta
                     html += '<div style="padding: 1rem;">';
                     
-                    // Fila 1: NÃºmero y Tipo
+                    // Fila 1: Número y Tipo
                     html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">';
                     html += '<div>';
-                    html += '<label style="color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-bottom: 0.3rem; display: block;">NÃºmero de Cuenta</label>';
+                    html += '<label style="color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-bottom: 0.3rem; display: block;">Número de Cuenta</label>';
                     html += '<input type="text" id="edit_numero_' + banco.cod_banco_cuenta + '" value="' + escapeHtmlMovil(banco.numero_banco_cuenta) + '" style="background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; width: 100%;">';
                     html += '</div>';
                     html += '<div>';
@@ -2855,7 +3044,7 @@ function cargarBancosAliado(codAdministrador) {
                     html += '<div style="display: flex; gap: 0.5rem;">';
                     html += '<input type="file" id="edit_certificado_' + banco.cod_banco_cuenta + '" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="flex: 1; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.35rem; border-radius: 6px; font-size: 0.75rem;">';
                     if (banco.url_certificado_banco_cuenta && banco.url_certificado_banco_cuenta !== '') {
-                        html += '<a href="' + banco.url_certificado_banco_cuenta + '" target="_blank" class="btn-check-cert" style="background: rgba(99, 102, 241, 0.2); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0 0.8rem; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Ver certificado actual"><i class="fa-solid fa-eye"></i></a>';
+                        html += '<a href="' + banco.url_certificado_banco_cuenta + '" target="_blank" class="btn-check-cert" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0 0.8rem; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Ver certificado actual"><i class="fa-solid fa-eye"></i></a>';
                     }
                     html += '</div>';
                     html += '</div>';
@@ -2881,7 +3070,7 @@ function cargarBancosAliado(codAdministrador) {
                 });
                 $('#contenedor_bancos_editar').html(html);
             } else {
-                $('#contenedor_bancos_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(99, 102, 241, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay cuentas bancarias asignadas.</p></div>');
+                $('#contenedor_bancos_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(16, 185, 129, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay cuentas bancarias asignadas.</p></div>');
             }
         },
         error: function() {
@@ -2890,7 +3079,7 @@ function cargarBancosAliado(codAdministrador) {
     });
 }
 
-// FunciÃ³n para guardar cambios en cuenta bancaria
+// Función para guardar cambios en cuenta bancaria
 function guardarBancoEditado(codBancoCuenta) {
     var numeroCuenta = $('#edit_numero_' + codBancoCuenta).val().trim();
     var tipoCuenta = $('#edit_tipo_' + codBancoCuenta).val();
@@ -2901,7 +3090,7 @@ function guardarBancoEditado(codBancoCuenta) {
         Swal.fire({ 
             icon: 'warning', 
             title: 'Campo requerido', 
-            text: 'El nÃºmero de cuenta no puede estar vacÃ­o', 
+            text: 'El número de cuenta no puede estar vacío', 
             background: '#1a1f2e', 
             color: 'white',
             customClass: { container: 'swal-high-zindex' }
@@ -2944,7 +3133,7 @@ function guardarBancoEditado(codBancoCuenta) {
             if (response.success) {
                 Swal.fire({ 
                     icon: 'success', 
-                    title: 'Â¡Actualizado!', 
+                    title: '¡Actualizado!', 
                     text: 'Cuenta bancaria actualizada correctamente', 
                     background: '#1a1f2e', 
                     color: 'white', 
@@ -2968,7 +3157,7 @@ function guardarBancoEditado(codBancoCuenta) {
             Swal.fire({ 
                 icon: 'error', 
                 title: 'Error', 
-                text: 'Error de conexiÃ³n. Intenta nuevamente.', 
+                text: 'Error de conexión. Intenta nuevamente.', 
                 background: '#1a1f2e', 
                 color: 'white',
                 customClass: { container: 'swal-high-zindex' }
@@ -2977,16 +3166,16 @@ function guardarBancoEditado(codBancoCuenta) {
     });
 }
 
-// FunciÃ³n para eliminar banco del aliado
+// Función para eliminar banco del aliado
 function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
     Swal.fire({
-        title: 'Â¿Eliminar cuenta bancaria?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminarÃ¡ la cuenta de:</p><strong style="color: #6366f1;">' + nombreBanco + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acciÃ³n no se puede deshacer.</p></div>',
+        title: '¿Eliminar cuenta bancaria?',
+        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la cuenta de:</p><strong style="color: #10b981;">' + nombreBanco + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fa-solid fa-trash"></i> SÃ­, eliminar',
+        confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar',
         cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
         background: '#1a1f2e',
         color: 'white',
@@ -3004,7 +3193,7 @@ function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
                     if (response.success) {
                         Swal.fire({ 
                             icon: 'success', 
-                            title: 'Â¡Eliminado!', 
+                            title: '¡Eliminado!', 
                             text: 'Cuenta bancaria eliminada correctamente', 
                             background: '#1a1f2e', 
                             color: 'white', 
@@ -3033,7 +3222,7 @@ function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
     });
 }
 
-// FunciÃ³n para cargar tiendas del aliado en modal editar
+// Función para cargar tiendas del aliado en modal editar
 function cargarTiendasAliado(codAdministrador) {
     $('#contenedor_tiendas_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando tiendas...</p></div>');
     
@@ -3046,10 +3235,10 @@ function cargarTiendasAliado(codAdministrador) {
             if (response.success && response.tiendas && response.tiendas.length > 0) {
                 var html = '';
                 response.tiendas.forEach(function(tienda) {
-                    // Colores segÃºn estado
+                    // Colores según estado
                     var estado = tienda.cod_estado || '1';
-                    var bgColor = estado == '1' ? 'rgba(99, 102, 241, 0.08)' : 'rgba(239, 68, 68, 0.08)';
-                    var borderColor = estado == '1' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+                    var bgColor = estado == '1' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)';
+                    var borderColor = estado == '1' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
                     
                     html += '<div id="tienda_item_' + tienda.cod_tienda + '" style="padding: 0.75rem; background: ' + bgColor + '; border: 1px solid ' + borderColor + '; border-radius: 10px; margin-bottom: 0.5rem;">';
                     
@@ -3059,38 +3248,38 @@ function cargarTiendasAliado(codAdministrador) {
                     
                     // Nombre de la tienda
                     html += '<div style="grid-column: 1 / -1;"><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;"><i class="fa-solid fa-store"></i> Nombre de la Tienda</label>';
-                    html += '<input type="text" id="edit_nombre_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.nombre_tienda) + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    html += '<input type="text" id="edit_nombre_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.nombre_tienda) + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // NIT/CC
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">NIT/CC</label>';
-                    html += '<input type="text" id="edit_nit_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.identificacion_tercero || '') + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    html += '<input type="text" id="edit_nit_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.identificacion_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
-                    // TelÃ©fono
-                    html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">TelÃ©fono</label>';
-                    html += '<input type="text" id="edit_telefono_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.telefono1_tercero || '') + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    // Teléfono
+                    html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Teléfono</label>';
+                    html += '<input type="text" id="edit_telefono_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.telefono1_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // Correo
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Correo</label>';
-                    html += '<input type="email" id="edit_correo_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.correo_tercero || '') + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    html += '<input type="email" id="edit_correo_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.correo_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
-                    // DirecciÃ³n
-                    html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">DirecciÃ³n</label>';
-                    html += '<input type="text" id="edit_direccion_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.direccion_tercero || '') + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    // Dirección
+                    html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Dirección</label>';
+                    html += '<input type="text" id="edit_direccion_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.direccion_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // Departamento
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Departamento</label>';
-                    html += '<select id="edit_departamento_tienda_' + tienda.cod_tienda + '" onchange="cargarMunicipiosEditar(' + tienda.cod_tienda + ', this.value)" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"><option value="">Cargando...</option></select></div>';
+                    html += '<select id="edit_departamento_tienda_' + tienda.cod_tienda + '" onchange="cargarMunicipiosEditar(' + tienda.cod_tienda + ', this.value)" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"><option value="">Cargando...</option></select></div>';
                     
                     // Municipio
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Municipio</label>';
-                    html += '<select id="edit_municipio_tienda_' + tienda.cod_tienda + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"><option value="">Cargando...</option></select></div>';
+                    html += '<select id="edit_municipio_tienda_' + tienda.cod_tienda + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"><option value="">Cargando...</option></select></div>';
                     
                     html += '</div>';
                     
-                    // Columna derecha: Estado y botÃ³n guardar
+                    // Columna derecha: Estado y botón guardar
                     html += '<div style="display: flex; flex-direction: column; gap: 0.5rem;">';
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Estado</label>';
-                    html += '<select id="edit_estado_tienda_' + tienda.cod_tienda + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;">';
+                    html += '<select id="edit_estado_tienda_' + tienda.cod_tienda + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;">';
                     html += '<option value="1" style="background: #1a1f2e; color: white;"' + (estado == '1' ? ' selected' : '') + '>Activo</option>';
                     html += '<option value="0" style="background: #1a1f2e; color: white;"' + (estado == '0' ? ' selected' : '') + '>Inactivo</option>';
                     html += '</select></div>';
@@ -3099,9 +3288,9 @@ function cargarTiendasAliado(codAdministrador) {
                     
                     html += '</div>';
                     
-                    // BotÃ³n ver detalle
+                    // Botón ver detalle
                     html += '<div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">';
-                    html += '<a href="../admin/ver_detalle_tienda_coordinador_movil.php?cod_tienda=' + tienda.cod_tienda + '" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: none;"><i class="fa-solid fa-eye"></i> Ver Detalle Completo</a>';
+                    html += '<a href="../admin/ver_detalle_tienda_coordinador_movil.php?cod_tienda=' + tienda.cod_tienda + '" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: none;"><i class="fa-solid fa-eye"></i> Ver Detalle Completo</a>';
                     html += '</div>';
                     
                     html += '</div>';
@@ -3110,11 +3299,11 @@ function cargarTiendasAliado(codAdministrador) {
                 
                 // Cargar departamentos y municipios para cada tienda
                 response.tiendas.forEach(function(tienda) {
-                    console.log('Cargando ubicaciÃ³n para tienda:', tienda.nombre_tienda, 'Dept:', tienda.cod_departamento, 'Muni:', tienda.cod_municipio);
+                    console.log('Cargando ubicación para tienda:', tienda.nombre_tienda, 'Dept:', tienda.cod_departamento, 'Muni:', tienda.cod_municipio);
                     cargarDepartamentosEditar(tienda.cod_tienda, tienda.cod_departamento, tienda.cod_municipio);
                 });
             } else {
-                $('#contenedor_tiendas_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-store" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(99, 102, 241, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay tiendas asociadas a este aliado.</p></div>');
+                $('#contenedor_tiendas_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-store" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(16, 185, 129, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay tiendas asociadas a este aliado.</p></div>');
             }
         },
         error: function() {
@@ -3123,7 +3312,7 @@ function cargarTiendasAliado(codAdministrador) {
     });
 }
 
-// FunciÃ³n para guardar cambios de tienda editada in situ
+// Función para guardar cambios de tienda editada in situ
 function guardarTiendaEditada(codTienda) {
     var nombreTienda = $('#edit_nombre_tienda_' + codTienda).val().trim();
     var nitTienda = $('#edit_nit_tienda_' + codTienda).val().trim();
@@ -3134,12 +3323,12 @@ function guardarTiendaEditada(codTienda) {
     var municipioTienda = $('#edit_municipio_tienda_' + codTienda).val();
     var estadoTienda = $('#edit_estado_tienda_' + codTienda).val();
     
-    // Validaciones bÃ¡sicas
+    // Validaciones básicas
     if (nombreTienda === '') {
         Swal.fire({ 
             icon: 'warning', 
             title: 'Campo requerido', 
-            text: 'El nombre de la tienda no puede estar vacÃ­o', 
+            text: 'El nombre de la tienda no puede estar vacío', 
             background: '#1a1f2e', 
             color: 'white',
             customClass: { container: 'swal-high-zindex' }
@@ -3151,7 +3340,7 @@ function guardarTiendaEditada(codTienda) {
         Swal.fire({ 
             icon: 'warning', 
             title: 'Campo requerido', 
-            text: 'El NIT/Documento no puede estar vacÃ­o', 
+            text: 'El NIT/Documento no puede estar vacío', 
             background: '#1a1f2e', 
             color: 'white',
             customClass: { container: 'swal-high-zindex' }
@@ -3163,7 +3352,7 @@ function guardarTiendaEditada(codTienda) {
         Swal.fire({ 
             icon: 'warning', 
             title: 'Campo requerido', 
-            text: 'El telÃ©fono no puede estar vacÃ­o', 
+            text: 'El teléfono no puede estar vacío', 
             background: '#1a1f2e', 
             color: 'white',
             customClass: { container: 'swal-high-zindex' }
@@ -3175,7 +3364,7 @@ function guardarTiendaEditada(codTienda) {
         Swal.fire({ 
             icon: 'warning', 
             title: 'Campo requerido', 
-            text: 'El correo no puede estar vacÃ­o', 
+            text: 'El correo no puede estar vacío', 
             background: '#1a1f2e', 
             color: 'white',
             customClass: { container: 'swal-high-zindex' }
@@ -3212,7 +3401,7 @@ function guardarTiendaEditada(codTienda) {
             if (response.success) {
                 Swal.fire({ 
                     icon: 'success', 
-                    title: 'Â¡Actualizada!', 
+                    title: '¡Actualizada!', 
                     text: 'Tienda actualizada correctamente', 
                     background: '#1a1f2e', 
                     color: 'white', 
@@ -3239,7 +3428,7 @@ function guardarTiendaEditada(codTienda) {
             Swal.fire({ 
                 icon: 'error', 
                 title: 'Error', 
-                text: 'Error de conexiÃ³n. Intenta nuevamente.', 
+                text: 'Error de conexión. Intenta nuevamente.', 
                 background: '#1a1f2e', 
                 color: 'white',
                 customClass: { container: 'swal-high-zindex' }
@@ -3248,7 +3437,7 @@ function guardarTiendaEditada(codTienda) {
     });
 }
 
-// FunciÃ³n para cargar departamentos en modo ediciÃ³n
+// Función para cargar departamentos en modo edición
 function cargarDepartamentosEditar(codTienda, selectedDept, selectedMuni) {
     console.log('Cargando departamentos para tienda:', codTienda);
     $.ajax({
@@ -3283,7 +3472,7 @@ function cargarDepartamentosEditar(codTienda, selectedDept, selectedMuni) {
     });
 }
 
-// FunciÃ³n para cargar municipios en modo ediciÃ³n
+// Función para cargar municipios en modo edición
 function cargarMunicipiosEditar(codTienda, codDepartamento, selectedMuni) {
     var selectMuni = $('#edit_municipio_tienda_' + codTienda);
     selectMuni.empty();
@@ -3313,7 +3502,7 @@ function cargarMunicipiosEditar(codTienda, codDepartamento, selectedMuni) {
     });
 }
 
-// FunciÃ³n para cargar municipios en el modal de agregar tienda
+// Función para cargar municipios en el modal de agregar tienda
 function cargarMunicipiosTienda(codDepartamento, targetSelect) {
     var select = $(targetSelect);
     select.empty();
@@ -3345,7 +3534,7 @@ function cargarMunicipiosTienda(codDepartamento, targetSelect) {
 // Variable global para almacenar el cod_administrador actual
 var currentCodAdministradorTienda = null;
 
-// FunciÃ³n para abrir modal de agregar tienda
+// Función para abrir modal de agregar tienda
 function abrirModalAgregarTienda() {
     currentCodAdministradorTienda = $('#edit_cod_administrador').val();
     if (!currentCodAdministradorTienda) {
@@ -3374,7 +3563,7 @@ function abrirModalAgregarTienda() {
     document.getElementById('modalAgregarTienda').classList.add('show');
 }
 
-// FunciÃ³n para cargar departamentos en el modal de agregar tienda
+// Función para cargar departamentos en el modal de agregar tienda
 function cargarDepartamentosModalAgregar() {
     console.log('Cargando departamentos...');
     $.ajax({
@@ -3404,7 +3593,7 @@ function cargarDepartamentosModalAgregar() {
     });
 }
 
-// FunciÃ³n para cerrar modal de agregar tienda
+// Función para cerrar modal de agregar tienda
 function cerrarModalAgregarTienda() {
     document.getElementById('modalAgregarTienda').classList.remove('show');
     document.getElementById('formAgregarTienda').reset();
@@ -3418,7 +3607,7 @@ document.getElementById('modalAgregarTienda').addEventListener('click', function
     }
 });
 
-// FunciÃ³n para cargar bancos del aliado para el modal de tienda - DESHABILITADA (ya no hay campo de banco)
+// Función para cargar bancos del aliado para el modal de tienda - DESHABILITADA (ya no hay campo de banco)
 /*
 function cargarBancosTienda(codAliado) {
     var bancoSelect = document.getElementById('tienda_banco');
@@ -3458,16 +3647,16 @@ function cargarBancosTienda(codAliado) {
 }
 */
 
-// FunciÃ³n para resetear previews de tienda
+// Función para resetear previews de tienda
 function resetearPreviewsTienda() {
-    // Resetear previews de imÃ¡genes
-    document.getElementById('preview_logo_tienda').innerHTML = '<i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(99, 102, 241, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
-    document.getElementById('preview_fachada_tienda').innerHTML = '<i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(99, 102, 241, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Fachada</p>';
-    document.getElementById('preview_interna_tienda').innerHTML = '<i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(99, 102, 241, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Interna</p>';
-    document.getElementById('preview_selfie_tienda').innerHTML = '<i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(99, 102, 241, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
+    // Resetear previews de imágenes
+    document.getElementById('preview_logo_tienda').innerHTML = '<i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
+    document.getElementById('preview_fachada_tienda').innerHTML = '<i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Fachada</p>';
+    document.getElementById('preview_interna_tienda').innerHTML = '<i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Interna</p>';
+    document.getElementById('preview_selfie_tienda').innerHTML = '<i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
 }
 
-// FunciÃ³n para mostrar nombre de archivo
+// Función para mostrar nombre de archivo
 function mostrarNombreArchivoTienda(input, previewId) {
     var preview = document.getElementById(previewId);
     if (input.files && input.files[0]) {
@@ -3475,11 +3664,11 @@ function mostrarNombreArchivoTienda(input, previewId) {
         if (fileName.length > 20) {
             fileName = fileName.substring(0, 17) + '...';
         }
-        preview.innerHTML = '<i class="fa-solid fa-check-circle" style="font-size: 1.5rem; color: #6366f1;"></i><p style="margin: 0.25rem 0 0 0; color: #6366f1; font-size: 0.75rem;">' + fileName + '</p>';
+        preview.innerHTML = '<i class="fa-solid fa-check-circle" style="font-size: 1.5rem; color: #10b981;"></i><p style="margin: 0.25rem 0 0 0; color: #10b981; font-size: 0.75rem;">' + fileName + '</p>';
     }
 }
 
-// FunciÃ³n para mostrar preview de imagen
+// Función para mostrar preview de imagen
 function mostrarImagenPreviewTienda(input, previewId) {
     var preview = document.getElementById(previewId);
     if (input.files && input.files[0]) {
@@ -3517,12 +3706,12 @@ $('#formAgregarTienda').on('submit', function(e) {
             Swal.close();
             if (response.success) {
                 cerrarModalAgregarTienda();
-                // Guardar datos en el modal de confirmaciÃ³n de tienda
+                // Guardar datos en el modal de confirmación de tienda
                 document.getElementById('confirm_tienda_cod').value = response.cod_tienda || '';
                 document.getElementById('confirm_tienda_nombre').value = response.nombre_tienda || '';
                 document.getElementById('confirm_tienda_cod_aliado').value = document.getElementById('agregar_tienda_cod_aliado').value;
                 document.getElementById('confirm_tienda_nombre_display').textContent = response.nombre_tienda || 'Tienda registrada';
-                // Abrir modal de confirmaciÃ³n de tienda
+                // Abrir modal de confirmación de tienda
                 document.getElementById('modalConfirmacionTienda').classList.add('show');
             } else {
                 Swal.fire({
@@ -3541,7 +3730,7 @@ $('#formAgregarTienda').on('submit', function(e) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Error de conexiÃ³n. Intenta nuevamente.',
+                text: 'Error de conexión. Intenta nuevamente.',
                 background: '#1a1f2e',
                 color: 'white',
                 customClass: { container: 'swal-high-zindex' }
@@ -3569,7 +3758,7 @@ function cerrarModalEditar() {
     if (editCedulaInput) editCedulaInput.style.display = 'none';
 }
 
-// FunciÃ³n para guardar cambios en entidad crediticia
+// Función para guardar cambios en entidad crediticia
 function guardarEntidadEditada(codParametrizacion) {
     var interes = $('#edit_interes_' + codParametrizacion).val();
     var portal = $('#edit_portal_' + codParametrizacion).is(':checked') ? '1' : '0';
@@ -3601,7 +3790,7 @@ function guardarEntidadEditada(codParametrizacion) {
             if (response.success) {
                 Swal.fire({ 
                     icon: 'success', 
-                    title: 'Â¡Actualizado!', 
+                    title: '¡Actualizado!', 
                     text: 'Entidad actualizada correctamente', 
                     background: '#1a1f2e', 
                     color: 'white', 
@@ -3625,7 +3814,7 @@ function guardarEntidadEditada(codParametrizacion) {
             Swal.fire({ 
                 icon: 'error', 
                 title: 'Error', 
-                text: 'Error de conexiÃ³n. Intenta nuevamente.', 
+                text: 'Error de conexión. Intenta nuevamente.', 
                 background: '#1a1f2e', 
                 color: 'white',
                 customClass: { container: 'swal-high-zindex' }
@@ -3634,7 +3823,7 @@ function guardarEntidadEditada(codParametrizacion) {
     });
 }
 
-// FunciÃ³n para eliminar parametrizaciÃ³n de entidad crediticia
+// Función para eliminar parametrización de entidad crediticia
 function eliminarEntidadAliado(cod_entidad_crediticia) {
     var btnEliminar = $('#btn_eliminar_' + cod_entidad_crediticia);
     var cod_parametrizacion = btnEliminar.attr('data-cod-parametrizacion');
@@ -3644,7 +3833,7 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
         Swal.fire({
             icon: 'warning',
             title: 'Aviso',
-            text: 'No se puede eliminar. La parametrizaciÃ³n no ha sido guardada aÃºn.',
+            text: 'No se puede eliminar. La parametrización no ha sido guardada aún.',
             background: '#1a1f2e',
             color: 'white'
         });
@@ -3652,13 +3841,13 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
     }
     
     Swal.fire({
-        title: 'Â¿Eliminar parametrizaciÃ³n?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminarÃ¡ la parametrizaciÃ³n de:</p><strong style="color: #6366f1;">' + nombre_entidad + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acciÃ³n no se puede deshacer.</p></div>',
+        title: '¿Eliminar parametrización?',
+        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la parametrización de:</p><strong style="color: #10b981;">' + nombre_entidad + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fa-solid fa-trash"></i> SÃ­, eliminar',
+        confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar',
         cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
         background: '#1a1f2e',
         color: 'white',
@@ -3677,7 +3866,7 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
                 color: 'white'
             });
             
-            // Realizar la peticiÃ³n AJAX
+            // Realizar la petición AJAX
             $.ajax({
                 url: '../admin/eliminar_entidad_aliado_ajax.php',
                 type: 'POST',
@@ -3690,15 +3879,15 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
                     if (response.success) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Â¡Eliminado!',
-                            text: 'La parametrizaciÃ³n ha sido eliminada correctamente',
-                            confirmButtonColor: '#6366f1',
+                            title: '¡Eliminado!',
+                            text: 'La parametrización ha sido eliminada correctamente',
+                            confirmButtonColor: '#10b981',
                             background: '#1a1f2e',
                             color: 'white',
                             timer: 2000,
                             timerProgressBar: true
                         }).then(() => {
-                            // Recargar las entidades en el modal de ediciÃ³n
+                            // Recargar las entidades en el modal de edición
                             var codAdmin = $('#edit_cod_administrador').val();
                             recargarEntidadesEditar(codAdmin);
                         });
@@ -3706,7 +3895,7 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: response.mensaje || 'No se pudo eliminar la parametrizaciÃ³n',
+                            text: response.mensaje || 'No se pudo eliminar la parametrización',
                             background: '#1a1f2e',
                             color: 'white'
                         });
@@ -3717,7 +3906,7 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Error de conexiÃ³n. Intenta nuevamente.',
+                        text: 'Error de conexión. Intenta nuevamente.',
                         background: '#1a1f2e',
                         color: 'white'
                     });
@@ -3727,7 +3916,7 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
     });
 }
 
-// Funciones para manejar campos de contraseÃ±a - DESHABILITADAS (ahora se usa solo recuperaciÃ³n por correo)
+// Funciones para manejar campos de contraseña - DESHABILITADAS (ahora se usa solo recuperación por correo)
 /*
 function togglePasswordFields() {
     var checkbox = document.getElementById('cambiar_password');
@@ -3765,7 +3954,7 @@ function togglePassword(inputId) {
 }
 */
 
-// FunciÃ³n para habilitar el campo de cambio de usuario - DESHABILITADA
+// Función para habilitar el campo de cambio de usuario - DESHABILITADA
 /*
 function habilitarCambioUsuario() {
     var campoNuevo = document.getElementById('campo_nuevo_usuario');
@@ -3781,12 +3970,12 @@ function habilitarCambioUsuario() {
 }
 */
 
-// FunciÃ³n para copiar enlace al portapapeles
+// Función para copiar enlace al portapapeles
 function copiarEnlace(enlace) {
     navigator.clipboard.writeText(enlace).then(function() {
         Swal.fire({
             icon: 'success',
-            title: 'Â¡Copiado!',
+            title: '¡Copiado!',
             text: 'El enlace ha sido copiado al portapapeles',
             timer: 2000,
             timerProgressBar: true,
@@ -3805,7 +3994,7 @@ function copiarEnlace(enlace) {
         
         Swal.fire({
             icon: 'success',
-            title: 'Â¡Copiado!',
+            title: '¡Copiado!',
             text: 'El enlace ha sido copiado al portapapeles',
             timer: 2000,
             timerProgressBar: true,
@@ -3816,7 +4005,7 @@ function copiarEnlace(enlace) {
     });
 }
 
-// FunciÃ³n para enviar recuperaciÃ³n de contraseÃ±a por correo
+// Función para enviar recuperación de contraseña por correo
 function enviarRecuperacionPassword() {
     var codAdministrador = document.getElementById('edit_cod_administrador').value;
     var correo = document.getElementById('edit_correo').value;
@@ -3826,7 +4015,7 @@ function enviarRecuperacionPassword() {
         Swal.fire({
             icon: 'warning',
             title: 'Datos incompletos',
-            text: 'No se puede enviar la recuperaciÃ³n sin correo electrÃ³nico',
+            text: 'No se puede enviar la recuperación sin correo electrónico',
             background: '#1a1f2e',
             color: 'white',
             customClass: { container: 'swal-high-zindex' }
@@ -3835,13 +4024,13 @@ function enviarRecuperacionPassword() {
     }
     
     Swal.fire({
-        title: 'Â¿Enviar nueva contraseÃ±a?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se generarÃ¡ una nueva contraseÃ±a temporal para:</p><strong style="color: #6366f1;">' + nombreAliado + '</strong><p style="margin-top: 0.5rem;">Se enviarÃ¡ al correo: <strong style="color: #f59e0b;">' + correo + '</strong></p><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">La contraseÃ±a actual quedarÃ¡ inhabilitada.</p></div>',
+        title: '¿Enviar nueva contraseña?',
+        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se generará una nueva contraseña temporal para:</p><strong style="color: #10b981;">' + nombreAliado + '</strong><p style="margin-top: 0.5rem;">Se enviará al correo: <strong style="color: #f59e0b;">' + correo + '</strong></p><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">La contraseña actual quedará inhabilitada.</p></div>',
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#f59e0b',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fa-solid fa-envelope"></i> SÃ­, enviar',
+        confirmButtonText: '<i class="fa-solid fa-envelope"></i> Sí, enviar',
         cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
         background: '#1a1f2e',
         color: 'white',
@@ -3873,9 +4062,9 @@ function enviarRecuperacionPassword() {
                     if (response.success) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Â¡Enviado!',
-                            html: '<p>' + response.mensaje + '</p><p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">Nueva contraseÃ±a temporal: <strong style="color: #6366f1;">' + response.password_temporal + '</strong></p>',
-                            confirmButtonColor: '#6366f1',
+                            title: '¡Enviado!',
+                            html: '<p>' + response.mensaje + '</p><p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">Nueva contraseña temporal: <strong style="color: #10b981;">' + response.password_temporal + '</strong></p>',
+                            confirmButtonColor: '#10b981',
                             background: '#1a1f2e',
                             color: 'white',
                             customClass: { container: 'swal-high-zindex' }
@@ -3884,7 +4073,7 @@ function enviarRecuperacionPassword() {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: response.mensaje || 'No se pudo enviar la contraseÃ±a',
+                            text: response.mensaje || 'No se pudo enviar la contraseña',
                             background: '#1a1f2e',
                             color: 'white',
                             customClass: { container: 'swal-high-zindex' }
@@ -3898,7 +4087,7 @@ function enviarRecuperacionPassword() {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: 'Error de conexiÃ³n. Intenta nuevamente.',
+                        text: 'Error de conexión. Intenta nuevamente.',
                         background: '#1a1f2e',
                         color: 'white',
                         customClass: { container: 'swal-high-zindex' }
@@ -3922,8 +4111,8 @@ function abrirModalDetalle(data, tiendas) {
     var badge = document.getElementById('detEstado');
     if(data.cod_estado_activacion_usuario == '1') {
         badge.textContent = 'ACTIVO';
-        badge.style.background = 'rgba(99, 102, 241, 0.2)';
-        badge.style.color = '#6366f1';
+        badge.style.background = 'rgba(16, 185, 129, 0.2)';
+        badge.style.color = '#10b981';
     } else if(data.cod_estado_activacion_usuario == '2') {
         badge.textContent = 'EN ESPERA';
         badge.style.background = 'rgba(245, 158, 11, 0.2)';
@@ -3938,10 +4127,10 @@ function abrirModalDetalle(data, tiendas) {
 }
 function cerrarModalDetalle() { document.getElementById('modalDetalle').classList.remove('show'); }
 
-// ===== FUNCIONES PARA MODAL DE CONFIRMACIÃ“N Y DOCUMENTACIÃ“N =====
+// ===== FUNCIONES PARA MODAL DE CONFIRMACIÓN Y DOCUMENTACIÓN =====
 function cerrarModalConfirmacionRegistro() {
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
-    location.reload(); // Recargar la pÃ¡gina al finalizar
+    location.reload(); // Recargar la página al finalizar
 }
 
 function abrirDocumentacionDesdeConfirmacion() {
@@ -3949,12 +4138,12 @@ function abrirDocumentacionDesdeConfirmacion() {
     var nombreAliado = document.getElementById('confirm_nombre_aliado').value;
     var telefono = document.getElementById('confirm_telefono_aliado').value;
     
-    // Abrir modal de documentaciÃ³n
+    // Abrir modal de documentación
     document.getElementById('doc_cod_aliado_cryp').value = codAliadoCryp;
     document.getElementById('doc_nombre_aliado').textContent = nombreAliado;
     document.getElementById('doc_telefono_aliado').value = telefono;
     
-    // Cerrar modal de confirmaciÃ³n y abrir el de documentaciÃ³n
+    // Cerrar modal de confirmación y abrir el de documentación
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
     document.getElementById('modalDocumentacionAliado').classList.add('show');
 }
@@ -3963,10 +4152,10 @@ function abrirRegistroTiendaDesdeConfirmacion() {
     var codAliado = document.getElementById('confirm_cod_aliado').value;
     var nombreAliado = document.getElementById('confirm_nombre_aliado').value;
     
-    // Guardar el cod_aliado para usarlo despuÃ©s
+    // Guardar el cod_aliado para usarlo después
     currentCodAdministradorTienda = codAliado;
     
-    // Cerrar modal de confirmaciÃ³n
+    // Cerrar modal de confirmación
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
     
     // Cargar datos del aliado en el formulario de tienda
@@ -3980,7 +4169,7 @@ function abrirRegistroTiendaDesdeConfirmacion() {
 }
 
 function registrarOtroAliado() {
-    // Cerrar modal de confirmaciÃ³n
+    // Cerrar modal de confirmación
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
     // Limpiar formulario de registro
     document.getElementById('formRegistro').reset();
@@ -4000,7 +4189,7 @@ function cerrarModalConfirmacionTienda() {
 
 function registrarOtraTienda() {
     var codAliado = document.getElementById('confirm_tienda_cod_aliado').value;
-    // Cerrar modal de confirmaciÃ³n de tienda
+    // Cerrar modal de confirmación de tienda
     document.getElementById('modalConfirmacionTienda').classList.remove('show');
     // Limpiar formulario de tienda
     document.getElementById('formAgregarTienda').reset();
@@ -4023,7 +4212,7 @@ function irATiendaRegistrada() {
 
 function cerrarModalDocumentacionAliado() {
     document.getElementById('modalDocumentacionAliado').classList.remove('show');
-    // Cerrar tambiÃ©n el modal de confirmaciÃ³n y recargar
+    // Cerrar también el modal de confirmación y recargar
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
     location.reload();
 }
@@ -4044,7 +4233,7 @@ function compartirDocWhatsApp() {
         Swal.fire({ 
             icon: 'error', 
             title: 'Error', 
-            text: 'No se encontrÃ³ el cÃ³digo del aliado', 
+            text: 'No se encontró el código del aliado', 
             background: '#1a1f2e', 
             color: 'white',
             customClass: { container: 'swal-high-zindex' }
@@ -4053,7 +4242,7 @@ function compartirDocWhatsApp() {
     }
     
     var enlace = getEnlaceDocumentacion();
-    var mensaje = 'Â¡Hola ' + nombreAliado + '! Por favor sube tu documentaciÃ³n legal (RUT y CÃ¡mara de Comercio) en el siguiente enlace: ' + enlace;
+    var mensaje = '¡Hola ' + nombreAliado + '! Por favor sube tu documentación legal (RUT y Cámara de Comercio) en el siguiente enlace: ' + enlace;
     var urlWhatsApp = 'https://wa.me/' + (telefono ? '57' + telefono : '') + '?text=' + encodeURIComponent(mensaje);
     
     window.open(urlWhatsApp, '_blank');
@@ -4063,8 +4252,8 @@ function compartirDocEmail() {
     var nombreAliado = document.getElementById('doc_nombre_aliado').textContent;
     var enlace = getEnlaceDocumentacion();
     
-    var asunto = encodeURIComponent('Cargue de DocumentaciÃ³n Legal - ' + nombreAliado);
-    var cuerpo = encodeURIComponent('Hola ' + nombreAliado + ',\n\nPor favor sube tu documentaciÃ³n legal (RUT y CÃ¡mara de Comercio) en el siguiente enlace:\n\n' + enlace + '\n\nGracias.');
+    var asunto = encodeURIComponent('Cargue de Documentación Legal - ' + nombreAliado);
+    var cuerpo = encodeURIComponent('Hola ' + nombreAliado + ',\n\nPor favor sube tu documentación legal (RUT y Cámara de Comercio) en el siguiente enlace:\n\n' + enlace + '\n\nGracias.');
     
     window.open('mailto:?subject=' + asunto + '&body=' + cuerpo, '_blank');
 }
@@ -4076,7 +4265,7 @@ function copiarEnlaceDoc() {
         navigator.clipboard.writeText(enlace).then(function() {
             Swal.fire({
                 icon: 'success',
-                title: 'Â¡Copiado!',
+                title: '¡Copiado!',
                 text: 'El enlace ha sido copiado al portapapeles',
                 timer: 2000,
                 showConfirmButton: false,
@@ -4103,12 +4292,12 @@ function copiarEnlaceDocFallback(enlace) {
     try {
         document.execCommand('copy');
         Swal.fire({
-            icon: 'success', title: 'Â¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000,  showConfirmButton: false, background: '#1a1f2e', color: 'white',
+            icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000,  showConfirmButton: false, background: '#1a1f2e', color: 'white',
             customClass: { container: 'swal-high-zindex' }
         });
     } catch (err) {
         Swal.fire({
-            icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace. Por favor cÃ³pialo manualmente: ' + enlace, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+            icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace. Por favor cópialo manualmente: ' + enlace, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
         });
     }
     
@@ -4127,7 +4316,108 @@ document.getElementById('modalDocumentacionAliado').addEventListener('click', fu
         cerrarModalDocumentacionAliado(); 
     } 
 });
-// ===== FIN FUNCIONES PARA MODAL DE CONFIRMACIÃ“N Y DOCUMENTACIÃ“N =====
+// ===== FIN FUNCIONES PARA MODAL DE CONFIRMACIÓN Y DOCUMENTACIÓN =====
+
+function compartirDocumentacion(codAliadoCryp, nombreAliado, telefono) {
+    if (!codAliadoCryp) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se encontró el código del aliado',
+            background: '#1a1f2e',
+            color: 'white'
+        });
+        return;
+    }
+    
+    // Abrir modal de documentación con los datos pre-cargados
+    document.getElementById('doc_cod_aliado_cryp').value = codAliadoCryp;
+    document.getElementById('doc_nombre_aliado').textContent = nombreAliado;
+    document.getElementById('doc_telefono_aliado').value = telefono || '';
+    
+    document.getElementById('modalDocumentacionAliado').classList.add('show');
+}
+
+function abrirModalVerCuentas(codAliado, nombreAliado) {
+    Swal.fire({
+        title: 'Cuentas de ' + nombreAliado,
+        html: '<div id="swal_bancos_container" style="text-align: left; padding: 0.5rem;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>',
+        width: '95%',
+        background: '#1a1f2e',
+        color: 'white',
+        showConfirmButton: true,
+        confirmButtonText: 'Cerrar',
+        confirmButtonColor: '#10b981',
+        customClass: { container: 'swal-high-zindex' },
+        didOpen: () => {
+            $.ajax({
+                url: '../admin/obtener_bancos_aliado_ajax.php',
+                type: 'POST',
+                data: { cod_administrador: codAliado },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success && response.bancos && response.bancos.length > 0) {
+                        var html = '<div style="display: grid; gap: 0.75rem;">';
+                        response.bancos.forEach(function(b) {
+                            html += '<div style="background: rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">';
+                            html += '<div style="font-weight: 700; color: #10b981; margin-bottom: 0.25rem;">' + b.nombre_banco_cuenta + '</div>';
+                            html += '<div style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">' + (b.cod_tipo_cuenta_banco == 1 ? 'Ahorros' : 'Corriente') + ': ' + b.numero_banco_cuenta + '</div>';
+                            if (b.nombre_titular_cuenta) {
+                                html += '<div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem;">Titular: ' + b.nombre_titular_cuenta + '</div>';
+                            }
+                            html += '</div>';
+                        });
+                        html += '</div>';
+                        $('#swal_bancos_container').html(html);
+                    } else {
+                        $('#swal_bancos_container').html('<div style="color: rgba(255,255,255,0.5); text-align: center;">No hay cuentas registradas</div>');
+                    }
+                },
+                error: function() {
+                    $('#swal_bancos_container').html('<div style="color: #ef4444; text-align: center;">Error al cargar datos</div>');
+                }
+            });
+        }
+    });
+}
+
+function cambiarTipoCliente() {
+    var tipo = document.getElementById('nombre_tipo_cliente').value;
+    var containerNit = document.getElementById('container_nit_razon_social');
+    var containerNombreRazon = document.getElementById('container_nombre_razon_social');
+    var labelNombreComercial = document.getElementById('label_nombre_comercial');
+    
+    if (tipo === 'PERSONA_JURIDICA') {
+        if(containerNit) containerNit.style.display = 'block';
+        if(containerNombreRazon) containerNombreRazon.style.display = 'block';
+        if(labelNombreComercial) labelNombreComercial.innerHTML = 'Nombre Comercial *';
+    } else {
+        if(containerNit) containerNit.style.display = 'none';
+        if(containerNombreRazon) containerNombreRazon.style.display = 'none';
+        if(labelNombreComercial) labelNombreComercial.innerHTML = 'Nombres y Apellidos del Aliado *';
+    }
+}
+
+function cambiarTipoClienteEdit(limpiar = true) {
+    var tipo = document.getElementById('edit_nombre_tipo_cliente').value;
+    var containerNit = document.getElementById('edit_container_nit_razon_social');
+    var containerNombreRazon = document.getElementById('edit_container_nombre_razon_social');
+    var labelNombreComercial = document.getElementById('edit_label_nombre_comercial');
+    
+    if (tipo === 'PERSONA_JURIDICA') {
+        if(containerNit) containerNit.style.display = 'block';
+        if(containerNombreRazon) containerNombreRazon.style.display = 'block';
+        if(labelNombreComercial) labelNombreComercial.innerHTML = 'Nombre Comercial *';
+    } else {
+        if(containerNit) containerNit.style.display = 'none';
+        if(containerNombreRazon) containerNombreRazon.style.display = 'none';
+        if(labelNombreComercial) labelNombreComercial.innerHTML = 'Nombres y Apellidos del Aliado *';
+        if (limpiar) {
+            if(document.getElementById('edit_nit_razon_social')) document.getElementById('edit_nit_razon_social').value = '';
+            if(document.getElementById('edit_nombre_razon_social')) document.getElementById('edit_nombre_razon_social').value = '';
+        }
+    }
+}
 
 // Funciones para agregar nueva entidad
 var codAdministradorActual = null;
@@ -4195,10 +4485,10 @@ function cerrarModalAgregarEntidad() {
 
 // Abrir modal agregar banco
 function abrirModalAgregarBanco(codAliadoEstrategico) {
-    // Usar el cÃ³digo del aliado que se pasa como parÃ¡metro
+    // Usar el código del aliado que se pasa como parámetro
     if (!codAliadoEstrategico) { 
         Swal.fire({ 
-            icon: 'error', title: 'Error',  text: 'No se pudo identificar el aliado estratÃ©gico',  background: '#1a1f2e', color: 'white' 
+            icon: 'error', title: 'Error',  text: 'No se pudo identificar el aliado estratégico',  background: '#1a1f2e', color: 'white' 
         }); return; 
     }
     // Cargar bancos disponibles si no se han cargado
@@ -4215,10 +4505,10 @@ function abrirModalAgregarBanco(codAliadoEstrategico) {
         }
     });
     
-    // Asignar el cÃ³digo del aliado estratÃ©gico a los campos del formulario
+    // Asignar el código del aliado estratégico a los campos del formulario
     document.getElementById('agregar_banco_cod_administrador').value = codAliadoEstrategico;
     document.getElementById('agregar_banco_cod_aliado_estrategico').value = codAliadoEstrategico;
-    console.log('Modal Agregar Banco - CÃ³digo Aliado:', codAliadoEstrategico);
+    console.log('Modal Agregar Banco - Código Aliado:', codAliadoEstrategico);
     document.getElementById('modalAgregarBanco').classList.add('show');
 }
 
@@ -4227,17 +4517,17 @@ function cerrarModalAgregarBanco() {
     $('#formAgregarBanco')[0].reset();
 }
 
-// FunciÃ³n para mostrar nombre de archivo seleccionado
+// Función para mostrar nombre de archivo seleccionado
 function mostrarNombreArchivoCertificado(input, previewId) {
     var preview = document.getElementById(previewId);
     if (input.files && input.files[0]) {
         var fileName = input.files[0].name;
         var fileSize = (input.files[0].size / 1024 / 1024).toFixed(2);
-        preview.innerHTML = '<i class="fa-solid fa-file-check" style="font-size: 2rem; color: #6366f1; margin-bottom: 0.5rem;"></i>' +
-            '<p style="margin: 0; color: #6366f1; font-size: 0.85rem; font-weight: 600;">' + fileName + '</p>' +
+        preview.innerHTML = '<i class="fa-solid fa-file-check" style="font-size: 2rem; color: #10b981; margin-bottom: 0.5rem;"></i>' +
+            '<p style="margin: 0; color: #10b981; font-size: 0.85rem; font-weight: 600;">' + fileName + '</p>' +
             '<p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">' + fileSize + ' MB</p>';
     } else {
-        preview.innerHTML = '<i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(99, 102, 241, 0.6); margin-bottom: 0.5rem;"></i>' +
+        preview.innerHTML = '<i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(16, 185, 129, 0.6); margin-bottom: 0.5rem;"></i>' +
             '<p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p>' +
             '<p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Imagen o documento (JPG, PNG, PDF, DOC)</p>';
     }
@@ -4257,7 +4547,7 @@ $('#formAgregarBanco').on('submit', function(e) {
             Swal.close();
             if (response.success) {
                 cerrarModalAgregarBanco();
-                Swal.fire({ icon: 'success', title: 'Ã‰xito', text: response.mensaje, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                Swal.fire({ icon: 'success', title: 'Éxito', text: response.mensaje, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 // Recargar lista de bancos del aliado
                 cargarBancosAliado(codAdministradorActual);
             } else {
@@ -4281,7 +4571,7 @@ $(document).on('change', '#agregar_cod_entidad', function() {
         $('#agregar_url').val(url);
     }
     
-    // Auto-rellenar el campo de interÃ©s con el valor por defecto
+    // Auto-rellenar el campo de interés con el valor por defecto
     if (interesDefault && interesDefault !== '') {
         $('#agregar_interes').val(interesDefault);
     }
@@ -4303,10 +4593,10 @@ $('#formAgregarEntidad').on('submit', function(e) {
             if (response.success) {
                 cerrarModalAgregarEntidad();
                 Swal.fire({
-                    icon: 'success', title: 'Â¡Ã‰xito!', text: 'Entidad agregada correctamente', confirmButtonColor: '#6366f1', background: '#1a1f2e',
+                    icon: 'success', title: '¡Éxito!', text: 'Entidad agregada correctamente', confirmButtonColor: '#10b981', background: '#1a1f2e',
                     color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
                 }).then(() => {
-                    // Recargar las entidades en el modal de ediciÃ³n
+                    // Recargar las entidades en el modal de edición
                     var codAdmin = $('#edit_cod_administrador').val();
                     recargarEntidadesEditar(codAdmin);
                 });
@@ -4318,12 +4608,12 @@ $('#formAgregarEntidad').on('submit', function(e) {
         },
         error: function(xhr, status, error) {
             Swal.close();
-            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexiÃ³n. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
 
-// FunciÃ³n para recargar entidades en el modal de ediciÃ³n
+// Función para recargar entidades en el modal de edición
 function recargarEntidadesEditar(codAdministrador) {
     $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando entidades...</p></div>');
     
@@ -4341,8 +4631,8 @@ function recargarEntidadesEditar(codAdministrador) {
                     var portal_checked = entidad.cod_estado_entrar_portal == '1' ? 'checked' : '';
                     var url = entidad.url_pagina_web_consulta || '';
                     
-                    html += '<div style="display: grid; grid-template-columns: auto 1fr auto auto auto; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 10px;">';
-                    html += '<input type="checkbox" name="entidades[]" value="' + entidad.cod_entidad_crediticia + '" id="edit_ent_' + entidad.cod_entidad_crediticia + '" ' + checked + ' style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer; margin: 0;">';
+                    html += '<div style="display: grid; grid-template-columns: auto 1fr auto auto auto; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 10px;">';
+                    html += '<input type="checkbox" name="entidades[]" value="' + entidad.cod_entidad_crediticia + '" id="edit_ent_' + entidad.cod_entidad_crediticia + '" ' + checked + ' style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer; margin: 0;">';
                     html += '<label for="edit_ent_' + entidad.cod_entidad_crediticia + '" style="color: rgba(255,255,255,0.95); font-size: 0.9rem; font-weight: 600; cursor: pointer; margin: 0;">' + escapeHtmlMovil(entidad.nombre_entidad_crediticia) + '</label>';
                     html += '<div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">';
                     html += '<label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">% Adtvo:</label>';
@@ -4350,16 +4640,16 @@ function recargarEntidadesEditar(codAdministrador) {
                     html += '</div>';
                     html += '<div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">';
                     html += '<label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Portal:</label>';
-                    html += '<input type="checkbox" name="cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" id="edit_cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" value="1" ' + portal_checked + ' style="accent-color: #6366f1; width: 16px; height: 16px; cursor: pointer; margin: 0;" title="Acceso al portal">';
+                    html += '<input type="checkbox" name="cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" id="edit_cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" value="1" ' + portal_checked + ' style="accent-color: #10b981; width: 16px; height: 16px; cursor: pointer; margin: 0;" title="Acceso al portal">';
                     html += '</div>';
-                    html += '<button type="button" id="btn_eliminar_' + entidad.cod_entidad_crediticia + '" data-cod-parametrizacion="' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" data-nombre-entidad="' + escapeHtmlMovil(entidad.nombre_entidad_crediticia) + '" onclick="eliminarEntidadAliado(' + entidad.cod_entidad_crediticia + ')" style="background: #ef4444; color: white; border: none; padding: 0.4rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 0.25rem;" title="Eliminar parametrizaciÃ³n">';
+                    html += '<button type="button" id="btn_eliminar_' + entidad.cod_entidad_crediticia + '" data-cod-parametrizacion="' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" data-nombre-entidad="' + escapeHtmlMovil(entidad.nombre_entidad_crediticia) + '" onclick="eliminarEntidadAliado(' + entidad.cod_entidad_crediticia + ')" style="background: #ef4444; color: white; border: none; padding: 0.4rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 0.25rem;" title="Eliminar parametrización">';
                     html += '<i class="fa-solid fa-trash"></i>';
                     html += '</button>';
                     html += '</div>';
                 });
                 $('#contenedor_entidades_editar').html(html);
             } else {
-                $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(99, 102, 241, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay entidades asignadas a este aliado.</p></div>');
+                $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(16, 185, 129, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay entidades asignadas a este aliado.</p></div>');
             }
         },
         error: function(xhr, status, error) {
@@ -4377,10 +4667,10 @@ function filtrar() {
     }, 500); 
 }
 
-// Variable para controlar si la identificaciÃ³n es vÃ¡lida
+// Variable para controlar si la identificación es válida
 var identificacionValida = false;
 
-// Verificar identificaciÃ³n en tiempo real
+// Verificar identificación en tiempo real
 $(document).on('blur', '#identificacion_tercero', function() {
     var identificacion = $(this).val().trim();
     var inputField = $(this);
@@ -4405,13 +4695,13 @@ $(document).on('blur', '#identificacion_tercero', function() {
         success: function(response) {
             if(response.existe) {
                 inputField.css('border-color', '#ef4444');
-                mensajeDiv.text('âš ï¸ Esta identificaciÃ³n ya estÃ¡ registrada a nombre de un aliado estratÃ©gico').show();
+                mensajeDiv.text('?? Esta identificación ya está registrada a nombre de un aliado estratégico').show();
                 identificacionValida = false;
                 btnGuardar.prop('disabled', true);
                 btnGuardar.css('opacity', '0.5');
                 btnGuardar.css('cursor', 'not-allowed');
             } else {
-                inputField.css('border-color', '#6366f1');
+                inputField.css('border-color', '#10b981');
                 mensajeDiv.hide();
                 identificacionValida = true;
                 btnGuardar.prop('disabled', false);
@@ -4420,7 +4710,7 @@ $(document).on('blur', '#identificacion_tercero', function() {
             }
         },
         error: function() {
-            mensajeDiv.text('Error al verificar la identificaciÃ³n').show();
+            mensajeDiv.text('Error al verificar la identificación').show();
             identificacionValida = false;
             btnGuardar.prop('disabled', true);
             btnGuardar.css('opacity', '0.5');
@@ -4432,15 +4722,15 @@ $(document).on('blur', '#identificacion_tercero', function() {
 // Guardar Aliado (Nuevo)
 $('#formRegistro').on('submit', function(e) {
     e.preventDefault();
-    // Verificar si la identificaciÃ³n es vÃ¡lida
+    // Verificar si la identificación es válida
     var identificacion = $('#identificacion_tercero').val().trim();
     if(identificacion === '') {
-        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Debe ingresar una identificaciÃ³n', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Debe ingresar una identificación', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return false;
     }
-    // Si la identificaciÃ³n no ha sido validada, verificarla primero
+    // Si la identificación no ha sido validada, verificarla primero
     if(!identificacionValida) {
-        Swal.fire({ title: 'Verificando identificaciÃ³n...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        Swal.fire({ title: 'Verificando identificación...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         
         $.ajax({
             url: '../ajax/verificar_identificacion_aliado.php',
@@ -4450,9 +4740,9 @@ $('#formRegistro').on('submit', function(e) {
             success: function(response) {
                 Swal.close();
                 if(response.existe) {
-                    Swal.fire({ icon: 'error', title: 'IdentificaciÃ³n duplicada', text: 'Esta identificaciÃ³n ya estÃ¡ registrada en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    Swal.fire({ icon: 'error', title: 'Identificación duplicada', text: 'Esta identificación ya está registrada en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     $('#identificacion_tercero').css('border-color', '#ef4444');
-                    $('#mensaje_identificacion').text('âš ï¸ Esta identificaciÃ³n ya estÃ¡ registrada').show();
+                    $('#mensaje_identificacion').text('?? Esta identificación ya está registrada').show();
                     $('#btnGuardar').prop('disabled', true).css({'opacity': '0.5', 'cursor': 'not-allowed'});
                 } else {
                     identificacionValida = true;
@@ -4462,7 +4752,7 @@ $('#formRegistro').on('submit', function(e) {
             },
             error: function() {
                 Swal.close();
-                Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo verificar la identificaciÃ³n. Intente nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo verificar la identificación. Intente nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         });
         return false;
@@ -4480,18 +4770,18 @@ $('#formRegistro').on('submit', function(e) {
             
             if(resp.afectado === 'SI') {
                 cerrarModal();
-                // Guardar datos en el modal de confirmaciÃ³n
+                // Guardar datos en el modal de confirmación
                 document.getElementById('confirm_cod_aliado').value = resp.cod_administrador;
                 document.getElementById('confirm_cod_aliado_cryp').value = resp.cod_aliado_cryp;
                 document.getElementById('confirm_nombre_aliado').value = resp.nombre_completo;
                 document.getElementById('confirm_telefono_aliado').value = resp.telefono;
                 document.getElementById('confirm_nombre_display').textContent = resp.nombre_completo;
                 
-                // Abrir modal de confirmaciÃ³n
+                // Abrir modal de confirmación
                 document.getElementById('modalConfirmacionRegistro').classList.add('show');
             } else if(resp.afectado === 'EXISTE') {
                 Swal.fire({ 
-                    icon: 'warning', title: 'Aliado Existente', text: resp.mensaje || 'Este aliado ya estÃ¡ registrado en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+                    icon: 'warning', title: 'Aliado Existente', text: resp.mensaje || 'Este aliado ya está registrado en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
                 });
             } else {
                 var errorMsg = resp.mensaje || 'Error al registrar el aliado';
@@ -4503,7 +4793,7 @@ $('#formRegistro').on('submit', function(e) {
             Swal.close();
             console.log('Error AJAX:', xhr.responseText); // Debug
             Swal.fire({ 
-                icon: 'error',  title: 'Error',  text: 'Error de conexiÃ³n. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' }
+                icon: 'error',  title: 'Error',  text: 'Error de conexión. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' }
             });
         }
     });
@@ -4533,7 +4823,7 @@ $('#formEditar').on('submit', function(e) {
             if(resp.afectado === 'SI') {
                 cerrarModalEditar(); 
                 Swal.fire({ 
-                    icon: 'success',  title: 'Â¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#6366f1',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
+                    icon: 'success',  title: '¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#10b981',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
                 }).then(() => { 
                     location.reload(); 
                 });
@@ -4544,7 +4834,7 @@ $('#formEditar').on('submit', function(e) {
         error: function(xhr, status, error) {
             Swal.close();
             console.log('Error AJAX:', xhr.responseText);
-            Swal.fire({ icon: 'error',  title: 'Error',  text: 'Error de conexiÃ³n. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' } });
+            Swal.fire({ icon: 'error',  title: 'Error',  text: 'Error de conexión. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
@@ -4556,7 +4846,7 @@ $('.modal-overlay').on('click', function(e) {
     }
 });
 
-// ====================== SISTEMA DE COMPARTIR DOCUMENTACIÃ“N ======================
+// ====================== SISTEMA DE COMPARTIR DOCUMENTACIÓN ======================
 var datosZipActual = null;
 
 function compartirDocumentacion(cod_aliado) {
@@ -4572,7 +4862,7 @@ function compartirDocumentacion(cod_aliado) {
     $('#email_destino').val('');
     $('#mensaje_email').val('');
     
-    // Hacer peticiÃ³n AJAX para generar el ZIP
+    // Hacer petición AJAX para generar el ZIP
     $.ajax({
         url: 'generar_zip_documentacion.php',
         type: 'POST',
@@ -4601,7 +4891,7 @@ function compartirDocumentacion(cod_aliado) {
 }
 
 function mostrarContenidoCompartir(data) {
-    // Mostrar informaciÃ³n del aliado
+    // Mostrar información del aliado
     $('#compartir_aliado_nombre').text(data.aliado_nombre);
     $('#compartir_aliado_cedula').text(data.aliado_cedula);
     
@@ -4610,7 +4900,7 @@ function mostrarContenidoCompartir(data) {
     if (data.archivos && data.archivos.length > 0) {
         data.archivos.forEach(function(archivo) {
             var tamanoKB = (archivo.tamano / 1024).toFixed(2);
-            listaHTML += '<div style="padding: 8px; border-bottom: 1px solid rgba(99, 102, 241, 0.2); display: flex; justify-content: space-between; align-items: center;">';
+            listaHTML += '<div style="padding: 8px; border-bottom: 1px solid rgba(16, 185, 129, 0.2); display: flex; justify-content: space-between; align-items: center;">';
             listaHTML += '<div><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 8px;"></i>';
             listaHTML += '<span style="color: white; font-size: 0.85rem;">' + archivo.nombre + '</span></div>';
             listaHTML += '<span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">' + tamanoKB + ' KB</span>';
@@ -4645,7 +4935,7 @@ function enviarEmail() {
     
     var email = $('#email_destino').val().trim();
     if (email === '' || !validarEmail(email)) {
-        Swal.fire({ icon: 'warning', title: 'Email invÃ¡lido', text: 'Por favor ingrese un email vÃ¡lido', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        Swal.fire({ icon: 'warning', title: 'Email inválido', text: 'Por favor ingrese un email válido', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
@@ -4666,7 +4956,7 @@ function enviarEmail() {
             Swal.close();
             if (response.success) {
                 Swal.fire({
-                    icon: 'success', title: 'Â¡Email enviado!', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+                    icon: 'success', title: '¡Email enviado!', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
                 });
                 ocultarFormularioEmail();
             } else {
@@ -4678,7 +4968,7 @@ function enviarEmail() {
             var mensajeError = 'Error al enviar el email';
             
             if (status === 'timeout') {
-                mensajeError = 'El servidor tardÃ³ demasiado en responder. El archivo podrÃ­a ser muy grande o hay problemas con el servidor SMTP.';
+                mensajeError = 'El servidor tardó demasiado en responder. El archivo podría ser muy grande o hay problemas con el servidor SMTP.';
             } else if (xhr.responseText) {
                 try {
                     var resp = JSON.parse(xhr.responseText);
@@ -4694,7 +4984,7 @@ function enviarEmail() {
 
 
 
-// FunciÃ³n para manejar el cambio en el select tipo_cliente (Registro)
+// Función para manejar el cambio en el select tipo_cliente (Registro)
 function cambiarTipoCliente() {
     var tipoCliente = document.getElementById('nombre_tipo_cliente');
     var labelNombreComercial = document.getElementById('label_nombre_comercial');
@@ -4704,7 +4994,7 @@ function cambiarTipoCliente() {
     var inputRazonSocial = document.getElementById('nombre_razon_social');
     
     if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        //labelNombreComercial.textContent = 'RazÃ³n Social *';
+        //labelNombreComercial.textContent = 'Razón Social *';
         containerNit.style.display = 'block';
         inputNit.required = true;
         containerRazonSocial.style.display = 'block';
@@ -4720,7 +5010,7 @@ function cambiarTipoCliente() {
     }
 }
 
-// FunciÃ³n para manejar el cambio en el select tipo_cliente (Editar)
+// Función para manejar el cambio en el select tipo_cliente (Editar)
 function cambiarTipoClienteEdit(limpiarNit) {
     var tipoCliente = document.getElementById('edit_nombre_tipo_cliente');
     var labelNombreComercial = document.getElementById('edit_label_nombre_comercial');
@@ -4730,7 +5020,7 @@ function cambiarTipoClienteEdit(limpiarNit) {
     var inputRazonSocial = document.getElementById('edit_nombre_razon_social');
     
     if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        //labelNombreComercial.textContent = 'RazÃ³n Social *';
+        //labelNombreComercial.textContent = 'Razón Social *';
         containerNit.style.display = 'block';
         inputNit.required = true;
         containerRazonSocial.style.display = 'block';
@@ -4739,13 +5029,13 @@ function cambiarTipoClienteEdit(limpiarNit) {
         //labelNombreComercial.textContent = 'Nombre Comercial *';
         containerNit.style.display = 'none';
         inputNit.required = false;
-        // Solo limpiar el NIT si se indica explÃ­citamente (cuando el usuario cambia manualmente)
+        // Solo limpiar el NIT si se indica explícitamente (cuando el usuario cambia manualmente)
         if (limpiarNit !== false) {
             inputNit.value = '';
         }
         containerRazonSocial.style.display = 'none';
         inputRazonSocial.required = false;
-        // Solo limpiar la RazÃ³n Social si se indica explÃ­citamente (cuando el usuario cambia manualmente)
+        // Solo limpiar la Razón Social si se indica explícitamente (cuando el usuario cambia manualmente)
         if (limpiarNit !== false) {
             inputRazonSocial.value = '';
         }
@@ -4770,7 +5060,7 @@ function cargarDepartamentosRegistro() {
     });
 }
 
-// Cargar municipios segÃºn departamento seleccionado (modal registro)
+// Cargar municipios según departamento seleccionado (modal registro)
 function cargarMunicipiosRegistro(codDepartamento) {
     var $select = $('#cod_municipio');
     if (!codDepartamento || codDepartamento === '') {
@@ -4792,7 +5082,7 @@ function cargarMunicipiosRegistro(codDepartamento) {
     });
 }
 
-// Cargar departamentos para el modal de ediciÃ³n con preselecciÃ³n
+// Cargar departamentos para el modal de edición con preselección
 function cargarDepartamentosEdicion(selectedDept, selectedMuni) {
     var $select = $('#edit_cod_departamento');
     $select.html('<option value="">Cargando...</option>');
@@ -4815,7 +5105,7 @@ function cargarDepartamentosEdicion(selectedDept, selectedMuni) {
     });
 }
 
-// Cargar municipios segÃºn departamento seleccionado (modal ediciÃ³n)
+// Cargar municipios según departamento seleccionado (modal edición)
 function cargarMunicipiosEdicion(codDepartamento, selectedMuni) {
     var $select = $('#edit_cod_municipio');
     if (!codDepartamento || codDepartamento === '') {
@@ -4841,7 +5131,7 @@ function cargarMunicipiosEdicion(codDepartamento, selectedMuni) {
 function descargarZip() {
     if (!datosZipActual) { Swal.fire({ icon: 'error', title: 'Error', text: 'No hay un archivo ZIP generado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }); return; }
     
-    // Crear un enlace temporal y hacer clic en Ã©l para descargar
+    // Crear un enlace temporal y hacer clic en él para descargar
     var link = document.createElement('a');
     link.href = '../' + datosZipActual.zip_path;
     link.download = datosZipActual.zip_name;
@@ -4850,7 +5140,7 @@ function descargarZip() {
     document.body.removeChild(link);
     
     Swal.fire({
-        icon: 'success', title: 'Descargando...', text: 'El archivo se estÃ¡ descargando', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+        icon: 'success', title: 'Descargando...', text: 'El archivo se está descargando', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
     });
 }
 
@@ -4871,12 +5161,12 @@ function generarEnlace() {
 function copiarEnlace() {
     var input = document.getElementById('input_enlace');
     input.select();
-    input.setSelectionRange(0, 99999); // Para mÃ³viles
+    input.setSelectionRange(0, 99999); // Para móviles
     
     try {
         document.execCommand('copy');
         Swal.fire({
-            icon: 'success', title: 'Â¡Copiado!', text: 'El enlace se ha copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+            icon: 'success', title: '¡Copiado!', text: 'El enlace se ha copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
         });
     } catch (err) {
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
@@ -4898,19 +5188,19 @@ function validarEmail(email) {
     right: 20px;
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
     z-index: 9999;
     transition: all 0.3s ease;
     border: none;
 }
 
-.notification-bell-movil:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(99, 102, 241, 0.7); }
+.notification-bell-movil:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(16, 185, 129, 0.7); }
 .notification-bell-movil i { font-size: 22px; color: white; }
 .notification-bell-movil.has-notifications { animation: bellPulseMovil 2s infinite; }
 
@@ -4949,30 +5239,30 @@ function validarEmail(email) {
     z-index: 9998;
     display: none;
     overflow: hidden;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .notification-panel-movil.show { display: block; animation: slideUpMovil 0.3s ease; }
 @keyframes slideUpMovil { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.notification-header-movil { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; }
+.notification-header-movil { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; }
 .notification-header-movil h4 { margin: 0; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .notification-header-actions-movil { display: flex; gap: 8px; }
 .notification-header-actions-movil button { background: rgba(255, 255, 255, 0.2); border: none; color: white; padding: 6px 10px; border-radius: 8px; font-size: 11px; cursor: pointer; }
 .notification-list-movil { max-height: 320px; overflow-y: auto; }
-.notification-item-movil { padding: 14px 18px; border-bottom: 1px solid rgba(99, 102, 241, 0.15); cursor: pointer; transition: background 0.2s ease; display: flex; gap: 12px; align-items: flex-start; }
-.notification-item-movil:hover { background: rgba(99, 102, 241, 0.1); }
+.notification-item-movil { padding: 14px 18px; border-bottom: 1px solid rgba(16, 185, 129, 0.15); cursor: pointer; transition: background 0.2s ease; display: flex; gap: 12px; align-items: flex-start; }
+.notification-item-movil:hover { background: rgba(16, 185, 129, 0.1); }
 .notification-item-movil:last-child { border-bottom: none; }
 .notification-icon-movil { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
-.notification-icon-movil.type-1 { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; }
+.notification-icon-movil.type-1 { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
 .notification-icon-movil.type-2 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
 .notification-icon-movil.type-3 { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; }
 .notification-content-movil { flex: 1; min-width: 0; }
 .notification-title-movil { font-size: 13px; font-weight: 600; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .notification-desc-movil { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.notification-time-movil { font-size: 10px; color: rgba(99, 102, 241, 0.8); margin-top: 5px; }
+.notification-time-movil { font-size: 10px; color: rgba(16, 185, 129, 0.8); margin-top: 5px; }
 .notification-empty-movil { padding: 40px 20px; text-align: center; color: rgba(255,255,255,0.5); }
-.notification-empty-movil i { font-size: 40px; margin-bottom: 12px; display: block; color: rgba(99, 102, 241, 0.4); }
+.notification-empty-movil i { font-size: 40px; margin-bottom: 12px; display: block; color: rgba(16, 185, 129, 0.4); }
 .notification-empty-movil p { margin: 0; font-size: 14px; }
 </style>
 
@@ -5066,13 +5356,13 @@ function marcarNotificacionLeidaMovil(codNotificacion, element) {
 
 function marcarTodasLeidasMovil() {
     Swal.fire({
-        title: 'Â¿Marcar todas como leÃ­das?',
-        text: 'Se marcarÃ¡n todas las notificaciones pendientes como leÃ­das',
+        title: '¿Marcar todas como leídas?',
+        text: 'Se marcarán todas las notificaciones pendientes como leídas',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#6366f1',
+        confirmButtonColor: '#10b981',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'SÃ­, marcar todas',
+        confirmButtonText: 'Sí, marcar todas',
         cancelButtonText: 'Cancelar',
         background: '#1a1f2e',
         color: 'white'
@@ -5086,7 +5376,7 @@ function marcarTodasLeidasMovil() {
                 success: function(response) {
                     if (response.success) {
                         cargarNotificacionesMovil();
-                        Swal.fire({ icon: 'success', title: 'Â¡Listo!', text: 'Todas las notificaciones han sido marcadas como leÃ­das', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
+                        Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Todas las notificaciones han sido marcadas como leídas', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
                     }
                 }
             });
@@ -5104,16 +5394,16 @@ function escapeHtmlMovil(text) {
 
 
 <script>
-    // Ocultar loader cuando la pÃ¡gina haya cargado completamente
+    // Ocultar loader cuando la página haya cargado completamente
     window.addEventListener('load', function() {
         const loader = document.getElementById('loader-wrapper');
         if (loader) {
-            // PequeÃ±o retraso para asegurar que el usuario vea el loader
+            // Pequeño retraso para asegurar que el usuario vea el loader
             setTimeout(() => {
                 loader.style.opacity = '0';
                 setTimeout(() => {
                     loader.style.display = 'none';
-                    // Animar elementos de la pÃ¡gina
+                    // Animar elementos de la página
                     document.querySelectorAll('.animate-in').forEach((el, index) => {
                         setTimeout(() => {
                             el.style.opacity = '1';
@@ -5125,7 +5415,7 @@ function escapeHtmlMovil(text) {
         }
     });
 
-    // Mostrar el loader cuando se recargue la pÃ¡gina
+    // Mostrar el loader cuando se recargue la página
     window.addEventListener('beforeunload', function() {
         const loader = document.getElementById('loader-wrapper');
         if (loader) {
@@ -5134,11 +5424,11 @@ function escapeHtmlMovil(text) {
         }
     });
 
-    // Ocultar el loader si tarda mÃ¡s de 10 segundos (fallback)
+    // Ocultar el loader si tarda más de 10 segundos (fallback)
     setTimeout(function() {
         const loader = document.getElementById('loader-wrapper');
         if (loader && loader.style.display !== 'none') {
-            console.warn('Loader forzado a ocultar despuÃ©s de 10 segundos');
+            console.warn('Loader forzado a ocultar después de 10 segundos');
             loader.style.opacity = '0';
             setTimeout(() => {
                 loader.style.display = 'none';

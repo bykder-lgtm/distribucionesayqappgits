@@ -25,7 +25,7 @@ $nombre_tipo_tercero                                                = 'ALIADO_ES
 $nombre_tipo_cliente                                                = isset($_POST['nombre_tipo_cliente']) ? trim(addslashes($_POST['nombre_tipo_cliente'])) : "PERSONA_NATURAL";
 $nombre_tipo_regimen                                                = "SIMPLE";
 $nombre_tipo_impuesto                                               = "NO_RESPONSABLE_DE_IVA";
-$nombre_tipo_identificacion                                         = "CC";
+$nombre_tipo_identificacion                                         = isset($_POST['nombre_tipo_identificacion']) ? trim(addslashes($_POST['nombre_tipo_identificacion'])) : "CC";
 $cod_seguridad                                                      = "23";
 $cod_estado_activacion_usuario                                      = "2"; // Pendiente de activación
 $fecha                                                              = date("Y-m-d");
@@ -40,7 +40,8 @@ if (isset($_POST['identificacion_tercero'])) {
 	$correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
 	$nombres_apellidos_tercero                                      = trim(addslashes($_POST['nombres_apellidos_tercero']));
 	$cod_asesor                                                     = intval($_POST['cod_asesor']);
-	$direccion_tercero                                              = '';
+	$direccion_tercero                                              = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
+	$barrio_tercero                                                 = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
 	// Nuevos campos de tipo de cliente y sector
 	$nombre_tipo_cliente                                            = isset($_POST['nombre_tipo_cliente']) ? addslashes($_POST['nombre_tipo_cliente']) : 1;
 	$cod_tipo_sector                                                = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
@@ -82,11 +83,11 @@ if (isset($_POST['identificacion_tercero'])) {
         $afectado = "EXISTE";
         $cod_administrador = intval($info_dato_aliado['cod_administrador']);
     } else {
-		$sql_data = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
+		$sql_data = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, 
         nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion, 
         cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, correo, telefono, cuenta, contrasena, 
         cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, cod_tipo_sector, nit_razon_social) 
-		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
+		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', '$barrio_tercero', 
         UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion', 
         '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$creador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$correo', '$telefono', '$cuenta', '$contrasena', 
         '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_tipo_sector', '$nit_razon_social')";
