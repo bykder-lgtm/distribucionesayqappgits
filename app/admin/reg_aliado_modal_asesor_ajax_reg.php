@@ -85,12 +85,12 @@ if (isset($_POST['identificacion_tercero'])) {
         $afectado = "EXISTE";
         $cod_administrador = intval($info_dato_aliado['cod_administrador']);
     } else {
-		$sql_data = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
+		$sql_data = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero,
         nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion, 
         cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, correo, telefono, cuenta, contrasena, 
         cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, 
         cod_tipo_sector, nit_razon_social, nombre_razon_social, cod_departamento, cod_municipio) 
-		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
+		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', '$barrio_tercero',
         UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion', 
         '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$creador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$correo', '$telefono', '$cuenta', '$contrasena', 
         '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', 
