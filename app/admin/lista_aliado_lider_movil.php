@@ -1157,6 +1157,96 @@ select[id^="edit_municipio_tienda_"] option {
         justify-content: center;
     }
 }
+
+/* ====================== PREMIUM PAGINATION ====================== */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 2.5rem 0;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeInUp 0.8s ease forwards;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 0.9rem;
+}
+
+.pagination-btn i {
+    font-size: 1.1rem;
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background: #8b5cf6;
+    color: white !important;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+    border-color: #8b5cf6;
+}
+
+.pagination-btn.disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.pagination-info {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0 1.25rem;
+    background: rgba(139, 92, 246, 0.05);
+    height: 42px;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    letter-spacing: 0.5px;
+}
+
+.pagination-info span {
+    color: #8b5cf6;
+    margin: 0 4px;
+}
+
+@media (max-width: 480px) {
+    .pagination-container {
+        margin: 2rem 0;
+        gap: 0.5rem;
+        padding: 0.6rem;
+    }
+    
+    .pagination-btn {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .pagination-info {
+        height: 38px;
+        font-size: 0.8rem;
+        padding: 0 0.75rem;
+    }
+}
 </style>
 </head>
 <body>
@@ -1818,15 +1908,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Asesor</label>
-                    <select class="form-select" id="edit_cod_asesor" disabled style="background: rgba(0,0,0,0.3); cursor: not-allowed;">
+                    <label class="form-label">Asesor *</label>
+                    <select class="form-select" id="edit_cod_asesor" name="cod_asesor" required>
                         <option value="">Seleccione</option>
                         <?php mysqli_data_seek($res_asesor, 0);
                         while ($r = mysqli_fetch_assoc($res_asesor)): ?>
                         <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
                         <?php endwhile; ?>
                     </select>
-                    <input type="hidden" name="cod_asesor" id="edit_cod_asesor_hidden">
                 </div>
 
                 <!-- Sección de Credenciales de Acceso -->
@@ -2757,7 +2846,6 @@ function abrirModalEditar(data) {
     document.getElementById('edit_telefono').value = data.telefono || '';
     document.getElementById('edit_correo').value = data.correo || '';
     document.getElementById('edit_cod_asesor').value = data.cod_asesor || '';
-    document.getElementById('edit_cod_asesor_hidden').value = data.cod_asesor || '';
     document.getElementById('edit_estado').value = data.cod_estado_activacion_usuario;
     document.getElementById('edit_estado_hidden').value = data.cod_estado_activacion_usuario;
     

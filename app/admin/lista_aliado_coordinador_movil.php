@@ -1017,7 +1017,7 @@ select option:checked {
     color: #ffffff !important;
 }
 
-/* Selects inline de edici�n */
+/* Selects inline de edición */
 select[id^="edit_departamento_tienda_"] option,
 select[id^="edit_municipio_tienda_"] option {
     background-color: #1a1f2e !important;
@@ -1179,6 +1179,96 @@ select[id^="edit_municipio_tienda_"] option {
         justify-content: center;
     }
 }
+
+/* ====================== PREMIUM PAGINATION ====================== */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 2.5rem 0;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeInUp 0.8s ease forwards;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.pagination-btn {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 0.9rem;
+}
+
+.pagination-btn i {
+    font-size: 1.1rem;
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background: #10b981;
+    color: white !important;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+    border-color: #10b981;
+}
+
+.pagination-btn.disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.pagination-info {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0 1.25rem;
+    background: rgba(16, 185, 129, 0.05);
+    height: 42px;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    border: 1px solid rgba(16, 185, 129, 0.1);
+    letter-spacing: 0.5px;
+}
+
+.pagination-info span {
+    color: #10b981;
+    margin: 0 4px;
+}
+
+@media (max-width: 480px) {
+    .pagination-container {
+        margin: 2rem 0;
+        gap: 0.5rem;
+        padding: 0.6rem;
+    }
+    
+    .pagination-btn {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .pagination-info {
+        height: 38px;
+        font-size: 0.8rem;
+        padding: 0 0.75rem;
+    }
+}
 </style>
 </head>
 <body>
@@ -1190,12 +1280,12 @@ select[id^="edit_municipio_tienda_"] option {
 // Obtener parmetros de bsqueda
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
-// --- CONFIGURACIǸN DE PAGINACIǸN ---
+// --- CONFIGURACIÓN DE PAGINACIÓN ---
 $registros_por_pagina = 12;
 $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 if ($pagina_actual < 1) $pagina_actual = 1;
 $offset = ($pagina_actual - 1) * $registros_por_pagina;
-// Primero obtenemos el TOTAL DE REGISTROS para la paginacin (con filtros)
+// Primero obtenemos el TOTAL DE REGISTROS para la paginación (con filtros)
 $sql_count = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
 if (!empty($busqueda)) { $sql_count .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 if ($filtro_doc == '1') { $sql_count .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '2') { $sql_count .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '3') { $sql_count .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')"; }
@@ -1205,16 +1295,16 @@ $total_paginas = ceil($total_registros_filtrados / $registros_por_pagina);
 // Consulta de aliados asignados a este asesor con LIMIT
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
-// Filtro de documentacin
+// Filtro de documentación
 if ($filtro_doc == '1') { $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))"; } elseif ($filtro_doc == '2') { $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '' AND (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))"; } elseif ($filtro_doc == '3') { $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))"; }
 $sql .= " ORDER BY a.cod_administrador DESC LIMIT $registros_por_pagina OFFSET $offset";
 $resultado = mysqli_query($conectar, $sql);
-// Si la consulta falla, intentar sin el campo de cdula
+// Si la consulta falla, intentar sin el campo de cédula
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
     a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
-    // Filtro de documentacin (sin el campo de cdula)
+    // Filtro de documentación (sin el campo de cédula)
     if ($filtro_doc == '1') { $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '2') { $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '3') { $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')";  }
     $sql .= " ORDER BY a.cod_administrador DESC LIMIT $registros_por_pagina OFFSET $offset";
     $resultado = mysqli_query($conectar, $sql);
@@ -1234,7 +1324,7 @@ $sql_total_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_
 $res_total_bancos = mysqli_query($conectar, $sql_total_bancos);
 $total_bancos_header = ($res_total_bancos) ? mysqli_fetch_assoc($res_total_bancos)['total'] : 0;
 // -----------------------------
-// Consultas para combos - L�der (20)
+// Consultas para combos - Líder (20)
 $sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY nombres_apellidos_tercero ASC";
 $res_lider = mysqli_query($conectar, $sql_lider);
 // Consultas para combos - Coordinador (21)
@@ -1258,7 +1348,7 @@ $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
-// Consulta de tipos de identificaci�n
+// Consulta de tipos de identificación
 $sql_tipo_identificacion = "SELECT cod_tipo_doc, tipo_doc_abrev, nombre_tipo_doc FROM tbl15_tipo_doc ORDER BY cod_tipo_doc ASC";
 $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 ?>
@@ -1282,19 +1372,19 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
         <div class="filter-group">
             <select id="filtroDoc" class="form-select" onchange="filtrar()" style="height: 100%;">
                 <option value="" <?php echo $filtro_doc == '' ? 'selected' : ''; ?>>Todos los documentos</option>
-                <option value="1" <?php echo $filtro_doc == '1' ? 'selected' : ''; ?>>Con documentaci�n (Al menos uno)</option>
-                <option value="2" <?php echo $filtro_doc == '2' ? 'selected' : ''; ?>>Documentaci�n completa (Los 3)</option>
-                <option value="3" <?php echo $filtro_doc == '3' ? 'selected' : ''; ?>>Sin documentaci�n</option>
+                <option value="1" <?php echo $filtro_doc == '1' ? 'selected' : ''; ?>>Con documentación (Al menos uno)</option>
+                <option value="2" <?php echo $filtro_doc == '2' ? 'selected' : ''; ?>>documentación completa (Los 3)</option>
+                <option value="3" <?php echo $filtro_doc == '3' ? 'selected' : ''; ?>>Sin documentación</option>
             </select>
         </div>
     </div>
-    <!-- Botones de Acci�n -->
+    <!-- Botones de Acción -->
     <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;" class="animate-in delay-1">
         <button class="add-button" style="margin-bottom: 0; flex: 1.5;" onclick="abrirModal()"><i class="fa-solid fa-plus"></i> Registrar Nuevo Aliado</button>
-        <!-- Registro r�pido deshabilitado para coordinador por ahora si no tiene el modal, pero dejo la estructura -->
+        <!-- Registro rápido deshabilitado para coordinador por ahora si no tiene el modal, pero dejo la estructura -->
         <!--
         <button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" onclick="abrirModalRapido()">
-            <i class="fa-solid fa-bolt"></i> Registro R�pido
+            <i class="fa-solid fa-bolt"></i> Registro Rápido
         </button>
         -->
     </div>
@@ -1313,7 +1403,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 $tiendas_arr = [];
                 while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_coordinador_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #10b981; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
                 $tiendas_texto = count($tiendas_arr) > 0 ? implode(', ', $tiendas_arr) : 'Sin tiendas';
-                // Obtener l�neas de cr�dito asociadas a este aliado
+                // Obtener líneas de crédito asociadas a este aliado
                 $sql_lineas_credito = "SELECT ec.nombre_entidad_crediticia, peca.interes_ptj 
                 FROM tbl15_parametrizacion_entidad_crediticia_aliado peca INNER JOIN tbl15_entidad_crediticia ec ON peca.cod_entidad_crediticia = ec.cod_entidad_crediticia 
                 WHERE peca.cod_aliado_estrategico = '$cod_aliado' AND peca.cod_estado = '1' ORDER BY ec.cod_posicion ASC";
@@ -1325,13 +1415,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     $count_lineas++;
                 }
                 $lineas_credito_texto = $count_lineas > 0 ? $lineas_credito_html : '<span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">Sin entidades</span>';
-
-                // --- NUEVAS ESTAD�STICAS ---
+                // --- NUEVAS ESTADÍSTICAS ---
                 // Contar tiendas totales de este aliado
                 $sql_count_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado'";
                 $res_count_tiendas = mysqli_query($conectar, $sql_count_tiendas);
                 $total_tiendas_aliado = ($res_count_tiendas) ? mysqli_fetch_assoc($res_count_tiendas)['total'] : 0;
-                
                 // Contar cuentas bancarias de este aliado
                 $sql_count_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico = '$cod_aliado' AND cod_estado = '1'";
                 $res_count_bancos = mysqli_query($conectar, $sql_count_bancos);
@@ -1365,7 +1453,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.25rem;">
                             <i class="fa-solid fa-credit-card" style="color: #10b981; font-size: 0.8rem; margin-top: 0.25rem; flex-shrink: 0;"></i>
                             <div style="flex: 1; min-width: 0;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600; margin-bottom: 0.35rem;">L�neas de Cr�dito:</div>
+                                <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600; margin-bottom: 0.35rem;">Líneas de Crédito:</div>
                                 <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; line-height: 1.4;">
                                     <?php echo $lineas_credito_texto; ?>
                                 </div>
@@ -1410,17 +1498,17 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
         </a>
         
         <a href="?pagina=<?php echo $pagina_actual - 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
-           class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>">
-            <i class="fa-solid fa-chevron-left"></i> <span>Anterior</span>
+           class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>" title="Página anterior">
+            <i class="fa-solid fa-chevron-left"></i>
         </a>
         
         <div class="pagination-info">
-            Pág. <?php echo $pagina_actual; ?> de <?php echo $total_paginas; ?>
+            Pág. <span><?php echo $pagina_actual; ?></span> de <span><?php echo $total_paginas; ?></span>
         </div>
         
         <a href="?pagina=<?php echo $pagina_actual + 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
-           class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>">
-            <span>Siguiente</span> <i class="fa-solid fa-chevron-right"></i>
+           class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>" title="Siguiente página">
+            <i class="fa-solid fa-chevron-right"></i>
         </a>
         
         <a href="?pagina=<?php echo $total_paginas; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
@@ -1476,11 +1564,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-row">
                     <div class="group-group" id="container_nit_razon_social" style="display:none;">
-                        <label class="form-label">NIT Raz�n Social *</label>
+                        <label class="form-label">NIT Razón Social *</label>
                         <input type="text" class="form-input" id="nit_razon_social" name="nit_razon_social">
                     </div>
                     <div class="form-group" id="container_nombre_razon_social" style="display:none;">
-                        <label class="form-label">Raz�n Social *</label>
+                        <label class="form-label">Razón Social *</label>
                         <input type="text" class="form-input" id="nombre_razon_social" name="nombre_razon_social">
                     </div>
                 </div>
@@ -1488,7 +1576,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Identificaci�n *</label>
+                        <label class="form-label">Identificación *</label>
                         <input type="number" class="form-input" id="identificacion_tercero" name="identificacion_tercero" required>
                         <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
                     </div>
@@ -1517,7 +1605,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Tel�fono *</label><input type="tel" class="form-input" name="telefono1_tercero" required>
+                        <label class="form-label">Teléfono *</label><input type="tel" class="form-input" name="telefono1_tercero" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Correo *</label><input type="email" class="form-input" name="correo_tercero" required>
@@ -1537,14 +1625,14 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Direcci�n</label><input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
+                        <label class="form-label">Dirección</label><input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Barrio</label><input type="text" class="form-input" id="barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
                     </div>
                 </div>
 
-                <!-- Parametrizaci�n de Lineas de Credito -->
+                <!-- Parametrización de Lineas de Credito -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
                     <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
@@ -1576,12 +1664,12 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
                             <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Selecciona las lineas de credito disponibles para este aliado e ingresa el porcentaje de inter�s correspondiente.
+                            <strong>Nota:</strong> Selecciona las lineas de credito disponibles para este aliado e ingresa el porcentaje de inters correspondiente.
                         </div>
                     </div>
                 </div>
 
-                <!-- Parametrizaci�n de Bancos -->
+                <!-- Parametrización de Bancos -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
                         <i class="fa-solid fa-university"></i> Cuentas Bancarias
@@ -1599,7 +1687,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                                     <?php echo $banco['nombre_banco']; ?>
                                 </label>
                                 <div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">
-                                    <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">N�mero:</label>
+                                    <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Número:</label>
                                     <input type="number" class="form-input banco-input" name="numero_cuenta_<?php echo $banco['cod_banco']; ?>" id="numero_cuenta_<?php echo $banco['cod_banco']; ?>" placeholder="123456789" style="width: 120px; padding: 0.3rem 0.4rem; font-size: 0.8rem;" disabled>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">
@@ -1637,21 +1725,21 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
                             <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Selecciona los bancos e ingresa el n�mero de cuenta y tipo de cuenta para este aliado.
+                            <strong>Nota:</strong> Selecciona los bancos e ingresa el número de cuenta y tipo de cuenta para este aliado.
                         </div>
                     </div>
                 </div>
 
-                <!-- Documentaci�n Legal -->
+                <!-- documentación Legal -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
-                        <i class="fa-solid fa-file-contract"></i> Documentaci�n Legal
+                        <i class="fa-solid fa-file-contract"></i> documentación Legal
                     </label>
                     <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem;">
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
-                                <i class="fa-solid fa-id-card"></i> C�dula
+                                <i class="fa-solid fa-id-card"></i> Cdula
                             </label>
                             <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
@@ -1659,7 +1747,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
-                                <i class="fa-solid fa-file-pdf"></i> RUT (Registro �nico Tributario)
+                                <i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)
                             </label>
                             <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
@@ -1667,7 +1755,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
-                                <i class="fa-solid fa-building"></i> C�mara de Comercio
+                                <i class="fa-solid fa-building"></i> Cámara de Comercio
                             </label>
                             <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
@@ -1703,7 +1791,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
                             <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Adjunta la documentaci�n legal requerida para el aliado estrat�gico.
+                            <strong>Nota:</strong> Adjunta la documentación legal requerida para el aliado estratégico.
                         </div>
                     </div>
                 </div>
@@ -1713,7 +1801,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #10b981; width: 20px; height: 20px; cursor: pointer;">
                         <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #10b981; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
                     </label>
-                    <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se crear� autom�ticamente una tienda con los datos del aliado</small>
+                    <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se creará automáticamente una tienda con los datos del aliado</small>
                 </div>
                 
                 <button type="submit" class="submit-btn" id="btnGuardar"><i class="fa-solid fa-save"></i> Guardar Aliado</button>
@@ -1767,18 +1855,18 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 </div>
 
                 <div class="form-group" id="edit_container_nit_razon_social" style="display:none;">
-                    <label class="form-label">NIT Raz�n Social *</label><input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
+                    <label class="form-label">NIT Razón Social *</label><input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
                 </div>
 
                 <div class="form-group" id="edit_container_nombre_razon_social" style="display:none;">
-                    <label class="form-label">Raz�n Social *</label><input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
+                    <label class="form-label">Razón Social *</label><input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
                 </div>
 
                 <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Identificaci�n *</label><input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                        <label class="form-label">Identificación *</label><input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Tipo de Documento *</label>
@@ -1805,7 +1893,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Tel�fono *</label><input type="tel" class="form-input" name="telefono1_tercero" id="edit_telefono" required>
+                        <label class="form-label">Teléfono *</label><input type="tel" class="form-input" name="telefono1_tercero" id="edit_telefono" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Correo *</label><input type="email" class="form-input" name="correo_tercero" id="edit_correo" required>
@@ -1825,7 +1913,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Direcci�n</label><input type="text" class="form-input" id="edit_direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
+                        <label class="form-label">Dirección</label><input type="text" class="form-input" id="edit_direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Barrio</label><input type="text" class="form-input" id="edit_barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
@@ -1833,18 +1921,17 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Asesor</label>
-                    <select class="form-select" id="edit_cod_asesor" disabled style="background: rgba(0,0,0,0.3); cursor: not-allowed;">
+                    <label class="form-label">Asesor *</label>
+                    <select class="form-select" id="edit_cod_asesor" name="cod_asesor" required>
                         <option value="">Seleccione</option>
                         <?php mysqli_data_seek($res_asesor, 0);
                         while ($r = mysqli_fetch_assoc($res_asesor)): ?>
                         <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
                         <?php endwhile; ?>
                     </select>
-                    <input type="hidden" name="cod_asesor" id="edit_cod_asesor_hidden">
                 </div>
 
-                <!-- Secci�n de Credenciales de Acceso -->
+                <!-- Sección de Credenciales de Acceso -->
                 <div class="form-group">
                     <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0; padding-top: 1rem;">
                         <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-key"></i> Credenciales de Acceso</label>
@@ -1858,13 +1945,13 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             </div>
                         </div>
 
-                        <!-- Cambio de Contrase�a por Correo -->
+                        <!-- Cambio de Contrasea por Correo -->
                         <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                            <label class="form-label" style="color: #f59e0b; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-key"></i> Cambiar Contrase�a</label>
+                            <label class="form-label" style="color: #f59e0b; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-key"></i> Cambiar Contrasea</label>
                             <div style="text-align: center;">
-                                <button type="button" onclick="enviarRecuperacionPassword()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(245, 158, 11, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(245, 158, 11, 0.3)'"><i class="fa-solid fa-envelope"></i> Enviar Nueva Contrase�a por Correo</button>
+                                <button type="button" onclick="enviarRecuperacionPassword()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(245, 158, 11, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(245, 158, 11, 0.3)'"><i class="fa-solid fa-envelope"></i> Enviar Nueva Contrasea por Correo</button>
                                 <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.75rem;">
-                                    <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem; line-height: 1.4;"><i class="fa-solid fa-lightbulb" style="color: #f59e0b; margin-right: 0.35rem;"></i>Se generar� una nueva contrase�a temporal y se enviar� al correo registrado del aliado.</div>
+                                    <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem; line-height: 1.4;"><i class="fa-solid fa-lightbulb" style="color: #f59e0b; margin-right: 0.35rem;"></i>Se generará una nueva contraseña temporal y se enviará al correo registrado del aliado.</div>
                                 </div>
                             </div>
                         </div>
@@ -1873,14 +1960,14 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-group">
                     <label class="form-label">Estado</label>
-                    <select class="form-select" name="cod_estado_activacion_usuario" id="edit_estado" disabled style="background: rgba(100, 116, 139, 0.2); cursor: not-allowed; opacity: 0.7;"><option value="1">Activo</option><option value="2">En Espera para Activaci�n</option><option value="3">Inactivo</option></select>
+                    <select class="form-select" name="cod_estado_activacion_usuario" id="edit_estado" disabled style="background: rgba(100, 116, 139, 0.2); cursor: not-allowed; opacity: 0.7;"><option value="1">Activo</option><option value="2">En Espera para Activación</option><option value="3">Inactivo</option></select>
                     <input type="hidden" name="cod_estado_activacion_usuario" id="edit_estado_hidden">
                     <div style="background: rgba(100, 116, 139, 0.1); border: 1px solid rgba(100, 116, 139, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
-                        <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem;"><i class="fa-solid fa-info-circle" style="color: #94a3b8; margin-right: 0.35rem;"></i>El estado no se puede modificar desde aqu�.</div>
+                        <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem;"><i class="fa-solid fa-info-circle" style="color: #94a3b8; margin-right: 0.35rem;"></i>El estado no se puede modificar desde aquí.</div>
                     </div>
                 </div>
 
-                <!-- Parametrizaci�n de Lineas de Credito -->
+                <!-- Parametrización de Lineas de Credito -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
                         <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
@@ -1897,12 +1984,12 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.3;">
                             <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Aqu� se muestran las lineas de credito asignadas a este aliado.
+                            <strong>Nota:</strong> Aqu se muestran las lineas de credito asignadas a este aliado.
                         </div>
                     </div>
                 </div>
 
-                <!-- Parametrizaci�n de Bancos -->
+                <!-- Parametrización de Bancos -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
                         <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;">
@@ -1921,12 +2008,12 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
                             <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Aqu� se muestran las cuentas bancarias asignadas a este aliado.
+                            <strong>Nota:</strong> Aqu se muestran las cuentas bancarias asignadas a este aliado.
                         </div>
                     </div>
                 </div>
 
-                <!-- Parametrizaci�n de Tiendas -->
+                <!-- Parametrización de Tiendas -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
                         <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;">
@@ -1945,24 +2032,24 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
                             <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Aqu� se muestran las tiendas asociadas a este aliado.
+                            <strong>Nota:</strong> Aqu se muestran las tiendas asociadas a este aliado.
                         </div>
                     </div>
                 </div>
 
-                <!-- Documentaci�n Legal -->
+                <!-- documentación Legal -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
-                        <i class="fa-solid fa-file-contract"></i> Documentaci�n Legal
+                        <i class="fa-solid fa-file-contract"></i> documentación Legal
                     </label>
                     <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem;">
 
                         <div class="form-group">
-                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-id-card"></i> C�dula</label>
+                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-id-card"></i> Cdula</label>
                             <!-- Documento existente -->
                             <div id="edit_cedula_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
                                 <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
-                                    <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver C�dula Cargada</a>
+                                    <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver Cdula Cargada</a>
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_cedula_input" style="display: none;">
@@ -1972,7 +2059,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-file-pdf"></i> RUT (Registro �nico Tributario)</label>
+                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)</label>
                             <!-- Documento existente -->
                             <div id="edit_rut_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
                                 <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
@@ -1986,11 +2073,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-building"></i> C�mara de Comercio</label>
+                            <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-building"></i> Cámara de Comercio</label>
                             <!-- Documento existente -->
                             <div id="edit_camara_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
                                 <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
-                                    <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver C�mara de Comercio Cargada</a>
+                                    <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver Cámara de Comercio Cargada</a>
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_camara_input" style="display: none;">
@@ -2044,7 +2131,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
                             <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Si carga un nuevo documento, reemplazar� el actual. Deje vac�o para mantener el documento existente.
+                            <strong>Nota:</strong> Si carga un nuevo documento, reemplazará el actual. Deje vacío para mantener el documento existente.
                         </div>
                     </div>
                 </div>
@@ -2073,11 +2160,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             </div>
 
             <div class="detail-row">
-                <span class="detail-label-modal">Identificaci�n</span>
+                <span class="detail-label-modal">Identificación</span>
                 <span class="detail-value-modal" id="detCedula"></span>
             </div>
             <div class="detail-row">
-                <span class="detail-label-modal">Tel�fono</span>
+                <span class="detail-label-modal">Teléfono</span>
                 <span class="detail-value-modal" id="detTelefono"></span>
             </div>
             <div class="detail-row">
@@ -2085,7 +2172,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <span class="detail-value-modal" id="detCorreo"></span>
             </div>
             <div class="detail-row">
-                <span class="detail-label-modal">Direcci�n</span>
+                <span class="detail-label-modal">Dirección</span>
                 <span class="detail-value-modal" id="detDireccion"></span>
             </div>
             <div class="detail-row">
@@ -2093,7 +2180,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <span class="detail-value-modal" id="detCuenta"></span>
             </div>
             <div class="detail-row">
-                <span class="detail-label-modal">Comisi�n</span>
+                <span class="detail-label-modal">Comisión</span>
                 <span class="detail-value-modal" id="detComision"></span>
             </div>
             <div class="detail-row">
@@ -2128,7 +2215,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Porcentaje de Inter�s *</label>
+                    <label class="form-label">Porcentaje de Inters *</label>
                     <input type="number" step="0.01" min="0" max="100" class="form-input" id="agregar_interes" name="interes_ptj" placeholder="0.00" required>
                 </div>
 
@@ -2178,7 +2265,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">N�mero de Cuenta *</label>
+                    <label class="form-label">Número de Cuenta *</label>
                     <input type="text" class="form-input" id="agregar_numero_cuenta" name="numero_banco_cuenta" placeholder="Ej: 1234567890" required>
                 </div>
 
@@ -2240,15 +2327,15 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             <form id="formAgregarTienda" enctype="multipart/form-data">
                 <input type="hidden" id="agregar_tienda_cod_aliado" name="cod_aliado_estrategico">
                 
-                <!-- Secci�n 1: Informaci�n B�sica -->
+                <!-- Sección 1: información Básica -->
                 <div style="background: rgba(16, 185, 129, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-info-circle" style="color: #10b981;"></i>
-                    <span style="color: #10b981; font-weight: 600; font-size: 0.85rem;">Informaci�n B�sica</span>
+                    <span style="color: #10b981; font-weight: 600; font-size: 0.85rem;">Información Básica</span>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Nombre de la Tienda *</label>
-                    <input type="text" class="form-input" name="nombre1_tercero" id="tienda_nombre" placeholder="Ej: Tienda El �xito" required>
+                    <input type="text" class="form-input" name="nombre1_tercero" id="tienda_nombre" placeholder="Ej: Tienda El Éxito" required>
                 </div>
 
                 <div class="form-row">
@@ -2257,18 +2344,18 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         <input type="number" class="form-input" name="identificacion_tercero" id="tienda_nit" required>
                     </div>
                      <div class="form-group">
-                        <label class="form-label">Tel�fono *</label>
+                        <label class="form-label">Teléfono *</label>
                         <input type="tel" class="form-input" name="telefono1_tercero" id="tienda_telefono" required>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Correo Electr�nico *</label>
+                    <label class="form-label">Correo Electrónico *</label>
                     <input type="email" class="form-input" name="correo_tercero" id="tienda_correo" required>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Direcci�n</label>
+                    <label class="form-label">Dirección</label>
                     <input type="text" class="form-input" name="direccion_tercero" id="tienda_direccion">
                 </div>
 
@@ -2287,7 +2374,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     </div>
                 </div>
 
-                <!-- Secci�n 2: Representante Legal -->
+                <!-- Sección 2: Representante Legal -->
                 <div style="background: rgba(59, 130, 246, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-user-tie" style="color: #3b82f6;"></i>
                     <span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">Representante Legal</span>
@@ -2309,26 +2396,26 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     </div>
                 </div>
 
-                <!-- Secci�n 3: Informaci�n del Negocio -->
+                <!-- Sección 3: información del Negocio -->
                 <div style="background: rgba(59, 130, 246, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-briefcase" style="color: #3b82f6;"></i>
-                    <span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">Informaci�n del Negocio</span>
+                    <span style="color: #3b82f6; font-weight: 600; font-size: 0.85rem;">Información del Negocio</span>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">�Existe en RUES?</label>
+                        <label class="form-label">¿Existe en RUES?</label>
                         <select class="form-select" name="existe_rues" id="tienda_existe_rues">
                             <option value="">-- Seleccione --</option>
-                            <option value="SI">S�</option>
+                            <option value="SI">Sí</option>
                             <option value="NO">No</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">�Venta Presencial?</label>
+                        <label class="form-label">¿Venta Presencial?</label>
                         <select class="form-select" name="venta_presencial" id="tienda_venta_presencial">
                             <option value="">-- Seleccione --</option>
-                            <option value="SI">S�</option>
+                            <option value="SI">Sí</option>
                             <option value="NO">No</option>
                         </select>
                     </div>
@@ -2336,10 +2423,10 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">�Venta Online?</label>
+                        <label class="form-label">¿Venta Online?</label>
                         <select class="form-select" name="venta_online" id="tienda_venta_online">
                             <option value="">-- Seleccione --</option>
-                            <option value="SI">S�</option>
+                            <option value="SI">Sí</option>
                             <option value="NO">No</option>
                         </select>
                     </div>
@@ -2354,10 +2441,10 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <input type="text" class="form-input" name="nombre_sistema_contable" id="tienda_sistema_contable" placeholder="Ej: Siigo, World Office, Alegra...">
                 </div>
 
-                <!-- Secci�n 4: Im�genes -->
+                <!-- Sección 4: Imágenes -->
                 <div style="background: rgba(236, 72, 153, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin: 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-camera" style="color: #ec4899;"></i>
-                    <span style="color: #ec4899; font-weight: 600; font-size: 0.85rem;">Im�genes del Establecimiento</span>
+                    <span style="color: #ec4899; font-weight: 600; font-size: 0.85rem;">Imágenes del Establecimiento</span>
                 </div>
 
                 <div class="form-group">
@@ -2418,11 +2505,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
     </div>
 </div>
 
-<!-- Modal Confirmaci�n Registro Exitoso -->
+<!-- Modal Confirmación Registro Exitoso -->
 <div class="modal-overlay" id="modalConfirmacionRegistro" style="z-index: 4000; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-            <h2><i class="fa-solid fa-circle-check"></i> �Aliado Registrado!</h2>
+            <h2><i class="fa-solid fa-circle-check"></i> ¡Aliado Registrado!</h2>
             <button class="modal-close" onclick="cerrarModalConfirmacionRegistro()"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -2441,7 +2528,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             
             <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
                 <h4 style="color: #8b5cf6; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-tasks"></i> �Qu� deseas hacer ahora?
+                    <i class="fa-solid fa-tasks"></i> ¿Qué deseas hacer ahora?
                 </h4>
                 <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Selecciona una de las siguientes opciones:</p>
             </div>
@@ -2454,7 +2541,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <button onclick="abrirDocumentacionDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
                     <i class="fa-solid fa-file-contract"></i>
-                    Compartir Enlace de Documentaci�n
+                    Compartir Enlace de Documentación
                 </button>
                 
                 <button onclick="abrirRegistroTiendaDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
@@ -2470,11 +2557,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
     </div>
 </div>
 
-<!-- Modal Confirmaci�n Tienda Registrada -->
+<!-- Modal Confirmación Tienda Registrada -->
 <div class="modal-overlay" id="modalConfirmacionTienda" style="z-index: 4500; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-            <h2><i class="fa-solid fa-store"></i> �Tienda Registrada!</h2>
+            <h2><i class="fa-solid fa-store"></i> ¡Tienda Registrada!</h2>
             <button class="modal-close" onclick="cerrarModalConfirmacionTienda()"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -2492,7 +2579,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             
             <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
                 <h4 style="color: #10b981; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-tasks"></i> �Qu� deseas hacer ahora?
+                    <i class="fa-solid fa-tasks"></i> ¿Qué deseas hacer ahora?
                 </h4>
                 <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Selecciona una de las siguientes opciones:</p>
             </div>
@@ -2516,11 +2603,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
     </div>
 </div>
 
-<!-- Modal Documentaci�n Aliado -->
+<!-- Modal documentación Aliado -->
 <div class="modal-overlay" id="modalDocumentacionAliado" style="z-index: 5000; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
         <div class="modal-header" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.2));">
-            <h2><i class="fa-solid fa-file-lines"></i> Documentaci�n</h2>
+            <h2><i class="fa-solid fa-file-lines"></i> documentación</h2>
             <button class="modal-close" onclick="cerrarModalDocumentacionAliado()"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body">
@@ -2529,7 +2616,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             
             <div style="text-align: center; margin-bottom: 1.5rem;">
                 <h3 style="color: white; margin-bottom: 0.5rem;" id="doc_nombre_aliado"></h3>
-                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Comparta el enlace para que el aliado suba su documentaci�n legal.</p>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">Comparta el enlace para que el aliado suba su documentación legal.</p>
             </div>
             
             <!-- Opciones de Compartir -->
@@ -2557,11 +2644,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
     </div>
 </div>
 
-<!-- Modal Compartir Documentaci�n -->
+<!-- Modal Compartir Documentación -->
 <div class="modal-overlay" id="modalCompartirDocs" style="align-items: center; z-index: 3500;">
     <div class="modal-content" style="max-width: 600px; border-radius: 20px;">
         <div class="modal-header">
-            <h2><i class="fa-solid fa-share-nodes"></i> Compartir Documentaci�n</h2>
+            <h2><i class="fa-solid fa-share-nodes"></i> Compartir Documentación</h2>
             <button class="modal-close" onclick="cerrarModalCompartirDocs()">
                 <i class="fa-solid fa-times"></i>
             </button>
@@ -2574,13 +2661,13 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             </div>
             
             <div id="contenidoCompartir" style="display: none;">
-                <!-- Informaci�n del aliado -->
+                <!-- información del aliado -->
                 <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
                     <h3 style="margin: 0 0 10px 0; color: white; font-size: 1rem;">
                         <i class="fa-solid fa-user"></i> <span id="compartir_aliado_nombre"></span>
                     </h3>
                     <p style="margin: 0; color: rgba(255,255,255,0.6); font-size: 0.85rem;">
-                        <i class="fa-solid fa-id-card"></i> C�dula: <span id="compartir_aliado_cedula"></span>
+                        <i class="fa-solid fa-id-card"></i> Cdula: <span id="compartir_aliado_cedula"></span>
                     </p>
                 </div>
                 
@@ -2590,7 +2677,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         <i class="fa-solid fa-file-zipper"></i> Archivos incluidos:
                     </h4>
                     <div id="lista_archivos_zip" style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px;">
-                        <!-- Se llenar� din�micamente -->
+                        <!-- Se llenar dinmicamente -->
                     </div>
                 </div>
                 
@@ -2615,7 +2702,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <!-- Formulario de email (inicialmente oculto) -->
                 <div id="formularioEmail" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(16, 185, 129, 0.3);">
                     <h4 style="color: white; font-size: 0.9rem; margin-bottom: 15px;">
-                        <i class="fa-solid fa-paper-plane"></i> Enviar por correo electr�nico
+                        <i class="fa-solid fa-paper-plane"></i> Enviar por correo electrónico
                     </h4>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 5px;">Email destino *</label>
@@ -2662,7 +2749,7 @@ var quill;
 $(document).ready(function() {
     quill = new Quill('#editor_garantia', {
         theme: 'snow',
-        placeholder: 'Escribe aqu� los t�rminos de la garant�a...',
+        placeholder: 'Escribe aquí los términos de la garantía...',
         modules: {
             toolbar: [
                 ['bold', 'italic', 'underline'],
@@ -2686,17 +2773,17 @@ function abrirModal() {
 }
 function cerrarModal() { 
     document.getElementById('modalRegistro').classList.remove('show');
-    // Resetear validaci�n de identificaci�n
+    // Resetear validación de identificación
     identificacionValida = false;
     $('#identificacion_tercero').css('border-color', '');
     $('#mensaje_identificacion').hide();
-    // Habilitar bot�n de guardar
+    // Habilitar botn de guardar
     $('#btnGuardar').prop('disabled', false).css({'opacity': '1', 'cursor': 'pointer'});
     // Limpiar formulario
     $('#formRegistro')[0].reset();
 }
 
-// Funci�n para habilitar/deshabilitar campos de banco
+// Función para habilitar/deshabilitar campos de banco
 function toggleBancoInputs(codBanco) {
     var checkbox = document.getElementById('banco_' + codBanco);
     var numeroInput = document.getElementById('numero_cuenta_' + codBanco);
@@ -2748,18 +2835,17 @@ function abrirModalEditar(data) {
     document.getElementById('edit_telefono').value = data.telefono || '';
     document.getElementById('edit_correo').value = data.correo || '';
     document.getElementById('edit_cod_asesor').value = data.cod_asesor || '';
-    document.getElementById('edit_cod_asesor_hidden').value = data.cod_asesor || '';
     document.getElementById('edit_estado').value = data.cod_estado_activacion_usuario;
     document.getElementById('edit_estado_hidden').value = data.cod_estado_activacion_usuario;
     
     document.getElementById('edit_usuario').value = data.cuenta || data.cedula || '';
     
-    // Cargar Tipo de Identificaci�n
+    // Cargar Tipo de identificación
     if(document.getElementById('edit_nombre_tipo_identificacion')) {
         document.getElementById('edit_nombre_tipo_identificacion').value = data.nombre_tipo_identificacion || 'CC';
     }
 
-    // Cargar nuevos campos: Tipo Cliente, Sector, Nit Raz�n Social
+    // Cargar nuevos campos: Tipo Cliente, Sector, Nit Razón Social
     if(document.getElementById('edit_nombre_tipo_cliente')) {
         document.getElementById('edit_nombre_tipo_cliente').value = data.nombre_tipo_cliente || '';
     }
@@ -2769,20 +2855,20 @@ function abrirModalEditar(data) {
     if(document.getElementById('edit_nit_razon_social')) {
         document.getElementById('edit_nit_razon_social').value = data.nit_razon_social || '';
     }
-    // Cargar Raz�n Social
+    // Cargar Razón Social
     if(document.getElementById('edit_nombre_razon_social')) {
         document.getElementById('edit_nombre_razon_social').value = data.nombre_razon_social || '';
     }
     
-    // Mostrar/Ocultar Nit Raz�n Social al cargar (sin limpiar el valor)
+    // Mostrar/Ocultar Nit Razón Social al cargar (sin limpiar el valor)
     cambiarTipoClienteEdit(false);
 
-    // Cargar Tipo de Identificaci�n en Registro (resetear al cerrar o abrir)
+    // Cargar Tipo de identificación en Registro (resetear al cerrar o abrir)
     if(document.getElementById('nombre_tipo_identificacion')) {
         // En abrirModal() ya se resetea el formulario, pero por si acaso
     }
     
-    // Cargar Direcci�n y Barrio
+    // Cargar Dirección y Barrio
     if(document.getElementById('edit_direccion_tercero')) {
         document.getElementById('edit_direccion_tercero').value = data.direccion_tercero || '';
     }
@@ -2792,7 +2878,7 @@ function abrirModalEditar(data) {
     // Cargar departamentos y preseleccionar departamento/municipio
     cargarDepartamentosEdicion(data.cod_departamento || '', data.cod_municipio || '');
     
-    // Cargar documentaci�n legal si existe
+    // Cargar documentación legal si existe
     var editRutActual = document.getElementById('edit_rut_actual');
     var editRutInput = document.getElementById('edit_rut_input');
     var editCamaraActual = document.getElementById('edit_camara_actual');
@@ -2808,7 +2894,7 @@ function abrirModalEditar(data) {
         editRutInput.style.display = 'block'; // Mostrar input si no existe documento
     }
     
-    // Manejar C�mara de Comercio
+    // Manejar Cámara de Comercio
     if (data.url_documentacion_camaracomercio_aliado && data.url_documentacion_camaracomercio_aliado.trim() !== '') {
         editCamaraActual.style.display = 'block';
         editCamaraActual.querySelector('a').href = data.url_documentacion_camaracomercio_aliado;
@@ -2818,7 +2904,7 @@ function abrirModalEditar(data) {
         editCamaraInput.style.display = 'block'; // Mostrar input si no existe documento
     }
     
-    // Manejar C�dula
+    // Manejar Cdula
     var editCedulaActual = document.getElementById('edit_cedula_actual');
     var editCedulaInput = document.getElementById('edit_cedula_input');
     if (editCedulaActual && editCedulaInput) {
@@ -2853,7 +2939,7 @@ function abrirModalEditar(data) {
                     var url = entidad.url_pagina_web_consulta || '';
                     var estado = entidad.cod_estado || '1';
                     
-                    // Colores seg�n estado
+                    // Colores según estado
                     var bgColor = estado == '1' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)';
                     var borderColor = estado == '1' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
                     
@@ -2898,7 +2984,7 @@ function abrirModalEditar(data) {
                     html += '</select>';
                     html += '</div>';
                     
-                    // Bot�n Guardar
+                    // Botn Guardar
                     html += '<button type="button" onclick="guardarEntidadEditada(' + entidad.cod_parametrizacion_entidad_crediticia_aliado + ')" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.5rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; height: fit-content; align-self: end;" title="Guardar cambios"><i class="fa-solid fa-save"></i></button>';
                     html += '</div>';
                     
@@ -2926,7 +3012,7 @@ function abrirModalEditar(data) {
     document.getElementById('modalEditar').classList.add('show');
 }
 
-// Funci�n para cargar bancos del aliado en modal editar
+// Función para cargar bancos del aliado en modal editar
 function cargarBancosAliado(codAdministrador) {
     $('#contenedor_bancos_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando bancos...</p></div>');
     
@@ -2939,7 +3025,7 @@ function cargarBancosAliado(codAdministrador) {
             if (response.success && response.bancos && response.bancos.length > 0) {
                 var html = '';
                 response.bancos.forEach(function(banco) {
-                    // Colores seg�n estado
+                    // Colores según estado
                     var isActive = banco.cod_estado == '1';
                     var statusColor = isActive ? '#10b981' : '#ef4444';
                     var statusBg = isActive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
@@ -2961,10 +3047,10 @@ function cargarBancosAliado(codAdministrador) {
                     // Cuerpo de la tarjeta
                     html += '<div style="padding: 1rem;">';
                     
-                    // Fila 1: N�mero y Tipo
+                    // Fila 1: Número y Tipo
                     html += '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">';
                     html += '<div>';
-                    html += '<label style="color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-bottom: 0.3rem; display: block;">N�mero de Cuenta</label>';
+                    html += '<label style="color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-bottom: 0.3rem; display: block;">Número de Cuenta</label>';
                     html += '<input type="text" id="edit_numero_' + banco.cod_banco_cuenta + '" value="' + escapeHtmlMovil(banco.numero_banco_cuenta) + '" style="background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.5rem; border-radius: 6px; font-size: 0.85rem; width: 100%;">';
                     html += '</div>';
                     html += '<div>';
@@ -3035,8 +3121,7 @@ function cargarBancosAliado(codAdministrador) {
         }
     });
 }
-
-// Funci�n para guardar cambios en cuenta bancaria
+// Función para guardar cambios en cuenta bancaria
 function guardarBancoEditado(codBancoCuenta) {
     var numeroCuenta = $('#edit_numero_' + codBancoCuenta).val().trim();
     var tipoCuenta = $('#edit_tipo_' + codBancoCuenta).val();
@@ -3047,22 +3132,13 @@ function guardarBancoEditado(codBancoCuenta) {
         Swal.fire({ 
             icon: 'warning', 
             title: 'Campo requerido', 
-            text: 'El n�mero de cuenta no puede estar vac�o', 
+            text: 'El número de cuenta no puede estar vacío', 
             background: '#1a1f2e', 
             color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+            customClass: { container: 'swal-high-zindex' }        });
         return;
     }
-    
-    Swal.fire({
-        title: 'Guardando...',
-        didOpen: () => { Swal.showLoading() },
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     var formData = new FormData();
     formData.append('cod_banco_cuenta', codBancoCuenta);
@@ -3074,65 +3150,32 @@ function guardarBancoEditado(codBancoCuenta) {
     var idTitular = $('#edit_id_titular_' + codBancoCuenta).val().trim();
     formData.append('nombre_titular_cuenta', nombreTitular);
     formData.append('identificacion_titular_cuenta', idTitular);
-    if (certificadoFile) {
-        formData.append('certificado_banco', certificadoFile);
-    }
+    if (certificadoFile) { formData.append('certificado_banco', certificadoFile); }
     
     $.ajax({
-        url: '../admin/actualizar_banco_aliado_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: '../admin/actualizar_banco_aliado_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({ 
-                    icon: 'success', 
-                    title: '�Actualizado!', 
-                    text: 'Cuenta bancaria actualizada correctamente', 
-                    background: '#1a1f2e', 
-                    color: 'white', 
-                    timer: 2000,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: 'Actualizado!', text: 'Cuenta bancaria actualizada correctamente', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
             } else {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Error', 
-                    text: response.mensaje || 'No se pudo actualizar la cuenta', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo actualizar la cuenta', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
-        error: function() {
-            Swal.close();
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'Error de conexi�n. Intenta nuevamente.', 
-                background: '#1a1f2e', 
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
-        }
+        error: function() { Swal.close(); Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexin. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }); }
     });
 }
 
-// Funci�n para eliminar banco del aliado
+// Función para eliminará banco del aliado
 function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
     Swal.fire({
-        title: '�Eliminar cuenta bancaria?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminar� la cuenta de:</p><strong style="color: #10b981;">' + nombreBanco + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acci�n no se puede deshacer.</p></div>',
+        title: '¿Eliminar cuenta bancaria?',
+        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la cuenta de:</p><strong style="color: #10b981;">' + nombreBanco + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fa-solid fa-trash"></i> S�, eliminar',
+        confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar',
         cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
         background: '#1a1f2e',
         color: 'white',
@@ -3150,7 +3193,7 @@ function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
                     if (response.success) {
                         Swal.fire({ 
                             icon: 'success', 
-                            title: '�Eliminado!', 
+                            title: '¡Eliminado!', 
                             text: 'Cuenta bancaria eliminada correctamente', 
                             background: '#1a1f2e', 
                             color: 'white', 
@@ -3165,7 +3208,7 @@ function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
                         Swal.fire({ 
                             icon: 'error', 
                             title: 'Error', 
-                            text: response.mensaje || 'No se pudo eliminar la cuenta', 
+                            text: response.mensaje || 'No se pudo eliminará la cuenta', 
                             background: '#1a1f2e', 
                             color: 'white',
                             customClass: {
@@ -3179,7 +3222,7 @@ function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
     });
 }
 
-// Funci�n para cargar tiendas del aliado en modal editar
+// Función para cargar tiendas del aliado en modal editar
 function cargarTiendasAliado(codAdministrador) {
     $('#contenedor_tiendas_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando tiendas...</p></div>');
     
@@ -3192,7 +3235,7 @@ function cargarTiendasAliado(codAdministrador) {
             if (response.success && response.tiendas && response.tiendas.length > 0) {
                 var html = '';
                 response.tiendas.forEach(function(tienda) {
-                    // Colores seg�n estado
+                    // Colores según estado
                     var estado = tienda.cod_estado || '1';
                     var bgColor = estado == '1' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)';
                     var borderColor = estado == '1' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
@@ -3211,16 +3254,16 @@ function cargarTiendasAliado(codAdministrador) {
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">NIT/CC</label>';
                     html += '<input type="text" id="edit_nit_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.identificacion_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
-                    // Tel�fono
-                    html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Tel�fono</label>';
+                    // Teléfono
+                    html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Teléfono</label>';
                     html += '<input type="text" id="edit_telefono_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.telefono1_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // Correo
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Correo</label>';
                     html += '<input type="email" id="edit_correo_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.correo_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
-                    // Direcci�n
-                    html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Direcci�n</label>';
+                    // Dirección
+                    html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Dirección</label>';
                     html += '<input type="text" id="edit_direccion_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.direccion_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // Departamento
@@ -3233,7 +3276,7 @@ function cargarTiendasAliado(codAdministrador) {
                     
                     html += '</div>';
                     
-                    // Columna derecha: Estado y bot�n guardar
+                    // Columna derecha: Estado y botn guardar
                     html += '<div style="display: flex; flex-direction: column; gap: 0.5rem;">';
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Estado</label>';
                     html += '<select id="edit_estado_tienda_' + tienda.cod_tienda + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;">';
@@ -3245,7 +3288,7 @@ function cargarTiendasAliado(codAdministrador) {
                     
                     html += '</div>';
                     
-                    // Bot�n ver detalle
+                    // Botn ver detalle
                     html += '<div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">';
                     html += '<a href="../admin/ver_detalle_tienda_coordinador_movil.php?cod_tienda=' + tienda.cod_tienda + '" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: none;"><i class="fa-solid fa-eye"></i> Ver Detalle Completo</a>';
                     html += '</div>';
@@ -3256,7 +3299,7 @@ function cargarTiendasAliado(codAdministrador) {
                 
                 // Cargar departamentos y municipios para cada tienda
                 response.tiendas.forEach(function(tienda) {
-                    console.log('Cargando ubicaci�n para tienda:', tienda.nombre_tienda, 'Dept:', tienda.cod_departamento, 'Muni:', tienda.cod_municipio);
+                    console.log('Cargando ubicación para tienda:', tienda.nombre_tienda, 'Dept:', tienda.cod_departamento, 'Muni:', tienda.cod_municipio);
                     cargarDepartamentosEditar(tienda.cod_tienda, tienda.cod_departamento, tienda.cod_municipio);
                 });
             } else {
@@ -3269,7 +3312,7 @@ function cargarTiendasAliado(codAdministrador) {
     });
 }
 
-// Funci�n para guardar cambios de tienda editada in situ
+// Función para guardar cambios de tienda editada in situ
 function guardarTiendaEditada(codTienda) {
     var nombreTienda = $('#edit_nombre_tienda_' + codTienda).val().trim();
     var nitTienda = $('#edit_nit_tienda_' + codTienda).val().trim();
@@ -3280,127 +3323,47 @@ function guardarTiendaEditada(codTienda) {
     var municipioTienda = $('#edit_municipio_tienda_' + codTienda).val();
     var estadoTienda = $('#edit_estado_tienda_' + codTienda).val();
     
-    // Validaciones b�sicas
+    // Validaciones básicas
     if (nombreTienda === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El nombre de la tienda no puede estar vac�o', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El nombre de la tienda no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
     if (nitTienda === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El NIT/Documento no puede estar vac�o', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El NIT/Documento no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
     if (telefonoTienda === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El tel�fono no puede estar vac�o', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El teléfono no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
     if (correoTienda === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El correo no puede estar vac�o', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El correo no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
-    Swal.fire({
-        title: 'Guardando...',
-        didOpen: () => { Swal.showLoading() },
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: '../admin/actualizar_tienda_insitu_ajax.php',
-        type: 'POST',
-        data: {
-            cod_tienda: codTienda,
-            nombre1_tercero: nombreTienda,
-            identificacion_tercero: nitTienda,
-            telefono1_tercero: telefonoTienda,
-            correo_tercero: correoTienda,
-            direccion_tercero: direccionTienda,
-            cod_departamento: departamentoTienda,
-            cod_municipio: municipioTienda,
-            cod_estado: estadoTienda
-        },
-        dataType: 'json',
+        url: '../admin/actualizar_tienda_insitu_ajax.php', type: 'POST', data: { cod_tienda: codTienda, nombre1_tercero: nombreTienda, identificacion_tercero: nitTienda, telefono1_tercero: telefonoTienda, correo_tercero: correoTienda, direccion_tercero: direccionTienda, cod_departamento: departamentoTienda, cod_municipio: municipioTienda, cod_estado: estadoTienda }, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({ 
-                    icon: 'success', 
-                    title: '�Actualizada!', 
-                    text: 'Tienda actualizada correctamente', 
-                    background: '#1a1f2e', 
-                    color: 'white', 
-                    timer: 2000,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                }).then(() => {
-                    // Recargar la lista de tiendas
-                    cargarTiendasAliado(currentCodAdministradorTienda);
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualizada!', text: 'Tienda actualizada correctamente', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } }).then(() => { cargarTiendasAliado(currentCodAdministradorTienda); });
             } else {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Error', 
-                    text: response.mensaje || 'No se pudo actualizar la tienda', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo actualizar la tienda', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
             Swal.close();
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'Error de conexi�n. Intenta nuevamente.', 
-                background: '#1a1f2e', 
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexin. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
 
-// Funci�n para cargar departamentos en modo edici�n
+// Función para cargar departamentos en modo edición
 function cargarDepartamentosEditar(codTienda, selectedDept, selectedMuni) {
     console.log('Cargando departamentos para tienda:', codTienda);
     $.ajax({
-        url: '../admin/obtener_departamentos_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             console.log('Respuesta departamentos editar:', response);
             if (response.success) {
@@ -3410,14 +3373,11 @@ function cargarDepartamentosEditar(codTienda, selectedDept, selectedMuni) {
                 
                 $.each(response.departamentos, function(index, dept) {
                     var selected = (dept.cod_departamento == selectedDept) ? 'selected' : '';
-                    select.append('<option value="' + dept.cod_departamento + '" ' + selected + '>' + 
-                                dept.nombre_departamento + '</option>');
+                    select.append('<option value="' + dept.cod_departamento + '" ' + selected + '>' + dept.nombre_departamento + '</option>');
                 });
                 
                 // Si hay un departamento seleccionado, cargar sus municipios
-                if (selectedDept) {
-                    cargarMunicipiosEditar(codTienda, selectedDept, selectedMuni);
-                }
+                if (selectedDept) { cargarMunicipiosEditar(codTienda, selectedDept, selectedMuni); }
             } else {
                 console.error('Error en respuesta editar:', response.mensaje);
             }
@@ -3429,98 +3389,65 @@ function cargarDepartamentosEditar(codTienda, selectedDept, selectedMuni) {
     });
 }
 
-// Funci�n para cargar municipios en modo edici�n
+// Función para cargar municipios en modo edición
 function cargarMunicipiosEditar(codTienda, codDepartamento, selectedMuni) {
     var selectMuni = $('#edit_municipio_tienda_' + codTienda);
     selectMuni.empty();
     selectMuni.append('<option value="">Seleccionar Municipio *</option>');
     
-    if (!codDepartamento) {
-        return;
-    }
+    if (!codDepartamento) { return; }
     
     $.ajax({
-        url: '../admin/obtener_municipios_ajax.php',
-        type: 'GET',
-        data: { cod_departamento: codDepartamento },
-        dataType: 'json',
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
         success: function(response) {
             if (response.success) {
                 $.each(response.municipios, function(index, muni) {
                     var selected = (muni.cod_municipio == selectedMuni) ? 'selected' : '';
-                    selectMuni.append('<option value="' + muni.cod_municipio + '" ' + selected + '>' + 
-                                    muni.nombre_municipio + '</option>');
+                    selectMuni.append('<option value="' + muni.cod_municipio + '" ' + selected + '>' + muni.nombre_municipio + '</option>');
                 });
             }
         },
-        error: function() {
-            console.error('Error al cargar municipios para departamento ' + codDepartamento);
-        }
+        error: function() { console.error('Error al cargar municipios para departamento ' + codDepartamento); }
     });
 }
 
-// Funci�n para cargar municipios en el modal de agregar tienda
+// Función para cargar municipios en el modal de agregar tienda
 function cargarMunicipiosTienda(codDepartamento, targetSelect) {
     var select = $(targetSelect);
     select.empty();
     select.append('<option value="">Seleccionar Municipio *</option>');
     
-    if (!codDepartamento) {
-        return;
-    }
+    if (!codDepartamento) { return; }
     
     $.ajax({
-        url: '../admin/obtener_municipios_ajax.php',
-        type: 'GET',
-        data: { cod_departamento: codDepartamento },
-        dataType: 'json',
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
         success: function(response) {
-            if (response.success) {
-                $.each(response.municipios, function(index, muni) {
-                    select.append('<option value="' + muni.cod_municipio + '">' + 
-                                muni.nombre_municipio + '</option>');
-                });
-            }
+            if (response.success) { $.each(response.municipios, function(index, muni) { select.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>'); }); }
         },
-        error: function() {
-            console.error('Error al cargar municipios');
-        }
+        error: function() { console.error('Error al cargar municipios'); }
     });
 }
-
 // Variable global para almacenar el cod_administrador actual
 var currentCodAdministradorTienda = null;
-
-// Funci�n para abrir modal de agregar tienda
+// Función para abrir modal de agregar tienda
 function abrirModalAgregarTienda() {
     currentCodAdministradorTienda = $('#edit_cod_administrador').val();
     if (!currentCodAdministradorTienda) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Error',
-            text: 'No se pudo identificar el aliado',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Error', text: 'No se pudo identificar el aliado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
     // Resetear el formulario
     document.getElementById('formAgregarTienda').reset();
     document.getElementById('agregar_tienda_cod_aliado').value = currentCodAdministradorTienda;
-    
     // Resetear previews de archivos
     resetearPreviewsTienda();
-    
     // Cargar departamentos
     cargarDepartamentosModalAgregar();
-    
     // Abrir el modal
     document.getElementById('modalAgregarTienda').classList.add('show');
 }
 
-// Funci�n para cargar departamentos en el modal de agregar tienda
+// Función para cargar departamentos en el modal de agregar tienda
 function cargarDepartamentosModalAgregar() {
     console.log('Cargando departamentos...');
     $.ajax({
@@ -3550,7 +3477,7 @@ function cargarDepartamentosModalAgregar() {
     });
 }
 
-// Funci�n para cerrar modal de agregar tienda
+// Función para cerrar modal de agregar tienda
 function cerrarModalAgregarTienda() {
     document.getElementById('modalAgregarTienda').classList.remove('show');
     document.getElementById('formAgregarTienda').reset();
@@ -3564,7 +3491,7 @@ document.getElementById('modalAgregarTienda').addEventListener('click', function
     }
 });
 
-// Funci�n para cargar bancos del aliado para el modal de tienda - DESHABILITADA (ya no hay campo de banco)
+// Función para cargar bancos del aliado para el modal de tienda - DESHABILITADA (ya no hay campo de banco)
 /*
 function cargarBancosTienda(codAliado) {
     var bancoSelect = document.getElementById('tienda_banco');
@@ -3604,16 +3531,16 @@ function cargarBancosTienda(codAliado) {
 }
 */
 
-// Funci�n para resetear previews de tienda
+// Función para resetear previews de tienda
 function resetearPreviewsTienda() {
-    // Resetear previews de im�genes
+    // Resetear previews de imágenes
     document.getElementById('preview_logo_tienda').innerHTML = '<i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
     document.getElementById('preview_fachada_tienda').innerHTML = '<i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Fachada</p>';
     document.getElementById('preview_interna_tienda').innerHTML = '<i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Interna</p>';
     document.getElementById('preview_selfie_tienda').innerHTML = '<i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
 }
 
-// Funci�n para mostrar nombre de archivo
+// Función para mostrar nombre de archivo
 function mostrarNombreArchivoTienda(input, previewId) {
     var preview = document.getElementById(previewId);
     if (input.files && input.files[0]) {
@@ -3625,7 +3552,7 @@ function mostrarNombreArchivoTienda(input, previewId) {
     }
 }
 
-// Funci�n para mostrar preview de imagen
+// Función para mostrar preview de imagen
 function mostrarImagenPreviewTienda(input, previewId) {
     var preview = document.getElementById(previewId);
     if (input.files && input.files[0]) {
@@ -3640,58 +3567,31 @@ function mostrarImagenPreviewTienda(input, previewId) {
 // Enviar formulario de tienda
 $('#formAgregarTienda').on('submit', function(e) {
     e.preventDefault();
-    
-    Swal.fire({
-        title: 'Registrando tienda...',
-        didOpen: () => { Swal.showLoading(); },
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
-    
+    Swal.fire({ title: 'Registrando tienda...', didOpen: () => { Swal.showLoading(); }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     var formData = new FormData(this);
+
     
     $.ajax({
-        url: '../admin/reg_edit_tienda_modal_coordinador_movil_ajax_reg.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: '../admin/reg_edit_tienda_modal_coordinador_movil_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
                 cerrarModalAgregarTienda();
-                // Guardar datos en el modal de confirmaci�n de tienda
+                // Guardar datos en el modal de confirmación de tienda
                 document.getElementById('confirm_tienda_cod').value = response.cod_tienda || '';
                 document.getElementById('confirm_tienda_nombre').value = response.nombre_tienda || '';
                 document.getElementById('confirm_tienda_cod_aliado').value = document.getElementById('agregar_tienda_cod_aliado').value;
                 document.getElementById('confirm_tienda_nombre_display').textContent = response.nombre_tienda || 'Tienda registrada';
-                // Abrir modal de confirmaci�n de tienda
+                // Abrir modal de confirmación de tienda
                 document.getElementById('modalConfirmacionTienda').classList.add('show');
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.mensaje || response.message || 'No se pudo registrar la tienda',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || response.message || 'No se pudo registrar la tienda', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             Swal.close();
             console.error('Error:', status, error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Error de conexi�n. Intenta nuevamente.',
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexin. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
@@ -3715,165 +3615,68 @@ function cerrarModalEditar() {
     if (editCedulaInput) editCedulaInput.style.display = 'none';
 }
 
-// Funci�n para guardar cambios en entidad crediticia
+// Función para guardar cambios en entidad crediticia
 function guardarEntidadEditada(codParametrizacion) {
     var interes = $('#edit_interes_' + codParametrizacion).val();
     var portal = $('#edit_portal_' + codParametrizacion).is(':checked') ? '1' : '0';
     var estado = $('#edit_estado_entidad_' + codParametrizacion).val();
     var url = $('#edit_url_' + codParametrizacion).val();
     
-    Swal.fire({
-        title: 'Guardando...',
-        didOpen: () => { Swal.showLoading() },
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: '../admin/actualizar_entidad_aliado_ajax.php',
-        type: 'POST',
-        data: {
-            cod_parametrizacion: codParametrizacion,
-            interes_ptj: interes,
-            cod_estado_entrar_portal: portal,
-            cod_estado: estado,
-            url_pagina_web_consulta: url
-        },
-        dataType: 'json',
+        url: '../admin/actualizar_entidad_aliado_ajax.php', type: 'POST', data: { cod_parametrizacion: codParametrizacion, interes_ptj: interes, cod_estado_entrar_portal: portal, cod_estado: estado, url_pagina_web_consulta: url }, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({ 
-                    icon: 'success', 
-                    title: '�Actualizado!', 
-                    text: 'Entidad actualizada correctamente', 
-                    background: '#1a1f2e', 
-                    color: 'white', 
-                    timer: 2000,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualizado!', text: 'Entidad actualizada correctamente', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
             } else {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Error', 
-                    text: response.mensaje || 'No se pudo actualizar la entidad', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo actualizar la entidad', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
             Swal.close();
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'Error de conexi�n. Intenta nuevamente.', 
-                background: '#1a1f2e', 
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexin. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
 
-// Funci�n para eliminar parametrizaci�n de entidad crediticia
+// Función para eliminará parametrización de entidad crediticia
 function eliminarEntidadAliado(cod_entidad_crediticia) {
     var btnEliminar = $('#btn_eliminar_' + cod_entidad_crediticia);
     var cod_parametrizacion = btnEliminar.attr('data-cod-parametrizacion');
     var nombre_entidad = btnEliminar.attr('data-nombre-entidad');
     
     if (!cod_parametrizacion) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Aviso',
-            text: 'No se puede eliminar. La parametrizaci�n no ha sido guardada a�n.',
-            background: '#1a1f2e',
-            color: 'white'
-        });
+        Swal.fire({ icon: 'warning', title: 'Aviso', text: 'No se puede eliminará. La parametrización no ha sido guardada an.', background: '#1a1f2e', color: 'white' });
         return;
     }
     
-    Swal.fire({
-        title: '�Eliminar parametrizaci�n?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminar� la parametrizaci�n de:</p><strong style="color: #10b981;">' + nombre_entidad + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acci�n no se puede deshacer.</p></div>',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fa-solid fa-trash"></i> S�, eliminar',
-        cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
-        background: '#1a1f2e',
-        color: 'white',
-        backdrop: 'rgba(0,0,0,0.8)',
-        customClass: {
-            container: 'swal-high-zindex'
-        }
-    }).then((result) => {
+    Swal.fire({ title: '¿Eliminar parametrización?', html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la parametrización de:</p><strong style="color: #10b981;">' + nombre_entidad + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6b7280', confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar', cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar', background: '#1a1f2e', color: 'white', backdrop: 'rgba(0,0,0,0.8)', customClass: { container: 'swal-high-zindex' } }).then((result) => {
         if (result.isConfirmed) {
             // Mostrar loading
-            Swal.fire({
-                title: 'Eliminando...',
-                didOpen: () => { Swal.showLoading() },
-                allowOutsideClick: false,
-                background: '#1a1f2e',
-                color: 'white'
-            });
-            
-            // Realizar la petici�n AJAX
+            Swal.fire({ title: 'Eliminando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white' });
+            // Realizar la petición AJAX
             $.ajax({
-                url: '../admin/eliminar_entidad_aliado_ajax.php',
-                type: 'POST',
-                data: {
-                    cod_parametrizacion_entidad_crediticia_aliado: cod_parametrizacion
-                },
-                dataType: 'json',
+                url: '../admin/eliminar_entidad_aliado_ajax.php', type: 'POST', data: { cod_parametrizacion_entidad_crediticia_aliado: cod_parametrizacion }, dataType: 'json',
                 success: function(response) {
                     Swal.close();
                     if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '�Eliminado!',
-                            text: 'La parametrizaci�n ha sido eliminada correctamente',
-                            confirmButtonColor: '#10b981',
-                            background: '#1a1f2e',
-                            color: 'white',
-                            timer: 2000,
-                            timerProgressBar: true
-                        }).then(() => {
-                            // Recargar las entidades en el modal de edici�n
-                            var codAdmin = $('#edit_cod_administrador').val();
-                            recargarEntidadesEditar(codAdmin);
-                        });
+                        Swal.fire({ icon: "success", title: "¡Eliminado!", text: "La parametrización ha sido eliminada correctamente", confirmButtonColor: "#10b981", background: "#1a1f2e", color: "white", timer: 2000, timerProgressBar: true }).then(() => { var codAdmin = $("#edit_cod_administrador").val(); recargarEntidadesEditar(codAdmin); });
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.mensaje || 'No se pudo eliminar la parametrizaci�n',
-                            background: '#1a1f2e',
-                            color: 'white'
-                        });
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo eliminará la parametrización', background: '#1a1f2e', color: 'white' });
                     }
                 },
                 error: function(xhr, status, error) {
                     Swal.close();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Error de conexi�n. Intenta nuevamente.',
-                        background: '#1a1f2e',
-                        color: 'white'
-                    });
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexin. Intenta nuevamente.', background: '#1a1f2e', color: 'white' });
                 }
             });
         }
     });
 }
 
-// Funciones para manejar campos de contrase�a - DESHABILITADAS (ahora se usa solo recuperaci�n por correo)
+// Funciones para manejar campos de contraseña - DESHABILITADAS (ahora se usa solo recuperación por correo)
 /*
 function togglePasswordFields() {
     var checkbox = document.getElementById('cambiar_password');
@@ -3911,7 +3714,7 @@ function togglePassword(inputId) {
 }
 */
 
-// Funci�n para habilitar el campo de cambio de usuario - DESHABILITADA
+// Función para habilitar el campo de cambio de usuario - DESHABILITADA
 /*
 function habilitarCambioUsuario() {
     var campoNuevo = document.getElementById('campo_nuevo_usuario');
@@ -3927,19 +3730,10 @@ function habilitarCambioUsuario() {
 }
 */
 
-// Funci�n para copiar enlace al portapapeles
+// Función para copiar enlace al portapapeles
 function copiarEnlace(enlace) {
     navigator.clipboard.writeText(enlace).then(function() {
-        Swal.fire({
-            icon: 'success',
-            title: '�Copiado!',
-            text: 'El enlace ha sido copiado al portapapeles',
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            background: '#1a1f2e',
-            color: 'white'
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000, timerProgressBar: true, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
     }).catch(function() {
         // Fallback para navegadores antiguos
         var textArea = document.createElement("textarea");
@@ -3948,46 +3742,29 @@ function copiarEnlace(enlace) {
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        
-        Swal.fire({
-            icon: 'success',
-            title: '�Copiado!',
-            text: 'El enlace ha sido copiado al portapapeles',
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            background: '#1a1f2e',
-            color: 'white'
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000, timerProgressBar: true, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
     });
 }
 
-// Funci�n para enviar recuperaci�n de contrase�a por correo
+// Función para enviar recuperación de contraseña por correo
 function enviarRecuperacionPassword() {
     var codAdministrador = document.getElementById('edit_cod_administrador').value;
     var correo = document.getElementById('edit_correo').value;
     var nombreAliado = document.getElementById('edit_nombres_apellidos_tercero').value;
     
     if (!codAdministrador || !correo) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Datos incompletos',
-            text: 'No se puede enviar la recuperaci�n sin correo electr�nico',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Datos incompletos', text: 'No se puede enviar la recuperación sin correo electrónico', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     Swal.fire({
-        title: '�Enviar nueva contrase�a?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se generar� una nueva contrase�a temporal para:</p><strong style="color: #10b981;">' + nombreAliado + '</strong><p style="margin-top: 0.5rem;">Se enviar� al correo: <strong style="color: #f59e0b;">' + correo + '</strong></p><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">La contrase�a actual quedar� inhabilitada.</p></div>',
+        title: '¿Enviar nueva contraseña?',
+        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se generará una nueva contraseña temporal para:</p><strong style="color: #10b981;">' + nombreAliado + '</strong><p style="margin-top: 0.5rem;">Se enviará al correo: <strong style="color: #f59e0b;">' + correo + '</strong></p><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">La contraseña actual quedará inhabilitada.</p></div>',
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#f59e0b',
         cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fa-solid fa-envelope"></i> S�, enviar',
+        confirmButtonText: '<i class="fa-solid fa-envelope"></i> S, enviar',
         cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
         background: '#1a1f2e',
         color: 'white',
@@ -3995,60 +3772,23 @@ function enviarRecuperacionPassword() {
         customClass: { container: 'swal-high-zindex' }
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Generando y enviando...',
-                html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #f59e0b;"></i><p style="margin-top: 1rem;">Por favor espere...</p>',
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ title: 'Generando y enviando...', html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #f59e0b;"></i><p style="margin-top: 1rem;">Por favor espere...</p>', showConfirmButton: false, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             
             $.ajax({
-                url: '../admin/enviar_correo_recuperar_password_aliado_email_ajax.php',
-                type: 'POST',
-                data: {
-                    cod_administrador: codAdministrador,
-                    correo: correo,
-                    nombre_aliado: nombreAliado
-                },
-                dataType: 'json',
+                url: '../admin/enviar_correo_recuperar_password_aliado_email_ajax.php', type: 'POST', data: { cod_administrador: codAdministrador, correo: correo, nombre_aliado: nombreAliado }, dataType: 'json',
                 success: function(response) {
                     Swal.close();
                     if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '�Enviado!',
-                            html: '<p>' + response.mensaje + '</p><p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">Nueva contrase�a temporal: <strong style="color: #10b981;">' + response.password_temporal + '</strong></p>',
-                            confirmButtonColor: '#10b981',
-                            background: '#1a1f2e',
-                            color: 'white',
-                            customClass: { container: 'swal-high-zindex' }
-                        });
+                        Swal.fire({ icon: 'success', title: '¡Enviado!', html: '<p>' + response.mensaje + '</p><p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">Nueva contraseña temporal: <strong style="color: #10b981;">' + response.password_temporal + '</strong></p>', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.mensaje || 'No se pudo enviar la contrase�a',
-                            background: '#1a1f2e',
-                            color: 'white',
-                            customClass: { container: 'swal-high-zindex' }
-                        });
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo enviar la contraseña', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     }
                 },
                 error: function(xhr, status, error) {
                     Swal.close();
                     console.error('Error:', status, error);
                     console.error('Respuesta:', xhr.responseText);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Error de conexi�n. Intenta nuevamente.',
-                        background: '#1a1f2e',
-                        color: 'white',
-                        customClass: { container: 'swal-high-zindex' }
-                    });
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexin. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 }
             });
         }
@@ -4084,10 +3824,10 @@ function abrirModalDetalle(data, tiendas) {
 }
 function cerrarModalDetalle() { document.getElementById('modalDetalle').classList.remove('show'); }
 
-// ===== FUNCIONES PARA MODAL DE CONFIRMACI�N Y DOCUMENTACI�N =====
+// ===== FUNCIONES PARA MODAL DE CONFIRMACIN Y DOCUMENTACIN =====
 function cerrarModalConfirmacionRegistro() {
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
-    location.reload(); // Recargar la p�gina al finalizar
+    location.reload(); // Recargar la página al finalizar
 }
 
 function abrirDocumentacionDesdeConfirmacion() {
@@ -4095,12 +3835,12 @@ function abrirDocumentacionDesdeConfirmacion() {
     var nombreAliado = document.getElementById('confirm_nombre_aliado').value;
     var telefono = document.getElementById('confirm_telefono_aliado').value;
     
-    // Abrir modal de documentaci�n
+    // Abrir modal de documentación
     document.getElementById('doc_cod_aliado_cryp').value = codAliadoCryp;
     document.getElementById('doc_nombre_aliado').textContent = nombreAliado;
     document.getElementById('doc_telefono_aliado').value = telefono;
     
-    // Cerrar modal de confirmaci�n y abrir el de documentaci�n
+    // Cerrar modal de confirmación y abrir el de documentación
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
     document.getElementById('modalDocumentacionAliado').classList.add('show');
 }
@@ -4108,25 +3848,20 @@ function abrirDocumentacionDesdeConfirmacion() {
 function abrirRegistroTiendaDesdeConfirmacion() {
     var codAliado = document.getElementById('confirm_cod_aliado').value;
     var nombreAliado = document.getElementById('confirm_nombre_aliado').value;
-    
-    // Guardar el cod_aliado para usarlo despu�s
+    // Guardar el cod_aliado para usarlo despus
     currentCodAdministradorTienda = codAliado;
-    
-    // Cerrar modal de confirmaci�n
+    // Cerrar modal de confirmación
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
-    
     // Cargar datos del aliado en el formulario de tienda
     document.getElementById('agregar_tienda_cod_aliado').value = codAliado;
-    
     // Cargar departamentos
     cargarDepartamentosModalAgregar();
-    
     // Abrir modal de agregar tienda
     document.getElementById('modalAgregarTienda').classList.add('show');
 }
 
 function registrarOtroAliado() {
-    // Cerrar modal de confirmaci�n
+    // Cerrar modal de confirmación
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
     // Limpiar formulario de registro
     document.getElementById('formRegistro').reset();
@@ -4146,7 +3881,7 @@ function cerrarModalConfirmacionTienda() {
 
 function registrarOtraTienda() {
     var codAliado = document.getElementById('confirm_tienda_cod_aliado').value;
-    // Cerrar modal de confirmaci�n de tienda
+    // Cerrar modal de confirmación de tienda
     document.getElementById('modalConfirmacionTienda').classList.remove('show');
     // Limpiar formulario de tienda
     document.getElementById('formAgregarTienda').reset();
@@ -4160,16 +3895,12 @@ function registrarOtraTienda() {
 
 function irATiendaRegistrada() {
     var codTienda = document.getElementById('confirm_tienda_cod').value;
-    if (codTienda) {
-        window.location.href = 'lista_tienda_coordinador_movil.php?cod_tienda=' + codTienda;
-    } else {
-        window.location.href = 'lista_tienda_coordinador_movil.php';
-    }
+    if (codTienda) { window.location.href = 'lista_tienda_coordinador_movil.php?cod_tienda=' + codTienda; } else { window.location.href = 'lista_tienda_coordinador_movil.php'; }
 }
 
 function cerrarModalDocumentacionAliado() {
     document.getElementById('modalDocumentacionAliado').classList.remove('show');
-    // Cerrar tambi�n el modal de confirmaci�n y recargar
+    // Cerrar también el modal de confirmación y recargar
     document.getElementById('modalConfirmacionRegistro').classList.remove('show');
     location.reload();
 }
@@ -4185,33 +3916,21 @@ function compartirDocWhatsApp() {
     var codAliadoCryp = document.getElementById('doc_cod_aliado_cryp').value;
     var nombreAliado = document.getElementById('doc_nombre_aliado').textContent;
     var telefono = document.getElementById('doc_telefono_aliado').value.replace(/\D/g, '');
-    
     if (!codAliadoCryp) { 
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error', 
-            text: 'No se encontr� el c�digo del aliado', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontr el código del aliado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return; 
     }
-    
     var enlace = getEnlaceDocumentacion();
-    var mensaje = '�Hola ' + nombreAliado + '! Por favor sube tu documentaci�n legal (RUT y C�mara de Comercio) en el siguiente enlace: ' + enlace;
+    var mensaje = '¡Hola ' + nombreAliado + '! Por favor sube tu documentación legal (RUT y Cámara de Comercio) en el siguiente enlace: ' + enlace;
     var urlWhatsApp = 'https://wa.me/' + (telefono ? '57' + telefono : '') + '?text=' + encodeURIComponent(mensaje);
-    
     window.open(urlWhatsApp, '_blank');
 }
 
 function compartirDocEmail() {
     var nombreAliado = document.getElementById('doc_nombre_aliado').textContent;
     var enlace = getEnlaceDocumentacion();
-    
-    var asunto = encodeURIComponent('Cargue de Documentaci�n Legal - ' + nombreAliado);
-    var cuerpo = encodeURIComponent('Hola ' + nombreAliado + ',\n\nPor favor sube tu documentaci�n legal (RUT y C�mara de Comercio) en el siguiente enlace:\n\n' + enlace + '\n\nGracias.');
-    
+    var asunto = encodeURIComponent('Cargue de Documentación Legal - ' + nombreAliado);
+    var cuerpo = encodeURIComponent('Hola ' + nombreAliado + ',\n\nPor favor sube tu documentación legal (RUT y Cámara de Comercio) en el siguiente enlace:\n\n' + enlace + '\n\nGracias.');
     window.open('mailto:?subject=' + asunto + '&body=' + cuerpo, '_blank');
 }
 
@@ -4220,16 +3939,7 @@ function copiarEnlaceDoc() {
     
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(enlace).then(function() {
-            Swal.fire({
-                icon: 'success',
-                title: '�Copiado!',
-                text: 'El enlace ha sido copiado al portapapeles',
-                timer: 2000,
-                showConfirmButton: false,
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }).catch(function() {
             copiarEnlaceDocFallback(enlace);
         });
@@ -4248,70 +3958,34 @@ function copiarEnlaceDocFallback(enlace) {
     
     try {
         document.execCommand('copy');
-        Swal.fire({
-            icon: 'success', title: '�Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000,  showConfirmButton: false, background: '#1a1f2e', color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace ha sido copiado al portapapeles', timer: 2000,  showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     } catch (err) {
-        Swal.fire({
-            icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace. Por favor c�pialo manualmente: ' + enlace, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace. Por favor cpialo manualmente: ' + enlace, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     }
-    
     document.body.removeChild(textArea);
 }
-
 // Cerrar modales al hacer clic fuera
-document.getElementById('modalConfirmacionRegistro').addEventListener('click', function(e) { 
-    if (e.target === this) { 
-        cerrarModalConfirmacionRegistro(); 
-    } 
-});
-
-document.getElementById('modalDocumentacionAliado').addEventListener('click', function(e) { 
-    if (e.target === this) { 
-        cerrarModalDocumentacionAliado(); 
-    } 
-});
-// ===== FIN FUNCIONES PARA MODAL DE CONFIRMACI�N Y DOCUMENTACI�N =====
-
+document.getElementById('modalConfirmacionRegistro').addEventListener('click', function(e) { if (e.target === this) { cerrarModalConfirmacionRegistro(); } });
+document.getElementById('modalDocumentacionAliado').addEventListener('click', function(e) { if (e.target === this) { cerrarModalDocumentacionAliado(); } });
+// ===== FIN FUNCIONES PARA MODAL DE CONFIRMACIN Y DOCUMENTACIN =====
 function compartirDocumentacion(codAliadoCryp, nombreAliado, telefono) {
     if (!codAliadoCryp) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se encontr� el c�digo del aliado',
-            background: '#1a1f2e',
-            color: 'white'
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se encontr el código del aliado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
-    
-    // Abrir modal de documentaci�n con los datos pre-cargados
+    // Abrir modal de documentación con los datos pre-cargados
     document.getElementById('doc_cod_aliado_cryp').value = codAliadoCryp;
     document.getElementById('doc_nombre_aliado').textContent = nombreAliado;
     document.getElementById('doc_telefono_aliado').value = telefono || '';
-    
     document.getElementById('modalDocumentacionAliado').classList.add('show');
 }
 
 function abrirModalVerCuentas(codAliado, nombreAliado) {
     Swal.fire({
-        title: 'Cuentas de ' + nombreAliado,
-        html: '<div id="swal_bancos_container" style="text-align: left; padding: 0.5rem;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>',
-        width: '95%',
-        background: '#1a1f2e',
-        color: 'white',
-        showConfirmButton: true,
-        confirmButtonText: 'Cerrar',
-        confirmButtonColor: '#10b981',
-        customClass: { container: 'swal-high-zindex' },
+        title: 'Cuentas de ' + nombreAliado, html: '<div id="swal_bancos_container" style="text-align: left; padding: 0.5rem;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>', width: '95%', background: '#1a1f2e', color: 'white', showConfirmButton: true, confirmButtonText: 'Cerrar', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' },
         didOpen: () => {
             $.ajax({
-                url: '../admin/obtener_bancos_aliado_ajax.php',
-                type: 'POST',
-                data: { cod_administrador: codAliado },
-                dataType: 'json',
+                url: '../admin/obtener_bancos_aliado_ajax.php', type: 'POST', data: { cod_administrador: codAliado }, dataType: 'json',
                 success: function(response) {
                     if (response.success && response.bancos && response.bancos.length > 0) {
                         var html = '<div style="display: grid; gap: 0.75rem;">';
@@ -4329,10 +4003,7 @@ function abrirModalVerCuentas(codAliado, nombreAliado) {
                     } else {
                         $('#swal_bancos_container').html('<div style="color: rgba(255,255,255,0.5); text-align: center;">No hay cuentas registradas</div>');
                     }
-                },
-                error: function() {
-                    $('#swal_bancos_container').html('<div style="color: #ef4444; text-align: center;">Error al cargar datos</div>');
-                }
+                }, error: function() { $('#swal_bancos_container').html('<div style="color: #ef4444; text-align: center;">Error al cargar datos</div>'); }
             });
         }
     });
@@ -4387,10 +4058,7 @@ function abrirModalAgregarEntidad() {
     $('#agregar_cod_entidad').html('<option value="">Cargando...</option>');
     
     $.ajax({
-        url: '../admin/obtener_entidades_disponibles_ajax.php',
-        type: 'POST',
-        data: { cod_administrador: codAdministradorActual },
-        dataType: 'json',
+        url: '../admin/obtener_entidades_disponibles_ajax.php', type: 'POST', data: { cod_administrador: codAdministradorActual }, dataType: 'json',
         success: function(response) {
             if (response.success && response.entidades && response.entidades.length > 0) {
                 var options = '<option value="">Seleccione una entidad</option>';
@@ -4401,31 +4069,10 @@ function abrirModalAgregarEntidad() {
                 $('#agregar_cod_entidad').html(options);
             } else {
                 $('#agregar_cod_entidad').html('<option value="">No hay entidades disponibles</option>');
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Sin entidades disponibles',
-                    text: 'Todas las entidades ya han sido asignadas a este aliado',
-                    background: '#1a1f2e',
-                    color: 'white',
-                    customClass: {
-                        container: 'swal-high-zindex'
-                    }
-                });
+                Swal.fire({ icon: 'info', title: 'Sin entidades disponibles', text: 'Todas las entidades ya han sido asignadas a este aliado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
-        error: function() {
-            $('#agregar_cod_entidad').html('<option value="">Error al cargar</option>');
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No se pudieron cargar las entidades disponibles',
-                background: '#1a1f2e',
-                color: 'white',
-                customClass: {
-                    container: 'swal-high-zindex'
-                }
-            });
-        }
+        error: function() { $('#agregar_cod_entidad').html('<option value="">Error al cargar</option>'); Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar las entidades disponibles', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }); }
     });
     
     // Limpiar formulario
@@ -4442,17 +4089,14 @@ function cerrarModalAgregarEntidad() {
 
 // Abrir modal agregar banco
 function abrirModalAgregarBanco(codAliadoEstrategico) {
-    // Usar el c�digo del aliado que se pasa como par�metro
+    // Usar el código del aliado que se pasa como parámetro
     if (!codAliadoEstrategico) { 
-        Swal.fire({ 
-            icon: 'error', title: 'Error',  text: 'No se pudo identificar el aliado estrat�gico',  background: '#1a1f2e', color: 'white' 
-        }); return; 
+        Swal.fire({ icon: 'error', title: 'Error',  text: 'No se pudo identificar el aliado estratégico',  background: '#1a1f2e', color: 'white' }); 
+        return; 
     }
     // Cargar bancos disponibles si no se han cargado
     $.ajax({
-        url: '../admin/obtener_bancos_disponibles_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../admin/obtener_bancos_disponibles_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             if (response.success) {
                 var options = '<option value="">Seleccione un banco</option>';
@@ -4461,11 +4105,10 @@ function abrirModalAgregarBanco(codAliadoEstrategico) {
             }
         }
     });
-    
-    // Asignar el c�digo del aliado estrat�gico a los campos del formulario
+    // Asignar el código del aliado estratégico a los campos del formulario
     document.getElementById('agregar_banco_cod_administrador').value = codAliadoEstrategico;
     document.getElementById('agregar_banco_cod_aliado_estrategico').value = codAliadoEstrategico;
-    console.log('Modal Agregar Banco - C�digo Aliado:', codAliadoEstrategico);
+    console.log('Modal Agregar Banco - Cdigo Aliado:', codAliadoEstrategico);
     document.getElementById('modalAgregarBanco').classList.add('show');
 }
 
@@ -4474,7 +4117,7 @@ function cerrarModalAgregarBanco() {
     $('#formAgregarBanco')[0].reset();
 }
 
-// Funci�n para mostrar nombre de archivo seleccionado
+// Función para mostrar nombre de archivo seleccionado
 function mostrarNombreArchivoCertificado(input, previewId) {
     var preview = document.getElementById(previewId);
     if (input.files && input.files[0]) {
@@ -4504,7 +4147,7 @@ $('#formAgregarBanco').on('submit', function(e) {
             Swal.close();
             if (response.success) {
                 cerrarModalAgregarBanco();
-                Swal.fire({ icon: 'success', title: '�xito', text: response.mensaje, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                Swal.fire({ icon: 'success', title: 'Éxito', text: response.mensaje, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 // Recargar lista de bancos del aliado
                 cargarBancosAliado(codAdministradorActual);
             } else {
@@ -4528,7 +4171,7 @@ $(document).on('change', '#agregar_cod_entidad', function() {
         $('#agregar_url').val(url);
     }
     
-    // Auto-rellenar el campo de inter�s con el valor por defecto
+    // Auto-rellenar el campo de inters con el valor por defecto
     if (interesDefault && interesDefault !== '') {
         $('#agregar_interes').val(interesDefault);
     }
@@ -4550,10 +4193,10 @@ $('#formAgregarEntidad').on('submit', function(e) {
             if (response.success) {
                 cerrarModalAgregarEntidad();
                 Swal.fire({
-                    icon: 'success', title: '��xito!', text: 'Entidad agregada correctamente', confirmButtonColor: '#10b981', background: '#1a1f2e',
+                    icon: 'success', title: '¡Éxito!', text: 'Entidad agregada correctamente', confirmButtonColor: '#10b981', background: '#1a1f2e',
                     color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
                 }).then(() => {
-                    // Recargar las entidades en el modal de edici�n
+                    // Recargar las entidades en el modal de edición
                     var codAdmin = $('#edit_cod_administrador').val();
                     recargarEntidadesEditar(codAdmin);
                 });
@@ -4565,12 +4208,12 @@ $('#formAgregarEntidad').on('submit', function(e) {
         },
         error: function(xhr, status, error) {
             Swal.close();
-            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexi�n. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexin. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
 
-// Funci�n para recargar entidades en el modal de edici�n
+// Función para recargar entidades en el modal de edición
 function recargarEntidadesEditar(codAdministrador) {
     $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando entidades...</p></div>');
     
@@ -4599,7 +4242,7 @@ function recargarEntidadesEditar(codAdministrador) {
                     html += '<label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Portal:</label>';
                     html += '<input type="checkbox" name="cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" id="edit_cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" value="1" ' + portal_checked + ' style="accent-color: #10b981; width: 16px; height: 16px; cursor: pointer; margin: 0;" title="Acceso al portal">';
                     html += '</div>';
-                    html += '<button type="button" id="btn_eliminar_' + entidad.cod_entidad_crediticia + '" data-cod-parametrizacion="' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" data-nombre-entidad="' + escapeHtmlMovil(entidad.nombre_entidad_crediticia) + '" onclick="eliminarEntidadAliado(' + entidad.cod_entidad_crediticia + ')" style="background: #ef4444; color: white; border: none; padding: 0.4rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 0.25rem;" title="Eliminar parametrizaci�n">';
+                    html += '<button type="button" id="btn_eliminar_' + entidad.cod_entidad_crediticia + '" data-cod-parametrizacion="' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" data-nombre-entidad="' + escapeHtmlMovil(entidad.nombre_entidad_crediticia) + '" onclick="eliminarEntidadAliado(' + entidad.cod_entidad_crediticia + ')" style="background: #ef4444; color: white; border: none; padding: 0.4rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 0.25rem;" title="Eliminar parametrización">';
                     html += '<i class="fa-solid fa-trash"></i>';
                     html += '</button>';
                     html += '</div>';
@@ -4624,10 +4267,10 @@ function filtrar() {
     }, 500); 
 }
 
-// Variable para controlar si la identificaci�n es v�lida
+// Variable para controlar si la identificación es válida
 var identificacionValida = false;
 
-// Verificar identificaci�n en tiempo real
+// Verificar identificación en tiempo real
 $(document).on('blur', '#identificacion_tercero', function() {
     var identificacion = $(this).val().trim();
     var inputField = $(this);
@@ -4652,7 +4295,7 @@ $(document).on('blur', '#identificacion_tercero', function() {
         success: function(response) {
             if(response.existe) {
                 inputField.css('border-color', '#ef4444');
-                mensajeDiv.text('?? Esta identificaci�n ya est� registrada a nombre de un aliado estrat�gico').show();
+                mensajeDiv.text('?? Esta identificación ya está registrada a nombre de un aliado estratégico').show();
                 identificacionValida = false;
                 btnGuardar.prop('disabled', true);
                 btnGuardar.css('opacity', '0.5');
@@ -4667,7 +4310,7 @@ $(document).on('blur', '#identificacion_tercero', function() {
             }
         },
         error: function() {
-            mensajeDiv.text('Error al verificar la identificaci�n').show();
+            mensajeDiv.text('Error al verificar la identificación').show();
             identificacionValida = false;
             btnGuardar.prop('disabled', true);
             btnGuardar.css('opacity', '0.5');
@@ -4679,15 +4322,15 @@ $(document).on('blur', '#identificacion_tercero', function() {
 // Guardar Aliado (Nuevo)
 $('#formRegistro').on('submit', function(e) {
     e.preventDefault();
-    // Verificar si la identificaci�n es v�lida
+    // Verificar si la identificación es válida
     var identificacion = $('#identificacion_tercero').val().trim();
     if(identificacion === '') {
-        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Debe ingresar una identificaci�n', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Debe ingresar una identificación', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return false;
     }
-    // Si la identificaci�n no ha sido validada, verificarla primero
+    // Si la identificación no ha sido validada, verificarla primero
     if(!identificacionValida) {
-        Swal.fire({ title: 'Verificando identificaci�n...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        Swal.fire({ title: 'Verificando identificación...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         
         $.ajax({
             url: '../ajax/verificar_identificacion_aliado.php',
@@ -4697,9 +4340,9 @@ $('#formRegistro').on('submit', function(e) {
             success: function(response) {
                 Swal.close();
                 if(response.existe) {
-                    Swal.fire({ icon: 'error', title: 'Identificaci�n duplicada', text: 'Esta identificaci�n ya est� registrada en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    Swal.fire({ icon: 'error', title: 'identificación duplicada', text: 'Esta identificación ya está registrada en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     $('#identificacion_tercero').css('border-color', '#ef4444');
-                    $('#mensaje_identificacion').text('?? Esta identificaci�n ya est� registrada').show();
+                    $('#mensaje_identificacion').text('?? Esta identificación ya está registrada').show();
                     $('#btnGuardar').prop('disabled', true).css({'opacity': '0.5', 'cursor': 'not-allowed'});
                 } else {
                     identificacionValida = true;
@@ -4709,7 +4352,7 @@ $('#formRegistro').on('submit', function(e) {
             },
             error: function() {
                 Swal.close();
-                Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo verificar la identificaci�n. Intente nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo verificar la identificación. Intente nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         });
         return false;
@@ -4727,18 +4370,18 @@ $('#formRegistro').on('submit', function(e) {
             
             if(resp.afectado === 'SI') {
                 cerrarModal();
-                // Guardar datos en el modal de confirmaci�n
+                // Guardar datos en el modal de confirmación
                 document.getElementById('confirm_cod_aliado').value = resp.cod_administrador;
                 document.getElementById('confirm_cod_aliado_cryp').value = resp.cod_aliado_cryp;
                 document.getElementById('confirm_nombre_aliado').value = resp.nombre_completo;
                 document.getElementById('confirm_telefono_aliado').value = resp.telefono;
                 document.getElementById('confirm_nombre_display').textContent = resp.nombre_completo;
                 
-                // Abrir modal de confirmaci�n
+                // Abrir modal de confirmación
                 document.getElementById('modalConfirmacionRegistro').classList.add('show');
             } else if(resp.afectado === 'EXISTE') {
                 Swal.fire({ 
-                    icon: 'warning', title: 'Aliado Existente', text: resp.mensaje || 'Este aliado ya est� registrado en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+                    icon: 'warning', title: 'Aliado Existente', text: resp.mensaje || 'Este aliado ya está registrado en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
                 });
             } else {
                 var errorMsg = resp.mensaje || 'Error al registrar el aliado';
@@ -4750,7 +4393,7 @@ $('#formRegistro').on('submit', function(e) {
             Swal.close();
             console.log('Error AJAX:', xhr.responseText); // Debug
             Swal.fire({ 
-                icon: 'error',  title: 'Error',  text: 'Error de conexi�n. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' }
+                icon: 'error',  title: 'Error',  text: 'Error de conexin. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' }
             });
         }
     });
@@ -4780,7 +4423,7 @@ $('#formEditar').on('submit', function(e) {
             if(resp.afectado === 'SI') {
                 cerrarModalEditar(); 
                 Swal.fire({ 
-                    icon: 'success',  title: '�Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#10b981',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
+                    icon: 'success',  title: '¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#10b981',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
                 }).then(() => { 
                     location.reload(); 
                 });
@@ -4791,7 +4434,7 @@ $('#formEditar').on('submit', function(e) {
         error: function(xhr, status, error) {
             Swal.close();
             console.log('Error AJAX:', xhr.responseText);
-            Swal.fire({ icon: 'error',  title: 'Error',  text: 'Error de conexi�n. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' } });
+            Swal.fire({ icon: 'error',  title: 'Error',  text: 'Error de conexin. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
@@ -4803,7 +4446,7 @@ $('.modal-overlay').on('click', function(e) {
     }
 });
 
-// ====================== SISTEMA DE COMPARTIR DOCUMENTACI�N ======================
+// ====================== SISTEMA DE COMPARTIR DOCUMENTACIN ======================
 var datosZipActual = null;
 
 function compartirDocumentacion(cod_aliado) {
@@ -4819,7 +4462,7 @@ function compartirDocumentacion(cod_aliado) {
     $('#email_destino').val('');
     $('#mensaje_email').val('');
     
-    // Hacer petici�n AJAX para generar el ZIP
+    // Hacer petición AJAX para generar el ZIP
     $.ajax({
         url: 'generar_zip_documentacion.php',
         type: 'POST',
@@ -4848,7 +4491,7 @@ function compartirDocumentacion(cod_aliado) {
 }
 
 function mostrarContenidoCompartir(data) {
-    // Mostrar informaci�n del aliado
+    // Mostrar información del aliado
     $('#compartir_aliado_nombre').text(data.aliado_nombre);
     $('#compartir_aliado_cedula').text(data.aliado_cedula);
     
@@ -4892,7 +4535,7 @@ function enviarEmail() {
     
     var email = $('#email_destino').val().trim();
     if (email === '' || !validarEmail(email)) {
-        Swal.fire({ icon: 'warning', title: 'Email inv�lido', text: 'Por favor ingrese un email v�lido', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        Swal.fire({ icon: 'warning', title: 'Email inválido', text: 'Por favor ingrese un email válido', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
@@ -4913,7 +4556,7 @@ function enviarEmail() {
             Swal.close();
             if (response.success) {
                 Swal.fire({
-                    icon: 'success', title: '�Email enviado!', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+                    icon: 'success', title: '¡Email enviado!', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
                 });
                 ocultarFormularioEmail();
             } else {
@@ -4925,7 +4568,7 @@ function enviarEmail() {
             var mensajeError = 'Error al enviar el email';
             
             if (status === 'timeout') {
-                mensajeError = 'El servidor tard� demasiado en responder. El archivo podr�a ser muy grande o hay problemas con el servidor SMTP.';
+                mensajeError = 'El servidor tard demasiado en responder. El archivo podría ser muy grande o hay problemas con el servidor SMTP.';
             } else if (xhr.responseText) {
                 try {
                     var resp = JSON.parse(xhr.responseText);
@@ -4941,7 +4584,7 @@ function enviarEmail() {
 
 
 
-// Funci�n para manejar el cambio en el select tipo_cliente (Registro)
+// Función para manejar el cambio en el select tipo_cliente (Registro)
 function cambiarTipoCliente() {
     var tipoCliente = document.getElementById('nombre_tipo_cliente');
     var labelNombreComercial = document.getElementById('label_nombre_comercial');
@@ -4951,7 +4594,7 @@ function cambiarTipoCliente() {
     var inputRazonSocial = document.getElementById('nombre_razon_social');
     
     if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        //labelNombreComercial.textContent = 'Raz�n Social *';
+        //labelNombreComercial.textContent = 'Razón Social *';
         containerNit.style.display = 'block';
         inputNit.required = true;
         containerRazonSocial.style.display = 'block';
@@ -4967,7 +4610,7 @@ function cambiarTipoCliente() {
     }
 }
 
-// Funci�n para manejar el cambio en el select tipo_cliente (Editar)
+// Función para manejar el cambio en el select tipo_cliente (Editar)
 function cambiarTipoClienteEdit(limpiarNit) {
     var tipoCliente = document.getElementById('edit_nombre_tipo_cliente');
     var labelNombreComercial = document.getElementById('edit_label_nombre_comercial');
@@ -4977,7 +4620,7 @@ function cambiarTipoClienteEdit(limpiarNit) {
     var inputRazonSocial = document.getElementById('edit_nombre_razon_social');
     
     if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        //labelNombreComercial.textContent = 'Raz�n Social *';
+        //labelNombreComercial.textContent = 'Razón Social *';
         containerNit.style.display = 'block';
         inputNit.required = true;
         containerRazonSocial.style.display = 'block';
@@ -4986,13 +4629,13 @@ function cambiarTipoClienteEdit(limpiarNit) {
         //labelNombreComercial.textContent = 'Nombre Comercial *';
         containerNit.style.display = 'none';
         inputNit.required = false;
-        // Solo limpiar el NIT si se indica expl�citamente (cuando el usuario cambia manualmente)
+        // Solo limpiar el NIT si se indica explícitamente (cuando el usuario cambia manualmente)
         if (limpiarNit !== false) {
             inputNit.value = '';
         }
         containerRazonSocial.style.display = 'none';
         inputRazonSocial.required = false;
-        // Solo limpiar la Raz�n Social si se indica expl�citamente (cuando el usuario cambia manualmente)
+        // Solo limpiar la Razón Social si se indica explícitamente (cuando el usuario cambia manualmente)
         if (limpiarNit !== false) {
             inputRazonSocial.value = '';
         }
@@ -5017,7 +4660,7 @@ function cargarDepartamentosRegistro() {
     });
 }
 
-// Cargar municipios seg�n departamento seleccionado (modal registro)
+// Cargar municipios según departamento seleccionado (modal registro)
 function cargarMunicipiosRegistro(codDepartamento) {
     var $select = $('#cod_municipio');
     if (!codDepartamento || codDepartamento === '') {
@@ -5039,7 +4682,7 @@ function cargarMunicipiosRegistro(codDepartamento) {
     });
 }
 
-// Cargar departamentos para el modal de edici�n con preselecci�n
+// Cargar departamentos para el modal de edición con preselección
 function cargarDepartamentosEdicion(selectedDept, selectedMuni) {
     var $select = $('#edit_cod_departamento');
     $select.html('<option value="">Cargando...</option>');
@@ -5062,7 +4705,7 @@ function cargarDepartamentosEdicion(selectedDept, selectedMuni) {
     });
 }
 
-// Cargar municipios seg�n departamento seleccionado (modal edici�n)
+// Cargar municipios según departamento seleccionado (modal edición)
 function cargarMunicipiosEdicion(codDepartamento, selectedMuni) {
     var $select = $('#edit_cod_municipio');
     if (!codDepartamento || codDepartamento === '') {
@@ -5088,7 +4731,7 @@ function cargarMunicipiosEdicion(codDepartamento, selectedMuni) {
 function descargarZip() {
     if (!datosZipActual) { Swal.fire({ icon: 'error', title: 'Error', text: 'No hay un archivo ZIP generado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }); return; }
     
-    // Crear un enlace temporal y hacer clic en �l para descargar
+    // Crear un enlace temporal y hacer clic en l para descargar
     var link = document.createElement('a');
     link.href = '../' + datosZipActual.zip_path;
     link.download = datosZipActual.zip_name;
@@ -5097,7 +4740,7 @@ function descargarZip() {
     document.body.removeChild(link);
     
     Swal.fire({
-        icon: 'success', title: 'Descargando...', text: 'El archivo se est� descargando', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+        icon: 'success', title: 'Descargando...', text: 'El archivo se está descargando', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
     });
 }
 
@@ -5118,12 +4761,12 @@ function generarEnlace() {
 function copiarEnlace() {
     var input = document.getElementById('input_enlace');
     input.select();
-    input.setSelectionRange(0, 99999); // Para m�viles
+    input.setSelectionRange(0, 99999); // Para móviles
     
     try {
         document.execCommand('copy');
         Swal.fire({
-            icon: 'success', title: '�Copiado!', text: 'El enlace se ha copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+            icon: 'success', title: '¡Copiado!', text: 'El enlace se ha copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
         });
     } catch (err) {
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
@@ -5313,13 +4956,13 @@ function marcarNotificacionLeidaMovil(codNotificacion, element) {
 
 function marcarTodasLeidasMovil() {
     Swal.fire({
-        title: '�Marcar todas como le�das?',
-        text: 'Se marcar�n todas las notificaciones pendientes como le�das',
+        title: '¿Marcar todas como leídas?',
+        text: 'Se marcarán todas las notificaciones pendientes como leídas',
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#10b981',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: 'S�, marcar todas',
+        confirmButtonText: 'S, marcar todas',
         cancelButtonText: 'Cancelar',
         background: '#1a1f2e',
         color: 'white'
@@ -5333,7 +4976,7 @@ function marcarTodasLeidasMovil() {
                 success: function(response) {
                     if (response.success) {
                         cargarNotificacionesMovil();
-                        Swal.fire({ icon: 'success', title: '�Listo!', text: 'Todas las notificaciones han sido marcadas como le�das', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
+                        Swal.fire({ icon: 'success', title: '¡Listo!', text: 'Todas las notificaciones han sido marcadas como leídas', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
                     }
                 }
             });
@@ -5351,16 +4994,16 @@ function escapeHtmlMovil(text) {
 
 
 <script>
-    // Ocultar loader cuando la p�gina haya cargado completamente
+    // Ocultar loader cuando la página haya cargado completamente
     window.addEventListener('load', function() {
         const loader = document.getElementById('loader-wrapper');
         if (loader) {
-            // Peque�o retraso para asegurar que el usuario vea el loader
+            // Pequeño retraso para asegurar que el usuario vea el loader
             setTimeout(() => {
                 loader.style.opacity = '0';
                 setTimeout(() => {
                     loader.style.display = 'none';
-                    // Animar elementos de la p�gina
+                    // Animar elementos de la página
                     document.querySelectorAll('.animate-in').forEach((el, index) => {
                         setTimeout(() => {
                             el.style.opacity = '1';
@@ -5372,7 +5015,7 @@ function escapeHtmlMovil(text) {
         }
     });
 
-    // Mostrar el loader cuando se recargue la p�gina
+    // Mostrar el loader cuando se recargue la página
     window.addEventListener('beforeunload', function() {
         const loader = document.getElementById('loader-wrapper');
         if (loader) {
@@ -5381,11 +5024,11 @@ function escapeHtmlMovil(text) {
         }
     });
 
-    // Ocultar el loader si tarda m�s de 10 segundos (fallback)
+    // Ocultar el loader si tarda más de 10 segundos (fallback)
     setTimeout(function() {
         const loader = document.getElementById('loader-wrapper');
         if (loader && loader.style.display !== 'none') {
-            console.warn('Loader forzado a ocultar despu�s de 10 segundos');
+            console.warn('Loader forzado a ocultar despus de 10 segundos');
             loader.style.opacity = '0';
             setTimeout(() => {
                 loader.style.display = 'none';

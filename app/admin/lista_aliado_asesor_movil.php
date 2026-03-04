@@ -1159,17 +1159,17 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
         </a>
         
         <a href="?pagina=<?php echo $pagina_actual - 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
-           class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>">
-            <i class="fa-solid fa-chevron-left"></i> <span>Anterior</span>
+           class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>" title="Página anterior">
+            <i class="fa-solid fa-chevron-left"></i>
         </a>
         
         <div class="pagination-info">
-            Pág. <?php echo $pagina_actual; ?> de <?php echo $total_paginas; ?>
+            Pág. <span><?php echo $pagina_actual; ?></span> de <span><?php echo $total_paginas; ?></span>
         </div>
         
         <a href="?pagina=<?php echo $pagina_actual + 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
-           class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>">
-            <span>Siguiente</span> <i class="fa-solid fa-chevron-right"></i>
+           class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>" title="Siguiente página">
+            <i class="fa-solid fa-chevron-right"></i>
         </a>
         
         <a href="?pagina=<?php echo $total_paginas; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : '').(!empty($filtro_doc) ? '&filtro_doc='.urlencode($filtro_doc) : ''); ?>" 
@@ -5823,62 +5823,96 @@ function cerrarModalVerCuentas() { $('#modalVerCuentas').fadeOut(); }
 .view-item-title { color: white; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
 .view-item-detail { color: rgba(255,255,255,0.6); font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
 
-/* Pagination Styles */
+/* ====================== PREMIUM PAGINATION ====================== */
 .pagination-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
+    gap: 0.6rem;
+    margin: 2.5rem 0;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeInUp 0.8s ease forwards;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
 .pagination-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    color: white;
-    padding: 0.6rem 1rem;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: center;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 0.9rem;
+}
+
+.pagination-btn i {
+    font-size: 1.1rem;
 }
 
 .pagination-btn:hover:not(.disabled) {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: #10b981;
-    transform: translateY(-2px);
-}
-
-.pagination-btn.active {
     background: #10b981;
+    color: white !important;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
     border-color: #10b981;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .pagination-btn.disabled {
-    opacity: 0.4;
+    opacity: 0.25;
     cursor: not-allowed;
-    pointer-events: none;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
 }
 
 .pagination-info {
-    color: rgba(255, 255, 255, 0.6);
+    font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
-    margin: 0 0.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0 1.25rem;
+    background: rgba(16, 185, 129, 0.05);
+    height: 42px;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    border: 1px solid rgba(16, 185, 129, 0.1);
+    letter-spacing: 0.5px;
+}
+
+.pagination-info span {
+    color: #10b981;
+    margin: 0 4px;
 }
 
 @media (max-width: 480px) {
     .pagination-btn span {
         display: none;
     }
+    .pagination-container {
+        margin: 2rem 0;
+        gap: 0.5rem;
+        padding: 0.6rem;
+    }
+    
     .pagination-btn {
-        padding: 0.6rem 0.8rem;
+        width: 38px;
+        height: 38px;
+    }
+    
+    .pagination-info {
+        height: 38px;
+        font-size: 0.8rem;
+        padding: 0 0.75rem;
     }
 }
 </style>
