@@ -1743,23 +1743,12 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Municipio</label>
-                        <select class="form-select" id="cod_municipio" name="cod_municipio">
-                            <option value="">Primero seleccione departamento</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label class="form-label">Dirección</label>
                         <input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
                     </div>
-                </div>
-
-                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Barrio</label>
                         <input type="text" class="form-input" id="barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
-                    </div>
-                    <div class="form-group" style="visibility: hidden;">
                     </div>
                 </div>
 
