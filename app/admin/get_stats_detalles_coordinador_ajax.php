@@ -63,6 +63,7 @@ if ($tipo === 'asesores') {
     if (mysqli_num_rows($res) > 0) {
         while ($r = mysqli_fetch_assoc($res)) {
             $img = $r['url_img_min_tienda'] ?: '';
+            $cod_tienda = $r['cod_tienda'];
             $avatar = $img ? '<img src="' . $img . '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">' : '<i class="fa-solid fa-store" style="font-size: 1rem;"></i>';
             
             $html .= '
@@ -72,7 +73,7 @@ if ($tipo === 'asesores') {
                     <div style="color: white; font-weight: 600; font-size: 0.9rem;">' . $r['nombre_tienda'] . '</div>
                     <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;"><i class="fa-solid fa-phone" style="font-size: 0.7rem;"></i> ' . ($r['telefono1_tercero'] ?: 'No reg.') . '</div>
                 </div>
-                <button onclick="location.href=\'ver_detalle_tienda_lider_movil.php?cod_tienda=' . $r['cod_tienda'] . '\'" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
+                <button onclick="location.href=\'ver_detalle_tienda_lider_movil.php?cod_tienda=' . $cod_tienda . '\'" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
             </div>';
         }
     } else {
