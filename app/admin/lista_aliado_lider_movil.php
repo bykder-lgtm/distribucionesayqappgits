@@ -1640,6 +1640,16 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 $tiendas_arr = [];
                 while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_lider_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #8b5cf6; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
                 $tiendas_texto = count($tiendas_arr) > 0 ? implode(', ', $tiendas_arr) : 'Sin tiendas';
+                
+                // --- NUEVAS ESTADÍSTICAS (Igual que en Asesor) ---
+                $sql_count_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado'";
+                $res_count_tiendas = mysqli_query($conectar, $sql_count_tiendas);
+                $total_tiendas_aliado = ($res_count_tiendas) ? mysqli_fetch_assoc($res_count_tiendas)['total'] : 0;
+                
+                $sql_count_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico = '$cod_aliado' AND cod_estado = '1'";
+                $res_count_bancos = mysqli_query($conectar, $sql_count_bancos);
+                $total_bancos_aliado = ($res_count_bancos) ? mysqli_fetch_assoc($res_count_bancos)['total'] : 0;
+
                 // Obtener líneas de crédito asociadas a este aliado
                 $sql_lineas_credito = "SELECT ec.nombre_entidad_crediticia, peca.interes_ptj 
                 FROM tbl15_parametrizacion_entidad_crediticia_aliado peca INNER JOIN tbl15_entidad_crediticia ec ON peca.cod_entidad_crediticia = ec.cod_entidad_crediticia 
@@ -1657,13 +1667,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <div class="ally-header">
                     <div class="ally-info">
                         <div class="ally-name"><?php echo ucwords(strtolower($nombre_completo)); ?></div>
-                        <div class="ally-doc">
-                            CC: <?php echo $row['cedula']; ?> 
-                            <?php if(!empty($row['fecha'])): ?>
-                            <span style="margin-left: 0.5rem; color: rgba(255,255,255,0.4);">•</span>
-                            <span style="margin-left: 0.5rem;"><i class="fa-solid fa-calendar-day" style="color: #8b5cf6; font-size: 0.7rem;"></i> <?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span>
-                            <?php endif; ?>
-                        </div>
+                        <div class="ally-doc">CC: <?php echo $row['cedula']; ?></div>
                     </div>
                     <span class="ally-role" style="background: <?php echo $estado_bg; ?>; color: <?php echo $estado_color; ?>;">
                         <?php echo $estado_texto; ?>
@@ -1676,24 +1680,31 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <?php if(!empty($row['cuenta'])): ?><div class="ally-detail"><i class="fa-solid fa-building-columns"></i><span>Usuario: <?php echo $row['cuenta']; ?></span></div><?php endif; ?>
                     <div class="ally-detail"><i class="fa-solid fa-store"></i><span><?php echo $tiendas_texto; ?></span></div>
                     <?php if(!empty($row['fecha'])): ?><div class="ally-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span></div><?php endif; ?>
-                    <!--
-                    <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 0.5rem; padding-top: 0.5rem;">
-                        <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.25rem;">
-                            <i class="fa-solid fa-credit-card" style="color: #8b5cf6; font-size: 0.8rem; margin-top: 0.25rem; flex-shrink: 0;"></i>
-                            <div style="flex: 1; min-width: 0;">
-                                <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600; margin-bottom: 0.35rem;">Líneas de Crédito:</div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; line-height: 1.4;">
-                                    <?php echo $lineas_credito_texto; ?>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+
+                <div class="ally-stats">
+                    <div class="ally-stat-item" onclick="abrirModalVerTiendas(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
+                        <span class="ally-stat-number"><?php echo $total_tiendas_aliado; ?></span>
+                        <span class="ally-stat-label">Tiendas</span>
                     </div>
-                    -->
+                    <div class="ally-stat-item" onclick="abrirModalVerCuentas(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
+                        <span class="ally-stat-number"><?php echo $total_bancos_aliado; ?></span>
+                        <span class="ally-stat-label">Cuentas</span>
+                    </div>
+                </div>
+
+                <div class="ally-quick-actions">
+                    <button class="btn-quick-action btn-tienda" onclick="window.location.href='lista_tienda_lider_movil.php?registrar_tienda=1&cod_aliado=<?php echo $row['cod_administrador']; ?>'">
+                        <i class="fa-solid fa-store"></i> +Tienda
+                    </button>
+                    <button class="btn-quick-action btn-banco" onclick="abrirModalAgregarBanco(<?php echo $row['cod_administrador']; ?>)">
+                        <i class="fa-solid fa-university"></i> +Banco
+                    </button>
                 </div>
 
                 <div class="ally-actions">
                     <a href="ver_detalle_aliado_lider_movil.php?cod_administrador=<?php echo $row['cod_administrador']; ?>" class="action-btn view"><i class="fa-solid fa-eye"></i> Detalles</a>
-                    <button class="action-btn edit" onclick="abrirModalEditar(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)"><i class="fa-solid fa-edit"></i> Editar y Agregar</button>
+                    <button class="action-btn edit" onclick="abrirModalEditar(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)"><i class="fa-solid fa-edit"></i> Editar</button>
                     <?php
                     $tiene_rut = !empty($row['url_documentacion_rut_aliado']);
                     $tiene_camara = !empty($row['url_documentacion_camaracomercio_aliado']);
@@ -1705,7 +1716,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <button class="action-btn share-partial" onclick="compartirDocumentacion(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-file-circle-exclamation"></i> Docs <span class="docs-badge"><?php echo $total_docs; ?>/3</span></button>
                     <?php else: ?>
                     <button class="action-btn share" disabled style="opacity: 0.5; cursor: not-allowed;" title="El aliado no ha cargado documentos">
-                        <i class="fa-solid fa-share-nodes"></i> Compartir Docs
+                        <i class="fa-solid fa-share-nodes"></i> Compartir
                     </button>
                     <?php endif; ?>
                 </div>
@@ -5113,9 +5124,7 @@ $('#formAgregarEntidad').on('submit', function(e) {
                     recargarEntidadesEditar(codAdmin);
                 });
             } else {
-                Swal.fire({
-                    icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo agregar la entidad', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo agregar la entidad', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
@@ -5327,9 +5336,7 @@ $('#formEditar').on('submit', function(e) {
     // Usar FormData para soportar archivos
     var formData = new FormData(this);
     
-    Swal.fire({
-        title: 'Actualizando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Actualizando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
         url: '../admin/act_aliado_modal_lider_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
@@ -5629,9 +5636,7 @@ function descargarZip() {
     link.click();
     document.body.removeChild(link);
     
-    Swal.fire({
-        icon: 'success', title: 'Descargando...', text: 'El archivo se está descargando', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ icon: 'success', title: 'Descargando...', text: 'El archivo se está descargando', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 }
 
 function generarEnlace() {
@@ -5739,9 +5744,7 @@ function abrirModalVerCuentas(codAliado, nombreAliado) {
                 container.innerHTML = '<div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-university" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>No hay cuentas registradas</p></div>';
             }
         },
-        error: function() {
-            container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al cargar cuentas</p></div>';
-        }
+        error: function() { container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al cargar cuentas</p></div>'; }
     });
 }
 function cerrarModalVerCuentas() { $('#modalVerCuentas').fadeOut(); }
