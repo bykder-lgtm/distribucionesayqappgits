@@ -1248,6 +1248,94 @@ select[id^="edit_municipio_tienda_"] option {
     }
 }
 </style>
+<!-- Select2 CDN -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+/* Estilos personalizados para Select2 - Tema Oscuro/Violeta */
+.select2-container--default .select2-selection--single {
+    background-color: rgba(139, 92, 246, 0.05) !important;
+    border: 1px solid rgba(139, 92, 246, 0.3) !important;
+    border-radius: 12px !important;
+    height: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.3s ease !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: white !important;
+    padding-left: 1.25rem !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.95rem !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 48px !important;
+    right: 10px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #8b5cf6 transparent transparent transparent !important;
+}
+
+.select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+    border-color: transparent transparent #8b5cf6 transparent !important;
+}
+
+.select2-container--default .select2-selection--single:focus, 
+.select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1) !important;
+    background: rgba(139, 92, 246, 0.1) !important;
+}
+
+.select2-dropdown {
+    background-color: #1a1f2e !important;
+    border: 1px solid rgba(139, 92, 246, 0.5) !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5) !important;
+    z-index: 9999 !important;
+}
+
+.select2-search--dropdown {
+    padding: 10px !important;
+    background-color: rgba(139, 92, 246, 0.05) !important;
+}
+
+.select2-search--dropdown .select2-search__field {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(139, 92, 246, 0.3) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    outline: none !important;
+}
+
+.select2-results__option {
+    padding: 10px 15px !important;
+    color: rgba(255,255,255,0.8) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.9rem !important;
+}
+
+.select2-results__option--highlighted[aria-selected] {
+    background-color: #8b5cf6 !important;
+    color: white !important;
+}
+
+.select2-results__option[aria-selected=true] {
+    background-color: rgba(139, 92, 246, 0.2) !important;
+    color: white !important;
+}
+
+/* Fix para que Select2 se vea bien dentro del modal con z-index alto */
+.select2-container {
+    z-index: 10001 !important;
+}
+</style>
 </head>
 <body>
 <?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
@@ -2859,9 +2947,9 @@ function abrirModalEditar(data) {
     document.getElementById('edit_apellido').value = data.apellidos;
     document.getElementById('edit_telefono').value = data.telefono || '';
     document.getElementById('edit_correo').value = data.correo || '';
-    document.getElementById('edit_cod_asesor').value = data.cod_asesor || '';
-    document.getElementById('edit_cod_lider').value = data.cod_lider || '';
-    document.getElementById('edit_cod_coordinador').value = data.cod_coordinador || '';
+    $('#edit_cod_asesor').val(data.cod_asesor || '').trigger('change');
+    $('#edit_cod_lider').val(data.cod_lider || '').trigger('change');
+    $('#edit_cod_coordinador').val(data.cod_coordinador || '').trigger('change');
     document.getElementById('edit_estado').value = data.cod_estado_activacion_usuario;
     document.getElementById('edit_estado_hidden').value = data.cod_estado_activacion_usuario;
     
@@ -3028,6 +3116,20 @@ function abrirModalEditar(data) {
     cargarTiendasAliado(data.cod_administrador);
     
     document.getElementById('modalEditar').classList.add('show');
+    
+    // Inicializar o refrescar Select2 cuando el modal se muestra
+    setTimeout(function() {
+        ['#edit_cod_lider', '#edit_cod_coordinador', '#edit_cod_asesor'].forEach(function(id) {
+            $(id).select2({
+                dropdownParent: $('#modalEditar'),
+                width: '100%',
+                language: {
+                    noResults: function() { return "No se encontraron resultados"; },
+                    searching: function() { return "Buscando..."; }
+                }
+            });
+        });
+    }, 100);
 }
 
 // Función para cargar bancos del aliado en modal editar
