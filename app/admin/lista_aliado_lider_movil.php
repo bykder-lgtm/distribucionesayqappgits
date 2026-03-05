@@ -328,19 +328,19 @@ body {
 /* Ally List */
 .ally-list {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+}
+
+@media (max-width: 640px) {
+    .ally-list {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
     .ally-list {
         gap: 0.85rem;
-    }
-}
-
-@media (max-width: 640px) {
-    .ally-list {
-        gap: 0.75rem;
     }
 }
 
@@ -390,6 +390,8 @@ body {
     border-radius: 16px;
     padding: 1rem;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 768px) {
@@ -455,6 +457,7 @@ body {
     margin-bottom: 1rem;
     border-top: 1px solid rgba(255,255,255,0.05);
     padding-top: 0.75rem;
+    flex: 1;
 }
 
 .ally-detail {
@@ -475,6 +478,155 @@ body {
     color: rgba(255,255,255,0.8);
     word-break: break-word; /* Evita que correos o textos largos rompan el layout */
     line-height: 1.4;
+}
+
+/* Ally Stats */
+.ally-stats {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.ally-stat-item {
+    flex: 1;
+    text-align: center;
+    padding: 0.4rem;
+    border-radius: 8px;
+    background: rgba(139, 92, 246, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(139, 92, 246, 0.05);
+}
+
+.ally-stat-item:hover {
+    background: rgba(139, 92, 246, 0.15);
+    transform: translateY(-1px);
+    border-color: rgba(139, 92, 246, 0.2);
+}
+
+.ally-stat-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #8b5cf6;
+    display: block;
+}
+
+.ally-stat-label {
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 500;
+}
+
+/* Quick Action Buttons */
+.ally-quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-quick-action {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.btn-quick-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-quick-action.btn-tienda {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+}
+
+.btn-quick-action.btn-banco {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.ally-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.action-btn {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+.action-btn i {
+    font-size: 0.85rem;
+}
+
+.action-btn.view {
+    background: rgba(139, 92, 246, 0.2);
+    color: #8b5cf6;
+}
+
+.action-btn.view:hover {
+    background: #8b5cf6;
+    color: white;
+}
+
+.action-btn.edit {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.action-btn.edit:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+.action-btn.share {
+    background: rgba(99, 102, 241, 0.2);
+    color: #6366f1;
+}
+
+.action-btn.share-partial {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.action-btn.share-complete {
+    background: rgba(139, 92, 246, 0.15);
+    color: #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.docs-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 0.1rem 0.35rem;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
 }
 
 /* Modal */
@@ -2723,6 +2875,40 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
     </div>
 </div>
 
+<!-- Modal Ver Tiendas -->
+<div class="modal-overlay" id="modalVerTiendas" style="align-items: flex-start; padding-top: 20px; z-index: 3500;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+            <h2 style="font-size: 1rem;"><i class="fa-solid fa-store"></i> Tiendas: <span id="v_nombre_aliado_t"></span></h2>
+            <button class="modal-close" onclick="cerrarModalVerTiendas()" style="background: rgba(255,255,255,0.2); color: white;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div id="lista_tiendas_aliadas_v"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ver Cuentas -->
+<div class="modal-overlay" id="modalVerCuentas" style="align-items: flex-start; padding-top: 20px; z-index: 3500;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+            <h2 style="font-size: 1rem;"><i class="fa-solid fa-university"></i> Cuentas: <span id="v_nombre_aliado_c"></span></h2>
+            <button class="modal-close" onclick="cerrarModalVerCuentas()" style="background: rgba(255,255,255,0.2); color: white;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div id="lista_cuentas_aliadas_v"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.view-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.view-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; transition: all 0.3s ease; }
+.view-item:active { background: rgba(255,255,255,0.1); transform: scale(0.98); }
+.view-item-title { color: white; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+.view-item-detail { color: rgba(255,255,255,0.6); font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; }
+</style>
+
 <!-- Modal Confirmación Registro Exitoso -->
 <div class="modal-overlay" id="modalConfirmacionRegistro" style="z-index: 4000; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
@@ -4069,50 +4255,18 @@ function guardarEntidadEditada(codParametrizacion) {
     });
     
     $.ajax({
-        url: '../admin/actualizar_entidad_aliado_ajax.php',
-        type: 'POST',
-        data: {
-            cod_parametrizacion: codParametrizacion,
-            interes_ptj: interes,
-            cod_estado_entrar_portal: portal,
-            cod_estado: estado,
-            url_pagina_web_consulta: url
-        },
-        dataType: 'json',
+        url: '../admin/actualizar_entidad_aliado_ajax.php', type: 'POST', data: { cod_parametrizacion: codParametrizacion, interes_ptj: interes, cod_estado_entrar_portal: portal, cod_estado: estado, url_pagina_web_consulta: url }, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({ 
-                    icon: 'success', 
-                    title: '¡Actualizado!', 
-                    text: 'Entidad actualizada correctamente', 
-                    background: '#1a1f2e', 
-                    color: 'white', 
-                    timer: 2000,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualizado!', text: 'Entidad actualizada correctamente', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
             } else {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Error', 
-                    text: response.mensaje || 'No se pudo actualizar la entidad', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({  icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo actualizar la entidad', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
             Swal.close();
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'Error de conexión. Intenta nuevamente.', 
-                background: '#1a1f2e', 
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -4124,50 +4278,20 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
     var nombre_entidad = btnEliminar.attr('data-nombre-entidad');
     
     if (!cod_parametrizacion) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Aviso',
-            text: 'No se puede eliminar. La parametrización no ha sido guardada aún.',
-            background: '#1a1f2e',
-            color: 'white'
-        });
+        Swal.fire({ icon: 'warning', title: 'Aviso', text: 'No se puede eliminar. La parametrización no ha sido guardada aún.', background: '#1a1f2e', color: 'white' });
         return;
     }
     
     Swal.fire({
-        title: '¿Eliminar parametrización?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la parametrización de:</p><strong style="color: #8b5cf6;">' + nombre_entidad + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar',
-        cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
-        background: '#1a1f2e',
-        color: 'white',
-        backdrop: 'rgba(0,0,0,0.8)',
-        customClass: {
-            container: 'swal-high-zindex'
-        }
+        title: '¿Eliminar parametrización?', html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la parametrización de:</p><strong style="color: #8b5cf6;">' + nombre_entidad + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6b7280', confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar', cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar', background: '#1a1f2e', color: 'white', backdrop: 'rgba(0,0,0,0.8)', customClass: { container: 'swal-high-zindex' }
     }).then((result) => {
         if (result.isConfirmed) {
             // Mostrar loading
-            Swal.fire({
-                title: 'Eliminando...',
-                didOpen: () => { Swal.showLoading() },
-                allowOutsideClick: false,
-                background: '#1a1f2e',
-                color: 'white'
-            });
+            Swal.fire({ title: 'Eliminando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white' });
             
             // Realizar la petición AJAX
             $.ajax({
-                url: '../admin/eliminar_entidad_aliado_ajax.php',
-                type: 'POST',
-                data: {
-                    cod_parametrizacion_entidad_crediticia_aliado: cod_parametrizacion
-                },
-                dataType: 'json',
+                url: '../admin/eliminar_entidad_aliado_ajax.php', type: 'POST', data: { cod_parametrizacion_entidad_crediticia_aliado: cod_parametrizacion },             dataType: 'json',
                 success: function(response) {
                     Swal.close();
                     if (response.success) {
@@ -5531,9 +5655,7 @@ function copiarEnlace() {
     
     try {
         document.execCommand('copy');
-        Swal.fire({
-            icon: 'success', title: '¡Copiado!', text: 'El enlace se ha copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace se ha copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     } catch (err) {
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     }
@@ -5543,6 +5665,86 @@ function validarEmail(email) {
     var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
+
+// Cerrar modales al clic fuera
+$(document).ready(function() {
+    const modalTiendas = document.getElementById('modalVerTiendas');
+    if (modalTiendas) modalTiendas.addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerTiendas(); } });
+    
+    const modalCuentas = document.getElementById('modalVerCuentas');
+    if (modalCuentas) modalCuentas.addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerCuentas(); } });
+});
+
+// Funciones para ver tiendas
+function abrirModalVerTiendas(codAliado, nombreAliado) {
+    document.getElementById('v_nombre_aliado_t').textContent = nombreAliado;
+    const container = document.getElementById('lista_tiendas_aliadas_v');
+    container.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #8b5cf6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.6);">Cargando tiendas...</p></div>';
+    $('#modalVerTiendas').fadeIn().css('display', 'flex');
+
+    $.ajax({
+        url: 'obtener_tiendas_por_aliado_ajax.php',
+        type: 'POST',
+        data: { cod_aliado_estrategico: codAliado },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success && response.tiendas.length > 0) {
+                let html = '<div class="view-list">';
+                response.tiendas.forEach(tienda => {
+                    html += `
+                        <div class="view-item" onclick="window.location.href='lista_tienda_lider_movil.php?busqueda=${encodeURIComponent(tienda.identificacion_tercero)}'">
+                            <div class="view-item-title">${tienda.nombre_tienda}</div>
+                            <div class="view-item-detail"><i class="fa-solid fa-id-card"></i> ${tienda.identificacion_tercero}</div>
+                            <div class="view-item-detail"><i class="fa-solid fa-map-marker-alt"></i> ${tienda.direccion_tercero || 'Sin dirección'}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-store-slash" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>No hay tiendas registradas</p></div>';
+            }
+        },
+        error: function() {
+            container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al cargar tiendas</p></div>';
+        }
+    });
+}
+function cerrarModalVerTiendas() { $('#modalVerTiendas').fadeOut(); }
+
+// Funciones para ver cuentas
+function abrirModalVerCuentas(codAliado, nombreAliado) {
+    document.getElementById('v_nombre_aliado_c').textContent = nombreAliado;
+    const container = document.getElementById('lista_cuentas_aliadas_v');
+    container.innerHTML = '<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.6);">Cargando cuentas...</p></div>';
+    $('#modalVerCuentas').fadeIn().css('display', 'flex');
+
+    $.ajax({
+        url: 'obtener_bancos_cuenta_por_aliado_ajax.php', type: 'POST', data: { cod_aliado_estrategico: codAliado }, dataType: 'json',
+        success: function(response) {
+            if (response.success && response.bancos.length > 0) {
+                let html = '<div class="view-list">';
+                response.bancos.forEach(banco => {
+                    html += `
+                        <div class="view-item">
+                            <div class="view-item-title">${banco.nombre_banco_cuenta}</div>
+                            <div class="view-item-detail"><i class="fa-solid fa-hashtag"></i> No. ${banco.numero_banco_cuenta}</div>
+                            <div class="view-item-detail"><i class="fa-solid fa-user"></i> ${banco.nombre_titular_cuenta}</div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-university" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>No hay cuentas registradas</p></div>';
+            }
+        },
+        error: function() {
+            container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al cargar cuentas</p></div>';
+        }
+    });
+}
+function cerrarModalVerCuentas() { $('#modalVerCuentas').fadeOut(); }
 
 </script>
 
@@ -5663,12 +5865,8 @@ $(document).ready(function() {
 
 function cargarNotificacionesMovil() {
     $.ajax({
-        url: '../admin/obtener_notificaciones_ajax.php',
-        type: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) actualizarUINotificacionesMovil(response.notificaciones, response.count);
-        }
+        url: '../admin/obtener_notificaciones_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) { if (response.success) actualizarUINotificacionesMovil(response.notificaciones, response.count); }
     });
 }
 
@@ -5710,35 +5908,20 @@ $(document).on('click', function(e) {
 
 function marcarNotificacionLeidaMovil(codNotificacion, element) {
     $.ajax({
-        url: '../admin/marcar_notificacion_leida_ajax.php',
-        type: 'POST',
-        data: { cod_notificacion: codNotificacion },
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) $(element).fadeOut(300, function() { $(this).remove(); cargarNotificacionesMovil(); });
-        }
+        url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { cod_notificacion: codNotificacion }, dataType: 'json',
+        success: function(response) { if (response.success) $(element).fadeOut(300, function() { $(this).remove(); cargarNotificacionesMovil(); }); }
     });
 }
 
 function marcarTodasLeidasMovil() {
     Swal.fire({
-        title: '¿Marcar todas como leídas?',
-        text: 'Se marcarán todas las notificaciones pendientes como leídas',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#8b5cf6',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, marcar todas',
-        cancelButtonText: 'Cancelar',
-        background: '#1a1f2e',
-        color: 'white'
+        title: '¿Marcar todas como leídas?', text: 'Se marcarán todas las notificaciones pendientes como leídas', icon: 'question',
+        showCancelButton: true, confirmButtonColor: '#8b5cf6', cancelButtonColor: '#6c757d', confirmButtonText: 'Sí, marcar todas',
+        cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../admin/marcar_notificacion_leida_ajax.php',
-                type: 'POST',
-                data: { marcar_todas: 'si' },
-                dataType: 'json',
+                url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { marcar_todas: 'si' }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
                         cargarNotificacionesMovil();
@@ -5796,9 +5979,7 @@ function escapeHtmlMovil(text) {
         if (loader && loader.style.display !== 'none') {
             console.warn('Loader forzado a ocultar después de 10 segundos');
             loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-            }, 600);
+            setTimeout(() => { loader.style.display = 'none'; }, 600);
         }
     }, 10000);
 </script>
