@@ -460,7 +460,7 @@ body {
     }
     
     .asesor-details {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .asesor-stats {
@@ -484,11 +484,21 @@ body {
     }
     
     .asesor-actions {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
     }
     
     .action-btn {
-        min-width: 100%;
+        min-width: unset;
+        font-size: 0.68rem;
+        padding: 0.6rem 0.2rem;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .action-btn i {
+        font-size: 1rem;
     }
 }
 /* Pagination Styles */
