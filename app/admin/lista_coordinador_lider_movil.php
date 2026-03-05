@@ -566,13 +566,15 @@ $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 
 // Consulta de coordinadores asignados a este lider (cod_seguridad = '21' para coordinadores)
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_lider,
-COUNT(DISTINCT ase.cod_administrador) as total_asesores
-FROM tbl15_administrador a LEFT JOIN tbl15_administrador ase ON a.cod_administrador = ase.cod_coordinador AND ase.cod_seguridad = '22'
+(SELECT COUNT(*) FROM tbl15_administrador WHERE cod_coordinador = a.cod_administrador AND cod_seguridad = '22') as total_asesores,
+(SELECT COUNT(*) FROM tbl15_administrador WHERE cod_coordinador = a.cod_administrador AND cod_seguridad = '23') as total_aliados,
+(SELECT COUNT(*) FROM tbl15_tienda WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_coordinador = a.cod_administrador AND cod_seguridad = '23')) as total_tiendas
+FROM tbl15_administrador a 
 WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '21'";
 
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
-$sql .= " GROUP BY a.cod_administrador ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
+$sql .= " ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);
 $total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
 ?>
@@ -654,20 +656,19 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                 </div>
 
                 <div class="coordinador-stats">
-                    <div class="stat-item">
+                    <div class="stat-item" onclick="abrirModalStats(<?php echo $row['cod_administrador']; ?>, 'asesores')" style="cursor: pointer;">
                         <span class="stat-value"><?php echo $row['total_asesores']; ?></span>
                         <span class="stat-label">Asesores</span>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-value">0</span>
+                    <div class="stat-item" onclick="abrirModalStats(<?php echo $row['cod_administrador']; ?>, 'aliados')" style="cursor: pointer;">
+                        <span class="stat-value"><?php echo $row['total_aliados']; ?></span>
                         <span class="stat-label">Aliados</span>
                     </div>
 
-                    <div class="stat-item">
-                        <span class="stat-value">0</span>
+                    <div class="stat-item" onclick="abrirModalStats(<?php echo $row['cod_administrador']; ?>, 'tiendas')" style="cursor: pointer;">
+                        <span class="stat-value"><?php echo $row['total_tiendas']; ?></span>
                         <span class="stat-label">Tiendas</span>
                     </div>
-
                 </div>
 
                 <div class="coordinador-actions">
@@ -792,6 +793,23 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Consultar Estadísticas -->
+<div class="modal-overlay" id="modalStatsDetalles" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;">
+    <div class="modal-content" style="background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <div class="modal-header" id="modalStatsHeader" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); padding: 1.25rem; border-radius: 20px 20px 0 0; position: relative; display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="modalStatsTitle" style="color: white; font-size: 1.15rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;">Detalles</h2>
+            <button class="modal-close" onclick="cerrarModalStats()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="modalStatsContent" style="padding: 1.25rem; min-height: 200px;">
+            <!-- Contenido dinámico via AJAX -->
+            <div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.5);">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <p>Cargando información...</p>
+            </div>
         </div>
     </div>
 </div>
@@ -1073,6 +1091,67 @@ function registrarCoordinador(e) {
             });
         }
     });
+}
+
+function abrirModalStats(cod_coordinador, tipo) {
+    const modal = document.getElementById('modalStatsDetalles');
+    const content = document.getElementById('modalStatsContent');
+    const title = document.getElementById('modalStatsTitle');
+    const header = document.getElementById('modalStatsHeader');
+    
+    // Configurar título e ícono
+    let icon = '';
+    let label = '';
+    let colorStart = '#8b5cf6';
+    let colorEnd = '#7c3aed';
+
+    if (tipo === 'asesores') {
+        icon = '<i class="fa-solid fa-user-tie"></i>';
+        label = 'Mis Asesores';
+        colorStart = '#3b82f6';
+        colorEnd = '#2563eb';
+    } else if (tipo === 'aliados') {
+        icon = '<i class="fa-solid fa-users"></i>';
+        label = 'Mis Aliados';
+        colorStart = '#8b5cf6';
+        colorEnd = '#7c3aed';
+    } else if (tipo === 'tiendas') {
+        icon = '<i class="fa-solid fa-store"></i>';
+        label = 'Mis Tiendas';
+        colorStart = '#10b981';
+        colorEnd = '#059669';
+    }
+
+    title.innerHTML = `${icon} ${label}`;
+    header.style.background = `linear-gradient(135deg, ${colorStart} 0%, ${colorEnd} 100%)`;
+    content.innerHTML = `
+        <div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.5);">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+            <p>Cargando información...</p>
+        </div>
+    `;
+    modal.style.display = 'flex';
+
+    $.ajax({
+        url: 'get_stats_detalles_coordinador_ajax.php',
+        type: 'POST',
+        data: { cod_coordinador: cod_coordinador, tipo: tipo },
+        success: function(response) {
+            content.innerHTML = response;
+        },
+        error: function() {
+            content.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: #ef4444;">
+                    <i class="fa-solid fa-circle-exclamation" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p>No se pudo cargar la información</p>
+                </div>
+            `;
+        }
+    });
+}
+
+function cerrarModalStats() {
+    document.getElementById('modalStatsDetalles').style.display = 'none';
 }
 </script>
 
