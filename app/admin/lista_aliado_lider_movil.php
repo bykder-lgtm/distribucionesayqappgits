@@ -1680,50 +1680,63 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Líder *</label>
-                        <select class="form-select" id="cod_lider" name="cod_lider" required>
-                            <option value="">Seleccione...</option>
-                            <?php 
-                            mysqli_data_seek($res_lider, 0);
-                            while ($lider = mysqli_fetch_assoc($res_lider)): 
-                            ?>
-                            <option value="<?php echo $lider['cod_administrador']; ?>" <?php echo ($lider['cod_administrador'] == $cod_administrador) ? 'selected' : ''; ?>><?php echo $lider['nombres_apellidos_tercero']; ?></option>
-                            <?php endwhile; ?>
-                        </select>
+                <label class="form-label" style="color: #8b5cf6; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-sitemap"></i> Asignación de Jerarquía</label>
+                <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Líder *</label>
+                            <select class="form-select" id="cod_lider" name="cod_lider" required>
+                                <option value="">Seleccione...</option>
+                                <?php 
+                                mysqli_data_seek($res_lider, 0);
+                                while ($lider = mysqli_fetch_assoc($res_lider)): 
+                                ?>
+                                <option value="<?php echo $lider['cod_administrador']; ?>" <?php echo ($lider['cod_administrador'] == $cod_administrador) ? 'selected' : ''; ?>><?php echo $lider['nombres_apellidos_tercero']; ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Coordinador *</label>
+                            <select class="form-select" id="cod_coordinador" name="cod_coordinador" required>
+                                <option value="">Seleccione...</option>
+                                <?php 
+                                mysqli_data_seek($res_coord, 0);
+                                while ($coord = mysqli_fetch_assoc($res_coord)): 
+                                ?>
+                                <option value="<?php echo $coord['cod_administrador']; ?>"><?php echo $coord['nombres_apellidos_tercero']; ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Coordinador *</label>
-                        <select class="form-select" id="cod_coordinador" name="cod_coordinador" required>
-                            <option value="">Seleccione...</option>
-                            <?php 
-                            mysqli_data_seek($res_coord, 0);
-                            while ($coord = mysqli_fetch_assoc($res_coord)): 
-                            ?>
-                            <option value="<?php echo $coord['cod_administrador']; ?>"><?php echo $coord['nombres_apellidos_tercero']; ?></option>
-                            <?php endwhile; ?>
-                        </select>
+
+                    <div class="form-row" style="margin-top: 0.5rem;">
+                        <div class="form-group">
+                            <label class="form-label">Asesor *</label>
+                            <select class="form-select" id="cod_asesor" name="cod_asesor" required>
+                                <option value="">Seleccione...</option>
+                                <?php 
+                                mysqli_data_seek($res_asesor, 0);
+                                while ($asesor = mysqli_fetch_assoc($res_asesor)): 
+                                ?>
+                                <option value="<?php echo $asesor['cod_administrador']; ?>"><?php echo $asesor['nombres_apellidos_tercero']; ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="form-group" style="visibility: hidden;"></div>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Asesor *</label>
-                        <select class="form-select" id="cod_asesor" name="cod_asesor" required>
-                            <option value="">Seleccione...</option>
-                            <?php 
-                            mysqli_data_seek($res_asesor, 0);
-                            while ($asesor = mysqli_fetch_assoc($res_asesor)): 
-                            ?>
-                            <option value="<?php echo $asesor['cod_administrador']; ?>"><?php echo $asesor['nombres_apellidos_tercero']; ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label class="form-label">Departamento</label>
                         <select class="form-select" id="cod_departamento" name="cod_departamento" onchange="cargarMunicipiosRegistro(this.value)">
                             <option value="">Seleccione...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio</label>
+                        <select class="form-select" id="cod_municipio" name="cod_municipio">
+                            <option value="">Primero seleccione departamento</option>
                         </select>
                     </div>
                 </div>
@@ -2044,27 +2057,43 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Líder *</label>
-                        <select class="form-select" id="edit_cod_lider" name="cod_lider" required>
-                            <option value="">Seleccione</option>
-                            <?php mysqli_data_seek($res_lider, 0);
-                            while ($r = mysqli_fetch_assoc($res_lider)): ?>
-                            <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
+                <label class="form-label" style="color: #8b5cf6; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-sitemap"></i> Asignación de Jerarquía</label>
+                <div style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Líder *</label>
+                            <select class="form-select" id="edit_cod_lider" name="cod_lider" required>
+                                <option value="">Seleccione</option>
+                                <?php mysqli_data_seek($res_lider, 0);
+                                while ($r = mysqli_fetch_assoc($res_lider)): ?>
+                                <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Coordinador *</label>
-                        <select class="form-select" id="edit_cod_coordinador" name="cod_coordinador" required>
-                            <option value="">Seleccione</option>
-                            <?php mysqli_data_seek($res_coord, 0);
-                            while ($r = mysqli_fetch_assoc($res_coord)): ?>
-                            <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
-                            <?php endwhile; ?>
-                        </select>
+                        <div class="form-group">
+                            <label class="form-label">Coordinador *</label>
+                            <select class="form-select" id="edit_cod_coordinador" name="cod_coordinador" required>
+                                <option value="">Seleccione</option>
+                                <?php mysqli_data_seek($res_coord, 0);
+                                while ($r = mysqli_fetch_assoc($res_coord)): ?>
+                                <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row" style="margin-top: 0.5rem;">
+                        <div class="form-group">
+                            <label class="form-label">Asesor *</label>
+                            <select class="form-select" id="edit_cod_asesor" name="cod_asesor" required>
+                                <option value="">Seleccione</option>
+                                <?php mysqli_data_seek($res_asesor, 0);
+                                while ($r = mysqli_fetch_assoc($res_asesor)): ?>
+                                <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
+                        <div class="form-group" style="visibility: hidden;"></div>
                     </div>
                 </div>
 
@@ -2108,23 +2137,13 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Asesor *</label>
-                        <select class="form-select" id="edit_cod_asesor" name="cod_asesor" required>
-                            <option value="">Seleccione</option>
-                            <?php mysqli_data_seek($res_asesor, 0);
-                            while ($r = mysqli_fetch_assoc($res_asesor)): ?>
-                            <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
+                <div class="form-row" style="margin-top: 0.5rem;">
                     <div class="form-group">
                         <label class="form-label">Estado</label>
                         <select class="form-select" name="cod_estado_activacion_usuario" id="edit_estado" disabled style="background: rgba(100, 116, 139, 0.2); cursor: not-allowed; opacity: 0.7;"><option value="1">Activo</option><option value="2">En Espera para Activación</option><option value="3">Inactivo</option></select>
                         <input type="hidden" name="cod_estado_activacion_usuario" id="edit_estado_hidden">
                     </div>
+                    <div class="form-group" style="visibility: hidden;"></div>
                 </div>
                 
                 <div style="background: rgba(100, 116, 139, 0.1); border: 1px solid rgba(100, 116, 139, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: -0.5rem; margin-bottom: 1rem;">
