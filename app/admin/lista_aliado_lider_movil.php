@@ -2937,6 +2937,21 @@ $(document).ready(function() {
 });
 */
 
+function initSelect2Registro() {
+    setTimeout(function() {
+        ['#cod_lider', '#cod_coordinador', '#cod_asesor'].forEach(function(id) {
+            $(id).select2({
+                dropdownParent: $('#modalRegistro'),
+                width: '100%',
+                language: {
+                    noResults: function() { return "No se encontraron resultados"; },
+                    searching: function() { return "Buscando..."; }
+                }
+            });
+        });
+    }, 100);
+}
+
 // JS Modals
 function abrirModal() { 
     document.getElementById('modalRegistro').classList.add('show'); 
@@ -2946,6 +2961,9 @@ function abrirModal() {
     }, 100);
     // Cargar departamentos en el select del modal de registro
     cargarDepartamentosRegistro();
+    
+    // Inicializar Select2
+    initSelect2Registro();
 }
 function cerrarModal() { 
     document.getElementById('modalRegistro').classList.remove('show');
@@ -4407,6 +4425,9 @@ function registrarOtroAliado() {
     if (mensajeId) { mensajeId.style.display = 'none'; }
     // Abrir modal de registro
     document.getElementById('modalRegistro').classList.add('show');
+    
+    // Inicializar Select2
+    initSelect2Registro();
 }
 
 function cerrarModalConfirmacionTienda() {
