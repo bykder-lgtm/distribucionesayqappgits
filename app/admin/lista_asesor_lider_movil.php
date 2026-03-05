@@ -537,7 +537,7 @@ body {
 <?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 <?php
 // Parámetros de paginación
-$registros_por_pagina = 30;
+$registros_por_pagina = 10;
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 if ($pagina <= 0) $pagina = 1;
 $inicio = ($pagina - 1) * $registros_por_pagina;
