@@ -555,7 +555,7 @@ $total_registros_global = $fila_conteo['total'];
 $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 
 // Consulta de asesores asignados a este lider (cod_seguridad = '22' para asesores)
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_coordinador,
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_coordinador, a.cod_lider,
 COUNT(DISTINCT ali.cod_administrador) as total_aliados
 FROM tbl15_administrador a LEFT JOIN tbl15_administrador ali ON a.cod_administrador = ali.cod_asesor AND ali.cod_seguridad = '23'
 WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
@@ -572,6 +572,10 @@ $total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
 // Consulta de coordinadores para la opción de cambiar coordinador
 $sql_coordinadores = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
 $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
+
+// Consulta de líderes para la opción de cambiar líder
+$sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
+$res_lideres = mysqli_query($conectar, $sql_lideres);
 ?>
 
     <!-- Header -->
@@ -772,6 +776,18 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                         </select>
                     </div>
 
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Líder Asignado</label>
+                        <select name="cod_lider_edit" id="cod_lider_edit" class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                            <?php 
+                            mysqli_data_seek($res_lideres, 0);
+                            while ($lider = mysqli_fetch_assoc($res_lideres)): 
+                            ?>
+                            <option value="<?php echo $lider['cod_administrador']; ?>" style="color: black;"><?php echo $lider['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
                 </div>
 
                 <div style="margin-top: 1.5rem;">
@@ -820,6 +836,7 @@ function abrirModalEditar(datos) {
     document.getElementById('correo_edit').value = datos.correo;
     document.getElementById('telefono1_edit').value = datos.telefono;
     document.getElementById('cod_coordinador_edit').value = datos.cod_coordinador;
+    document.getElementById('cod_lider_edit').value = datos.cod_lider;
     
     document.getElementById('modalEditarAsesor').style.display = 'flex';
 }
