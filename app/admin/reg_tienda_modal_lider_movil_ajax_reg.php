@@ -141,6 +141,10 @@ if (isset($_POST['identificacion_tercero'])) {
     $url_img_interna_tienda                                         = procesarArchivo('url_img_interna_tienda', $directorio_imgs, 'interna_');
     $url_img_selfieadmin_tienda                                     = procesarArchivo('url_img_selfieadmin_tienda', $directorio_imgs, 'selfie_');
     $url_img_otraopcional_tienda                                    = procesarArchivo('url_img_otraopcional_tienda', $directorio_imgs, 'otra_');
+    $cod_lider                                                      = isset($_POST['cod_lider']) ? intval($_POST['cod_lider']) : 0;
+    $cod_coordinador                                                = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
+    $cod_asesor                                                     = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
+
 	//---------------------------------------------------------------------------------------------------------------------------------//
 	$sql_dato_aliado = "SELECT cod_administrador FROM tbl15_administrador WHERE identificacion_tercero = '".($identificacion_tercero)."'";
 	$consultar_dato_aliado = mysqli_query($conectar, $sql_dato_aliado) or die(mysqli_error($conectar));
@@ -151,7 +155,7 @@ if (isset($_POST['identificacion_tercero'])) {
 
     } else {
 		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
-        cod_aliado_estrategico, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
+        cod_aliado_estrategico, cod_lider, cod_coordinador, cod_asesor, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
         nombre_representante, documento_representante, correo_representante, nombre_tipo_industria, nombre_tipo_subindustria, 
         nombre_tipo_otraindustria, numero_comercios, cod_tipo_sector, existe_rues, venta_presencial, venta_online, 
         nombre_plataforma_ecommerce, nombre_sistema_contable, cod_banco_cuenta, ubicacion_gps_tienda,
@@ -159,7 +163,7 @@ if (isset($_POST['identificacion_tercero'])) {
         url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda,
         url_img_selfieadmin_tienda, url_img_otraopcional_tienda, cod_administrador) 
         VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
-        '$cod_aliado_estrategico', '$cod_departamento', '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
+        '$cod_aliado_estrategico', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_departamento', '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
         UPPER('$nombre_representante'), '$documento_representante', '$correo_representante', UPPER('$nombre_tipo_industria'), UPPER('$nombre_tipo_subindustria'), 
         UPPER('$nombre_tipo_otraindustria'), '$numero_comercios', '$cod_tipo_sector', '$existe_rues', '$venta_presencial', '$venta_online', 
         '$nombre_plataforma_ecommerce', '$nombre_sistema_contable', '$cod_banco_cuenta', '$ubicacion_gps_tienda',

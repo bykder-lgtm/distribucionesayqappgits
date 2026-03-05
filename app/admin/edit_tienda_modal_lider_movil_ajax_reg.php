@@ -25,6 +25,9 @@ $cod_aliado_estrategico = isset($_POST['cod_aliado_estrategico']) ? mysqli_real_
 $cod_banco_cuenta = isset($_POST['cod_banco_cuenta']) ? mysqli_real_escape_string($conectar, $_POST['cod_banco_cuenta']) : '';
 $ubicacion_gps_tienda = isset($_POST['ubicacion_gps_tienda']) ? mysqli_real_escape_string($conectar, $_POST['ubicacion_gps_tienda']) : '';
 $correo_representante = isset($_POST['correo_representante']) ? mysqli_real_escape_string($conectar, $_POST['correo_representante']) : '';
+$cod_lider = isset($_POST['cod_lider']) ? intval($_POST['cod_lider']) : 0;
+$cod_coordinador = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
+$cod_asesor = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
 // Funciones para procesar archivos e imágenes
 function procesarArchivo($file_key, $directorio) {
     global $conectar;
@@ -49,7 +52,8 @@ function procesarImagen($file_key, $directorio_orig) {
 $sql_update = "UPDATE tbl15_tienda SET nombre_tienda = '$nombre_tienda', identificacion_tercero = '$identificacion_tercero', nombre1_tercero = '$nombre_tienda', 
     telefono1_tercero = '$telefono1_tercero', direccion_tercero = '$direccion_tercero', correo_tercero = '$correo_tercero', cod_aliado_estrategico = '$cod_aliado_estrategico', 
     cod_banco_cuenta = '$cod_banco_cuenta', ubicacion_gps_tienda = '$ubicacion_gps_tienda', nombre_representante = '$nombre_representante', 
-    documento_representante = '$documento_representante', correo_representante = '$correo_representante'";
+    documento_representante = '$documento_representante', correo_representante = '$correo_representante',
+    cod_lider = '$cod_lider', cod_coordinador = '$cod_coordinador', cod_asesor = '$cod_asesor'";
 // Procesar archivos con nombres de campo correctos de la tabla
 $url_rut = procesarArchivo('url_rut_tienda', '../archivador/documentacion_tienda/');
 if ($url_rut) { $sql_update .= ", url_documentacion_rut_tienda = '$url_rut'"; }

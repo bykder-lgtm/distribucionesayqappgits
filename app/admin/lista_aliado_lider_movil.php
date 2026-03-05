@@ -69,7 +69,7 @@ body {
 
 /* SweetAlert z-index fix para que aparezca encima de modales */
 .swal-high-zindex {
-    z-index: 99999 !important;
+    z-index: 100000 !important;
 }
 
 .page-container {
@@ -4559,8 +4559,11 @@ function cerrarModalDetalle() { document.getElementById('modalDetalle').classLis
 
 // ===== FUNCIONES PARA MODAL DE CONFIRMACIÓN Y DOCUMENTACIÓN =====
 function cerrarModalConfirmacionRegistro() {
-    document.getElementById('modalConfirmacionRegistro').classList.remove('show');
-    location.reload(); // Recargar la página al finalizar
+    var modal = document.getElementById('modalConfirmacionRegistro');
+    if (modal) modal.classList.remove('show');
+    setTimeout(function() {
+        location.reload(); 
+    }, 100);
 }
 
 function abrirDocumentacionDesdeConfirmacion() {
@@ -4616,8 +4619,14 @@ function registrarOtroAliado() {
 }
 
 function cerrarModalConfirmacionTienda() {
-    document.getElementById('modalConfirmacionTienda').classList.remove('show');
-    location.reload();
+    var modal = document.getElementById('modalConfirmacionTienda');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+    // Breve retraso para asegurar que la UI se actualice antes de recargar
+    setTimeout(function() {
+        location.reload();
+    }, 100);
 }
 
 // ===== FUNCIONES PARA REGISTRO DE VENDEDOR Y PRODUCTO DESDE CONFIRMACIÓN =====
