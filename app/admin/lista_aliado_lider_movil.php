@@ -1289,7 +1289,7 @@ $total_registros = $row_conteo['total'];
 $total_paginas = ceil($total_registros / $registros_por_pagina);
 
 // Consulta de aliados con LIMIT
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.cod_lider, a.cod_coordinador, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
 
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
@@ -1905,6 +1905,28 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         <label class="form-label">Barrio</label>
                         <input type="text" class="form-input" id="edit_barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Líder *</label>
+                    <select class="form-select" id="edit_cod_lider" name="cod_lider" required>
+                        <option value="">Seleccione</option>
+                        <?php mysqli_data_seek($res_lider, 0);
+                        while ($r = mysqli_fetch_assoc($res_lider)): ?>
+                        <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Coordinador *</label>
+                    <select class="form-select" id="edit_cod_coordinador" name="cod_coordinador" required>
+                        <option value="">Seleccione</option>
+                        <?php mysqli_data_seek($res_coord, 0);
+                        while ($r = mysqli_fetch_assoc($res_coord)): ?>
+                        <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
+                        <?php endwhile; ?>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -2846,6 +2868,8 @@ function abrirModalEditar(data) {
     document.getElementById('edit_telefono').value = data.telefono || '';
     document.getElementById('edit_correo').value = data.correo || '';
     document.getElementById('edit_cod_asesor').value = data.cod_asesor || '';
+    document.getElementById('edit_cod_lider').value = data.cod_lider || '';
+    document.getElementById('edit_cod_coordinador').value = data.cod_coordinador || '';
     document.getElementById('edit_estado').value = data.cod_estado_activacion_usuario;
     document.getElementById('edit_estado_hidden').value = data.cod_estado_activacion_usuario;
     

@@ -25,6 +25,10 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $nombre_tipo_cliente                                                = isset($_POST['nombre_tipo_cliente']) ? trim(addslashes($_POST['nombre_tipo_cliente'])) : "";
     $cod_tipo_sector                                                    = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
     $nit_razon_social                                                   = isset($_POST['nit_razon_social']) ? trim(addslashes($_POST['nit_razon_social'])) : '';
+    $cod_asesor                                                         = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
+    $cod_lider                                                          = isset($_POST['cod_lider']) ? intval($_POST['cod_lider']) : 0;
+    $cod_coordinador                                                    = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
+
     // Verificar si se debe cambiar el usuario
     $nuevo_usuario                                                      = '';
     if (isset($_POST['nuevo_usuario'])) {
@@ -54,7 +58,8 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         $sql_update = "UPDATE tbl15_administrador SET identificacion_tercero = '$identificacion_tercero',  cedula = '$identificacion_tercero', nombre1_tercero = UPPER('$nombre1_tercero'),
         nombres = UPPER('$nombre1_tercero'), apellido1_tercero = UPPER('$apellido1_tercero'), apellidos = UPPER('$apellido1_tercero'), nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'),
         telefono1_tercero = '$telefono1_tercero', telefono = '$telefono1_tercero', correo_tercero = '$correo_tercero', correo = '$correo_tercero', cod_estado_activacion_usuario = '$cod_estado_activacion_usuario',
-        cod_tipo_cliente = '$cod_tipo_cliente', nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social'";
+        cod_tipo_cliente = '$cod_tipo_cliente', nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social',
+        cod_asesor = '$cod_asesor', cod_lider = '$cod_lider', cod_coordinador = '$cod_coordinador'";
         
         // Si se debe cambiar el usuario, agregarlo a la consulta
         if (!empty($nuevo_usuario)) { $sql_update .= ", usuario = '$nuevo_usuario'"; }
