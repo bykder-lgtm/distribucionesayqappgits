@@ -57,7 +57,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         $sql_update = "UPDATE tbl15_administrador SET identificacion_tercero = '$identificacion_tercero',  cedula = '$identificacion_tercero', nombre1_tercero = UPPER('$nombre1_tercero'),
         nombres = UPPER('$nombre1_tercero'), apellido1_tercero = UPPER('$apellido1_tercero'), apellidos = UPPER('$apellido1_tercero'), nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'),
         telefono1_tercero = '$telefono1_tercero', telefono = '$telefono1_tercero', correo_tercero = '$correo_tercero', correo = '$correo_tercero', cod_estado_activacion_usuario = '$cod_estado_activacion_usuario',
-        nombre_tipo_cliente = '$nombre_tipo_cliente', nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', 
+        nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', 
         nombre_tipo_identificacion = '$nombre_tipo_identificacion', direccion_tercero = '$direccion_tercero', barrio_tercero = '$barrio_tercero', cod_asesor = '$cod_asesor'";
         
         // Si se debe cambiar el usuario, agregarlo a la consulta
