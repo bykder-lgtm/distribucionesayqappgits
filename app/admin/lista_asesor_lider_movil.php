@@ -560,7 +560,7 @@ COUNT(DISTINCT ali.cod_administrador) as total_aliados
 FROM tbl15_administrador a LEFT JOIN tbl15_administrador ali ON a.cod_administrador = ali.cod_asesor AND ali.cod_seguridad = '23'
 WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
 
-if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+if (!empty($busqueda)) { $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
 $sql .= " GROUP BY a.cod_administrador ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);
@@ -765,18 +765,6 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                     </div>
 
                     <div>
-                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Coordinador Asignado</label>
-                        <select name="cod_coordinador_edit" id="cod_coordinador_edit" class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
-                            <?php 
-                            mysqli_data_seek($res_coordinadores, 0);
-                            while ($coord = mysqli_fetch_assoc($res_coordinadores)): 
-                            ?>
-                            <option value="<?php echo $coord['cod_administrador']; ?>" style="color: black;"><?php echo $coord['nombres_apellidos_tercero']; ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
-
-                    <div>
                         <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Líder Asignado</label>
                         <select name="cod_lider_edit" id="cod_lider_edit" class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
                             <?php 
@@ -784,6 +772,18 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                             while ($lider = mysqli_fetch_assoc($res_lideres)): 
                             ?>
                             <option value="<?php echo $lider['cod_administrador']; ?>" style="color: black;"><?php echo $lider['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Coordinador Asignado</label>
+                        <select name="cod_coordinador_edit" id="cod_coordinador_edit" class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                            <?php 
+                            mysqli_data_seek($res_coordinadores, 0);
+                            while ($coord = mysqli_fetch_assoc($res_coordinadores)): 
+                            ?>
+                            <option value="<?php echo $coord['cod_administrador']; ?>" style="color: black;"><?php echo $coord['nombres_apellidos_tercero']; ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>

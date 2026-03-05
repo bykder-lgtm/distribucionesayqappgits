@@ -16,6 +16,7 @@ if ($tipo === 'asesores') {
     if (mysqli_num_rows($res) > 0) {
         while ($r = mysqli_fetch_assoc($res)) {
             $iniciales = strtoupper(substr($r['nombres'], 0, 1) . substr($r['apellidos'], 0, 1));
+            $cod_administrador_asesor = $r['cod_administrador'];
             $html .= '
             <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 0.75rem; display: flex; align-items: center; gap: 0.75rem;">
                 <div style="width: 40px; height: 40px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 0.85rem;">' . ($iniciales ?: 'AS') . '</div>
@@ -23,7 +24,7 @@ if ($tipo === 'asesores') {
                     <div style="color: white; font-weight: 600; font-size: 0.9rem;">' . $r['nombres_apellidos_tercero'] . '</div>
                     <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;"><i class="fa-solid fa-phone" style="font-size: 0.7rem;"></i> ' . ($r['telefono'] ?: 'No reg.') . '</div>
                 </div>
-                <button onclick="location.href=\'lista_asesor_lider_movil.php?busqueda=' . $r['cedula'] . '\'" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
+                <button onclick="location.href=\'lista_asesor_lider_movil.php?busqueda=' . $cod_administrador_asesor . '\'" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
             </div>';
         }
     } else {
@@ -37,6 +38,7 @@ if ($tipo === 'asesores') {
     if (mysqli_num_rows($res) > 0) {
         while ($r = mysqli_fetch_assoc($res)) {
             $iniciales = strtoupper(substr($r['nombres'], 0, 1) . substr($r['apellidos'], 0, 1));
+            $cod_administrador_aliado = $r['cod_administrador'];
             $html .= '
             <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 0.75rem; display: flex; align-items: center; gap: 0.75rem;">
                 <div style="width: 40px; height: 40px; border-radius: 50%; background: #8b5cf6; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; font-size: 0.85rem;">' . ($iniciales ?: 'AL') . '</div>
@@ -44,7 +46,7 @@ if ($tipo === 'asesores') {
                     <div style="color: white; font-weight: 600; font-size: 0.9rem;">' . $r['nombres_apellidos_tercero'] . '</div>
                     <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;"><i class="fa-solid fa-phone" style="font-size: 0.7rem;"></i> ' . ($r['telefono'] ?: 'No reg.') . '</div>
                 </div>
-                <button onclick="location.href=\'lista_aliado_lider_movil.php?cod_coordinador=' . $cod_coordinador . '\'" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
+                <button onclick="location.href=\'lista_aliado_lider_movil.php?busqueda=' . $cod_administrador_aliado . '\'" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
             </div>';
         }
     } else {
@@ -70,13 +72,13 @@ if ($tipo === 'asesores') {
                     <div style="color: white; font-weight: 600; font-size: 0.9rem;">' . $r['nombre_tienda'] . '</div>
                     <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;"><i class="fa-solid fa-phone" style="font-size: 0.7rem;"></i> ' . ($r['telefono1_tercero'] ?: 'No reg.') . '</div>
                 </div>
+                <button onclick="location.href=\'ver_detalle_tienda_lider_movil.php?cod_tienda=' . $r['cod_tienda'] . '\'" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
             </div>';
         }
     } else {
         $html .= '<div style="text-align: center; color: rgba(255,255,255,0.4); padding: 2rem;">No hay tiendas registradas para los aliados de este coordinador</div>';
     }
 }
-
 $html .= '</div>';
 echo $html;
 ?>
