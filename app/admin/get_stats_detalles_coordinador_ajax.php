@@ -10,7 +10,7 @@ if ($cod_coordinador <= 0 || empty($tipo)) { echo '<div style="text-align: cente
 $html = '<div style="display: flex; flex-direction: column; gap: 0.75rem;">';
 
 if ($tipo === 'asesores') {
-    $sql = "SELECT cod_administrador, nombres, apellidos, nombres_apellidos_tercero, telefono FROM tbl15_administrador WHERE cod_coordinador = $cod_coordinador AND cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
+    $sql = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, telefono FROM tbl15_administrador WHERE cod_coordinador = $cod_coordinador AND cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
     $res = mysqli_query($conectar, $sql);
     
     if (mysqli_num_rows($res) > 0) {
