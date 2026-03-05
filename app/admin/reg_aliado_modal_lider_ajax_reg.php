@@ -74,8 +74,8 @@ if (isset($_POST['identificacion_tercero'])) {
 	$info_matriz_lider_coord = mysqli_fetch_assoc($consultar_matriz_lider_coord);
 	$existe_matriz_lider_coord = mysqli_num_rows(@$consultar_matriz_lider_coord);
 
-	$cod_lider                                                      = $info_matriz_lider_coord['cod_lider'];
-    $cod_coordinador                                                = $info_matriz_lider_coord['cod_coordinador'];
+	$cod_lider                                                      = isset($_POST['cod_lider']) ? intval($_POST['cod_lider']) : $info_matriz_lider_coord['cod_lider'];
+    $cod_coordinador                                                = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : $info_matriz_lider_coord['cod_coordinador'];
 	//---------------------------------------------------------------------------------------------------------------------------------//
     if($existe_dato_aliado > 0) {
         // El aliado ya existe, no se registra nuevamente

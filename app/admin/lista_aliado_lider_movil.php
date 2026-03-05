@@ -1361,24 +1361,13 @@ $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, 
 $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 
 // Consulta base para contar el total de registros (OPTIMIZADO)
-$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a 
-               WHERE a.cod_seguridad = '23' 
-               AND (a.cod_lider = '$cod_administrador' 
-                    OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')
-                    OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')
-                   )";
+$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
-if (!empty($cod_aliado_get)) {
-    $sql_conteo .= " AND a.cod_administrador = '$cod_aliado_get'";
-}
+if (!empty($cod_aliado_get)) { $sql_conteo .= " AND a.cod_administrador = '$cod_aliado_get'"; }
 
-if (!empty($busqueda)) { 
-    $sql_conteo .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; 
-}
+if (!empty($busqueda)) { $sql_conteo .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; }
 
-if ($cod_coordinador_filtro > 0) {
-    $sql_conteo .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
-}
+if ($cod_coordinador_filtro > 0) { $sql_conteo .= " AND a.cod_coordinador = '$cod_coordinador_filtro'"; }
 
 // Filtro de documentación
 if ($filtro_doc == '1') {
@@ -1723,27 +1712,71 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label">Departamento</label>
-                        <select class="form-select" id="cod_departamento" name="cod_departamento" onchange="cargarMunicipiosRegistro(this.value)">
+                        <label class="form-label">Líder *</label>
+                        <select class="form-select" id="cod_lider" name="cod_lider" required>
                             <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_lider, 0);
+                            while ($lider = mysqli_fetch_assoc($res_lider)): 
+                            ?>
+                            <option value="<?php echo $lider['cod_administrador']; ?>" <?php echo ($lider['cod_administrador'] == $cod_administrador) ? 'selected' : ''; ?>><?php echo $lider['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Municipio</label>
-                        <select class="form-select" id="cod_municipio" name="cod_municipio">
-                            <option value="">Primero seleccione departamento</option>
+                        <label class="form-label">Coordinador *</label>
+                        <select class="form-select" id="cod_coordinador" name="cod_coordinador" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_coord, 0);
+                            while ($coord = mysqli_fetch_assoc($res_coord)): 
+                            ?>
+                            <option value="<?php echo $coord['cod_administrador']; ?>"><?php echo $coord['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
+                        <label class="form-label">Asesor *</label>
+                        <select class="form-select" id="cod_asesor" name="cod_asesor" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_asesor, 0);
+                            while ($asesor = mysqli_fetch_assoc($res_asesor)): 
+                            ?>
+                            <option value="<?php echo $asesor['cod_administrador']; ?>"><?php echo $asesor['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Departamento</label>
+                        <select class="form-select" id="cod_departamento" name="cod_departamento" onchange="cargarMunicipiosRegistro(this.value)">
+                            <option value="">Seleccione...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Municipio</label>
+                        <select class="form-select" id="cod_municipio" name="cod_municipio">
+                            <option value="">Primero seleccione departamento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Dirección</label>
                         <input type="text" class="form-input" id="direccion_tercero" name="direccion_tercero" placeholder="Ej: Cra 10 #20-30">
                     </div>
+                </div>
+
+                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Barrio</label>
                         <input type="text" class="form-input" id="barrio_tercero" name="barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
+                    </div>
+                    <div class="form-group" style="visibility: hidden;">
                     </div>
                 </div>
 
