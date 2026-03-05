@@ -288,6 +288,7 @@ body {
     gap: 0.75rem;
     margin-bottom: 1rem;
     padding-top: 1rem;
+    width: 100%;
     border-top: 1px solid rgba(139, 92, 246, 0.2);
 }
 
@@ -575,8 +576,10 @@ $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 
 // Consulta de asesores asignados a este lider (cod_seguridad = '22' para asesores)
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_coordinador, a.cod_lider,
-COUNT(DISTINCT ali.cod_administrador) as total_aliados
-FROM tbl15_administrador a LEFT JOIN tbl15_administrador ali ON a.cod_administrador = ali.cod_asesor AND ali.cod_seguridad = '23'
+(SELECT COUNT(*) FROM tbl15_administrador ali WHERE ali.cod_asesor = a.cod_administrador AND ali.cod_seguridad = '23') as total_aliados,
+(SELECT COUNT(*) FROM tbl15_tienda t WHERE t.cod_aliado_estrategico IN (SELECT ali2.cod_administrador FROM tbl15_administrador ali2 WHERE ali2.cod_asesor = a.cod_administrador AND ali2.cod_seguridad = '23')) as total_tiendas,
+(SELECT COUNT(*) FROM tbl15_administrador v WHERE v.cod_seguridad = '25' AND v.cod_aliado_estrategico IN (SELECT ali3.cod_administrador FROM tbl15_administrador ali3 WHERE ali3.cod_asesor = a.cod_administrador AND ali3.cod_seguridad = '23')) as total_vendedores
+FROM tbl15_administrador a 
 WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
 
 if (!empty($busqueda)) { 
@@ -587,7 +590,7 @@ if ($cod_coordinador_filtro > 0) {
     $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
 }
 
-$sql .= " GROUP BY a.cod_administrador ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
+$sql .= " ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);
 $total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
 ?>
@@ -678,15 +681,13 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                         <span class="stat-label">Aliados</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-value">0</span>
-                        <span class="stat-label">Créditos</span>
+                        <span class="stat-value"><?php echo $row['total_tiendas']; ?></span>
+                        <span class="stat-label">Tiendas</span>
                     </div>
-
                     <div class="stat-item">
-                        <span class="stat-value"></span>
-                        <span class="stat-label"></span>
+                        <span class="stat-value"><?php echo $row['total_vendedores']; ?></span>
+                        <span class="stat-label">Vendedores</span>
                     </div>
-
                 </div>
 
                 <div class="asesor-actions">
@@ -766,26 +767,26 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                     
                     <div style="grid-column: 1 / -1;">
                         <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Identificación (Cédula) *</label>
-                        <input type="number" name="cedula" id="cedula" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                        <input type="number" name="identificacion_tercero" id="identificacion_tercero" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
                     </div>
 
                     <div>
-                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Primer Nombre *</label>
-                        <input type="text" name="nombres" id="nombres" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Nombres *</label>
+                        <input type="text" name="nombre1_tercero" id="nombre1_tercero" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
                     </div>
                     <div>
                         <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Apellidos *</label>
-                        <input type="text" name="apellidos" id="apellidos" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                        <input type="text" name="apellido1_tercero" id="apellido1_tercero" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
                     </div>
 
                     <div style="grid-column: 1 / -1;">
                         <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Correo Electrónico *</label>
-                        <input type="email" name="correo" id="correo" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                        <input type="email" name="correo_tercero" id="correo_tercero" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
                     </div>
 
                     <div>
                         <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Celular *</label>
-                        <input type="number" name="telefono1" id="telefono1" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                        <input type="number" name="telefono1_tercero" id="telefono1_tercero" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
                     </div>
 
                     <div>
