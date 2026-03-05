@@ -468,7 +468,7 @@ body {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .page-container {
         padding: 0.5rem;
         padding-bottom: 70px;

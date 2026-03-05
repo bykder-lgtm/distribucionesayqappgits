@@ -1915,29 +1915,32 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" id="edit_label_nombre_comercial">Nombre Comercial *</label>
-                    <input type="text" class="form-input" name="nombres_apellidos_tercero" id="edit_nombres_apellidos_tercero" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" id="edit_label_nombre_comercial">Nombre Comercial *</label>
+                        <input type="text" class="form-input" name="nombres_apellidos_tercero" id="edit_nombres_apellidos_tercero" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Identificación *</label>
+                        <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                    </div>
                 </div>
 
-                <div class="form-group" id="edit_container_nit_razon_social" style="display:none;">
-                    <label class="form-label">NIT Razón Social *</label>
-                    <input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
+                <div class="form-row" id="edit_row_razon_social" style="display:none;">
+                    <div class="form-group" id="edit_container_nit_razon_social">
+                        <label class="form-label">NIT Razón Social *</label>
+                        <input type="text" class="form-input" id="edit_nit_razon_social" name="nit_razon_social">
+                    </div>
+
+                    <div class="form-group" id="edit_container_nombre_razon_social">
+                        <label class="form-label">Razón Social *</label>
+                        <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
+                    </div>
                 </div>
 
-                <div class="form-group" id="edit_container_nombre_razon_social" style="display:none;">
-                    <label class="form-label">Razón Social *</label>
-                    <input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
-                </div>
-
-                <label class="form-label" style="color: #8b5cf6; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                <label class="form-label" style="color: #8b5cf6; font-weight: 700; margin-top: 1rem; margin-bottom: 0.75rem; display: block;">
                     <i class="fa-solid fa-building-columns"></i> Datos del Representante Legal
                 </label>
-
-                <div class="form-group">
-                    <label class="form-label">Identificación *</label>
-                    <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
-                </div>
 
                 <div class="form-row">
                     <div class="form-group">
@@ -1987,38 +1990,30 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Líder *</label>
-                    <select class="form-select" id="edit_cod_lider" name="cod_lider" required>
-                        <option value="">Seleccione</option>
-                        <?php mysqli_data_seek($res_lider, 0);
-                        while ($r = mysqli_fetch_assoc($res_lider)): ?>
-                        <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
-                        <?php endwhile; ?>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Líder *</label>
+                        <select class="form-select" id="edit_cod_lider" name="cod_lider" required>
+                            <option value="">Seleccione</option>
+                            <?php mysqli_data_seek($res_lider, 0);
+                            while ($r = mysqli_fetch_assoc($res_lider)): ?>
+                            <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Coordinador *</label>
+                        <select class="form-select" id="edit_cod_coordinador" name="cod_coordinador" required>
+                            <option value="">Seleccione</option>
+                            <?php mysqli_data_seek($res_coord, 0);
+                            while ($r = mysqli_fetch_assoc($res_coord)): ?>
+                            <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Coordinador *</label>
-                    <select class="form-select" id="edit_cod_coordinador" name="cod_coordinador" required>
-                        <option value="">Seleccione</option>
-                        <?php mysqli_data_seek($res_coord, 0);
-                        while ($r = mysqli_fetch_assoc($res_coord)): ?>
-                        <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Asesor *</label>
-                    <select class="form-select" id="edit_cod_asesor" name="cod_asesor" required>
-                        <option value="">Seleccione</option>
-                        <?php mysqli_data_seek($res_asesor, 0);
-                        while ($r = mysqli_fetch_assoc($res_asesor)): ?>
-                        <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
 
                 <!-- Sección de Credenciales de Acceso -->
                 <div class="form-group">
@@ -2059,15 +2054,29 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Estado</label>
-                    <select class="form-select" name="cod_estado_activacion_usuario" id="edit_estado" disabled style="background: rgba(100, 116, 139, 0.2); cursor: not-allowed; opacity: 0.7;"><option value="1">Activo</option><option value="2">En Espera para Activación</option><option value="3">Inactivo</option></select>
-                    <input type="hidden" name="cod_estado_activacion_usuario" id="edit_estado_hidden">
-                    <div style="background: rgba(100, 116, 139, 0.1); border: 1px solid rgba(100, 116, 139, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
-                        <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem;">
-                            <i class="fa-solid fa-info-circle" style="color: #94a3b8; margin-right: 0.35rem;"></i>
-                            El estado no se puede modificar desde aquí.
-                        </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Asesor *</label>
+                        <select class="form-select" id="edit_cod_asesor" name="cod_asesor" required>
+                            <option value="">Seleccione</option>
+                            <?php mysqli_data_seek($res_asesor, 0);
+                            while ($r = mysqli_fetch_assoc($res_asesor)): ?>
+                            <option value="<?php echo $r['cod_administrador']; ?>"><?php echo $r['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="cod_estado_activacion_usuario" id="edit_estado" disabled style="background: rgba(100, 116, 139, 0.2); cursor: not-allowed; opacity: 0.7;"><option value="1">Activo</option><option value="2">En Espera para Activación</option><option value="3">Inactivo</option></select>
+                        <input type="hidden" name="cod_estado_activacion_usuario" id="edit_estado_hidden">
+                    </div>
+                </div>
+                
+                <div style="background: rgba(100, 116, 139, 0.1); border: 1px solid rgba(100, 116, 139, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: -0.5rem; margin-bottom: 1rem;">
+                    <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem;">
+                        <i class="fa-solid fa-info-circle" style="color: #94a3b8; margin-right: 0.35rem;"></i>
+                        El estado no se puede modificar desde aquí.
                     </div>
                 </div>
 
@@ -5276,31 +5285,23 @@ function cambiarTipoCliente() {
 // Función para manejar el cambio en el select tipo_cliente (Editar)
 function cambiarTipoClienteEdit(limpiarNit) {
     var tipoCliente = document.getElementById('edit_nombre_tipo_cliente');
-    var labelNombreComercial = document.getElementById('edit_label_nombre_comercial');
-    var containerNit = document.getElementById('edit_container_nit_razon_social');
+    var rowRazonSocial = document.getElementById('edit_row_razon_social');
     var inputNit = document.getElementById('edit_nit_razon_social');
-    var containerRazonSocial = document.getElementById('edit_container_nombre_razon_social');
     var inputRazonSocial = document.getElementById('edit_nombre_razon_social');
     
-    if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') { // PERSONA_JURIDICA
-        //labelNombreComercial.textContent = 'Razón Social *';
-        containerNit.style.display = 'block';
-        inputNit.required = true;
-        containerRazonSocial.style.display = 'block';
-        inputRazonSocial.required = true;
-    } else { // PERSONA_NATURAL u otro
-        //labelNombreComercial.textContent = 'Nombre Comercial *';
-        containerNit.style.display = 'none';
-        inputNit.required = false;
-        // Solo limpiar el NIT si se indica explícitamente (cuando el usuario cambia manualmente)
-        if (limpiarNit !== false) {
-            inputNit.value = '';
+    if (tipoCliente.value == 'PERSONA_JURIDICA' || tipoCliente.value == '2') {
+        if (rowRazonSocial) rowRazonSocial.style.display = 'grid';
+        if (inputNit) inputNit.required = true;
+        if (inputRazonSocial) inputRazonSocial.required = true;
+    } else {
+        if (rowRazonSocial) rowRazonSocial.style.display = 'none';
+        if (inputNit) {
+            inputNit.required = false;
+            if (limpiarNit !== false) inputNit.value = '';
         }
-        containerRazonSocial.style.display = 'none';
-        inputRazonSocial.required = false;
-        // Solo limpiar la Razón Social si se indica explícitamente (cuando el usuario cambia manualmente)
-        if (limpiarNit !== false) {
-            inputRazonSocial.value = '';
+        if (inputRazonSocial) {
+            inputRazonSocial.required = false;
+            if (limpiarNit !== false) inputRazonSocial.value = '';
         }
     }
 }
