@@ -1381,7 +1381,7 @@ $total_registros = $row_conteo['total'];
 $total_paginas = ceil($total_registros / $registros_por_pagina);
 
 // Consulta de aliados con LIMIT
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.cod_lider, a.cod_coordinador, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.cod_lider, a.cod_coordinador, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
 FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 if (!empty($cod_aliado_get)) { $sql .= " AND a.cod_administrador = '$cod_aliado_get'"; }
 if (!empty($busqueda)) { $sql .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; }
@@ -1401,7 +1401,7 @@ $resultado = mysqli_query($conectar, $sql);
 // Fallback por si falla la columna de cédula (mismo limit)
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
-    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
     FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
     if (!empty($cod_aliado_get)) { $sql .= " AND a.cod_administrador = '$cod_aliado_get'"; }
@@ -1436,6 +1436,10 @@ $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
+
+// Consulta de tipos de identificación
+$sql_tipo_identificacion = "SELECT cod_tipo_doc, tipo_doc_abrev, nombre_tipo_doc FROM tbl15_tipo_doc ORDER BY cod_tipo_doc ASC";
+$res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 ?>
 
 <main class="page-container">
@@ -1634,14 +1638,24 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" id="label_nombre_comercial">Nombre Comercial *</label>
-                    <input type="text" class="form-input" id="nombres_apellidos_tercero" name="nombres_apellidos_tercero" required>
-                    <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" id="label_nombre_comercial">Nombre Comercial *</label>
+                        <input type="text" class="form-input" id="nombres_apellidos_tercero" name="nombres_apellidos_tercero" required>
+                        <small id="mensaje_identificacion_comercial" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                    </div>
+                    <div class="form-group" style="padding-top: 1.6rem;">
+                        <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; margin: 0;">
+                                <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #8b5cf6; width: 18px; height: 18px; cursor: pointer;">
+                                <span style="color: rgba(255,255,255,0.95); font-size: 0.85rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #8b5cf6; margin-right: 0.25rem;"></i> Crear Tienda</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-row">
-                    <div class="group-group" id="container_nit_razon_social" style="display:none;">
+                    <div class="form-group" id="container_nit_razon_social" style="display:none;">
                         <label class="form-label">NIT Razón Social *</label>
                         <input type="text" class="form-input" id="nit_razon_social" name="nit_razon_social">
                     </div>
@@ -1652,10 +1666,24 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
 
                 <label class="form-label" style="color: #8b5cf6; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
-                <div class="form-group">
-                    <label class="form-label">Identificación *</label>
-                    <input type="number" class="form-input" id="identificacion_tercero" name="identificacion_tercero" required>
-                    <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación *</label>
+                        <input type="number" class="form-input" id="identificacion_tercero" name="identificacion_tercero" required>
+                        <small id="mensaje_identificacion" style="display:none; color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Documento *</label>
+                        <select class="form-select" id="nombre_tipo_identificacion" name="nombre_tipo_identificacion" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_identificacion, 0);
+                            while ($tipo_identificacion = mysqli_fetch_assoc($res_tipo_identificacion)): 
+                            ?>
+                            <option value="<?php echo $tipo_identificacion['tipo_doc_abrev']; ?>" title="<?php echo htmlspecialchars($tipo_identificacion['tipo_doc_abrev']); ?>"><?php echo $tipo_identificacion['nombre_tipo_doc']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -1916,13 +1944,6 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <div class="form-group" style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
-                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; margin: 0;">
-                        <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #8b5cf6; width: 20px; height: 20px; cursor: pointer;">
-                        <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #8b5cf6; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
-                    </label>
-                    <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se creará automáticamente una tienda con los datos del aliado</small>
-                </div>
                 
                 <button type="submit" class="submit-btn" id="btnGuardar"><i class="fa-solid fa-save"></i> Guardar Aliado</button>
             </form>
@@ -1976,9 +1997,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         <label class="form-label" id="edit_label_nombre_comercial">Nombre Comercial *</label>
                         <input type="text" class="form-input" name="nombres_apellidos_tercero" id="edit_nombres_apellidos_tercero" required>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Identificación *</label>
-                        <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                    <div class="form-group" style="padding-top: 1.6rem;">
+                        <!-- Espacio para mantener simetría -->
                     </div>
                 </div>
 
@@ -1997,6 +2017,25 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <label class="form-label" style="color: #8b5cf6; font-weight: 700; margin-top: 1rem; margin-bottom: 0.75rem; display: block;">
                     <i class="fa-solid fa-building-columns"></i> Datos del Representante Legal
                 </label>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Identificación *</label>
+                        <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Documento *</label>
+                        <select class="form-select" id="edit_nombre_tipo_identificacion" name="nombre_tipo_identificacion" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_identificacion, 0);
+                            while ($tipo_identificacion = mysqli_fetch_assoc($res_tipo_identificacion)): 
+                            ?>
+                            <option value="<?php echo $tipo_identificacion['tipo_doc_abrev']; ?>" title="<?php echo htmlspecialchars($tipo_identificacion['tipo_doc_abrev']); ?>"><?php echo $tipo_identificacion['nombre_tipo_doc']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                </div>
 
                 <div class="form-row">
                     <div class="form-group">
@@ -3032,6 +3071,9 @@ function abrirModalEditar(data) {
     document.getElementById('edit_cod_administrador').value = data.cod_administrador;
     document.getElementById('edit_nombres_apellidos_tercero').value = data.nombres_apellidos_tercero || '';
     document.getElementById('edit_identificacion').value = data.cedula;
+    if(document.getElementById('edit_nombre_tipo_identificacion')) {
+        document.getElementById('edit_nombre_tipo_identificacion').value = data.nombre_tipo_identificacion || '';
+    }
     document.getElementById('edit_nombre').value = data.nombres;
     document.getElementById('edit_apellido').value = data.apellidos;
     document.getElementById('edit_telefono').value = data.telefono || '';
