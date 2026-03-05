@@ -1355,14 +1355,25 @@ $inicio = ($pagina - 1) * $registros_por_pagina;
 
 // Obtener parámetros de búsqueda
 $busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar, $_GET['busqueda'])) : '';
+$cod_aliado_get = isset($_GET['cod_administrador']) ? trim(mysqli_real_escape_string($conectar, $_GET['cod_administrador'])) : '';
+
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
 $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 
 // Consulta base para contar el total de registros (OPTIMIZADO)
-$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a 
+               WHERE a.cod_seguridad = '23' 
+               AND (a.cod_lider = '$cod_administrador' 
+                    OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')
+                    OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')
+                   )";
+
+if (!empty($cod_aliado_get)) {
+    $sql_conteo .= " AND a.cod_administrador = '$cod_aliado_get'";
+}
 
 if (!empty($busqueda)) { 
-    $sql_conteo .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+    $sql_conteo .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; 
 }
 
 if ($cod_coordinador_filtro > 0) {
@@ -1384,10 +1395,20 @@ $total_registros = $row_conteo['total'];
 $total_paginas = ceil($total_registros / $registros_por_pagina);
 
 // Consulta de aliados con LIMIT
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.cod_lider, a.cod_coordinador, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.cod_lider, a.cod_coordinador, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
+        FROM tbl15_administrador a 
+        WHERE a.cod_seguridad = '23' 
+        AND (a.cod_lider = '$cod_administrador' 
+             OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')
+             OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')
+            )";
+
+if (!empty($cod_aliado_get)) {
+    $sql .= " AND a.cod_administrador = '$cod_aliado_get'";
+}
 
 if (!empty($busqueda)) { 
-    $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+    $sql .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; 
 }
 
 if ($cod_coordinador_filtro > 0) {
@@ -1408,10 +1429,20 @@ $resultado = mysqli_query($conectar, $sql);
 // Fallback por si falla la columna de cédula (mismo limit)
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
-    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
+    FROM tbl15_administrador a 
+    WHERE a.cod_seguridad = '23' 
+    AND (a.cod_lider = '$cod_administrador' 
+         OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')
+         OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')
+        )";
+    
+    if (!empty($cod_aliado_get)) {
+        $sql .= " AND a.cod_administrador = '$cod_aliado_get'";
+    }
     
     if (!empty($busqueda)) { 
-        $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+        $sql .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; 
     }
     
     if ($cod_coordinador_filtro > 0) {
@@ -4944,14 +4975,15 @@ function recargarEntidadesEditar(codAdministrador) {
 function filtrar() { 
     var busqueda = document.getElementById('searchInput').value;
     var filtro_doc = document.getElementById('filtroDoc').value;
-    const urlParams = new URLSearchParams(window.location.search);
-    const cod_coordinador = urlParams.get('cod_coordinador') || '';
-    
-    clearTimeout(window.searchTimeout); 
     window.searchTimeout = setTimeout(function() { 
+        const urlParams = new URLSearchParams(window.location.search);
+        const cod_coordinador = urlParams.get('cod_coordinador') || '';
+        const cod_administrador_get = urlParams.get('cod_administrador') || '';
+
         window.location.href = 'lista_aliado_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + 
                             '&filtro_doc=' + encodeURIComponent(filtro_doc) + 
-                            '&cod_coordinador=' + encodeURIComponent(cod_coordinador); 
+                            '&cod_coordinador=' + encodeURIComponent(cod_coordinador) +
+                            '&cod_administrador=' + encodeURIComponent(cod_administrador_get); 
     }, 500); 
 }
 
@@ -5108,8 +5140,7 @@ $('#formEditar').on('submit', function(e) {
             
             if(resp.afectado === 'SI') {
                 cerrarModalEditar(); 
-                Swal.fire({ icon: 'success',  title: '¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#8b5cf6',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
-                }).then(() => { location.reload(); });
+                Swal.fire({ icon: 'success',  title: '¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#8b5cf6',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); });
             } else {
                 Swal.fire({ icon: 'error',  title: 'Error',  text: resp.mensaje || 'No se pudo actualizar el aliado',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
@@ -5147,10 +5178,7 @@ function compartirDocumentacion(cod_aliado) {
     
     // Hacer petición AJAX para generar el ZIP
     $.ajax({
-        url: 'generar_zip_documentacion.php',
-        type: 'POST',
-        data: { cod_aliado: cod_aliado },
-        dataType: 'json',
+        url: 'generar_zip_documentacion.php', type: 'POST', data: { cod_aliado: cod_aliado }, dataType: 'json',
         success: function(response) {
             $('#loadingCompartir').hide();
             
@@ -5159,9 +5187,7 @@ function compartirDocumentacion(cod_aliado) {
                 mostrarContenidoCompartir(response);
                 $('#contenidoCompartir').fadeIn();
             } else {
-                Swal.fire({
-                    icon: 'error', title: 'Error', text: response.message || 'No se pudo generar el archivo ZIP', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo generar el archivo ZIP', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 cerrarModalCompartirDocs();
             }
         },
@@ -5224,23 +5250,14 @@ function enviarEmail() {
     
     var mensaje = $('#mensaje_email').val().trim();
     
-    Swal.fire({
-        title: 'Enviando email...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Enviando email...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     $.ajax({
-        url: 'enviar_email_documentacion.php', type: 'POST',
-        data: {
-            zip_path: datosZipActual.zip_path, email_destino: email, mensaje: mensaje, aliado_nombre: datosZipActual.aliado_nombre
-        },
-        dataType: 'json',
-        timeout: 60000,
+        url: 'enviar_email_documentacion.php', type: 'POST', data: { zip_path: datosZipActual.zip_path, email_destino: email, mensaje: mensaje, aliado_nombre: datosZipActual.aliado_nombre }, dataType: 'json', timeout: 60000,
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({
-                    icon: 'success', title: '¡Email enviado!', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Email enviado!', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 ocultarFormularioEmail();
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white',  customClass: { container: 'swal-high-zindex' } });

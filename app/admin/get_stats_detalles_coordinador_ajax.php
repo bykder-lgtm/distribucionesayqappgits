@@ -24,7 +24,7 @@ if ($tipo === 'asesores') {
                     <div style="color: white; font-weight: 600; font-size: 0.9rem;">' . $r['nombres_apellidos_tercero'] . '</div>
                     <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;"><i class="fa-solid fa-phone" style="font-size: 0.7rem;"></i> ' . ($r['telefono'] ?: 'No reg.') . '</div>
                 </div>
-                <button onclick="location.href=\'lista_asesor_lider_movil.php?busqueda=' . $cod_administrador_asesor . '\'" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
+                <button onclick="location.href=\'lista_asesor_lider_movil.php?busqueda=' . $cod_administrador_asesor . '&cod_coordinador=' . $cod_coordinador . '\'" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
             </div>';
         }
     } else {
@@ -32,7 +32,7 @@ if ($tipo === 'asesores') {
     }
 
 } elseif ($tipo === 'aliados') {
-    $sql = "SELECT cod_administrador, nombres, apellidos, nombres_apellidos_tercero, telefono FROM tbl15_administrador WHERE cod_coordinador = $cod_coordinador AND cod_seguridad = '23' ORDER BY nombres_apellidos_tercero ASC";
+    $sql = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, telefono FROM tbl15_administrador WHERE cod_coordinador = $cod_coordinador AND cod_seguridad = '23' ORDER BY nombres_apellidos_tercero ASC";
     $res = mysqli_query($conectar, $sql);
     
     if (mysqli_num_rows($res) > 0) {
@@ -46,7 +46,7 @@ if ($tipo === 'asesores') {
                     <div style="color: white; font-weight: 600; font-size: 0.9rem;">' . $r['nombres_apellidos_tercero'] . '</div>
                     <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;"><i class="fa-solid fa-phone" style="font-size: 0.7rem;"></i> ' . ($r['telefono'] ?: 'No reg.') . '</div>
                 </div>
-                <button onclick="location.href=\'lista_aliado_lider_movil.php?busqueda=' . $cod_administrador_aliado . '\'" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
+                <button onclick="location.href=\'lista_aliado_lider_movil.php?cod_administrador=' . $cod_administrador_aliado . '&cod_coordinador=' . $cod_coordinador . '\'" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6; border: none; padding: 0.4rem; border-radius: 8px; cursor: pointer;"><i class="fa-solid fa-eye"></i></button>
             </div>';
         }
     } else {

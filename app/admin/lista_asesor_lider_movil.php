@@ -551,7 +551,7 @@ $sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total
                WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
 
 if (!empty($busqueda)) { 
-    $sql_conteo .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+    $sql_conteo .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
 }
 
 if ($cod_coordinador_filtro > 0) {
