@@ -5804,7 +5804,7 @@ function escapeHtmlMovil(text) {
 </script>
 
 <!-- Modal Agregar Vendedor a Tienda -->
-<div class="modal-overlay" id="modalAgregarVendedor" style="z-index: 5000;">
+<div class="modal-overlay" id="modalAgregarVendedor" style="z-index: 5000; align-items: center; justify-content: center;">
     <div class="modal-content" style="max-width: 650px;">
         <div class="modal-header">
             <h2><i class="fa-solid fa-user-plus"></i> Registrar Nuevo Vendedor</h2>
