@@ -555,7 +555,7 @@ $total_registros_global = $fila_conteo['total'];
 $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 
 // Consulta de coordinadores asignados a este lider (cod_seguridad = '21' para coordinadores)
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion,
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_lider,
 COUNT(DISTINCT ase.cod_administrador) as total_asesores
 FROM tbl15_administrador a LEFT JOIN tbl15_administrador ase ON a.cod_administrador = ase.cod_coordinador AND ase.cod_seguridad = '22'
 WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '21'";
@@ -568,6 +568,12 @@ $total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
 ?>
 
 <main class="page-container">
+<?php
+// Consulta de líderes para la opción de cambiar líder
+$sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
+$res_lideres = mysqli_query($conectar, $sql_lideres);
+?>
+
     <!-- Header -->
     <div class="page-header animate-in">
         <h1><i class="fa-solid fa-users-gear"></i> Mis Coordinadores</h1>
@@ -661,9 +667,12 @@ $total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
                     <button class="action-btn stats" onclick="location.href='lista_aliado_lider_movil.php?cod_coordinador=<?php echo $row['cod_administrador']; ?>'">
                         <i class="fa-solid fa-users"></i> Ver Aliados
                     </button>
+                    <button class="action-btn edit" onclick='abrirModalEditar(<?php echo json_encode($row); ?>)'>
+                        <i class="fa-solid fa-edit"></i> Editar
+                    </button>
                 </div>
             </div>
-            <?php endwhile; ?>
+<?php endwhile; ?>
         <?php else: ?>
             <div class="empty-state">
                 <i class="fa-solid fa-users-slash"></i>
@@ -777,6 +786,69 @@ $total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
     </div>
 </div>
 
+<!-- Modal Editar Coordinador -->
+<div class="modal-overlay" id="modalEditarCoordinador" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;">
+    <div class="modal-content" style="background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 1.5rem; border-radius: 20px 20px 0 0; position: relative; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-edit"></i> Editar Coordinador</h2>
+            <button class="modal-close" onclick="cerrarModalEditar()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body" style="padding: 1.5rem;">
+            <form id="formEditarCoordinador" onsubmit="editarCoordinador(event)">
+                <input type="hidden" name="cod_administrador_edit" id="cod_administrador_edit">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    
+                    <div style="grid-column: 1 / -1;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Identificación (Cédula)</label>
+                        <input type="number" name="cedula_edit" id="cedula_edit" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Primer Nombre</label>
+                        <input type="text" name="nombres_edit" id="nombres_edit" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Apellidos</label>
+                        <input type="text" name="apellidos_edit" id="apellidos_edit" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div style="grid-column: 1 / -1;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Correo Electrónico</label>
+                        <input type="email" name="correo_edit" id="correo_edit" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Celular</label>
+                        <input type="number" name="telefono1_edit" id="telefono1_edit" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Líder Asignado</label>
+                        <select name="cod_lider_edit" id="cod_lider_edit" class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                            <?php 
+                            mysqli_data_seek($res_lideres, 0);
+                            while ($lider = mysqli_fetch_assoc($res_lideres)): 
+                            ?>
+                            <option value="<?php echo $lider['cod_administrador']; ?>" style="color: black;"><?php echo $lider['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <button type="submit" class="submit-btn" style="width: 100%; background: #10b981; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                        <i class="fa-solid fa-save"></i> Guardar Cambios
+                    </button>
+                    <button type="button" onclick="cerrarModalEditar()" style="width: 100%; background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 0.75rem; border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 0.5rem; transition: all 0.3s ease;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Bottom Navigation -->
  <?php include_once("../menu/05_modulo_menu_lider_movil.php"); ?>
 
@@ -799,6 +871,67 @@ function abrirModalRegistro() {
 function cerrarModalRegistro() {
     document.getElementById('modalRegistroCoordinador').style.display = 'none';
     document.getElementById('formRegistroCoordinador').reset();
+}
+
+// Edit Modal Logic
+function abrirModalEditar(datos) {
+    document.getElementById('cod_administrador_edit').value = datos.cod_administrador;
+    document.getElementById('cedula_edit').value = datos.cedula;
+    document.getElementById('nombres_edit').value = datos.nombres;
+    document.getElementById('apellidos_edit').value = datos.apellidos;
+    document.getElementById('correo_edit').value = datos.correo;
+    document.getElementById('telefono1_edit').value = datos.telefono;
+    document.getElementById('cod_lider_edit').value = datos.cod_lider;
+    
+    document.getElementById('modalEditarCoordinador').style.display = 'flex';
+}
+
+function cerrarModalEditar() {
+    document.getElementById('modalEditarCoordinador').style.display = 'none';
+}
+
+function editarCoordinador(e) {
+    e.preventDefault();
+    const form = document.getElementById('formEditarCoordinador');
+    const formData = new FormData(form);
+
+    Swal.fire({
+        title: 'Actualizando Coordinador...',
+        text: 'Por favor espere',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); },
+        background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+    });
+
+    $.ajax({
+        url: 'proceso_editar_coordinador_lider_movil_ajax.php',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: 'json',
+        success: function(response) {
+            if (response.status === 'success') {
+                Swal.fire({
+                    icon: 'success', title: '¡Actualización Exitosa!', text: response.message,
+                    background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' }
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error', title: 'Error', text: response.message,
+                    background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }
+                });
+            }
+        },
+        error: function() {
+            Swal.fire({
+                icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor',
+                background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }
+            });
+        }
+    });
 }
 
 // AJAX Registration
