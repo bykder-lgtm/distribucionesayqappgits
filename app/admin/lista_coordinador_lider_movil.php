@@ -672,12 +672,14 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                 </div>
 
                 <div class="coordinador-actions">
+<!--
                     <button class="action-btn view" onclick="location.href='lista_asesor_lider_movil.php?cod_coordinador=<?php echo $row['cod_administrador']; ?>'">
                         <i class="fa-solid fa-user-tie"></i> Ver Asesores
                     </button>
                     <button class="action-btn stats" onclick="location.href='lista_aliado_lider_movil.php?cod_coordinador=<?php echo $row['cod_administrador']; ?>'">
                         <i class="fa-solid fa-users"></i> Ver Aliados
                     </button>
+-->
                     <button class="action-btn edit" onclick='abrirModalEditar(<?php echo json_encode($row); ?>)'>
                         <i class="fa-solid fa-edit"></i> Editar
                     </button>
