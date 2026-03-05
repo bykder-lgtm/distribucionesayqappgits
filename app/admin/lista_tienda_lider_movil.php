@@ -831,14 +831,20 @@ $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 if ($pagina <= 0) $pagina = 1;
 $inicio = ($pagina - 1) * $registros_por_pagina;
 
-$busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
+$busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar, $_GET['busqueda'])) : '';
+$cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 
 // Subquery para obtener los cod_administrador de los aliados que pertenecen a este líder
 $subquery_aliados_lider = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_lider = '$cod_administrador'";
+if ($cod_coordinador_filtro > 0) {
+    $subquery_aliados_lider .= " AND cod_coordinador = '$cod_coordinador_filtro'";
+}
 
 // Consulta para contar el total de tiendas (para la paginación)
 $sql_conteo = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider)";
-if (!empty($busqueda)) { $sql_conteo .= " AND (nombre_tienda LIKE '%$busqueda%' OR identificacion_tercero LIKE '%$busqueda%' OR nombre1_tercero LIKE '%$busqueda%')"; }
+if (!empty($busqueda)) { 
+    $sql_conteo .= " AND (nombre_tienda LIKE '%$busqueda%' OR identificacion_tercero LIKE '%$busqueda%' OR nombre1_tercero LIKE '%$busqueda%' OR cod_tienda LIKE '$busqueda')"; 
+}
 $resultado_conteo = mysqli_query($conectar, $sql_conteo);
 $fila_conteo = mysqli_fetch_assoc($resultado_conteo);
 $total_registros = $fila_conteo['total'];
@@ -850,7 +856,10 @@ $sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado,
                 FROM tbl15_tienda t 
                 LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador 
                 WHERE t.cod_aliado_estrategico IN ($subquery_aliados_lider)";
-if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
+
+if (!empty($busqueda)) { 
+    $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%' OR t.cod_tienda LIKE '$busqueda')"; 
+}
 
 $sql_tiendas .= " ORDER BY t.fecha_creacion DESC LIMIT $inicio, $registros_por_pagina";
 $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
@@ -1594,7 +1603,15 @@ function updateFileName(input) {
         }
     }
 }
-function filtrarTiendas(busqueda) { clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(function() { window.location.href = 'lista_tienda_lider_movil.php?busqueda=' + encodeURIComponent(busqueda); }, 500); }
+function filtrarTiendas(busqueda) { 
+    clearTimeout(window.searchTimeout); 
+    window.searchTimeout = setTimeout(function() { 
+        const urlParams = new URLSearchParams(window.location.search);
+        const cod_coordinador = urlParams.get('cod_coordinador') || '';
+        window.location.href = 'lista_tienda_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + 
+                             '&cod_coordinador=' + encodeURIComponent(cod_coordinador); 
+    }, 500); 
+}
 
 function editarTienda(codTienda) {
     Swal.fire({ title: 'Cargando...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });

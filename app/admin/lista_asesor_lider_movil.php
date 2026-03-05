@@ -542,13 +542,22 @@ $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 if ($pagina <= 0) $pagina = 1;
 $inicio = ($pagina - 1) * $registros_por_pagina;
 
-$busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
+$busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar, $_GET['busqueda'])) : '';
+$cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 
 // Consulta para contar el total de registros
 $sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total 
                FROM tbl15_administrador a 
                WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
-if (!empty($busqueda)) { $sql_conteo .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+
+if (!empty($busqueda)) { 
+    $sql_conteo .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+}
+
+if ($cod_coordinador_filtro > 0) {
+    $sql_conteo .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
+}
+
 $resultado_conteo = mysqli_query($conectar, $sql_conteo);
 $fila_conteo = mysqli_fetch_assoc($resultado_conteo);
 $total_registros_global = $fila_conteo['total'];
@@ -560,7 +569,13 @@ COUNT(DISTINCT ali.cod_administrador) as total_aliados
 FROM tbl15_administrador a LEFT JOIN tbl15_administrador ali ON a.cod_administrador = ali.cod_asesor AND ali.cod_seguridad = '23'
 WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
 
-if (!empty($busqueda)) { $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+if (!empty($busqueda)) { 
+    $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+}
+
+if ($cod_coordinador_filtro > 0) {
+    $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
+}
 
 $sql .= " GROUP BY a.cod_administrador ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);
@@ -807,7 +822,14 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
  <?php include_once("../menu/05_modulo_menu_lider_movil.php"); ?>
 
 <script>
-function filtrar(busqueda) { if (busqueda.length > 2 || busqueda.length === 0) { window.location.href = 'lista_asesor_lider_movil.php?busqueda=' + encodeURIComponent(busqueda); } }
+function filtrar(busqueda) { 
+    if (busqueda.length > 2 || busqueda.length === 0) { 
+        const urlParams = new URLSearchParams(window.location.search);
+        const cod_coordinador = urlParams.get('cod_coordinador') || '';
+        window.location.href = 'lista_asesor_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + 
+                             '&cod_coordinador=' + encodeURIComponent(cod_coordinador); 
+    } 
+}
 
 // Auto búsqueda después de 1 segundo de inactividad
 let searchTimeout;

@@ -1354,13 +1354,20 @@ if ($pagina <= 0) $pagina = 1;
 $inicio = ($pagina - 1) * $registros_por_pagina;
 
 // Obtener parámetros de búsqueda
-$busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
+$busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar, $_GET['busqueda'])) : '';
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
+$cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 
 // Consulta base para contar el total de registros (OPTIMIZADO)
 $sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
 
-if (!empty($busqueda)) { $sql_conteo .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+if (!empty($busqueda)) { 
+    $sql_conteo .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+}
+
+if ($cod_coordinador_filtro > 0) {
+    $sql_conteo .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
+}
 
 // Filtro de documentación
 if ($filtro_doc == '1') {
@@ -1379,7 +1386,13 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 // Consulta de aliados con LIMIT
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.cod_lider, a.cod_coordinador, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
 
-if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+if (!empty($busqueda)) { 
+    $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+}
+
+if ($cod_coordinador_filtro > 0) {
+    $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
+}
 
 if ($filtro_doc == '1') {
     $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
@@ -1397,7 +1410,14 @@ if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
     a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '23'";
     
-    if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
+    if (!empty($busqueda)) { 
+        $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
+    }
+    
+    if ($cod_coordinador_filtro > 0) {
+        $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
+    }
+
     if ($filtro_doc == '1') { $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '2') { $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '3') { $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')"; }
     $sql .= " ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
     $resultado = mysqli_query($conectar, $sql);
@@ -4924,9 +4944,14 @@ function recargarEntidadesEditar(codAdministrador) {
 function filtrar() { 
     var busqueda = document.getElementById('searchInput').value;
     var filtro_doc = document.getElementById('filtroDoc').value;
+    const urlParams = new URLSearchParams(window.location.search);
+    const cod_coordinador = urlParams.get('cod_coordinador') || '';
+    
     clearTimeout(window.searchTimeout); 
     window.searchTimeout = setTimeout(function() { 
-        window.location.href = 'lista_aliado_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + '&filtro_doc=' + encodeURIComponent(filtro_doc); 
+        window.location.href = 'lista_aliado_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + 
+                            '&filtro_doc=' + encodeURIComponent(filtro_doc) + 
+                            '&cod_coordinador=' + encodeURIComponent(cod_coordinador); 
     }, 500); 
 }
 
@@ -4951,10 +4976,7 @@ $(document).on('blur', '#identificacion_tercero', function() {
     }
     
     $.ajax({
-        url: '../admin/verificar_identificacion_aliado.php',
-        type: 'POST',
-        data: { identificacion: identificacion },
-        dataType: 'json',
+        url: '../admin/verificar_identificacion_aliado.php', type: 'POST', data: { identificacion: identificacion }, dataType: 'json',
         success: function(response) {
             if(response.existe) {
                 inputField.css('border-color', '#ef4444');
@@ -4996,10 +5018,7 @@ $('#formRegistro').on('submit', function(e) {
         Swal.fire({ title: 'Verificando identificación...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         
         $.ajax({
-            url: '../ajax/verificar_identificacion_aliado.php',
-            type: 'POST',
-            data: { identificacion: identificacion },
-            dataType: 'json',
+            url: '../ajax/verificar_identificacion_aliado.php', type: 'POST', data: { identificacion: identificacion }, dataType: 'json',
             success: function(response) {
                 Swal.close();
                 if(response.existe) {
@@ -5029,7 +5048,7 @@ $('#formRegistro').on('submit', function(e) {
         url: '../admin/reg_aliado_modal_lider_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(resp) {
             Swal.close();
-            console.log('Respuesta del servidor:', resp); // Debug
+            //console.log('Respuesta del servidor:', resp); // Debug
             
             if(resp.afectado === 'SI') {
                 cerrarModal();
@@ -5083,22 +5102,14 @@ $('#formEditar').on('submit', function(e) {
     });
     
     $.ajax({
-        url: '../admin/act_aliado_modal_lider_ajax_reg.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: '../admin/act_aliado_modal_lider_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(resp) {
             Swal.close();
             
             if(resp.afectado === 'SI') {
                 cerrarModalEditar(); 
-                Swal.fire({ 
-                    icon: 'success',  title: '¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#8b5cf6',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
-                }).then(() => { 
-                    location.reload(); 
-                });
+                Swal.fire({ icon: 'success',  title: '¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#8b5cf6',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
+                }).then(() => { location.reload(); });
             } else {
                 Swal.fire({ icon: 'error',  title: 'Error',  text: resp.mensaje || 'No se pudo actualizar el aliado',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
