@@ -753,6 +753,69 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
 
 </div>
 
+<!-- Modal Registro Asesor -->
+<div class="modal-overlay" id="modalRegistroAsesor" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;">
+    <div class="modal-content" style="background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); padding: 1.5rem; border-radius: 20px 20px 0 0; position: relative; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-user-plus"></i> Nuevo Asesor</h2>
+            <button class="modal-close" onclick="cerrarModalRegistro()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body" style="padding: 1.5rem;">
+            <form id="formRegistroAsesor" onsubmit="registrarAsesor(event)">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    
+                    <div style="grid-column: 1 / -1;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Identificación (Cédula) *</label>
+                        <input type="number" name="cedula" id="cedula" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Primer Nombre *</label>
+                        <input type="text" name="nombres" id="nombres" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Apellidos *</label>
+                        <input type="text" name="apellidos" id="apellidos" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div style="grid-column: 1 / -1;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Correo Electrónico *</label>
+                        <input type="email" name="correo" id="correo" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Celular *</label>
+                        <input type="number" name="telefono1" id="telefono1" required class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                    </div>
+
+                    <div>
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Coordinador Asignado *</label>
+                        <select name="cod_coordinador" id="cod_coordinador" class="form-input" required style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                            <option value="" style="color: black;">Seleccionar...</option>
+                            <?php 
+                            mysqli_data_seek($res_coordinadores, 0);
+                            while ($coord = mysqli_fetch_assoc($res_coordinadores)): 
+                            ?>
+                            <option value="<?php echo $coord['cod_administrador']; ?>" style="color: black;"><?php echo $coord['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div style="margin-top: 1.5rem;">
+                    <button type="submit" class="submit-btn" style="width: 100%; background: #8b5cf6; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                        <i class="fa-solid fa-user-plus"></i> Registrar Asesor
+                    </button>
+                    <button type="button" onclick="cerrarModalRegistro()" style="width: 100%; background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 0.75rem; border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 0.5rem; transition: all 0.3s ease;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Editar Asesor -->
 <div class="modal-overlay" id="modalEditarAsesor" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;">
     <div class="modal-content" style="background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
