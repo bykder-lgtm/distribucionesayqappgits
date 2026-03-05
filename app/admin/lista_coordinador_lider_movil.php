@@ -484,11 +484,20 @@ body {
     }
     
     .coordinador-actions {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: nowrap; /* Force them to stay side-by-side */
     }
     
     .action-btn {
-        min-width: 100%;
+        min-width: 0; 
+        flex: 1;
+        padding: 0.6rem 0.25rem;
+        font-size: 0.75rem; /* Slightly smaller to fit text */
+        gap: 0.25rem;
+    }
+
+    .action-btn i {
+        font-size: 0.85rem;
     }
 }
 /* Pagination Styles */
