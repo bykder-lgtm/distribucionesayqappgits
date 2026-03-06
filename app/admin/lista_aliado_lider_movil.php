@@ -1767,10 +1767,10 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
                     <button class="action-btn share" disabled style="opacity: 0.5; cursor: not-allowed;" title="El aliado no ha cargado documentos">
                         <i class="fa-solid fa-share-nodes"></i> Compartir
                     </button>
+                    <?php endif; ?>
                     <button class="action-btn archive" onclick="archivarEntidad(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>', 'Aliado')">
                         <i class="fa-solid fa-box-archive"></i> Archivar
                     </button>
-                    <?php endif; ?>
                 </div>
             </div>
             <?php endwhile; ?>

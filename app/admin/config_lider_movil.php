@@ -355,6 +355,28 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
                 </div>
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>
+
+            <a href="lista_revisor_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon purple">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Mis Revisores</div>
+                    <div class="menu-item-desc">Gestionar equipo de revisión</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+            <a href="lista_vendedor_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon orange">
+                    <i class="fa-solid fa-user-tag"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Mis Vendedores</div>
+                    <div class="menu-item-desc">Gestionar fuerza de ventas</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
             
             <a href="lista_notificacion_alerta_renovacion_lider_movil.php" class="menu-item">
                 <div class="menu-item-icon orange">

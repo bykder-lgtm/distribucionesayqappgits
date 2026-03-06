@@ -432,6 +432,30 @@ $total_vendedores = $res_vendedores ? mysqli_num_rows($res_vendedores) : 0;
         font-size: 0.9rem;
     }
 
+    /* Archive button for vendors */
+    .btn-archive-vendedor {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.75rem;
+    }
+
+    .btn-archive-vendedor:hover {
+        background: #ef4444;
+        color: white;
+    }
+
     @media(min-width: 600px) {
         .productos-list { grid-template-columns: repeat(2, 1fr); }
     }
@@ -763,6 +787,12 @@ $total_vendedores = $res_vendedores ? mysqli_num_rows($res_vendedores) : 0;
                                 <i class="fa fa-envelope"></i> <?php echo $vendedor['correo_tercero']; ?>
                             </div>
                             <?php endif; ?>
+
+                            <div class="vendedor-actions">
+                                <button type="button" class="btn-archive-vendedor" onclick="archivarEntidad(<?php echo $vendedor['cod_administrador']; ?>, '<?php echo addslashes($vendedor['nombres_apellidos_tercero']); ?>', 'Vendedor')">
+                                    <i class="fa-solid fa-box-archive"></i> Archivar Vendedor
+                                </button>
+                            </div>
                         </div>
                         <?php endwhile; ?>
                     <?php else: ?>
@@ -1618,6 +1648,56 @@ document.addEventListener('DOMContentLoaded', function() {
                 color: 'white',
                 customClass: { container: 'swal2-above-modal' } 
             });
+        });
+    }
+
+    window.archivarEntidad = function(codAdmin, nombre, tipoEntidad) {
+        Swal.fire({
+            title: '¿Archivar ' + tipoEntidad + '?',
+            text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#1f2937',
+            confirmButtonText: 'Sí, archivar',
+            cancelButtonText: 'Cancelar',
+            background: '#1a1f2e',
+            color: 'white'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Archivando...',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); },
+                    background: '#1a1f2e',
+                    color: 'white'
+                });
+
+                $.ajax({
+                    url: 'proceso_archivar_entidad_lider_movil_ajax.php',
+                    type: 'POST',
+                    data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Archivado!',
+                                text: response.message,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                background: '#1a1f2e',
+                                color: 'white'
+                            }).then(() => { location.reload(); });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });
+                        }
+                    },
+                    error: function() {
+                        Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud.', background: '#1a1f2e', color: 'white' });
+                    }
+                });
+            }
         });
     }
 });

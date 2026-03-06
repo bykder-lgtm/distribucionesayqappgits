@@ -623,7 +623,9 @@ $anio = date('Y');
     <!-- Acciones Rápidas -->
     <div class="quick-actions animate-in delay-1">
         <a href="lista_coordinador_lider_movil.php" class="quick-action-btn qa-tiendas"><i class="fa-solid fa-users-gear"></i><span>Coordinadores</span></a>
+        <a href="lista_revisor_lider_movil.php" class="quick-action-btn qa-tiendas"><i class="fa-solid fa-user-shield"></i><span>Revisores</span></a>
         <a href="lista_tienda_lider_movil.php" class="quick-action-btn qa-tiendas"><i class="fa-solid fa-store"></i><span>Tiendas</span></a>
+        <a href="lista_vendedor_lider_movil.php" class="quick-action-btn qa-tiendas"><i class="fa-solid fa-user-tag"></i><span>Vendedores</span></a>
         <a href="lista_producto_lider_movil.php" class="quick-action-btn qa-productos"><i class="fa-solid fa-boxes-stacked"></i><span>Productos</span></a>
         <a href="lista_info_factura_venta_lider_movil.php" class="quick-action-btn qa-creditos"><i class="fa-solid fa-credit-card"></i><span>Créditos</span></a>
     </div>
