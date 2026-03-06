@@ -6236,9 +6236,7 @@ function abrirModalAliadosFirmados() {
     $("#modalAliadosFirmados").addClass("show").css("display", "flex");
     $("#bodyAliadosFirmados").html('<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #10b981;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado...</p></div>');
     $.ajax({
-        url: '../ajax/get_aliados_firmados_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../ajax/get_aliados_firmados_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             let html = '<div style="display: grid; gap: 1rem;">';
             if (response && response.length > 0) {
@@ -6283,16 +6281,7 @@ function cerrarModalVerFirma() {
 
 function abrirModalDocumentosCargados(total) {
     if (total == 0) {
-        Swal.fire({
-            icon: 'info',
-            title: 'Sin documentos',
-            text: 'Actualmente no hay documentos registrados por ningún aliado en su red.',
-            background: '#1a1f2e',
-            color: 'white',
-            confirmButtonColor: '#3b82f6',
-            confirmButtonText: 'Entendido',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'info', title: 'Sin documentos', text: 'Actualmente no hay documentos registrados por ningún aliado en su red.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#3b82f6', confirmButtonText: 'Entendido', customClass: { container: 'swal-high-zindex' } });
         return;
     }
 
@@ -6331,9 +6320,9 @@ function abrirModalDocumentosCargados(total) {
                                     <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.25rem;"><i class="fa-solid fa-calendar"></i> Registro: ${aliado.fecha}</div>
                                     ${statusLabel}
                                 </div>
-                                <a href="../ajax/descargar_documentos_zip.php?cod_aliado=${aliado.cod_administrador}" target="_blank" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; text-decoration: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: all 0.3s ease;">
-                                    <i class="fa-solid fa-file-zipper"></i> Descargar Disponibles
-                                </a>
+                                <button onclick="gestionarDescargaEmailDoc('${aliado.cod_administrador}', '${aliado.nombres_apellidos_tercero}')" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); cursor: pointer; transition: all 0.3s ease;">
+                                    <i class="fa-solid fa-file-zipper"></i> Opciones de Documentos
+                                </button>
                             </div>
                             <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
                                 ${docsHtml}
@@ -6347,14 +6336,78 @@ function abrirModalDocumentosCargados(total) {
             html += '</div>';
             $("#bodyDocumentosCargados").html(html);
         },
+        error: function() { $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Se produjo un error al obtener los documentos.</p></div>'); }
+    });
+}
+
+function cerrarModalDocumentos() { $("#modalDocumentosCargados").removeClass("show").hide(); }
+
+function gestionarDescargaEmailDoc(cod_aliado, nombre_aliado) {
+    Swal.fire({ title: 'Procesando documentos...', text: 'Generando archivo comprimido', allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }, didOpen: () => { Swal.showLoading(); } });
+
+    $.ajax({
+        url: 'generar_zip_documentacion.php', type: 'POST', data: { cod_aliado: cod_aliado }, dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                Swal.fire({
+                    title: '¡ZIP Generado!', text: '¿Qué deseas hacer con los documentos de ' + nombre_aliado + '?', icon: 'success', showCancelButton: true, showDenyButton: true, confirmButtonText: '<i class="fa-solid fa-download"></i> Descargar', denyButtonText: '<i class="fa-solid fa-envelope"></i> Enviar por Correo', cancelButtonText: 'Cerrar', confirmButtonColor: '#3b82f6', denyButtonColor: '#8b5cf6', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Descarga directa sin navegar
+                        const link = document.createElement('a');
+                        link.href = '../' + response.zip_path;
+                        link.setAttribute('download', response.zip_name);
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // Notificar que la descarga inició sin cerrar el modal principal
+                        Swal.fire({ icon: 'success', title: 'Descarga Iniciada', text: 'El archivo se está descargando.', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    } else if (result.isDenied) {
+                        // Solicitar correo para enviar
+                        solicitarCorreoEnvio(response.zip_path, nombre_aliado);
+                    }
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            }
+        },
         error: function() {
-            $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Se produjo un error al obtener los documentos.</p></div>');
+            Swal.close();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión al generar el ZIP', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
 
-function cerrarModalDocumentos() {
-    $("#modalDocumentosCargados").removeClass("show").hide();
+function solicitarCorreoEnvio(zipPath, nombreAliado) {
+    Swal.fire({
+        title: 'Enviar por Correo', text: 'Ingresa el correo electrónico del destinatario:', input: 'email', inputPlaceholder: 'ejemplo@correo.com', showCancelButton: true, confirmButtonText: 'Enviar', cancelButtonText: 'Cancelar', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', inputAttributes: { autocapitalize: 'off', autocorrect: 'off' }, customClass: { container: 'swal-high-zindex' }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            enviarZipPorEmail(zipPath, result.value, nombreAliado);
+        }
+    });
+}
+
+function enviarZipPorEmail(zipPath, email, nombreAliado) {
+    Swal.fire({ title: 'Enviando correo...', html: 'Enviando documentos a <b>' + email + '</b>', allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }, didOpen: () => { Swal.showLoading(); } });
+
+    $.ajax({
+        url: 'enviar_documentacion_aliado_email_ajax.php', type: 'POST', data: { zip_path: zipPath, correo: email, nombre_aliado: nombreAliado }, dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                Swal.fire({ icon: 'success', title: '¡Enviado!', text: response.mensaje, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error al enviar', text: response.mensaje, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            }
+        },
+        error: function() {
+            Swal.close();
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo conectar con el servidor de correo.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        }
+    });
 }
 </script>
 </body>

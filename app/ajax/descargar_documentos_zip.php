@@ -7,14 +7,17 @@ if (!isset($_SESSION['cod_administrador'])) { die('Sesión no iniciada'); }
 $cod_aliado = isset($_GET['cod_aliado']) ? intval($_GET['cod_aliado']) : 0;
 if ($cod_aliado <= 0) die('Aliado no válido');
 
-$sql = "SELECT nombres_apellidos_tercero, nombres, apellidos, url_documentacion_rut_aliado, url_documentacion_camaracomercio_aliado, url_documentacion_cedula_aliado
-FROM tbl15_administrador WHERE cod_administrador = '$cod_aliado'";
+$sql = "SELECT a.nombres_apellidos_tercero, a.nombres, a.apellidos, a.nombre_razon_social, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado,
+        (SELECT t.nombre_tienda FROM tbl15_tienda t WHERE t.cod_aliado_estrategico = a.cod_administrador LIMIT 1) as nombre_tienda
+FROM tbl15_administrador a WHERE a.cod_administrador = '$cod_aliado'";
 $res = mysqli_query($conectar, $sql);
 $row = mysqli_fetch_assoc($res);
 if (!$row) die('Aliado no encontrado');
 
 $nombre_aliado = $row['nombres_apellidos_tercero'] ?: ($row['nombres'] . ' ' . $row['apellidos']);
-$nombre_archivo_zip = "Documentos_" . preg_replace('/[^A-Za-z0-9_\-]/', '_', $nombre_aliado) . ".zip";
+$comercial = !empty($row['nombre_tienda']) ? $row['nombre_tienda'] : (!empty($row['nombre_razon_social']) ? $row['nombre_razon_social'] : "");
+$nombre_comercial = !empty($comercial) ? "_" . $comercial : "";
+$nombre_archivo_zip = preg_replace('/[^A-Za-z0-9_\-]/', '_', $nombre_aliado . $nombre_comercial) . ".zip";
 
 $zip = new ZipArchive();
 $tmp_file = tempnam(sys_get_temp_dir(), 'zip');
