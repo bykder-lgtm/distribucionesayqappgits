@@ -194,8 +194,7 @@ if (isset($_POST['identificacion_tercero'])) {
                     }
                 }
             }
-            if ($docs_para_actualizar) { $sql_update_docs .= " WHERE cod_administrador = '$cod_administrador'"; mysqli_query($conectar, $sql_update_docs); }
-            
+            if ($docs_para_actualizar) { $sql_update_docs .= ", fecha_documentacion = '".date('Y-m-d H:i:s')."' WHERE cod_administrador = '$cod_administrador'"; mysqli_query($conectar, $sql_update_docs); }
             // ========================================================================================
             // CREAR TIENDA AUTOMÁTICAMENTE SI SE SOLICITÓ
             // ========================================================================================

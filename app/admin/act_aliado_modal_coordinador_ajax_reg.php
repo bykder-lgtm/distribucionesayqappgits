@@ -101,7 +101,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
                 }
             }
             // Ejecutar actualización de documentos solo si hay cambios
-            if ($docs_para_actualizar) { $sql_update_docs .= " WHERE cod_administrador = '$cod_administrador'"; mysqli_query($conectar, $sql_update_docs); }
+            if ($docs_para_actualizar) { $sql_update_docs .= ", fecha_documentacion = '".date('Y-m-d H:i:s')."' WHERE cod_administrador = '$cod_administrador'"; mysqli_query($conectar, $sql_update_docs); }
             // Actualizar parametrización de entidades crediticias
             if (isset($_POST['entidades']) && is_array($_POST['entidades'])) {
                 // Primero, desactivar todas las parametrizaciones existentes de este aliado
