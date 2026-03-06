@@ -18,11 +18,8 @@ $aliados = [];
 function verificarExistencia($url) {
     if (empty($url)) return false;
     if (strpos($url, 'http') === 0) return true; 
-
-    // La mayoría de las rutas en DB son ../archivador/... y se ejecutan desde app/ajax
-    // Resolvemos la ruta relativa a la ubicación de este archivo
+    // La mayoría de las rutas en DB son ../archivador/... y se ejecutan desde app/ajax // Resolvemos la ruta relativa a la ubicación de este archivo
     $fullPath = __DIR__ . DIRECTORY_SEPARATOR . $url;
-
     // file_exists funciona correctamente con rutas relativas construidas con __DIR__
     return file_exists($fullPath);
 }
