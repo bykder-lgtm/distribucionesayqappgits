@@ -2252,7 +2252,7 @@ function ejecutarRegistroProducto() {
     $.ajax({
         url: 'reg_producto_tienda_ajax.php', type: 'POST', data: formData, processData: false, contentType: false,
         success: function(responseText) {
-            console.log("Respuesta producto:", responseText);
+            //console.log("Respuesta producto:", responseText);
             let response;
             try {
                 let cleanJson = responseText;

@@ -216,6 +216,18 @@ body {
     text-transform: uppercase;
 }
 
+.clickable-stat {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.clickable-stat:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
 /* Search & Filter Container */
 .search-filter-container {
     display: flex;
@@ -1592,6 +1604,25 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 // Consulta de tipos de identificación
 $sql_tipo_identificacion = "SELECT cod_tipo_doc, tipo_doc_abrev, nombre_tipo_doc FROM tbl15_tipo_doc ORDER BY cod_tipo_doc ASC";
 $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
+
+// --- NUEVAS ESTADÍSTICAS SOLICITADAS ---
+// Total Aliados que han firmado
+$sql_firmados_total = "SELECT COUNT(DISTINCT f.cod_aliado_estrategico) as total 
+FROM tbl15_firma_digital_documento f INNER JOIN tbl15_administrador a ON f.cod_aliado_estrategico = a.cod_administrador
+WHERE f.cod_estado_firma_signature = 1 AND a.cod_seguridad = '23' 
+AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+$res_firmados_total = mysqli_query($conectar, $sql_firmados_total);
+$total_firmados = ($res_firmados_total) ? mysqli_fetch_assoc($res_firmados_total)['total'] : 0;
+
+// Total Documentos Cargados
+$sql_docs_total = "SELECT 
+SUM(CASE WHEN (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
+SUM(CASE WHEN (url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
+SUM(CASE WHEN (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL) THEN 1 ELSE 0 END) as total
+FROM tbl15_administrador a WHERE a.cod_seguridad = '23'
+AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+$res_docs_total = mysqli_query($conectar, $sql_docs_total);
+$total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_total)['total'] : 0;
 ?>
 
 <main class="page-container">
@@ -1602,7 +1633,15 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
         <div class="header-stats">
             <div class="header-stat">
                 <div class="header-stat-value"><?php echo $total_registros; ?></div>
-                <div class="header-stat-label">Total</div>
+                <div class="header-stat-label">Total Aliados</div>
+            </div>
+            <div class="header-stat clickable-stat" onclick="abrirModalAliadosFirmados()" style="cursor: pointer;">
+                <div class="header-stat-value"><?php echo $total_firmados; ?></div>
+                <div class="header-stat-label">Aliados Firmados</div>
+            </div>
+            <div class="header-stat clickable-stat" onclick="abrirModalDocumentosCargados()" style="cursor: pointer;">
+                <div class="header-stat-value"><?php echo $total_documentos_cargados; ?></div>
+                <div class="header-stat-label">Docs Cargados</div>
             </div>
         </div>
     </div>
@@ -6150,6 +6189,148 @@ function escapeHtmlMovil(text) {
     </div>
 </div>
 
+<!-- Modal Aliados Firmados -->
+<div class="modal-overlay" id="modalAliadosFirmados" style="z-index: 6000; align-items: center; padding: 20px;">
+    <div class="modal-content" style="max-width: 700px; border-radius: 20px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h2 style="color: white;"><i class="fa-solid fa-file-signature"></i> Aliados que han Firmado</h2>
+            <button class="modal-close" onclick="cerrarModalFirmados()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="bodyAliadosFirmados" style="max-height: 70vh; overflow-y: auto;">
+            <div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #10b981;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado...</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Documentos Cargados -->
+<div class="modal-overlay" id="modalDocumentosCargados" style="z-index: 6000; align-items: center; padding: 20px;">
+    <div class="modal-content" style="max-width: 800px; border-radius: 20px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+            <h2 style="color: white;"><i class="fa-solid fa-folder-open"></i> Documentos Cargados</h2>
+            <button class="modal-close" onclick="cerrarModalDocumentos()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="bodyDocumentosCargados" style="max-height: 70vh; overflow-y: auto;">
+            <div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado...</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Visualizar Firma -->
+<div class="modal-overlay" id="modalVerFirma" style="z-index: 7000; align-items: center; padding: 20px; background: rgba(0,0,0,0.9);">
+    <div class="modal-content" style="max-width: 500px; text-align: center; border-radius: 20px;">
+        <div class="modal-header">
+            <h2 style="color: white;"><i class="fa-solid fa-image"></i> Firma Digital</h2>
+            <button class="modal-close" onclick="cerrarModalVerFirma()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div style="background: white; padding: 15px; border-radius: 12px; margin-bottom: 1rem;">
+                <img id="imgFirmaDigital" src="" alt="Firma Digital" style="max-width: 100%; height: auto;">
+            </div>
+            <div style="font-weight: 700; color: white; font-size: 1.1rem;" id="txtNombreFirma"></div>
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 0.25rem;">Firma legalizada digitalmente</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function abrirModalAliadosFirmados() {
+    $("#modalAliadosFirmados").addClass("show").css("display", "flex");
+    $("#bodyAliadosFirmados").html('<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #10b981;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado...</p></div>');
+    $.ajax({
+        url: '../ajax/get_aliados_firmados_ajax.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            let html = '<div style="display: grid; gap: 1rem;">';
+            if (response && response.length > 0) {
+                response.forEach(function(aliado) {
+                    html += `
+                        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="color: white; font-weight: 700; font-size: 1rem;">${aliado.nombres_apellidos_tercero}</div>
+                                <div style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin-top: 0.25rem;"><i class="fa-solid fa-calendar-check" style="color: #10b981;"></i> Firmado: ${aliado.fecha_firma}</div>
+                            </div>
+                            <button onclick="verFirma('${aliado.firma_base64}', '${aliado.nombres_apellidos_tercero}')" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease;">
+                                <i class="fa-solid fa-eye"></i> Visualizar
+                            </button>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.4);"><i class="fa-solid fa-file-signature" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i><h3>Sin firmas aún</h3><p>No se encontraron aliados que hayan completado el proceso de firma.</p></div>';
+            }
+            html += '</div>';
+            $("#bodyAliadosFirmados").html(html);
+        },
+        error: function() {
+            $("#bodyAliadosFirmados").html('<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-circle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al cargar los datos. Por favor intenta de nuevo.</p></div>');
+        }
+    });
+}
+
+function cerrarModalFirmados() {
+    $("#modalAliadosFirmados").removeClass("show").hide();
+}
+
+function verFirma(base64, nombre) {
+    $("#imgFirmaDigital").attr("src", base64);
+    $("#txtNombreFirma").text(nombre);
+    $("#modalVerFirma").addClass("show").css("display", "flex");
+}
+
+function cerrarModalVerFirma() {
+    $("#modalVerFirma").removeClass("show").hide();
+}
+
+function abrirModalDocumentosCargados() {
+    $("#modalDocumentosCargados").addClass("show").css("display", "flex");
+    $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado...</p></div>');
+    $.ajax({
+        url: '../ajax/get_aliados_documentos_ajax.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            let html = '<div style="display: grid; gap: 1rem;">';
+            if (response && response.length > 0) {
+                response.forEach(function(aliado) {
+                    let docsHtml = '';
+                    aliado.documentos.forEach(function(doc) {
+                        docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px solid rgba(59, 130, 246, 0.2);"><i class="fa-solid fa-file-pdf"></i> ${doc.nombre}</span>`;
+                    });
+                    
+                    html += `
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 1.25rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem;">
+                                <div>
+                                    <div style="color: white; font-weight: 700; font-size: 1.1rem;">${aliado.nombres_apellidos_tercero}</div>
+                                    <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.25rem;"><i class="fa-solid fa-calendar"></i> Registro: ${aliado.fecha}</div>
+                                </div>
+                                <a href="../ajax/descargar_documentos_zip.php?cod_aliado=${aliado.cod_administrador}" target="_blank" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; text-decoration: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: all 0.3s ease;">
+                                    <i class="fa-solid fa-file-zipper"></i> Comprimir y Descargar
+                                </a>
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                ${docsHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html += '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.4);"><i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i><h3>No se hallaron documentos</h3><p>Ningún aliado ha cargado documentación legal por el momento.</p></div>';
+            }
+            html += '</div>';
+            $("#bodyDocumentosCargados").html(html);
+        },
+        error: function() {
+            $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Se produjo un error al obtener los documentos.</p></div>');
+        }
+    });
+}
+
+function cerrarModalDocumentos() {
+    $("#modalDocumentosCargados").removeClass("show").hide();
+}
+</script>
 </body>
 </html>
 

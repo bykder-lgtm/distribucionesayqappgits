@@ -3,15 +3,7 @@ include_once('../conexiones/conexione.php');
 include_once('../evitar_mensaje_error/error.php');
 date_default_timezone_set("America/Bogota");
 include ("../session/funciones_admin.php");
-
-if (verificar_usuario()){
-    // Valid user
-} else { 
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'Sesión no válida']);
-    exit;
-}
-
+if (verificar_usuario()){ } else { header('Content-Type: application/json'); echo json_encode(['success' => false, 'message' => 'Sesión no válida']); exit; }
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
