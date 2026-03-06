@@ -12,10 +12,6 @@ AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_ad
 ORDER BY f.fecha_generacion_firma_digital_documento DESC";
 $res = mysqli_query($conectar, $sql);
 $aliados = [];
-if ($res) {
-    while ($row = mysqli_fetch_assoc($res)) {
-        $aliados[] = ['cod_administrador' => $row['cod_administrador'], 'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'] ?: ($row['nombres'] . ' ' . $row['apellidos']), 'fecha_firma' => date('d/m/Y H:i', strtotime($row['fecha_generacion_firma_digital_documento'])), 'firma_base64' => $row['base64_firma_digital_documento']];
-    }
-}
+if ($res) { while ($row = mysqli_fetch_assoc($res)) { $aliados[] = ['cod_administrador' => $row['cod_administrador'], 'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'] ?: ($row['nombres'] . ' ' . $row['apellidos']), 'fecha_firma' => date('d/m/Y H:i', strtotime($row['fecha_generacion_firma_digital_documento'])), 'firma_base64' => $row['base64_firma_digital_documento']]; } }
 echo json_encode($aliados);
 ?>

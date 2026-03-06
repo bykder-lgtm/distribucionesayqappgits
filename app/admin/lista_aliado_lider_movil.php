@@ -1615,8 +1615,7 @@ $res_firmados_total = mysqli_query($conectar, $sql_firmados_total);
 $total_firmados = ($res_firmados_total) ? mysqli_fetch_assoc($res_firmados_total)['total'] : 0;
 
 // Total Documentos Cargados
-$sql_docs_total = "SELECT 
-SUM(CASE WHEN (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
+$sql_docs_total = "SELECT SUM(CASE WHEN (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
 SUM(CASE WHEN (url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
 SUM(CASE WHEN (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL) THEN 1 ELSE 0 END) as total
 FROM tbl15_administrador a WHERE a.cod_seguridad = '23'
@@ -6306,36 +6305,42 @@ function abrirModalDocumentosCargados(total) {
         success: function(response) {
             let html = '<div style="display: grid; gap: 1rem;">';
             if (response && response.length > 0) {
-                // Filtrar aliados que realmente tienen documentos verificados (por si el AJAX hizo limpieza)
-                let aliadosConDocs = response.filter(a => a.documentos && a.documentos.length > 0);
-                
-                if (aliadosConDocs.length > 0) {
-                    aliadosConDocs.forEach(function(aliado) {
-                        let docsHtml = '';
-                        aliado.documentos.forEach(function(doc) {
+                response.forEach(function(aliado) {
+                    let docsHtml = '';
+                    aliado.documentos.forEach(function(doc) {
+                        if (doc.existe) {
                             docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px solid rgba(59, 130, 246, 0.2);"><i class="fa-solid fa-file-pdf"></i> ${doc.nombre}</span>`;
-                        });
-                        
-                        html += `
-                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 1.25rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem;">
-                                    <div>
-                                        <div style="color: white; font-weight: 700; font-size: 1.1rem;">${aliado.nombres_apellidos_tercero}</div>
-                                        <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.25rem;"><i class="fa-solid fa-calendar"></i> Registro: ${aliado.fecha}</div>
-                                    </div>
-                                    <a href="../ajax/descargar_documentos_zip.php?cod_aliado=${aliado.cod_administrador}" target="_blank" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; text-decoration: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: all 0.3s ease;">
-                                        <i class="fa-solid fa-file-zipper"></i> Comprimir y Descargar
-                                    </a>
-                                </div>
-                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                                    ${docsHtml}
-                                </div>
-                            </div>
-                        `;
+                        } else {
+                            docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(239, 68, 68, 0.1); color: #f87171; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px dashed rgba(239, 68, 68, 0.4);"><i class="fa-solid fa-file-circle-xmark"></i> ${doc.nombre} (No existe)</span>`;
+                        }
                     });
-                } else {
-                    html += '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.4);"><i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i><h3>Documentos no encontrados</h3><p>Los archivos registrados en la base de datos no se encuentran físicamente en el servidor.</p></div>';
-                }
+                    
+                    let cardStyle = aliado.alguno_falta 
+                        ? 'background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 1.25rem;' 
+                        : 'background: rgba(255,255,255,0.03); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 1.25rem;';
+                    
+                    let statusLabel = aliado.alguno_falta 
+                        ? '<div style="color: #f87171; font-size: 0.75rem; font-weight: 700; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> FALTAN ARCHIVOS EN EL SERVIDOR</div>'
+                        : '';
+
+                    html += `
+                        <div style="${cardStyle}">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem;">
+                                <div>
+                                    <div style="color: white; font-weight: 700; font-size: 1.1rem;">${aliado.nombres_apellidos_tercero}</div>
+                                    <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.25rem;"><i class="fa-solid fa-calendar"></i> Registro: ${aliado.fecha}</div>
+                                    ${statusLabel}
+                                </div>
+                                <a href="../ajax/descargar_documentos_zip.php?cod_aliado=${aliado.cod_administrador}" target="_blank" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; text-decoration: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); transition: all 0.3s ease;">
+                                    <i class="fa-solid fa-file-zipper"></i> Descargar Disponibles
+                                </a>
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                ${docsHtml}
+                            </div>
+                        </div>
+                    `;
+                });
             } else {
                 html += '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.4);"><i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i><h3>No se hallaron documentos</h3><p>Ningún aliado ha cargado documentación legal por el momento.</p></div>';
             }

@@ -8,7 +8,7 @@ $cod_aliado = isset($_GET['cod_aliado']) ? intval($_GET['cod_aliado']) : 0;
 if ($cod_aliado <= 0) die('Aliado no válido');
 
 $sql = "SELECT nombres_apellidos_tercero, nombres, apellidos, url_documentacion_rut_aliado, url_documentacion_camaracomercio_aliado, url_documentacion_cedula_aliado
-        FROM tbl15_administrador WHERE cod_administrador = '$cod_aliado'";
+FROM tbl15_administrador WHERE cod_administrador = '$cod_aliado'";
 $res = mysqli_query($conectar, $sql);
 $row = mysqli_fetch_assoc($res);
 if (!$row) die('Aliado no encontrado');
@@ -35,20 +35,10 @@ foreach ($docs as $key => $url) {
                 $found = true;
             }
         } else {
-            // Case 2: Relative path. Try to resolve it.
-            // Documentation path is usually relative to the site root
-            $normalized_url = ltrim($url, '/');
-            $possible_paths = [
-                $_SERVER['DOCUMENT_ROOT'] . "/" . $normalized_url,
-                $_SERVER['DOCUMENT_ROOT'] . "/sistemaseditaxe/mysqli/distribucionesayqapp/" . $normalized_url,
-                "c:/xampp/htdocs/sistemaseditaxe/mysqli/distribucionesayqapp/" . $normalized_url,
-                "../../" . $normalized_url,
-                "../" . $normalized_url,
-                $url
-            ];
+            $possible_paths = [__DIR__ . DIRECTORY_SEPARATOR . $url, realpath(__DIR__ . DIRECTORY_SEPARATOR . $url)];
             
             foreach ($possible_paths as $path) {
-                if (file_exists($path) && is_file($path)) {
+                if ($path && file_exists($path) && is_file($path)) {
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
                     $zip->addFile($path, $key . "." . $ext);
                     $found = true;
@@ -59,7 +49,6 @@ foreach ($docs as $key => $url) {
         if ($found) $has_files = true;
     }
 }
-
 $zip->close();
 if (!$has_files) { @unlink($tmp_file); die('No hay archivos disponibles para descargar'); }
 

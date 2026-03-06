@@ -17,34 +17,28 @@ $aliados = [];
 
 function verificarExistencia($url) {
     if (empty($url)) return false;
-    if (strpos($url, 'http') === 0) return true; // URLs externas se asumen válidas
-    
-    $root = "c:/xampp/htdocs/sistemaseditaxe/mysqli/distribucionesayqapp/";
-    $path = $root . ltrim($url, '/');
-    return file_exists($path);
-}
+    if (strpos($url, 'http') === 0) return true; 
 
+    // La mayoría de las rutas en DB son ../archivador/... y se ejecutan desde app/ajax
+    // Resolvemos la ruta relativa a la ubicación de este archivo
+    $fullPath = __DIR__ . DIRECTORY_SEPARATOR . $url;
+
+    // file_exists funciona correctamente con rutas relativas construidas con __DIR__
+    return file_exists($fullPath);
+}
 if ($res) {
     while ($row = mysqli_fetch_assoc($res)) {
         $docs = [];
-        if (!empty($row['url_documentacion_rut_aliado']) && verificarExistencia($row['url_documentacion_rut_aliado'])) {
-            $docs[] = ['nombre' => 'RUT', 'url' => $row['url_documentacion_rut_aliado']];
+        $alguno_falta = false;
+        $posibles = ['RUT' => $row['url_documentacion_rut_aliado'], 'Cámara de Comercio' => $row['url_documentacion_camaracomercio_aliado'], 'Cédula' => $row['url_documentacion_cedula_aliado']];
+        foreach ($posibles as $nombre => $url) {
+            if (!empty($url)) {
+                $existe = verificarExistencia($url);
+                if (!$existe) $alguno_falta = true;
+                $docs[] = ['nombre' => $nombre, 'url' => $url, 'existe' => $existe];
+            }
         }
-        if (!empty($row['url_documentacion_camaracomercio_aliado']) && verificarExistencia($row['url_documentacion_camaracomercio_aliado'])) {
-            $docs[] = ['nombre' => 'Cámara de Comercio', 'url' => $row['url_documentacion_camaracomercio_aliado']];
-        }
-        if (!empty($row['url_documentacion_cedula_aliado']) && verificarExistencia($row['url_documentacion_cedula_aliado'])) {
-            $docs[] = ['nombre' => 'Cédula', 'url' => $row['url_documentacion_cedula_aliado']];
-        }
-        
-        if (count($docs) > 0) {
-            $aliados[] = [
-                'cod_administrador' => $row['cod_administrador'],
-                'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'] ?: ($row['nombres'] . ' ' . $row['apellidos']),
-                'fecha' => date('d/m/Y', strtotime($row['fecha'])),
-                'documentos' => $docs
-            ];
-        }
+        if (count($docs) > 0) { $aliados[] = ['cod_administrador' => $row['cod_administrador'], 'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'] ?: ($row['nombres'] . ' ' . $row['apellidos']), 'fecha' => date('d/m/Y', strtotime($row['fecha'])), 'documentos' => $docs, 'alguno_falta' => $alguno_falta]; }
     }
 }
 echo json_encode($aliados);
