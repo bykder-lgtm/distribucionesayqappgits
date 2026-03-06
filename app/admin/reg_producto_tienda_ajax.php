@@ -16,16 +16,16 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    $cod_tienda = intval($_POST['cod_tienda']);
-    $cod_administrador = intval($_POST['cod_administrador']);
-    $cod_producto_barra = trim(addslashes($_POST['cod_producto_barra']));
-    $nombre_producto = trim(addslashes($_POST['nombre_producto']));
-    $precio_compra_producto = floatval($_POST['precio_compra_producto']);
-    $precio_venta_producto = floatval($_POST['precio_venta_producto']);
-    $cod_categoria = intval($_POST['cod_categoria']);
-    $iva_ptj = floatval($_POST['iva_ptj']);
-    $descripcion_producto = trim(addslashes($_POST['descripcion_producto']));
-    $cod_estado = intval($_POST['cod_estado']);
+    $cod_tienda             = isset($_POST['cod_tienda']) ? intval($_POST['cod_tienda']) : 0;
+    $cod_administrador      = isset($_POST['cod_administrador']) ? intval($_POST['cod_administrador']) : 0;
+    $cod_producto_barra     = isset($_POST['cod_producto_barra']) ? trim(addslashes($_POST['cod_producto_barra'])) : '';
+    $nombre_producto        = isset($_POST['nombre_producto']) ? trim(addslashes($_POST['nombre_producto'])) : '';
+    $precio_compra_producto = isset($_POST['precio_compra_producto']) ? floatval($_POST['precio_compra_producto']) : 0;
+    $precio_venta_producto  = isset($_POST['precio_venta_producto']) ? floatval($_POST['precio_venta_producto']) : 0;
+    $cod_categoria          = isset($_POST['cod_categoria']) ? intval($_POST['cod_categoria']) : 0;
+    $iva_ptj                = isset($_POST['iva_ptj']) ? floatval($_POST['iva_ptj']) : 0;
+    $descripcion_producto   = isset($_POST['descripcion_producto']) ? trim(addslashes($_POST['descripcion_producto'])) : '';
+    $cod_estado             = isset($_POST['cod_estado']) ? intval($_POST['cod_estado']) : 1; // Activo por defecto
     $fecha_creacion = date("Y-m-d H:i:s");
     
     // Manejo de imagen (opcional)

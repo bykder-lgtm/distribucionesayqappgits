@@ -85,7 +85,7 @@ function procesarImagen($file_key, $directorio_orig, $directorio_min = null, $an
 //---------------------------------------------------------------------------------------------------------------------------------//
 if (isset($_POST['identificacion_tercero'])) {
 
-	$identificacion_tercero                                         = intval($_POST['identificacion_tercero']);
+	$identificacion_tercero                                         = trim(addslashes($_POST['identificacion_tercero']));
 	$nombre1_tercero                                                = trim(addslashes($_POST['nombre1_tercero']));
 	$telefono1_tercero                                              = trim(addslashes($_POST['telefono1_tercero']));
 	$correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
@@ -94,7 +94,7 @@ if (isset($_POST['identificacion_tercero'])) {
     $cod_departamento                                               = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
     $cod_municipio                                                  = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
     $nombre_representante                                           = isset($_POST['nombre_representante']) ? trim(addslashes($_POST['nombre_representante'])) : '';
-    $documento_representante                                        = isset($_POST['documento_representante']) ? intval($_POST['documento_representante']) : 0;
+    $documento_representante                                        = isset($_POST['documento_representante']) ? trim(addslashes($_POST['documento_representante'])) : '';
     $correo_representante                                           = isset($_POST['correo_representante']) ? trim(addslashes($_POST['correo_representante'])) : '';
     $nombre_tipo_industria                                          = isset($_POST['nombre_tipo_industria']) ? trim(addslashes($_POST['nombre_tipo_industria'])) : '';
     $nombre_tipo_subindustria                                       = isset($_POST['nombre_tipo_subindustria']) ? trim(addslashes($_POST['nombre_tipo_subindustria'])) : '';
@@ -113,9 +113,9 @@ if (isset($_POST['identificacion_tercero'])) {
     $nombre_tipo_tercero                                            = 'TIENDA';
     $nombre_tipo_cliente                                            = "PERSONA_NATURAL";
     $nombre_tipo_regimen                                            = "SIMPLE";
-    $nombre_tipo_impuesto                                           = "NO_RESPONSABLE_DE_IVA";
-    $cod_estado                                                     = "1";
-    $fecha_creacion                                                 = date("Y-m-d H:i:s");
+    $nombre_tipo_impuesto                                           = "SIMPLIFICADO";
+    $fecha_creacion                                                 = date('Y-m-d H:i:s');
+    $cod_estado                                                     = 1; // Activo
 	//---------------------------------------------------------------------------------------------------------------------------------//
     $sql_autoincremento_tienda = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$base_datos' AND TABLE_NAME = 'tbl15_tienda'";
     $exec_autoincremento_tienda = mysqli_query($conectar, $sql_autoincremento_tienda) or die(mysqli_error($conectar));
@@ -131,8 +131,9 @@ if (isset($_POST['identificacion_tercero'])) {
     $url_img_min_tienda                                             = $img_logo['min'];
     // ========== PROCESAR DOCUMENTACIÓN ==========
     $directorio_docs                                                = '../archivador/documentacion_tienda/';
-    $url_documentacion_rut_tienda                                   = procesarArchivo('url_documentacion_rut_tienda', $directorio_docs, 'rut_');
-    $url_documentacion_camaracomercio_tienda                        = procesarArchivo('url_documentacion_camaracomercio_tienda', $directorio_docs, 'camara_');
+    // Corregido: Se usan los nombres reales de los campos del formulario
+    $url_documentacion_rut_tienda                                   = procesarArchivo('url_rut_tienda', $directorio_docs, 'rut_');
+    $url_documentacion_camaracomercio_tienda                        = procesarArchivo('url_camara_comercio_tienda', $directorio_docs, 'camara_');
     $url_documentacion_contratofirma_tienda                         = procesarArchivo('url_documentacion_contratofirma_tienda', $directorio_docs, 'contrato_');
     $url_documentacion_extra1_tienda                                = procesarArchivo('url_documentacion_extra1_tienda', $directorio_docs, 'extra_');
     // ========== PROCESAR IMÁGENES DEL ESTABLECIMIENTO ==========
@@ -146,31 +147,42 @@ if (isset($_POST['identificacion_tercero'])) {
     $cod_asesor                                                     = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
 
 	//---------------------------------------------------------------------------------------------------------------------------------//
-	$sql_dato_aliado = "SELECT cod_administrador FROM tbl15_administrador WHERE identificacion_tercero = '".($identificacion_tercero)."'";
-	$consultar_dato_aliado = mysqli_query($conectar, $sql_dato_aliado) or die(mysqli_error($conectar));
-	$info_dato_aliado = mysqli_fetch_assoc($consultar_dato_aliado);
-	$existe_dato_aliado = mysqli_num_rows(@$consultar_dato_aliado);
-	//---------------------------------------------------------------------------------------------------------------------------------//
-    if($existe_dato_aliado > 0) {
+	// Se verifica si la tienda ya existe con esa identificación
+	$sql_existe = "SELECT cod_tienda FROM tbl15_tienda WHERE identificacion_tercero = '$identificacion_tercero'";
+	$res_existe = mysqli_query($conectar, $sql_existe);
+	if ($res_existe && mysqli_num_rows($res_existe) > 0) {
+        $respuesta_ajax['success'] = false;
+        $respuesta_ajax['message'] = "Ya existe una tienda registrada con el documento $identificacion_tercero";
+        header('Content-Type: application/json');
+        echo json_encode($respuesta_ajax);
+        exit;
+    }
 
-    } else {
-		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
-        cod_aliado_estrategico, cod_lider, cod_coordinador, cod_asesor, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
-        nombre_representante, documento_representante, correo_representante, nombre_tipo_industria, nombre_tipo_subindustria, 
-        nombre_tipo_otraindustria, numero_comercios, cod_tipo_sector, existe_rues, venta_presencial, venta_online, 
-        nombre_plataforma_ecommerce, nombre_sistema_contable, cod_banco_cuenta, ubicacion_gps_tienda,
-        url_img_orig_tienda, url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda,
-        url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda,
-        url_img_selfieadmin_tienda, url_img_otraopcional_tienda, cod_administrador) 
-        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
-        '$cod_aliado_estrategico', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_departamento', '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
-        UPPER('$nombre_representante'), '$documento_representante', '$correo_representante', UPPER('$nombre_tipo_industria'), UPPER('$nombre_tipo_subindustria'), 
-        UPPER('$nombre_tipo_otraindustria'), '$numero_comercios', '$cod_tipo_sector', '$existe_rues', '$venta_presencial', '$venta_online', 
-        '$nombre_plataforma_ecommerce', '$nombre_sistema_contable', '$cod_banco_cuenta', '$ubicacion_gps_tienda',
-        '$url_img_orig_tienda', '$url_img_min_tienda', '$url_documentacion_rut_tienda', '$url_documentacion_camaracomercio_tienda',
-        '$url_documentacion_contratofirma_tienda', '$url_documentacion_extra1_tienda', '$url_img_fachada_tienda', '$url_img_interna_tienda',
-        '$url_img_selfieadmin_tienda', '$url_img_otraopcional_tienda', '$cod_administrador')";
-		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
+	$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
+    cod_aliado_estrategico, cod_lider, cod_coordinador, cod_asesor, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
+    nombre_representante, documento_representante, correo_representante, nombre_tipo_industria, nombre_tipo_subindustria, 
+    nombre_tipo_otraindustria, numero_comercios, cod_tipo_sector, existe_rues, venta_presencial, venta_online, 
+    nombre_plataforma_ecommerce, nombre_sistema_contable, cod_banco_cuenta, ubicacion_gps_tienda,
+    url_img_orig_tienda, url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda,
+    url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda,
+    url_img_selfieadmin_tienda, url_img_otraopcional_tienda, cod_administrador) 
+    VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
+    '$cod_aliado_estrategico', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_departamento', '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
+    UPPER('$nombre_representante'), '$documento_representante', '$correo_representante', UPPER('$nombre_tipo_industria'), UPPER('$nombre_tipo_subindustria'), 
+    UPPER('$nombre_tipo_otraindustria'), '$numero_comercios', '$cod_tipo_sector', '$existe_rues', '$venta_presencial', '$venta_online', 
+    '$nombre_plataforma_ecommerce', '$nombre_sistema_contable', '$cod_banco_cuenta', '$ubicacion_gps_tienda',
+    '$url_img_orig_tienda', '$url_img_min_tienda', '$url_documentacion_rut_tienda', '$url_documentacion_camaracomercio_tienda',
+    '$url_documentacion_contratofirma_tienda', '$url_documentacion_extra1_tienda', '$url_img_fachada_tienda', '$url_img_interna_tienda',
+    '$url_img_selfieadmin_tienda', '$url_img_otraopcional_tienda', '$cod_administrador')";
+	
+    $exec_data = mysqli_query($conectar, $sql_data);
+    
+    if (!$exec_data) {
+        $respuesta_ajax['success'] = false;
+        $respuesta_ajax['message'] = "Error en base de datos: " . mysqli_error($conectar);
+        header('Content-Type: application/json');
+        echo json_encode($respuesta_ajax);
+        exit;
     }
 	//---------------------------------------------------------------------------------------------------------------------------------//
 	if (mysqli_affected_rows($conectar) > 0) { $afectado = "SI"; } else { $afectado = "NO"; }

@@ -1099,6 +1099,9 @@ $resultado_asesores = mysqli_query($conectar, $sql_asesores);
 // Consulta de tipos de sector para el formulario de registro de tienda
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
+
+$sql_cat_prod = "SELECT cod_categoria, nombre_categoria FROM tbl15_categoria WHERE cod_estado = '1' ORDER BY nombre_categoria ASC";
+$res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
 ?>
 <main class="page-container">
     <!-- Header -->
@@ -1287,7 +1290,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
         <div class="modal-header"><h2><i class="fa-solid fa-store" id="iconModalTienda"></i> <span id="tituloModalTienda">Nueva Tienda</span></h2><button class="modal-close" onclick="cerrarModal()"><i class="fa-solid fa-times"></i></button></div>
         
         <div class="modal-body">
-            <form id="formRegistroTienda" enctype="multipart/form-data">
+            <form id="formRegistroTienda" method="POST" enctype="multipart/form-data" onsubmit="return false;">
                 <input type="hidden" id="accion" name="accion" value="registrar">
                 <input type="hidden" id="cod_tienda_edit" name="cod_tienda_edit" value="">
                 <input type="hidden" id="tipo_tienda_actual" name="tipo_tienda" value="normal">
@@ -1417,7 +1420,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
-                <!-- Sección 3: Información Financiera -->
+                <!-- Sección 3: Información Financiera (Desactivada por solicitud) -->
                 <!--
                 <div class="form-section-title"><i class="fa-solid fa-dollar-sign"></i> Información Financiera</div>
                 <div class="form-group">
@@ -1569,7 +1572,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <img id="preview_selfie" class="image-preview" alt="Vista previa selfie">
                 </div>
 
-                <button type="submit" class="submit-btn">
+                <button type="button" class="submit-btn" onclick="ejecutarRegistroTienda()">
                     <i class="fa-solid fa-save"></i> Registrar Tienda Completa
                 </button>
             </form>
@@ -1673,26 +1676,17 @@ function cargarMunicipiosRegistro() {
     selectMuni.empty();
     selectMuni.append('<option value="">Seleccione un municipio *</option>');
     
-    if (!codDepartamento) {
-        return;
-    }
+    if (!codDepartamento) { return; }
     
     $.ajax({
-        url: '../admin/obtener_municipios_ajax.php',
-        type: 'GET',
-        data: { cod_departamento: codDepartamento },
-        dataType: 'json',
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
         success: function(response) {
             if (response.success) {
-                $.each(response.municipios, function(index, muni) {
-                    selectMuni.append('<option value="' + muni.cod_municipio + '">' +
-                                    muni.nombre_municipio + '</option>');
-                });
+                $.each(response.municipios, function(index, muni) { selectMuni.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>'); });
             }
         },
         error: function() {
-            console.error('Error al cargar municipios');
-        }
+            console.error('Error al cargar municipios');  }
     });
 }
 
@@ -1805,11 +1799,15 @@ function abrirModalRegistro(tipo) {
 function cerrarModal() { document.getElementById('modalRegistro').classList.remove('show'); }
 // Cargar bancos al seleccionar aliado
 function actualizarBancosYComision(select) {
+    if (!select) return;
     var codAliado = select.value;
     // Cargar bancos
     var bancoSelect = document.getElementById('cod_banco_cuenta');
     var loading = document.getElementById('loading_bancos');
     
+    // Si no existen los elementos en el DOM, no hacemos nada (evita errores)
+    if (!bancoSelect || !loading) return;
+
     if (codAliado) {
         bancoSelect.disabled = true;
         loading.style.display = 'block';
@@ -1836,7 +1834,10 @@ function actualizarBancosYComision(select) {
                     bancoSelect.innerHTML = '<option value="">-- No hay bancos registrados --</option>';
                 }
                 // Actualizar comisión desde respuesta si existe
-                if (response.comision_ptj) { document.getElementById('comision_ptj').value = response.comision_ptj; }
+                if (response.comision_ptj) { 
+                    var comisionInput = document.getElementById('comision_ptj');
+                    if (comisionInput) comisionInput.value = response.comision_ptj; 
+                }
                 bancoSelect.disabled = false;
                 loading.style.display = 'none';
             },
@@ -2227,66 +2228,141 @@ function previewImageProducto(input) {
     }
 }
 
-// Reemplazo para submit de producto
-document.getElementById('formRegistroProducto').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var formData = new FormData(this);
-    // Limpiar precio
-    var precioVentaVal = document.getElementById('producto_precio_venta').value.replace(/[^\d]/g, '');
-    formData.set('precio_venta_producto', precioVentaVal);
-    formData.set('precio_compra_producto', '0'); // Opcional
-    formData.set('cod_estado', '1');
+// Función para registrar producto
+function ejecutarRegistroProducto() {
+    console.log("Iniciando ejecutarRegistroProducto()");
+    const form = document.getElementById('formRegistroProducto');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    // Limpiar precio y sincronizar con hidden
+    var precioVentaRaw = document.getElementById('producto_precio_venta').value.replace(/\D/g, '');
+    document.getElementById('precio_venta_producto_hidden').value = precioVentaRaw;
+    
+    var precioCompraRaw = document.getElementById('producto_precio_compra').value.replace(/\D/g, '');
+    document.getElementById('precio_compra_producto_hidden').value = precioCompraRaw;
+    
+    var formData = new FormData(form);
+    const nom = document.getElementById('producto_nombre').value;
+    const precio = document.getElementById('producto_precio_venta').value;
     
     Swal.fire({ title: 'Registrando Producto...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
     $.ajax({
-        url: 'reg_producto_tienda_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
-        success: function(response) {
+        url: 'reg_producto_tienda_ajax.php', type: 'POST', data: formData, processData: false, contentType: false,
+        success: function(responseText) {
+            console.log("Respuesta producto:", responseText);
+            let response;
+            try {
+                let cleanJson = responseText;
+                const firstBrace = responseText.indexOf('{');
+                const lastBrace = responseText.lastIndexOf('}');
+                if (firstBrace !== -1 && lastBrace !== -1) {
+                    cleanJson = responseText.substring(firstBrace, lastBrace + 1);
+                }
+                response = JSON.parse(cleanJson);
+            } catch (e) {
+                Swal.fire({ icon: 'error', title: 'Error de formato', text: 'El servidor no devolvió un JSON válido.', background: '#1a1f2e', color: 'white' });
+                return;
+            }
+
             Swal.close();
             if(response.success) {
-                Swal.fire({ icon: 'success', title: 'Producto Registrado', timer: 1500, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
-                document.getElementById('formRegistroProducto').reset();
-                if(document.getElementById('preview_producto_img')) document.getElementById('preview_producto_img').style.display = 'none';
+                setTimeout(function() {
+                    Swal.fire({ icon: 'success', title: '¡Producto Registrado!', text: 'El producto "' + nom + '" se agregó correctamente.', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white' });
+                    agregarProductoALista(nom, precio);
+                    form.reset();
+                    if(document.getElementById('preview_producto_img')) document.getElementById('preview_producto_img').style.display = 'none';
+                }, 400);
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });
             }
+        },
+        error: function(xhr, status, error) {
+            Swal.close();
+            console.error("Error AJAX Producto:", status, error, xhr.responseText);
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Problema al comunicarse con el servidor.', background: '#1a1f2e', color: 'white' });
         }
     });
-});
+}
+
+function agregarProductoALista(nombre, precio) {
+    const list = document.getElementById('productosRegistradosList');
+    const container = document.getElementById('listaProductosRegistrados');
+    const count = document.getElementById('contadorProductos');
+    
+    container.style.display = 'block';
+    
+    const item = document.createElement('div');
+    item.className = 'item-registrado animate-in';
+    item.innerHTML = `
+        <div class="item-registrado-icon producto-bg">
+            <i class="fa-solid fa-box"></i>
+        </div>
+        <div class="item-registrado-info">
+            <h5>${nombre}</h5>
+            <span><i class="fa-solid fa-tag"></i> Precio: ${precio}</span>
+        </div>
+        <div style="color: #f59e0b;"><i class="fa-solid fa-check-circle"></i></div>
+    `;
+    list.prepend(item);
+    count.textContent = parseInt(count.textContent) + 1;
+}
+
+function formatearPrecio(input) {
+    let valor = input.value.replace(/\D/g, "");
+    if (valor === "") { input.value = ""; return; }
+    input.value = "$ " + new Intl.NumberFormat('es-CO').format(valor);
+}
 // Cerrar modal al hacer clic fuera
 document.getElementById('modalRegistro').addEventListener('click', function(e) { if (e.target === this) { cerrarModal(); } });
-// Envío del formulario
-document.getElementById('formRegistroTienda').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Función para ejecutar el registro o edición de tienda
+function ejecutarRegistroTienda() {
+    console.log("Iniciando ejecutarRegistroTienda()");
+    const form = document.getElementById('formRegistroTienda');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
     
-    var formData = new FormData(this);
+    var formData = new FormData(form);
     formData.append('cod_administrador', '<?php echo $cod_administrador; ?>');
     
     var accion = document.getElementById('accion').value;
-    var tipoTiendaActual = document.getElementById('tipo_tienda_actual').value;
-    
     var url = accion === 'editar' ? 'edit_tienda_modal_lider_movil_ajax_reg.php' : '../admin/reg_tienda_modal_lider_movil_ajax_reg.php';
-    
     var titulo = accion === 'editar' ? 'Actualizando...' : 'Registrando...';
     var successTitle = accion === 'editar' ? '¡Tienda Actualizada!' : '¡Tienda Registrada!';
 
-    Swal.fire({ title: titulo, text: 'Procesando información', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
+    Swal.fire({   title: titulo, text: 'Procesando información', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
     
     $.ajax({
-        url: url, type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json', 
-        success: function(response) {
+        url: url, type: 'POST', data: formData, processData: false, contentType: false,
+        success: function(responseText) {
+            console.log("Respuesta recibida:", responseText);
+            let response;
+            try {
+                let cleanJson = responseText;
+                if (typeof responseText === 'string') {
+                    const firstBrace = responseText.indexOf('{');
+                    const lastBrace = responseText.lastIndexOf('}');
+                    if (firstBrace !== -1 && lastBrace !== -1) {
+                        cleanJson = responseText.substring(firstBrace, lastBrace + 1);
+                    }
+                }
+                response = typeof cleanJson === 'object' ? cleanJson : JSON.parse(cleanJson);
+            } catch (e) {
+                console.error("Error parseando respuesta:", e, responseText);
+                Swal.fire({ icon: 'error', title: 'Error de respuesta', text: 'El servidor devolvió un formato inválido.', background: '#1a1f2e', color: 'white' });
+                return;
+            }
+
             Swal.close();
             if (response.success) {
-                cerrarModal();
+                cerrarModal(); 
                 if (accion === 'registrar') {
-                    // Guardar datos para flujo post-registro
-                    window._tiendaRegistrada = { 
-                        cod_tienda: response.cod_tienda, 
-                        cod_tienda_codifcryp: response.cod_tienda_codifcryp,
-                        nombre_tienda: response.nombre_tienda,
-                        correo_tercero: response.correo_tercero,
-                        telefono1_tercero: response.telefono1_tercero
-                    };
-                    abrirModalConfirmacion(response.nombre_tienda);
+                    window._tiendaRegistrada = { cod_tienda: response.cod_tienda, cod_tienda_codifcryp: response.cod_tienda_codifcryp, nombre_tienda: response.nombre_tienda, correo_tercero: response.correo_tercero, telefono1_tercero: response.telefono1_tercero };
+                    setTimeout(function() { abrirModalConfirmacion(response.nombre_tienda); }, 400);
                 } else {
                     Swal.fire({ icon: 'success', title: successTitle, text: 'Tienda actualizada correctamente.', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', timer: 2000 }).then(() => { location.reload(); });
                 }
@@ -2294,18 +2370,33 @@ document.getElementById('formRegistroTienda').addEventListener('submit', functio
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo procesar', background: '#1a1f2e', color: 'white' });
             }
         },
-        error: function() {
+        error: function(xhr, status, error) {
+            Swal.close();
+            console.error("Error AJAX:", status, error, xhr.responseText);
             Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Problema al comunicarse con el servidor.', background: '#1a1f2e', color: 'white' });
         }
     });
-});
+}
 
 // =====================================================
 // FUNCIONES PARA FLUJO POST-REGISTRO
 // =====================================================
 function abrirModalConfirmacion(nombreTienda) { 
-    document.getElementById('confirmNombreTienda').textContent = nombreTienda; 
-    document.getElementById('modalConfirmacionRegistro').classList.add('show'); 
+    if (!nombreTienda && window._tiendaRegistrada) {
+        nombreTienda = window._tiendaRegistrada.nombre_tienda;
+    }
+    if (nombreTienda) { 
+        const el = document.getElementById('confirmNombreTienda');
+        if (el) el.textContent = nombreTienda; 
+    }
+    const modal = document.getElementById('modalConfirmacionRegistro');
+    if (modal) {
+        modal.classList.add('show');
+    } else {
+        console.error("Modal de confirmación no encontrado en el DOM");
+        // Fallback en caso de que el modal no exista por algún error de PHP
+        Swal.fire({ icon: 'success', title: '¡Tienda Registrada!', text: 'La tienda ' + (nombreTienda || '') + ' se registró correctamente.', background: '#1a1f2e', color: 'white' });
+    }
 }
 function cerrarModalConfirmacion() { document.getElementById('modalConfirmacionRegistro').classList.remove('show'); }
 function cerrarConfirmacionYRecargar() { cerrarModalConfirmacion(); location.reload(); }
@@ -2317,6 +2408,12 @@ function irCrearVendedores() {
         document.getElementById('vendedor_cod_tienda').value = t.cod_tienda;
         document.getElementById('vendedorNombreTienda').textContent = t.nombre_tienda;
         document.getElementById('formRegistroVendedor').reset();
+        
+        // Limpiar lista de vendedores previos
+        document.getElementById('vendedoresRegistradosList').innerHTML = '';
+        document.getElementById('listaVendedoresRegistrados').style.display = 'none';
+        document.getElementById('contadorVendedores').textContent = '0';
+        
         document.getElementById('modalRegistroVendedor').classList.add('show');
     } else { location.reload(); }
 }
@@ -2328,33 +2425,108 @@ function irCrearProductos() {
         document.getElementById('producto_cod_tienda').value = t.cod_tienda;
         document.getElementById('productoNombreTienda').textContent = t.nombre_tienda;
         document.getElementById('formRegistroProducto').reset();
+        
+        // Limpiar lista de productos previos
+        document.getElementById('productosRegistradosList').innerHTML = '';
+        document.getElementById('listaProductosRegistrados').style.display = 'none';
+        document.getElementById('contadorProductos').textContent = '0';
+        
         document.getElementById('modalRegistroProducto').classList.add('show');
     } else { location.reload(); }
 }
 
-function cerrarModalVendedor() { document.getElementById('modalRegistroVendedor').classList.remove('show'); }
-function cerrarModalProducto() { document.getElementById('modalRegistroProducto').classList.remove('show'); }
+function cerrarModalVendedor() { 
+    document.getElementById('modalRegistroVendedor').classList.remove('show'); 
+    if (window._tiendaRegistrada) { abrirModalConfirmacion(); }
+}
+function cerrarModalProducto() { 
+    document.getElementById('modalRegistroProducto').classList.remove('show'); 
+    if (window._tiendaRegistrada) { abrirModalConfirmacion(); }
+}
 
-// Manejadores para sub-registros
-document.getElementById('formRegistroVendedor').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var formData = new FormData(this);
+// Función para registrar vendedor
+function ejecutarRegistroVendedor() {
+    console.log("Iniciando ejecutarRegistroVendedor()");
+    const form = document.getElementById('formRegistroVendedor');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
     
-    Swal.fire({ title: 'Registrando...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
+    var formData = new FormData(form);
+    const nom = document.getElementById('vendedor_nombre').value;
+    const ape = document.getElementById('vendedor_apellido').value;
+    const tel = document.getElementById('vendedor_telefono').value;
+    
+    Swal.fire({ title: 'Registrando Vendedor...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
     $.ajax({
-        url: 'reg_vendedor_tienda_ajax.php', 
-        type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
-        success: function(response) {
+        url: 'reg_vendedor_tienda_ajax.php', type: 'POST', data: formData, processData: false, contentType: false,
+        success: function(responseText) {
+            console.log("Respuesta vendedor:", responseText);
+            let response;
+            try {
+                let cleanJson = responseText;
+                const firstBrace = responseText.indexOf('{');
+                const lastBrace = responseText.lastIndexOf('}');
+                if (firstBrace !== -1 && lastBrace !== -1) {
+                    cleanJson = responseText.substring(firstBrace, lastBrace + 1);
+                }
+                response = JSON.parse(cleanJson);
+            } catch (e) {
+                Swal.fire({ icon: 'error', title: 'Error de formato', text: 'El servidor no devolvió un JSON válido.', background: '#1a1f2e', color: 'white' });
+                return;
+            }
+
             Swal.close();
             if(response.success) {
-                Swal.fire({ icon: 'success', title: 'Vendedor Registrado', timer: 1500, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
-                document.getElementById('formRegistroVendedor').reset();
+                setTimeout(function() {
+                    Swal.fire({ icon: 'success', title: '¡Vendedor Registrado!', text: 'El vendedor ' + nom + ' ' + ape + ' ha sido registrado con éxito.', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white' });
+                    agregarVendedorALista(nom + ' ' + ape, tel);
+                    form.reset();
+                }, 400);
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });
             }
+        },
+        error: function(xhr, status, error) {
+            Swal.close();
+            console.error("Error AJAX Vendedor:", status, error, xhr.responseText);
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Problema al comunicarse con el servidor.', background: '#1a1f2e', color: 'white' });
         }
     });
-});
+}
+
+function agregarVendedorALista(nombre, telefono) {
+    const list = document.getElementById('vendedoresRegistradosList');
+    const container = document.getElementById('listaVendedoresRegistrados');
+    const count = document.getElementById('contadorVendedores');
+    
+    container.style.display = 'block';
+    
+    const item = document.createElement('div');
+    item.className = 'item-registrado animate-in';
+    item.innerHTML = `
+        <div class="item-registrado-icon vendedor-bg">
+            <i class="fa-solid fa-user"></i>
+        </div>
+        <div class="item-registrado-info">
+            <h5>${nombre}</h5>
+            <span><i class="fa-solid fa-phone"></i> ${telefono}</span>
+        </div>
+        <div style="color: #10b981;"><i class="fa-solid fa-check-circle"></i></div>
+    `;
+    list.prepend(item);
+    count.textContent = parseInt(count.textContent) + 1;
+}
+
+function finalizarVendedoresYPasarAProductos() {
+    cerrarModalVendedor();
+    Swal.fire({
+        title: '¡Vendedores Listos!', text: '¿Deseas registrar ahora los productos de la tienda?', icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, ir a productos', cancelButtonText: 'No, finalizar aquí', confirmButtonColor: '#f59e0b', cancelButtonColor: '#6c757d', background: '#1a1f2e', color: 'white'
+    }).then((result) => {
+        if (result.isConfirmed) { irCrearProductos(); } else { location.reload(); }
+    });
+}
 // =====================================================
 // FUNCIONES PARA MODAL DE FIRMA ELECTRÓNICA
 // =====================================================
@@ -2376,9 +2548,7 @@ function cerrarModalFirma() {
 }
 function cerrarModalFirmaYRecargar() { 
     cerrarModalFirma(); 
-    setTimeout(function() {
-        location.reload(); 
-    }, 100);
+    setTimeout(function() { location.reload(); }, 100);
 }
 
 function copiarEnlaceFirma() {
@@ -2386,8 +2556,7 @@ function copiarEnlaceFirma() {
     
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(enlace).then(function() {
-            Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'Enlace copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
-        });
+            Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'Enlace copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white' }); });
     } else {
         // Fallback para navegadores antiguos
         var tempInput = document.createElement('input');
@@ -2433,84 +2602,33 @@ function enviarPorCorreo() {
     
     // Validar que el correo esté completo
     if (!correo || correo.trim() === '') {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Correo Requerido',
-            text: 'Por favor ingrese el correo electrónico del cliente',
-            confirmButtonColor: '#667eea',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Correo Requerido', text: 'Por favor ingrese el correo electrónico del cliente', confirmButtonColor: '#667eea', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     // Validar formato de correo
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Correo Inválido',
-            text: 'Por favor ingrese un correo electrónico válido',
-            confirmButtonColor: '#667eea',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Correo Inválido', text: 'Por favor ingrese un correo electrónico válido', confirmButtonColor: '#667eea', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
     // Mostrar loading
-    Swal.fire({
-        title: 'Enviando Correo...',
-        html: 'Por favor espere mientras se envía el correo electrónico',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        customClass: { container: 'swal-high-zindex' },
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-    
+    Swal.fire({ title: 'Enviando Correo...', html: 'Por favor espere mientras se envía el correo electrónico', allowOutsideClick: false, allowEscapeKey: false, customClass: { container: 'swal-high-zindex' }, didOpen: () => { Swal.showLoading(); } });
     // Enviar correo mediante AJAX
     $.ajax({
-        url: 'enviar_enlace_firma_correo.php',
-        type: 'POST',
-        data: {
-            correo: correo,
-            enlace: enlace,
-            nombre_tienda: nombreTienda,
-            cod_tienda: codTienda
-        },
-        dataType: 'json',
+        url: 'enviar_enlace_firma_correo.php', type: 'POST', data: { correo: correo, enlace: enlace, nombre_tienda: nombreTienda, cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Correo Enviado!',
-                    html: '<p>' + response.mensaje + '</p><p style="font-size: 0.9rem; color: #6b7280; margin-top: 10px;">El cliente recibirá el enlace para firmar en su correo electrónico.</p>',
-                    confirmButtonColor: '#8b5cf6',
-                    confirmButtonText: 'Entendido',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success',  title: '¡Correo Enviado!', html: '<p>' + response.mensaje + '</p><p style="font-size: 0.9rem; color: #6b7280; margin-top: 10px;">El cliente recibirá el enlace para firmar en su correo electrónico.</p>', confirmButtonColor: '#8b5cf6', confirmButtonText: 'Entendido', customClass: { container: 'swal-high-zindex' } });
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error al Enviar',
-                    text: response.mensaje || 'No se pudo enviar el correo electrónico',
-                    footer: response.error ? '<small style="color: #ef4444;">' + response.error + '</small>' : '',
-                    confirmButtonColor: '#ef4444',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error al Enviar', text: response.mensaje || 'No se pudo enviar el correo electrónico', footer: response.error ? '<small style="color: #ef4444;">' + response.error + '</small>' : '', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             Swal.close();
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de Conexión',
-                text: 'No se pudo conectar con el servidor para enviar el correo',
-                footer: '<small style="color: #ef4444;">Error: ' + error + '</small>',
-                confirmButtonColor: '#ef4444',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de Conexión', text: 'No se pudo conectar con el servidor para enviar el correo', footer: '<small style="color: #ef4444;">Error: ' + error + '</small>', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -3074,12 +3192,7 @@ function gestionarFirma(accion) {
             
             Swal.fire({
                 icon: 'info',
-                title: 'Acción no disponible',
-                text: detalle || mensaje,
-                background: '#1a1f2e',
-                color: 'white',
-                confirmButtonColor: '#8b5cf6'
-            });
+                title: 'Acción no disponible', text: detalle || mensaje,   background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6' });
             return;
         }
     }
@@ -3328,8 +3441,7 @@ function copiarEnlaceGPS() {
             title: 'Error', 
             text: 'No se encontró el código de la tienda', 
             background: '#1a1f2e', 
-            color: 'white' 
-        }); 
+            color: 'white' }); 
         return; 
     }
     
@@ -3339,23 +3451,9 @@ function copiarEnlaceGPS() {
     var enlaceGPS = window.location.origin + basePath + 'gps_tienda.php?cod=' + encodeURIComponent(codTienda);
     
     navigator.clipboard.writeText(enlaceGPS).then(function() {
-        Swal.fire({ 
-            icon: 'success', 
-            title: '¡Copiado!', 
-            text: 'Enlace copiado al portapapeles', 
-            timer: 1500, 
-            showConfirmButton: false, 
-            background: '#1a1f2e', 
-            color: 'white' 
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'Enlace copiado al portapapeles', timer: 1500, showConfirmButton: false, background: '#1a1f2e', color: 'white' });
     }).catch(function() {
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error', 
-            text: 'No se pudo copiar el enlace', 
-            background: '#1a1f2e', 
-            color: 'white' 
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace', background: '#1a1f2e', color: 'white' });
     });
 }
 
@@ -3846,6 +3944,11 @@ $('#formAgregarVendedor').on('submit', function(e) {
     // Validar correo electrónico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
+        Swal.fire({ icon: 'warning', title: 'Correo inválido', text: 'Por favor ingresa un correo electrónico válido', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' } });
+        return;
+    }
+});
+</script>
 
 
 
@@ -3913,7 +4016,7 @@ $('#formAgregarVendedor').on('submit', function(e) {
                 Tienda: <strong id="vendedorNombreTienda"></strong>
             </div>
             
-            <form id="formRegistroVendedor">
+            <form id="formRegistroVendedor" onsubmit="return false;">
                 <input type="hidden" id="vendedor_cod_tienda" name="cod_tienda" value="">
                 
                 <div class="form-row">
@@ -3943,7 +4046,7 @@ $('#formAgregarVendedor').on('submit', function(e) {
                     <input type="email" class="form-input" name="correo_tercero" id="vendedor_correo" placeholder="correo@email.com" required>
                 </div>
                 
-                <button type="submit" class="reg-submit-btn vendedor-theme">
+                <button type="button" class="reg-submit-btn vendedor-theme" onclick="ejecutarRegistroVendedor()">
                     <i class="fa-solid fa-user-plus"></i> Registrar Vendedor
                 </button>
             </form>
@@ -3961,8 +4064,8 @@ $('#formAgregarVendedor').on('submit', function(e) {
             <button class="reg-footer-btn back-btn" onclick="cerrarModalVendedor()">
                 <i class="fa-solid fa-arrow-left"></i> Volver
             </button>
-            <button class="reg-footer-btn finish-btn" onclick="location.reload()">
-                <i class="fa-solid fa-check"></i> Finalizar
+            <button class="reg-footer-btn finish-btn" onclick="finalizarVendedoresYPasarAProductos()">
+                <i class="fa-solid fa-check"></i> Finalizar Vendedores
             </button>
         </div>
     </div>
@@ -3982,7 +4085,7 @@ $('#formAgregarVendedor').on('submit', function(e) {
                 Tienda: <strong id="productoNombreTienda"></strong>
             </div>
             
-            <form id="formRegistroProducto" enctype="multipart/form-data">
+            <form id="formRegistroProducto" enctype="multipart/form-data" onsubmit="return false;">
                 <input type="hidden" id="producto_cod_tienda" name="cod_tienda" value="">
                 <input type="hidden" name="cod_administrador" value="<?php echo $cod_administrador; ?>">
                 
@@ -4008,10 +4111,11 @@ $('#formAgregarVendedor').on('submit', function(e) {
                         <select class="form-select" name="cod_categoria" id="producto_categoria">
                             <option value="0">Sin categoría</option>
                             <?php 
-                            mysqli_data_seek($res_cat_prod, 0);
-                            while ($cat = mysqli_fetch_assoc($res_cat_prod)): ?>
-                                <option value="<?php echo $cat['cod_categoria']; ?>"><?php echo ucwords(strtolower($cat['nombre_categoria'])); ?></option>
-                            <?php endwhile; ?>
+                            if ($res_cat_prod && mysqli_num_rows($res_cat_prod) > 0) {
+                                mysqli_data_seek($res_cat_prod, 0);
+                                while ($cat = mysqli_fetch_assoc($res_cat_prod)) { ?>
+                                    <option value="<?php echo $cat['cod_categoria']; ?>"><?php echo ucwords(strtolower($cat['nombre_categoria'])); ?></option>
+                            <?php } } ?>
                         </select>
                     </div>
                 </div>
@@ -4026,13 +4130,35 @@ $('#formAgregarVendedor').on('submit', function(e) {
                         </select>
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="cod_estado" id="producto_estado">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Precio de Compra ($)</label>
+                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_compra" placeholder="$ 0" oninput="formatearPrecio(this)">
+                        <input type="hidden" name="precio_compra_producto" id="precio_compra_producto_hidden" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <input type="text" class="form-input" name="descripcion_producto" id="producto_descripcion" placeholder="Opcional">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
                         <label class="form-label">Imagen</label>
                         <input type="file" name="imagen_producto" id="producto_imagen" accept="image/*" class="form-input" onchange="previewImageProducto(this)">
                         <img id="preview_producto_img" class="image-preview" style="display:none; max-height: 100px; margin-top: 10px;">
                     </div>
                 </div>
                 
-                <button type="submit" class="reg-submit-btn producto-theme">
+                <button type="button" class="reg-submit-btn producto-theme" onclick="ejecutarRegistroProducto()">
                     <i class="fa-solid fa-box-open"></i> Registrar Producto
                 </button>
             </form>
