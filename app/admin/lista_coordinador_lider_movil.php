@@ -346,9 +346,10 @@ body {
     color: #10b981;
 }
 
-.action-btn.stats {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fbbf24;
+.action-btn.archive {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.1);
 }
 
 .action-btn:hover {
@@ -682,6 +683,9 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
 -->
                     <button class="action-btn edit" onclick='abrirModalEditar(<?php echo json_encode($row); ?>)'>
                         <i class="fa-solid fa-edit"></i> Editar
+                    </button>
+                    <button class="action-btn archive" onclick="archivarEntidad(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>', 'Coordinador')">
+                        <i class="fa-solid fa-box-archive"></i> Archivar
                     </button>
                 </div>
             </div>
@@ -1152,8 +1156,54 @@ function abrirModalStats(cod_coordinador, tipo) {
     });
 }
 
-function cerrarModalStats() {
-    document.getElementById('modalStatsDetalles').style.display = 'none';
+function archivarEntidad(codAdmin, nombre, tipoEntidad) {
+    Swal.fire({
+        title: '¿Archivar ' + tipoEntidad + '?',
+        text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6e7881',
+        confirmButtonText: 'Sí, archivar',
+        cancelButtonText: 'Cancelar',
+        background: '#1a1f2e',
+        color: 'white'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Archivando...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); },
+                background: '#1a1f2e',
+                color: 'white'
+            });
+
+            $.ajax({
+                url: 'proceso_archivar_entidad_lider_movil_ajax.php',
+                type: 'POST',
+                data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Archivado!',
+                            text: response.message,
+                            timer: 2000,
+                            timerProgressBar: true,
+                            background: '#1a1f2e',
+                            color: 'white'
+                        }).then(() => { location.reload(); });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });
+                    }
+                },
+                error: function() {
+                    Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud.', background: '#1a1f2e', color: 'white' });
+                }
+            });
+        }
+    });
 }
 </script>
 

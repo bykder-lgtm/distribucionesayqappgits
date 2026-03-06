@@ -576,6 +576,17 @@ body {
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
+.action-btn.archive {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+.action-btn.archive:hover {
+    background: #ef4444;
+    color: white;
+}
+
 .action-btn {
     flex: 1;
     padding: 0.5rem;
@@ -1716,7 +1727,7 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
                     <?php if(!empty($row['telefono'])): ?><div class="ally-detail"><i class="fa-solid fa-phone"></i><span><?php echo $row['telefono']; ?></span></div><?php endif; ?>
                     <?php if(!empty($row['correo'])): ?><div class="ally-detail"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($row['correo']); ?></span></div><?php endif; ?>
                     <?php if(!empty($row['cuenta'])): ?><div class="ally-detail"><i class="fa-solid fa-building-columns"></i><span>Usuario: <?php echo $row['cuenta']; ?></span></div><?php endif; ?>
-                    <div class="ally-detail"><i class="fa-solid fa-store"></i><span><?php echo $tiendas_texto; ?></span></div>
+                    <!--<div class="ally-detail"><i class="fa-solid fa-store"></i><span><?php echo $tiendas_texto; ?></span></div>-->
                     <?php if(!empty($row['fecha'])): ?><div class="ally-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span></div><?php endif; ?>
                 </div>
 
@@ -1755,6 +1766,9 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
                     <?php else: ?>
                     <button class="action-btn share" disabled style="opacity: 0.5; cursor: not-allowed;" title="El aliado no ha cargado documentos">
                         <i class="fa-solid fa-share-nodes"></i> Compartir
+                    </button>
+                    <button class="action-btn archive" onclick="archivarEntidad(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>', 'Aliado')">
+                        <i class="fa-solid fa-box-archive"></i> Archivar
                     </button>
                     <?php endif; ?>
                 </div>
@@ -6288,9 +6302,7 @@ function abrirModalDocumentosCargados(total) {
     $("#modalDocumentosCargados").addClass("show").css("display", "flex");
     $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Verificando existencia de archivos...</p></div>');
     $.ajax({
-        url: '../ajax/get_aliados_documentos_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../ajax/get_aliados_documentos_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             let html = '<div style="display: grid; gap: 1rem;">';
             if (response && response.length > 0) {
@@ -6321,7 +6333,7 @@ function abrirModalDocumentosCargados(total) {
                                     ${statusLabel}
                                 </div>
                                 <button onclick="gestionarDescargaEmailDoc('${aliado.cod_administrador}', '${aliado.nombres_apellidos_tercero}')" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); cursor: pointer; transition: all 0.3s ease;">
-                                    <i class="fa-solid fa-file-zipper"></i> Opciones de Documentos
+                                    <i class="fa-solid fa-file-zipper"></i> Compartir Documentos
                                 </button>
                             </div>
                             <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
@@ -6406,6 +6418,36 @@ function enviarZipPorEmail(zipPath, email, nombreAliado) {
         error: function() {
             Swal.close();
             Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo conectar con el servidor de correo.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        }
+    });
+}
+function archivarEntidad(codAdmin, nombre, tipoEntidad) {
+    Swal.fire({
+        title: '¿Archivar ' + tipoEntidad + '?',
+        text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6e7881',
+        confirmButtonText: 'Sí, archivar',
+        cancelButtonText: 'Cancelar',
+        background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({ title: 'Archivando...', allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }, didOpen: () => { Swal.showLoading(); } });
+            $.ajax({
+                url: 'proceso_archivar_entidad_lider_movil_ajax.php', type: 'POST', data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad }, dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({ icon: 'success', title: '¡Archivado!', text: response.message, timer: 2000, timerProgressBar: true, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    }
+                },
+                error: function() {
+                    Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                }
+            });
         }
     });
 }

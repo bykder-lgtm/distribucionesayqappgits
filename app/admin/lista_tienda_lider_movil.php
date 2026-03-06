@@ -373,6 +373,17 @@ body {
     color: white;
 }
 
+.action-btn.archive {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+.action-btn.archive:hover {
+    background: #ef4444;
+    color: white;
+}
+
 /* Store Stats */
 .store-stats {
     display: flex;
@@ -1235,6 +1246,9 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                     </button>
                     -->
                     <button class="action-btn info" onclick="verDetalles(<?php echo $tienda['cod_tienda']; ?>)"><i class="fa-solid fa-eye"></i> Ver</button>
+                    <button class="action-btn archive" onclick="archivarTienda(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>')">
+                        <i class="fa-solid fa-box-archive"></i> Archivar
+                    </button>
                 </div>
             </div>
             <?php endwhile; ?>
@@ -3948,6 +3962,37 @@ $('#formAgregarVendedor').on('submit', function(e) {
         return;
     }
 });
+
+function archivarTienda(codTienda, nombre) {
+    Swal.fire({
+        title: '¿Archivar Tienda?',
+        text: '¿Estás seguro de que deseas archivar la tienda ' + nombre + '?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6e7881',
+        confirmButtonText: 'Sí, archivar',
+        cancelButtonText: 'Cancelar',
+        background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({ title: 'Archivando...', allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }, didOpen: () => { Swal.showLoading(); } });
+            $.ajax({
+                url: 'proceso_archivar_tienda_lider_movil_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({ icon: 'success', title: '¡Archivada!', text: response.message, timer: 2000, timerProgressBar: true, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    }
+                },
+                error: function() {
+                    Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                }
+            });
+        }
+    });
+}
 </script>
 
 
