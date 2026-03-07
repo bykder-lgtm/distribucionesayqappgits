@@ -100,7 +100,7 @@ if ($total_registros > 0):
             
             <div class="ally-details">
                 <?php if(!empty($row['telefono'])): ?><div class="ally-detail"><i class="fa-solid fa-phone"></i><span><?php echo $row['telefono']; ?></span></div><?php endif; ?>
-                <?php if(!empty($row['nombre_asesor'])): ?><div class="ally-detail"><i class="fa-solid fa-user-tie" style="color: #a78bfa;"></i><span title="Asesor"><?php echo ucwords(strtolower($row['nombre_asesor'])); ?></span></div><?php endif; ?>
+                <?php if(!empty($row['nombre_asesor'])): ?><div class="ally-detail"><i class="fa-solid fa-user-tie" style="color: #a78bfa;"></i><span title="Asesor">Asesor: <?php echo ucwords(strtolower($row['nombre_asesor'])); ?></span></div><?php endif; ?>
                 <?php if(!empty($row['correo'])): ?><div class="ally-detail" style="grid-column: 1 / -1;"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($row['correo']); ?></span></div><?php endif; ?>
                 
                 <?php if(!empty($row['nombre_municipio'])): ?>
@@ -113,6 +113,19 @@ if ($total_registros > 0):
 
                 <?php if(!empty($row['cuenta'])): ?><div class="ally-detail"><i class="fa-solid fa-user-gear"></i><span>User: <?php echo $row['cuenta']; ?></span></div><?php endif; ?>
                 <?php if(!empty($row['fecha'])): ?><div class="ally-detail"><i class="fa-solid fa-calendar-day" style="color: #f59e0b;"></i><span><?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span></div><?php endif; ?>
+
+                <?php 
+                $tiene_firma = !empty($row['url_img_firma_prof_ori']);
+                $documentos_completos = ($tiene_rut && $tiene_camara && $tiene_cedula);
+                ?>
+                <div class="ally-detail">
+                    <i class="fa-solid fa-signature" style="color: <?php echo $tiene_firma ? '#10b981' : '#ef4444'; ?>;"></i>
+                    <span>Firma: <?php echo $tiene_firma ? 'Cargada' : 'Pendiente'; ?></span>
+                </div>
+                <div class="ally-detail">
+                    <i class="fa-solid fa-file-circle-check" style="color: <?php echo $documentos_completos ? '#10b981' : '#f59e0b'; ?>;"></i>
+                    <span>Docs: <?php echo $documentos_completos ? 'Completos' : ($total_docs > 0 ? 'Parcial ('.$total_docs.'/3)' : 'Pendiente'); ?></span>
+                </div>
             </div>
 
             <div class="ally-stats">
