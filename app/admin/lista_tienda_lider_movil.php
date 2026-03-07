@@ -4209,31 +4209,6 @@ function archivarTienda(codTienda, nombre) {
                     <label class="form-label">Correo *</label>
                     <input type="email" class="form-input" name="correo_tercero" id="vendedor_correo" placeholder="correo@email.com" required>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">Dirección *</label>
-                    <input type="text" class="form-input" name="direccion_tercero" id="vendedor_direccion" placeholder="Ej: Calle 10 # 20-30" required>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Departamento *</label>
-                        <select class="form-select" name="cod_departamento" id="vendedor_cod_departamento" onchange="cargarMunicipiosVendedor('vendedor_')" required>
-                            <option value="">Seleccione Departamento</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Municipio *</label>
-                        <select class="form-select" name="cod_municipio" id="vendedor_cod_municipio" required>
-                            <option value="">Seleccione Municipio</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Barrio</label>
-                    <input type="text" class="form-input" name="barrio_tercero" id="vendedor_barrio" placeholder="Opcional">
-                </div>
                 
                 <button type="button" class="reg-submit-btn vendedor-theme" onclick="ejecutarRegistroVendedor()">
                     <i class="fa-solid fa-user-plus"></i> Registrar Vendedor
