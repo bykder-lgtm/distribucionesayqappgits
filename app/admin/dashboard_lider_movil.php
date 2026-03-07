@@ -796,25 +796,8 @@ new Chart(trendCtx, {
         }]
     },
     options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                grid: {
-                    color: 'rgba(139, 92, 246, 0.1)'
-                }
-            },
-            x: {
-                grid: {
-                    display: false
-                }
-            }
+        responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(139, 92, 246, 0.1)' } } }
+    }
 });
 </script>
 

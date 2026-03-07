@@ -6222,8 +6222,34 @@ function escapeHtmlMovil(text) {
             <h2 style="color: white;"><i class="fa-solid fa-folder-open"></i> Documentos Cargados</h2>
             <button class="modal-close" onclick="cerrarModalDocumentos()"><i class="fa-solid fa-times"></i></button>
         </div>
-        <div class="modal-body" id="bodyDocumentosCargados" style="max-height: 70vh; overflow-y: auto;">
-            <div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado...</p></div>
+        <div class="modal-body" style="max-height: 85vh; padding: 0;">
+            <!-- Filtros y Ordenamiento -->
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1.25rem; border-bottom: 1px solid rgba(139, 92, 246, 0.2); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" style="font-size: 0.8rem; opacity: 0.7;"><i class="fa-solid fa-filter"></i> Filtrar por estado:</label>
+                        <select class="form-select" id="filterDocsEstado" onchange="aplicarFiltrosDocumentos()" style="background: rgba(255,255,255,0.05); border-color: rgba(59, 130, 246, 0.3);">
+                            <option value="todos">Todos los aliados</option>
+                            <option value="completo">Todos los documentos (3)</option>
+                            <option value="alguno">Uno o más documentos</option>
+                            <option value="ninguno">Sin documentos cargados</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label" style="font-size: 0.8rem; opacity: 0.7;"><i class="fa-solid fa-sort"></i> Ordenar por:</label>
+                        <select class="form-select" id="sortDocs" onchange="aplicarFiltrosDocumentos()" style="background: rgba(255,255,255,0.05); border-color: rgba(59, 130, 246, 0.3);">
+                            <option value="fecha_desc">Fecha de cargue (Más reciente)</option>
+                            <option value="fecha_asc">Fecha de cargue (Más antiguo)</option>
+                            <option value="nombre_asc">Nombre Aliado (A - Z)</option>
+                            <option value="nombre_desc">Nombre Aliado (Z - A)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="bodyDocumentosCargados" style="padding: 1.25rem; overflow-y: auto; max-height: calc(85vh - 120px);">
+                <div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado...</p></div>
+            </div>
         </div>
     </div>
 </div>
@@ -6293,63 +6319,115 @@ function cerrarModalVerFirma() {
     $("#modalVerFirma").removeClass("show").hide();
 }
 
-function abrirModalDocumentosCargados(total) {
-    if (total == 0) {
-        Swal.fire({ icon: 'info', title: 'Sin documentos', text: 'Actualmente no hay documentos registrados por ningún aliado en su red.', background: '#1a1f2e', color: 'white', confirmButtonColor: '#3b82f6', confirmButtonText: 'Entendido', customClass: { container: 'swal-high-zindex' } });
-        return;
-    }
+var datosDocumentosGlobal = [];
 
+function abrirModalDocumentosCargados(total) {
     $("#modalDocumentosCargados").addClass("show").css("display", "flex");
-    $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Verificando existencia de archivos...</p></div>');
+    $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado de aliados...</p></div>');
+    
+    // Resetear filtros al abrir
+    $('#filterDocsEstado').val('todos');
+    $('#sortDocs').val('fecha_desc');
+
     $.ajax({
         url: '../ajax/get_aliados_documentos_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
-            let html = '<div style="display: grid; gap: 1rem;">';
-            if (response && response.length > 0) {
-                response.forEach(function(aliado) {
-                    let docsHtml = '';
-                    aliado.documentos.forEach(function(doc) {
-                        if (doc.existe) {
-                            docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px solid rgba(59, 130, 246, 0.2);"><i class="fa-solid fa-file-pdf"></i> ${doc.nombre}</span>`;
-                        } else {
-                            docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(239, 68, 68, 0.1); color: #f87171; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px dashed rgba(239, 68, 68, 0.4);"><i class="fa-solid fa-file-circle-xmark"></i> ${doc.nombre} (No existe)</span>`;
-                        }
-                    });
-                    
-                    let cardStyle = aliado.alguno_falta 
-                        ? 'background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 1.25rem;' 
-                        : 'background: rgba(255,255,255,0.03); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 1.25rem;';
-                    
-                    let statusLabel = aliado.alguno_falta 
-                        ? '<div style="color: #f87171; font-size: 0.75rem; font-weight: 700; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> FALTAN ARCHIVOS EN EL SERVIDOR</div>'
-                        : '';
+            datosDocumentosGlobal = response;
+            aplicarFiltrosDocumentos();
+        },
+        error: function() { 
+            $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al obtener el listado de documentos.</p></div>'); 
+        }
+    });
+}
 
-                    html += `
-                        <div style="${cardStyle}">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem;">
-                                <div>
-                                    <div style="color: white; font-weight: 700; font-size: 1.1rem;">${aliado.nombres_apellidos_tercero}</div>
-                                    <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.25rem;"><i class="fa-solid fa-calendar"></i> Registro: ${aliado.fecha}</div>
-                                    ${statusLabel}
-                                </div>
-                                <button onclick="gestionarDescargaEmailDoc('${aliado.cod_administrador}', '${aliado.nombres_apellidos_tercero}')" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); cursor: pointer; transition: all 0.3s ease;">
-                                    <i class="fa-solid fa-file-zipper"></i> Compartir Documentos
-                                </button>
-                            </div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                                ${docsHtml}
-                            </div>
-                        </div>
-                    `;
+function aplicarFiltrosDocumentos() {
+    let filtrados = [...datosDocumentosGlobal];
+    const estado = $('#filterDocsEstado').val();
+    const orden = $('#sortDocs').val();
+
+    // 1. Filtrar
+    if (estado === 'completo') {
+        filtrados = filtrados.filter(a => a.total_cargados >= 3);
+    } else if (estado === 'alguno') {
+        filtrados = filtrados.filter(a => a.total_cargados > 0);
+    } else if (estado === 'ninguno') {
+        filtrados = filtrados.filter(a => a.total_cargados === 0);
+    }
+
+    // 2. Ordenar
+    filtrados.sort((a, b) => {
+        if (orden === 'fecha_desc') {
+            return new Date(b.fecha_raw) - new Date(a.fecha_raw);
+        } else if (orden === 'fecha_asc') {
+            return new Date(a.fecha_raw) - new Date(b.fecha_raw);
+        } else if (orden === 'nombre_asc') {
+            return a.nombres_apellidos_tercero.localeCompare(b.nombres_apellidos_tercero);
+        } else if (orden === 'nombre_desc') {
+            return b.nombres_apellidos_tercero.localeCompare(a.nombres_apellidos_tercero);
+        }
+        return 0;
+    });
+
+    renderizarDocumentos(filtrados);
+}
+
+function renderizarDocumentos(aliados) {
+    let html = '<div style="display: grid; gap: 1rem;">';
+    
+    if (aliados && aliados.length > 0) {
+        aliados.forEach(function(aliado) {
+            let docsHtml = '';
+            if (aliado.documentos.length > 0) {
+                aliado.documentos.forEach(function(doc) {
+                    if (doc.existe) {
+                        docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px solid rgba(59, 130, 246, 0.2);"><i class="fa-solid fa-file-pdf"></i> ${doc.nombre}</span>`;
+                    } else {
+                        docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(239, 68, 68, 0.1); color: #f87171; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px dashed rgba(239, 68, 68, 0.4);"><i class="fa-solid fa-file-circle-xmark"></i> ${doc.nombre} (No existe)</span>`;
+                    }
                 });
             } else {
-                html += '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.4);"><i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i><h3>No se hallaron documentos</h3><p>Ningún aliado ha cargado documentación legal por el momento.</p></div>';
+                docsHtml = '<span style="color: rgba(255,255,255,0.4); font-style: italic; font-size: 0.8rem;">Sin documentos registrados</span>';
             }
-            html += '</div>';
-            $("#bodyDocumentosCargados").html(html);
-        },
-        error: function() { $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Se produjo un error al obtener los documentos.</p></div>'); }
-    });
+            
+            let cardStyle = 'background: rgba(255,255,255,0.03); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 1.25rem;';
+            let statusLabel = '';
+            
+            if (aliado.total_cargados === 0) {
+                cardStyle = 'background: rgba(255,255,255,0.02); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 1.25rem; opacity: 0.8;';
+            } else if (aliado.alguno_falta) {
+                cardStyle = 'background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 1.25rem;';
+                statusLabel = '<div style="color: #f87171; font-size: 0.75rem; font-weight: 700; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> FALTAN ARCHIVOS EN EL SERVIDOR</div>';
+            } else if (aliado.total_cargados >= 3) {
+                cardStyle = 'background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 1.25rem;';
+                statusLabel = '<div style="color: #34d399; font-size: 0.75rem; font-weight: 700; margin-top: 5px;"><i class="fa-solid fa-check-circle"></i> EXPEDIENTE COMPLETO</div>';
+            }
+
+            html += `
+                <div style="${cardStyle}">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem;">
+                        <div>
+                            <div style="color: white; font-weight: 700; font-size: 1.1rem;">${aliado.nombres_apellidos_tercero}</div>
+                            <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.25rem;"><i class="fa-solid fa-calendar"></i> Registro: ${aliado.fecha}</div>
+                            ${statusLabel}
+                        </div>
+                        ${aliado.total_cargados > 0 ? `
+                        <button onclick="gestionarDescargaEmailDoc('${aliado.cod_administrador}', '${aliado.nombres_apellidos_tercero}')" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); cursor: pointer; transition: all 0.3s ease;">
+                            <i class="fa-solid fa-file-zipper"></i> Compartir
+                        </button>` : ''}
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        ${docsHtml}
+                    </div>
+                </div>
+            `;
+        });
+    } else {
+        html += '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.4);"><i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i><h3>Resultados vacíos</h3><p>No se encontraron aliados que coincidan con el filtro seleccionado.</p></div>';
+    }
+    
+    html += '</div>';
+    $("#bodyDocumentosCargados").html(html);
 }
 
 function cerrarModalDocumentos() { $("#modalDocumentosCargados").removeClass("show").hide(); }
