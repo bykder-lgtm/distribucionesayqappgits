@@ -1785,8 +1785,8 @@ function abrirModalRegistro(tipo) {
 
     if (tipo === 'rapida') {
         tipoTiendaInput.value = 'rapida';
-        containerJerarquia.style.display = 'none';
-        sectionJerarquia.style.display = 'none';
+        containerJerarquia.style.display = 'block';
+        sectionJerarquia.style.display = 'block';
         selectAliado.removeAttribute('required');
         selectAliado.value = '0';
         
