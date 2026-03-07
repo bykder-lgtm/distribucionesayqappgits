@@ -31,29 +31,13 @@ $cod_muni = isset($_GET['cod_municipio']) ? (int)$_GET['cod_municipio'] : 0;
 
 $where = "WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
-if (!empty($cod_aliado_get)) {
-    $where .= " AND a.cod_administrador = '$cod_aliado_get'";
-}
+if (!empty($cod_aliado_get)) { $where .= " AND a.cod_administrador = '$cod_aliado_get'"; }
 
-if (!empty($busqueda)) {
-    $where .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%' OR a.barrio_tercero LIKE '%$busqueda%')";
-}
-
-if ($cod_coordinador_filtro > 0) {
-    $where .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
-}
-
-if ($cod_asesor > 0) {
-    $where .= " AND a.cod_asesor = '$cod_asesor'";
-}
-
-if ($cod_depto > 0) {
-    $where .= " AND a.cod_departamento = '$cod_depto'";
-}
-
-if ($cod_muni > 0) {
-    $where .= " AND a.cod_municipio = '$cod_muni'";
-}
+if (!empty($busqueda)) { $where .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%' OR a.barrio_tercero LIKE '%$busqueda%')"; }
+if ($cod_coordinador_filtro > 0) { $where .= " AND a.cod_coordinador = '$cod_coordinador_filtro'"; }
+if ($cod_asesor > 0) { $where .= " AND a.cod_asesor = '$cod_asesor'"; }
+if ($cod_depto > 0) { $where .= " AND a.cod_departamento = '$cod_depto'"; }
+if ($cod_muni > 0) { $where .= " AND a.cod_municipio = '$cod_muni'"; }
 
 if ($filtro_doc == '1') {
     $where .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
@@ -78,7 +62,9 @@ elseif ($sort == 'nombre_desc') { $order_by = "a.nombres_apellidos_tercero DESC"
 elseif ($sort == 'fecha_desc') { $order_by = "a.fecha_hora DESC"; }
 elseif ($sort == 'fecha_asc') { $order_by = "a.fecha_hora ASC"; }
 
-$sql = "SELECT a.* FROM tbl15_administrador a $where ORDER BY $order_by LIMIT $inicio, $registros_por_pagina";
+$sql = "SELECT a.*, ase.nombres_apellidos_tercero as nombre_asesor, dep.nombre_departamento, mun.nombre_municipio FROM tbl15_administrador a
+LEFT JOIN tbl15_administrador ase ON a.cod_asesor = ase.cod_administrador LEFT JOIN tbl15_departamento dep ON a.cod_departamento = dep.cod_departamento
+LEFT JOIN tbl15_municipio mun ON a.cod_municipio = mun.cod_municipio $where ORDER BY $order_by LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);
 if (!$resultado) { echo "Error en consulta: " . mysqli_error($conectar); exit; }
 
@@ -114,9 +100,19 @@ if ($total_registros > 0):
             
             <div class="ally-details">
                 <?php if(!empty($row['telefono'])): ?><div class="ally-detail"><i class="fa-solid fa-phone"></i><span><?php echo $row['telefono']; ?></span></div><?php endif; ?>
-                <?php if(!empty($row['correo'])): ?><div class="ally-detail"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($row['correo']); ?></span></div><?php endif; ?>
-                <?php if(!empty($row['cuenta'])): ?><div class="ally-detail"><i class="fa-solid fa-building-columns"></i><span>Usuario: <?php echo $row['cuenta']; ?></span></div><?php endif; ?>
-                <?php if(!empty($row['fecha'])): ?><div class="ally-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span></div><?php endif; ?>
+                <?php if(!empty($row['nombre_asesor'])): ?><div class="ally-detail"><i class="fa-solid fa-user-tie" style="color: #a78bfa;"></i><span title="Asesor"><?php echo ucwords(strtolower($row['nombre_asesor'])); ?></span></div><?php endif; ?>
+                <?php if(!empty($row['correo'])): ?><div class="ally-detail" style="grid-column: 1 / -1;"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($row['correo']); ?></span></div><?php endif; ?>
+                
+                <?php if(!empty($row['nombre_municipio'])): ?>
+                <div class="ally-detail"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i><span><?php echo ucwords(strtolower($row['nombre_municipio'])); ?><?php echo !empty($row['nombre_departamento']) ? ', '.ucwords(strtolower($row['nombre_departamento'])) : ''; ?></span></div>
+                <?php endif; ?>
+                
+                <?php if(!empty($row['barrio_tercero'])): ?>
+                <div class="ally-detail"><i class="fa-solid fa-map-pin" style="color: #3b82f6;"></i><span>Barrio: <?php echo ucwords(strtolower($row['barrio_tercero'])); ?></span></div>
+                <?php endif; ?>
+
+                <?php if(!empty($row['cuenta'])): ?><div class="ally-detail"><i class="fa-solid fa-user-gear"></i><span>User: <?php echo $row['cuenta']; ?></span></div><?php endif; ?>
+                <?php if(!empty($row['fecha'])): ?><div class="ally-detail"><i class="fa-solid fa-calendar-day" style="color: #f59e0b;"></i><span><?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span></div><?php endif; ?>
             </div>
 
             <div class="ally-stats">
@@ -138,6 +134,7 @@ if ($total_registros > 0):
                     <i class="fa-solid fa-university"></i> +Banco
                 </button>
             </div>
+
 
             <div class="ally-actions">
                 <a href="ver_detalle_aliado_lider_movil.php?cod_administrador=<?php echo $row['cod_administrador']; ?>" class="action-btn view"><i class="fa-solid fa-eye"></i> Detalles</a>

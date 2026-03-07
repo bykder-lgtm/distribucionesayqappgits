@@ -464,13 +464,20 @@ body {
 
 .ally-details {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
     border-top: 1px solid rgba(255,255,255,0.05);
     padding-top: 0.75rem;
     flex: 1;
 }
+
+@media (max-width: 480px) {
+    .ally-details {
+        gap: 0.35rem;
+    }
+}
+
 
 .ally-detail {
     display: flex;
@@ -486,11 +493,21 @@ body {
 }
 
 .ally-detail span {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.8);
-    word-break: break-word; /* Evita que correos o textos largos rompan el layout */
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     line-height: 1.4;
+    flex: 1;
 }
+
+[style*="grid-column: 1 / -1"] span {
+    white-space: normal;
+    word-break: break-all;
+}
+
+
 
 /* Ally Stats */
 .ally-stats {
@@ -1641,11 +1658,9 @@ $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
 // Consulta de tipos de sector
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
-
 // Consulta de tipos de identificación
 $sql_tipo_identificacion = "SELECT cod_tipo_doc, tipo_doc_abrev, nombre_tipo_doc FROM tbl15_tipo_doc ORDER BY cod_tipo_doc ASC";
 $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
-
 // --- NUEVAS ESTADÍSTICAS SOLICITADAS ---
 // Total Aliados que han firmado
 $sql_firmados_total = "SELECT COUNT(DISTINCT f.cod_aliado_estrategico) as total 
