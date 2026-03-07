@@ -1533,6 +1533,7 @@ $busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar,
 $cod_aliado_get = isset($_GET['cod_administrador']) ? trim(mysqli_real_escape_string($conectar, $_GET['cod_administrador'])) : '';
 
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
+$sort = isset($_GET['sort']) ? mysqli_real_escape_string($conectar, $_GET['sort']) : 'id_desc';
 $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 // Consulta base para contar el total de registros (OPTIMIZADO)
 $sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
@@ -1570,7 +1571,15 @@ if ($filtro_doc == '1') {
     $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))";
 }
 
-$sql .= " ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
+// Definir el ordenamiento
+$order_by = "a.cod_administrador DESC";
+if ($sort == 'id_asc') { $order_by = "a.cod_administrador ASC"; }
+elseif ($sort == 'nombre_asc') { $order_by = "a.nombres_apellidos_tercero ASC"; }
+elseif ($sort == 'nombre_desc') { $order_by = "a.nombres_apellidos_tercero DESC"; }
+elseif ($sort == 'fecha_desc') { $order_by = "a.fecha_hora DESC"; }
+elseif ($sort == 'fecha_asc') { $order_by = "a.fecha_hora ASC"; }
+
+$sql .= " ORDER BY $order_by LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);
 
 // Fallback por si falla la columna de cédula (mismo limit)
@@ -1583,8 +1592,14 @@ if (!$resultado) {
     if (!empty($busqueda)) { $sql .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; }
     if ($cod_coordinador_filtro > 0) { $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'"; }
 
-    if ($filtro_doc == '1') { $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '2') { $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '3') { $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')"; }
-    $sql .= " ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
+    if ($filtro_doc == '1') {
+        $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
+    } elseif ($filtro_doc == '2') {
+        $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '' AND (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
+    } elseif ($filtro_doc == '3') {
+        $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))";
+    }
+    $sql .= " ORDER BY $order_by LIMIT $inicio, $registros_por_pagina";
     $resultado = mysqli_query($conectar, $sql);
 }
 // Consultas para combos - Líder (20)
@@ -1657,163 +1672,44 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
     </div>
 
     <!-- Search Bar and Filter -->
-    <div class="search-filter-container animate-in delay-1">
-        <div class="search-bar">
+    <div class="search-filter-container animate-in delay-1" style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.1);">
+        <div class="search-bar" style="width: 100%;">
             <i class="fa-solid fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Buscar aliado..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrar()">
+            <input type="text" id="searchInput" placeholder="Buscar aliado por nombre, NIT o ID..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrar()">
         </div>
-        <div class="filter-group">
-            <select id="filtroDoc" class="form-select" onchange="filtrar()" style="height: 100%;">
-                <option value="" <?php echo $filtro_doc == '' ? 'selected' : ''; ?>>Todos los documentos</option>
-                <option value="1" <?php echo $filtro_doc == '1' ? 'selected' : ''; ?>>Con documentación (Al menos uno)</option>
-                <option value="2" <?php echo $filtro_doc == '2' ? 'selected' : ''; ?>>Documentación completa (Los 3)</option>
-                <option value="3" <?php echo $filtro_doc == '3' ? 'selected' : ''; ?>>Sin documentación</option>
-            </select>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;"><i class="fa-solid fa-filter"></i> Documentos:</label>
+                <select id="filtroDoc" class="form-select" onchange="filtrar()" style="height: auto; padding: 0.5rem; background: rgba(255,255,255,0.05);">
+                    <option value="" <?php echo $filtro_doc == '' ? 'selected' : ''; ?>>Todos los aliados</option>
+                    <option value="2" <?php echo $filtro_doc == '2' ? 'selected' : ''; ?>>Completo (3 docs)</option>
+                    <option value="1" <?php echo $filtro_doc == '1' ? 'selected' : ''; ?>>Uno o más docs</option>
+                    <option value="3" <?php echo $filtro_doc == '3' ? 'selected' : ''; ?>>Sin documentos</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;"><i class="fa-solid fa-sort"></i> Ordenar:</label>
+                <select id="sortMain" class="form-select" onchange="filtrar()" style="height: auto; padding: 0.5rem; background: rgba(255,255,255,0.05);">
+                    <option value="id_desc" <?php echo $sort == 'id_desc' || $sort == '' ? 'selected' : ''; ?>>ID (Z-A)</option>
+                    <option value="id_asc" <?php echo $sort == 'id_asc' ? 'selected' : ''; ?>>ID (A-Z)</option>
+                    <option value="nombre_asc" <?php echo $sort == 'nombre_asc' ? 'selected' : ''; ?>>Nombre (A-Z)</option>
+                    <option value="nombre_desc" <?php echo $sort == 'nombre_desc' ? 'selected' : ''; ?>>Nombre (Z-A)</option>
+                    <option value="fecha_desc" <?php echo $sort == 'fecha_desc' ? 'selected' : ''; ?>>Registro (Reciente)</option>
+                    <option value="fecha_asc" <?php echo $sort == 'fecha_asc' ? 'selected' : ''; ?>>Registro (Antiguo)</option>
+                </select>
+            </div>
         </div>
     </div>
     <!-- Add Button -->
     <button class="add-button animate-in delay-1" onclick="abrirModal()"><i class="fa-solid fa-plus"></i>Registrar Nuevo Aliado</button>
 
-    <!-- List -->
+    <!-- List Wrapper -->
     <div class="ally-list" id="allyList">
-        <?php if ($total_registros > 0): ?>
-            <?php while ($row = mysqli_fetch_assoc($resultado)): 
-                $nombre_completo = !empty($row['nombres_apellidos_tercero']) ? $row['nombres_apellidos_tercero'].' ('.$row['nombres'].' '.$row['apellidos'].')' : trim($row['nombres'].' '.$row['apellidos']);
-                $cod_estado = $row['cod_estado_activacion_usuario'];
-                // Determinar estado y colores
-                if ($cod_estado == '1') { $estado_texto = 'Activo'; $estado_bg = 'rgba(139, 92, 246, 0.2)'; $estado_color = '#8b5cf6'; } elseif ($cod_estado == '2') { $estado_texto = 'En Espera'; $estado_bg = 'rgba(245, 158, 11, 0.2)'; $estado_color = '#f59e0b'; } else { $estado_texto = 'Inactivo'; $estado_bg = 'rgba(239, 68, 68, 0.2)'; $estado_color = '#ef4444'; }
-                // Obtener tiendas asociadas a este aliado
-                $cod_aliado = $row['cod_administrador'];
-                $sql_tiendas = "SELECT cod_tienda, nombre_tienda FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado' LIMIT 3";
-                $res_tiendas = mysqli_query($conectar, $sql_tiendas);
-                $tiendas_arr = [];
-                while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_lider_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #8b5cf6; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
-                $tiendas_texto = count($tiendas_arr) > 0 ? implode(', ', $tiendas_arr) : 'Sin tiendas';
-                
-                // --- NUEVAS ESTADÍSTICAS (Igual que en Asesor) ---
-                $sql_count_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado'";
-                $res_count_tiendas = mysqli_query($conectar, $sql_count_tiendas);
-                $total_tiendas_aliado = ($res_count_tiendas) ? mysqli_fetch_assoc($res_count_tiendas)['total'] : 0;
-                
-                $sql_count_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico = '$cod_aliado' AND cod_estado = '1'";
-                $res_count_bancos = mysqli_query($conectar, $sql_count_bancos);
-                $total_bancos_aliado = ($res_count_bancos) ? mysqli_fetch_assoc($res_count_bancos)['total'] : 0;
-
-                // Obtener líneas de crédito asociadas a este aliado
-                $sql_lineas_credito = "SELECT ec.nombre_entidad_crediticia, peca.interes_ptj 
-                FROM tbl15_parametrizacion_entidad_crediticia_aliado peca INNER JOIN tbl15_entidad_crediticia ec ON peca.cod_entidad_crediticia = ec.cod_entidad_crediticia 
-                WHERE peca.cod_aliado_estrategico = '$cod_aliado' AND peca.cod_estado = '1' ORDER BY ec.cod_posicion ASC";
-                $res_lineas_credito = mysqli_query($conectar, $sql_lineas_credito);
-                $lineas_credito_html = '';
-                $count_lineas = 0;
-                while($lc = mysqli_fetch_assoc($res_lineas_credito)) { 
-                    $lineas_credito_html .= '<span style="display: inline-block; background: rgba(139, 92, 246, 0.15); color: #8b5cf6; padding: 0.2rem 0.5rem; border-radius: 8px; font-size: 0.7rem; font-weight: 600; margin: 0.15rem;">' . htmlspecialchars($lc['nombre_entidad_crediticia']) . ' <strong>' . number_format($lc['interes_ptj'], 2) . '%</strong></span> ';
-                    $count_lineas++;
-                }
-                $lineas_credito_texto = $count_lineas > 0 ? $lineas_credito_html : '<span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">Sin entidades</span>';
-            ?>
-            <div class="ally-card animate-in delay-2">
-                <div class="ally-header">
-                    <div class="ally-info">
-                        <div class="ally-name"><?php echo ucwords(strtolower($nombre_completo)); ?></div>
-                        <div class="ally-doc">CC: <?php echo $row['cedula']; ?></div>
-                    </div>
-                    <span class="ally-role" style="background: <?php echo $estado_bg; ?>; color: <?php echo $estado_color; ?>;">
-                        <?php echo $estado_texto; ?>
-                    </span>
-                </div>
-                
-                <div class="ally-details">
-                    <?php if(!empty($row['telefono'])): ?><div class="ally-detail"><i class="fa-solid fa-phone"></i><span><?php echo $row['telefono']; ?></span></div><?php endif; ?>
-                    <?php if(!empty($row['correo'])): ?><div class="ally-detail"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($row['correo']); ?></span></div><?php endif; ?>
-                    <?php if(!empty($row['cuenta'])): ?><div class="ally-detail"><i class="fa-solid fa-building-columns"></i><span>Usuario: <?php echo $row['cuenta']; ?></span></div><?php endif; ?>
-                    <!--<div class="ally-detail"><i class="fa-solid fa-store"></i><span><?php echo $tiendas_texto; ?></span></div>-->
-                    <?php if(!empty($row['fecha'])): ?><div class="ally-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span></div><?php endif; ?>
-                </div>
-
-                <div class="ally-stats">
-                    <div class="ally-stat-item" onclick="abrirModalVerTiendas(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
-                        <span class="ally-stat-number"><?php echo $total_tiendas_aliado; ?></span>
-                        <span class="ally-stat-label">Tiendas</span>
-                    </div>
-                    <div class="ally-stat-item" onclick="abrirModalVerCuentas(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
-                        <span class="ally-stat-number"><?php echo $total_bancos_aliado; ?></span>
-                        <span class="ally-stat-label">Cuentas</span>
-                    </div>
-                </div>
-
-                <div class="ally-quick-actions">
-                    <button class="btn-quick-action btn-tienda" onclick="window.location.href='lista_tienda_lider_movil.php?registrar_tienda=1&cod_aliado=<?php echo $row['cod_administrador']; ?>'">
-                        <i class="fa-solid fa-store"></i> +Tienda
-                    </button>
-                    <button class="btn-quick-action btn-banco" onclick="abrirModalAgregarBanco(<?php echo $row['cod_administrador']; ?>)">
-                        <i class="fa-solid fa-university"></i> +Banco
-                    </button>
-                </div>
-
-                <div class="ally-actions">
-                    <a href="ver_detalle_aliado_lider_movil.php?cod_administrador=<?php echo $row['cod_administrador']; ?>" class="action-btn view"><i class="fa-solid fa-eye"></i> Detalles</a>
-                    <button class="action-btn edit" onclick="abrirModalEditar(<?php echo htmlspecialchars(json_encode($row), ENT_QUOTES, 'UTF-8'); ?>)"><i class="fa-solid fa-edit"></i> Editar</button>
-                    <?php
-                    $tiene_rut = !empty($row['url_documentacion_rut_aliado']);
-                    $tiene_camara = !empty($row['url_documentacion_camaracomercio_aliado']);
-                    $tiene_cedula = isset($row['url_documentacion_cedula_aliado']) && !empty($row['url_documentacion_cedula_aliado']);
-                    $total_docs = ($tiene_rut ? 1 : 0) + ($tiene_camara ? 1 : 0) + ($tiene_cedula ? 1 : 0);
-                    if ($total_docs == 3): ?>
-                    <button class="action-btn share-complete" onclick="compartirDocumentacion(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-circle-check"></i> Docs <span class="docs-badge"><?php echo $total_docs; ?>/3</span></button>
-                    <?php elseif ($total_docs > 0): ?>
-                    <button class="action-btn share-partial" onclick="compartirDocumentacion(<?php echo $row['cod_administrador']; ?>)"><i class="fa-solid fa-file-circle-exclamation"></i> Docs <span class="docs-badge"><?php echo $total_docs; ?>/3</span></button>
-                    <?php else: ?>
-                    <button class="action-btn share" disabled style="opacity: 0.5; cursor: not-allowed;" title="El aliado no ha cargado documentos">
-                        <i class="fa-solid fa-share-nodes"></i> Compartir
-                    </button>
-                    <?php endif; ?>
-                    <button class="action-btn archive" onclick="archivarEntidad(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>', 'Aliado')">
-                        <i class="fa-solid fa-box-archive"></i> Archivar
-                    </button>
-                </div>
-            </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <div class="empty-state"><i class="fa-solid fa-users-slash"></i><h3>No hay aliados</h3><p>No se encontraron registros</p></div>
-        <?php endif; ?>
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; color: #8b5cf6; margin-bottom: 2rem;"></i>
+            <p style="color: rgba(255,255,255,0.5);">Cargando red de aliados...</p>
+        </div>
     </div>
-
-    <!-- Pagination -->
-    <?php if ($total_paginas > 1): ?>
-    <div class="pagination-container animate-in delay-2">
-        <a href="?pagina=1&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
-           class="pagination-btn <?php echo $pagina == 1 ? 'disabled' : ''; ?>" title="Primera página">
-            <i class="fa-solid fa-angles-left"></i>
-        </a>
-        <a href="?pagina=<?php echo max(1, $pagina - 1); ?>&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
-           class="pagination-btn <?php echo $pagina == 1 ? 'disabled' : ''; ?>">
-            <i class="fa-solid fa-angle-left"></i>
-        </a>
-        
-        <?php 
-        $rango = 2;
-        $inicio_p = max(1, $pagina - $rango);
-        $fin_p = min($total_paginas, $pagina + $rango);
-        
-        for ($i = $inicio_p; $i <= $fin_p; $i++): 
-        ?>
-        <a href="?pagina=<?php echo $i; ?>&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
-           class="pagination-btn <?php echo $pagina == $i ? 'active' : ''; ?>">
-            <?php echo $i; ?>
-        </a>
-        <?php endfor; ?>
-
-        <a href="?pagina=<?php echo min($total_paginas, $pagina + 1); ?>&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
-           class="pagination-btn <?php echo $pagina == $total_paginas ? 'disabled' : ''; ?>">
-            <i class="fa-solid fa-angle-right"></i>
-        </a>
-        <a href="?pagina=<?php echo $total_paginas; ?>&busqueda=<?php echo urlencode($busqueda); ?>&filtro_doc=<?php echo urlencode($filtro_doc); ?>" 
-           class="pagination-btn <?php echo $pagina == $total_paginas ? 'disabled' : ''; ?>" title="Última página">
-            <i class="fa-solid fa-angles-right"></i>
-        </a>
-    </div>
-    <?php endif; ?>
 </main>
 <!-- Modal Registro -->
 <div class="modal-overlay" id="modalRegistro" style="align-items: flex-start; padding-top: 20px;">
@@ -5240,18 +5136,75 @@ function recargarEntidadesEditar(codAdministrador) {
     });
 }
 
-function filtrar() { 
-    var busqueda = document.getElementById('searchInput').value;
-    var filtro_doc = document.getElementById('filtroDoc').value;
-    window.searchTimeout = setTimeout(function() { 
-        const urlParams = new URLSearchParams(window.location.search);
-        const cod_coordinador = urlParams.get('cod_coordinador') || '';
-        const cod_administrador_get = urlParams.get('cod_administrador') || '';
+// Carga inicial por AJAX
+$(document).ready(function() {
+    console.log("DOM listo, iniciando load(1)");
+    setTimeout(function() { load(1); }, 100);
+});
 
-        window.location.href = 'lista_aliado_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + 
-                            '&filtro_doc=' + encodeURIComponent(filtro_doc) + 
-                            '&cod_coordinador=' + encodeURIComponent(cod_coordinador) +
-                            '&cod_administrador=' + encodeURIComponent(cod_administrador_get); 
+function load(page) {
+    console.log("Ejecutando load para página:", page);
+    var searchEl = document.getElementById('searchInput');
+    var filterEl = document.getElementById('filtroDoc');
+    var sortEl = document.getElementById('sortMain');
+    
+    if (!searchEl || !filterEl || !sortEl) {
+        console.error("No se encontraron los elementos de filtro/búsqueda");
+        return;
+    }
+
+    var busqueda = searchEl.value;
+    var filtro_doc = filterEl.value;
+    var sort = sortEl.value;
+    
+    $("#allyList").html('<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 1rem;"></i><p>Cargando aliados...</p></div>');
+    $(".pagination-container").hide();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const cod_coordinador = urlParams.get('cod_coordinador') || '';
+    const cod_administrador_get = urlParams.get('cod_administrador') || '';
+
+    $.ajax({
+        url: '../ajax/get_main_aliados_ajax.php',
+        type: 'GET',
+        data: {
+            pagina: page,
+            busqueda: busqueda,
+            filtro_doc: filtro_doc,
+            sort: sort,
+            cod_coordinador: cod_coordinador,
+            cod_administrador: cod_administrador_get,
+            _t: new Date().getTime() // Cache buster
+        },
+        success: function(data) {
+            console.log("Datos cargados. Longitud:", data.length);
+            $("#allyList").html(data);
+            
+            // Garantizar que los elementos se vuelvan visibles con una pequeña transición
+            setTimeout(() => {
+                $("#allyList .animate-in").each(function(i) {
+                    var el = $(this);
+                    setTimeout(() => {
+                        el.css({
+                            'opacity': '1',
+                            'transform': 'translateY(0)',
+                            'transition': 'all 0.4s ease'
+                        });
+                    }, i * 30);
+                });
+            }, 100);
+        },
+        error: function(xhr, status, error) {
+            console.error("Error AJAX:", status, error);
+            $("#allyList").html('<div class="empty-state" style="grid-column: 1/-1;"><i class="fa-solid fa-triangle-exclamation"></i><h3>Error</h3><p>No se pudo cargar la lista de aliados. (' + error + ')</p></div>');
+        }
+    });
+}
+
+function filtrar() { 
+    if (window.searchTimeout) clearTimeout(window.searchTimeout);
+    window.searchTimeout = setTimeout(function() { 
+        load(1);
     }, 500); 
 }
 
