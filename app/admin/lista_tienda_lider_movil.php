@@ -22,6 +22,7 @@ $cod_base_caja          = "1";
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="../js/jquery-3.2.1.min_visitante.js"></script>
 <link rel="stylesheet" href="../estilo_css/sweetalert2.min_adm_tick.css" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Select2 CDN -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -906,7 +907,7 @@ body {
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0,0,0,0.85);
     backdrop-filter: blur(8px);
-    z-index: 2500;
+    z-index: 4000;
     display: none;
     align-items: center;
     justify-content: center;
@@ -2283,9 +2284,7 @@ function ejecutarRegistroProducto() {
     
     var formData = new FormData(form);
     // Verificación final de cod_tienda
-    if (!formData.get('cod_tienda') && codTiendaProducto) {
-        formData.append('cod_tienda', codTiendaProducto);
-    }
+    if (!formData.get('cod_tienda') && codTiendaProducto) { formData.append('cod_tienda', codTiendaProducto); }
 
     const nom = document.getElementById('producto_nombre').value;
     const precio = document.getElementById('producto_precio_venta').value;
@@ -2313,7 +2312,10 @@ function ejecutarRegistroProducto() {
             Swal.close();
             if(response.success) {
                 setTimeout(function() {
-                    Swal.fire({ icon: 'success', title: '¡Producto Registrado!', text: 'El producto "' + nom + '" se agregó correctamente.', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    document.getElementById('exitoProductoNombre').textContent = nom;
+                    document.getElementById('exitoProductoPrecio').textContent = '$ ' + precio;
+                    document.getElementById('modalExitoProducto').classList.add('show');
+                    
                     agregarProductoALista(nom, precio);
                     form.reset();
                     // Restaurar datos esenciales después del reset
@@ -2441,6 +2443,20 @@ function abrirModalConfirmacion(nombreTienda) {
 function cerrarModalConfirmacion() { document.getElementById('modalConfirmacionRegistro').classList.remove('show'); }
 function cerrarConfirmacionYRecargar() { cerrarModalConfirmacion(); location.reload(); }
 
+function cerrarExitoVendedor() { document.getElementById('modalExitoVendedor').classList.remove('show'); }
+function cerrarExitoProducto() { document.getElementById('modalExitoProducto').classList.remove('show'); }
+
+function copiarTexto(texto, btn) {
+    if (!texto) return;
+    navigator.clipboard.writeText(texto).then(() => {
+        const icon = btn.querySelector('i');
+        const originalClass = icon.className;
+        icon.className = 'fa-solid fa-check';
+        btn.style.color = '#10b981';
+        setTimeout(() => { icon.className = originalClass; btn.style.color = ''; }, 2000);
+    });
+}
+
 function irCrearVendedores() {
     cerrarModalConfirmacion();
     if (window._tiendaRegistrada) {
@@ -2536,22 +2552,11 @@ function ejecutarRegistroVendedor() {
             Swal.close();
             if(response.success) {
                 setTimeout(function() {
-                    Swal.fire({ 
-                        icon: 'success', 
-                        title: '¡Vendedor Registrado!', 
-                        html: `
-                            <p>El vendedor <strong>${nom} ${ape}</strong> ha sido registrado con éxito.</p>
-                            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 12px; border-radius: 10px; margin-top: 15px; text-align: left; font-size: 0.9rem;">
-                                <p style="margin: 0 0 5px 0; color: #10b981; font-weight: 700;">Credenciales de acceso:</p>
-                                <p style="margin: 3px 0; color: white;"><strong>Usuario:</strong> ${response.usuario}</p>
-                                <p style="margin: 0; color: white;"><strong>Contraseña:</strong> ${response.contrasena_inicial}</p>
-                            </div>
-                        `,
-                        confirmButtonColor: '#10b981', 
-                        background: '#1a1f2e', 
-                        color: 'white', 
-                        customClass: { container: 'swal-high-zindex' } 
-                    });
+                    document.getElementById('exitoVendedorNombre').textContent = nom + ' ' + ape;
+                    document.getElementById('exitoVendedorUsuario').textContent = response.usuario;
+                    document.getElementById('exitoVendedorPass').textContent = response.contrasena_inicial;
+                    document.getElementById('modalExitoVendedor').classList.add('show');
+                    
                     agregarVendedorALista(nom + ' ' + ape, tel);
                     form.reset();
                     // Restaurar el cod_tienda después del reset
@@ -4374,6 +4379,68 @@ function archivarTienda(codTienda, nombre) {
         <div class="reg-modal-footer">
             <button class="reg-footer-btn back-btn" onclick="cerrarModalProducto()"><i class="fa-solid fa-arrow-left"></i> Volver</button>
             <button class="reg-footer-btn finish-btn" onclick="location.reload()"><i class="fa-solid fa-check"></i> Finalizar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Éxito Vendedor -->
+<div class="confirm-modal-overlay" id="modalExitoVendedor">
+    <div class="confirm-modal-box" style="max-width: 450px;">
+        <div class="confirm-success-header" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+            <div class="confirm-success-icon"><i class="fa-solid fa-user-check"></i></div>
+            <h3>¡Vendedor Registrado!</h3>
+            <p>Se han generado las credenciales de acceso</p>
+        </div>
+        <div class="confirm-body">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <p style="color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; font-size: 0.9rem;">Vendedor:</p>
+                <h4 id="exitoVendedorNombre" style="color: white; font-size: 1.3rem; font-weight: 700;"></h4>
+            </div>
+            
+            <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 16px; padding: 1.25rem;">
+                 <div style="margin-bottom: 1rem;">
+                    <label style="color: rgba(255,255,255,0.4); font-size: 0.7rem; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">USUARIO</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 10px;">
+                        <span id="exitoVendedorUsuario" style="color: white; font-family: 'Monaco', 'Consolas', monospace; font-size: 1.1rem; font-weight: 700;"></span>
+                        <button onclick="copiarTexto(document.getElementById('exitoVendedorUsuario').textContent, this)" style="background: none; border: none; color: #8b5cf6; cursor: pointer; padding: 5px;"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                 </div>
+                 <div>
+                    <label style="color: rgba(255,255,255,0.4); font-size: 0.7rem; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">CONTRASEÑA</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 10px 15px; border-radius: 10px;">
+                        <span id="exitoVendedorPass" style="color: white; font-family: 'Monaco', 'Consolas', monospace; font-size: 1.1rem; font-weight: 700;"></span>
+                        <button onclick="copiarTexto(document.getElementById('exitoVendedorPass').textContent, this)" style="background: none; border: none; color: #8b5cf6; cursor: pointer; padding: 5px;"><i class="fa-solid fa-copy"></i></button>
+                    </div>
+                 </div>
+            </div>
+        </div>
+        <div class="confirm-footer">
+            <button class="reg-submit-btn" onclick="cerrarExitoVendedor()" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); margin: 0;">
+                <i class="fa-solid fa-check"></i> Entendido
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Éxito Producto -->
+<div class="confirm-modal-overlay" id="modalExitoProducto">
+    <div class="confirm-modal-box" style="max-width: 400px;">
+        <div class="confirm-success-header" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);">
+            <div class="confirm-success-icon"><i class="fa-solid fa-box-open"></i></div>
+            <h3>¡Producto Registrado!</h3>
+            <p>El producto se agregó correctamente</p>
+        </div>
+        <div class="confirm-body" style="text-align: center; padding: 1.5rem;">
+            <p style="color: rgba(255,255,255,0.6); margin-bottom: 0.25rem; font-size: 0.9rem;">Producto:</p>
+            <h4 id="exitoProductoNombre" style="color: white; font-size: 1.3rem; margin-bottom: 1rem; font-weight: 700;"></h4>
+            <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); padding: 10px; border-radius: 10px; display: inline-block;">
+                <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 0.9rem;">Precio de venta: <strong style="color: #f59e0b; font-size: 1.1rem;" id="exitoProductoPrecio"></strong></p>
+            </div>
+        </div>
+        <div class="confirm-footer">
+            <button class="reg-submit-btn" onclick="cerrarExitoProducto()" style="background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%); margin: 0;">
+                <i class="fa-solid fa-check"></i> Aceptar
+            </button>
         </div>
     </div>
 </div>

@@ -1566,12 +1566,14 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <span style="font-size: 0.8rem; font-weight: 700;">Normales (<?php echo $count_normal; ?>)</span>
             </div>
         </a>
+<!--
         <a href="?view=rapida" style="flex: 1; text-decoration: none;">
             <div style="padding: 1rem; border-radius: 12px; background: <?php echo $view == 'rapida' ? 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' : 'rgba(255,255,255,0.05)'; ?>; border: 1px solid <?php echo $view == 'rapida' ? '#8b5cf6' : 'rgba(255,255,255,0.1)'; ?>; text-align: center; color: white; transition: all 0.3s ease;">
                 <i class="fa-solid fa-bolt" style="margin-bottom: 5px; display: block; font-size: 1.2rem;"></i>
                 <span style="font-size: 0.8rem; font-weight: 700;">Rápidas (<?php echo $count_rapida; ?>)</span>
             </div>
         </a>
+-->
 <!--
         <a href="../admin/lista_firma_digital_documentos_asesor_movil.php" style="flex: 1.2; text-decoration: none;">
             <div style="padding: 1rem; border-radius: 12px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border: 1px solid rgba(99, 102, 241, 0.4); text-align: center; color: white; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25); position: relative; overflow: hidden;">
