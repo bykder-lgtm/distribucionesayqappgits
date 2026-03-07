@@ -1780,7 +1780,7 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
         <div class="modal-body">
             <form id="formRegistro">
                 <input type="hidden" name="tabla" value="tbl15_administrador">
-                <input type="hidden" name="cod_seguridad" value="25">
+                <input type="hidden" name="cod_seguridad" value="23">
                 <input type="hidden" name="cod_administrador" value="<?php echo $cod_administrador; ?>">
 
                 <div class="form-row">

@@ -579,7 +579,7 @@ $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_coordinador, a.cod_lider,
 (SELECT COUNT(*) FROM tbl15_administrador ali WHERE ali.cod_asesor = a.cod_administrador AND ali.cod_seguridad = '23') as total_aliados,
 (SELECT COUNT(*) FROM tbl15_tienda t WHERE t.cod_aliado_estrategico IN (SELECT ali2.cod_administrador FROM tbl15_administrador ali2 WHERE ali2.cod_asesor = a.cod_administrador AND ali2.cod_seguridad = '23')) as total_tiendas,
-(SELECT COUNT(*) FROM tbl15_administrador v WHERE v.cod_seguridad = '25' AND v.cod_aliado_estrategico IN (SELECT ali3.cod_administrador FROM tbl15_administrador ali3 WHERE ali3.cod_asesor = a.cod_administrador AND ali3.cod_seguridad = '23')) as total_vendedores
+(SELECT COUNT(*) FROM tbl15_administrador v WHERE v.cod_seguridad = '2' AND v.cod_aliado_estrategico IN (SELECT ali3.cod_administrador FROM tbl15_administrador ali3 WHERE ali3.cod_asesor = a.cod_administrador AND ali3.cod_seguridad = '23')) as total_vendedores
 FROM tbl15_administrador a 
 WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
 

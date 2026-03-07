@@ -560,7 +560,7 @@ $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coor
 // Consulta para contar el total de registros
 $sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total 
                FROM tbl15_administrador a 
-               WHERE a.cod_seguridad = '25'";
+               WHERE a.cod_seguridad = '2' ";
 
 if (!empty($busqueda)) { 
     $sql_conteo .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
@@ -575,7 +575,7 @@ $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_tienda, a.cod_aliado_estrategico,
 (SELECT nombre_tienda FROM tbl15_tienda WHERE cod_tienda = a.cod_tienda) as nombre_tienda
 FROM tbl15_administrador a 
-WHERE a.cod_seguridad = '25'";
+WHERE a.cod_seguridad = '2' ";
 
 if (!empty($busqueda)) { 
     $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 

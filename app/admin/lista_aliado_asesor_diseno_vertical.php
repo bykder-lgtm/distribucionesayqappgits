@@ -25,8 +25,8 @@ $cod_base_caja = "1";
     </head>
     <body class="nav-md">
 <?php
-$cod_seguridad                       = '25'; //CLIENTE 
-$nombre_tipo_tercero_text            = ucfirst(strtolower('CLIENTE'));
+$cod_seguridad                       = '23'; //ALIADO 
+$nombre_tipo_tercero_text            = ucfirst(strtolower('ALIADO'));
 $buscar_por                          = "nombre1_tercero_identificacion_tercero";
 $nombre_estado_factura               = "ABIERTA";
 
@@ -72,9 +72,7 @@ if (isset($_GET['cod_tercero'])) { $cod_tercero = intval($_GET['cod_tercero']); 
                                 <input type="text" class="form-control" id="busqueda_ajax" placeholder="Buscar" onkeyup='load(1);'>
                             </div>
                             <div class="col-md-2">
-                                <button type="button" class="btn btn-primary" onclick='load(1);'>
-                                    <span class="glyphicon glyphicon-search"></span> Buscar
-                                </button>
+                                <button type="button" class="btn btn-primary" onclick='load(1);'><span class="glyphicon glyphicon-search"></span> Buscar</button>
                                 <span id="loader"></span>
                             </div>
                             <input type="hidden" id="cod_administrador" value="<?php echo $cod_administrador ?>">

@@ -25,8 +25,8 @@ $cod_base_caja = "1";
     </head>
     <body class="nav-md">
 <?php
-$cod_seguridad                         = '25'; //CLIENTE 
-$nombre_tipo_tercero_text              = ucfirst(strtolower('CLIENTE'));
+$cod_seguridad                         = '27'; //REVISOR 
+$nombre_tipo_tercero_text              = ucfirst(strtolower('REVISOR'));
 $buscar_por                            = "nombre1_tercero_identificacion_tercero";
 $nombre_estado_factura                 = "ABIERTA";
 

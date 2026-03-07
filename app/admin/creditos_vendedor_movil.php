@@ -38,7 +38,7 @@ $cod_base_caja          = "1";
 <body>
 <?php include_once("../admin/01_modulo_encabezado_superior_visitante_intern_movil.php"); ?>
 <?php 
-$cod_seguridad = '25';
+$cod_seguridad = '2';
 $buscar_por = "nombre1_tercero_identificacion_tercero";
 $nombre_estado_factura = "ABIERTA";
 if (isset($_GET['desplegar_modal_id'])) { $desplegar_modal_id = addslashes($_GET['desplegar_modal_id']); } else { $desplegar_modal_id = ''; }
