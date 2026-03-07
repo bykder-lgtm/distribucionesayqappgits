@@ -23,15 +23,36 @@ $busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar,
 $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, $_GET['filtro_doc']) : '';
 $sort = isset($_GET['sort']) ? mysqli_real_escape_string($conectar, $_GET['sort']) : 'id_desc';
 $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
+$cod_aliado_get = isset($_GET['cod_administrador']) ? trim(mysqli_real_escape_string($conectar, $_GET['cod_administrador'])) : '';
+
+$cod_asesor = isset($_GET['cod_asesor']) ? (int)$_GET['cod_asesor'] : 0;
+$cod_depto = isset($_GET['cod_departamento']) ? (int)$_GET['cod_departamento'] : 0;
+$cod_muni = isset($_GET['cod_municipio']) ? (int)$_GET['cod_municipio'] : 0;
 
 $where = "WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
+if (!empty($cod_aliado_get)) {
+    $where .= " AND a.cod_administrador = '$cod_aliado_get'";
+}
+
 if (!empty($busqueda)) {
-    $where .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')";
+    $where .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%' OR a.barrio_tercero LIKE '%$busqueda%')";
 }
 
 if ($cod_coordinador_filtro > 0) {
     $where .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
+}
+
+if ($cod_asesor > 0) {
+    $where .= " AND a.cod_asesor = '$cod_asesor'";
+}
+
+if ($cod_depto > 0) {
+    $where .= " AND a.cod_departamento = '$cod_depto'";
+}
+
+if ($cod_muni > 0) {
+    $where .= " AND a.cod_municipio = '$cod_muni'";
 }
 
 if ($filtro_doc == '1') {

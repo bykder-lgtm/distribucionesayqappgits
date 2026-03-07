@@ -1675,8 +1675,9 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
     <div class="search-filter-container animate-in delay-1" style="display: flex; flex-direction: column; gap: 0.75rem; background: rgba(139, 92, 246, 0.05); padding: 1rem; border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.1);">
         <div class="search-bar" style="width: 100%;">
             <i class="fa-solid fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Buscar aliado por nombre, NIT o ID..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrar()">
+            <input type="text" id="searchInput" placeholder="Buscar aliado por nombre, NIT, ID o barrio..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrar()">
         </div>
+        
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
             <div class="filter-group">
                 <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;"><i class="fa-solid fa-filter"></i> Documentos:</label>
@@ -1696,6 +1697,36 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
                     <option value="nombre_desc" <?php echo $sort == 'nombre_desc' ? 'selected' : ''; ?>>Nombre (Z-A)</option>
                     <option value="fecha_desc" <?php echo $sort == 'fecha_desc' ? 'selected' : ''; ?>>Registro (Reciente)</option>
                     <option value="fecha_asc" <?php echo $sort == 'fecha_asc' ? 'selected' : ''; ?>>Registro (Antiguo)</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;"><i class="fa-solid fa-user-tie"></i> Asesor:</label>
+                <select id="filtroAsesor" class="form-select" onchange="filtrar()" style="height: auto; padding: 0.5rem; background: rgba(255,255,255,0.05);">
+                    <option value="">Todos los asesores</option>
+                    <?php 
+                    mysqli_data_seek($res_asesor, 0);
+                    while ($asesor = mysqli_fetch_assoc($res_asesor)): 
+                    ?>
+                    <option value="<?php echo $asesor['cod_administrador']; ?>"><?php echo $asesor['nombres_apellidos_tercero']; ?></option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;"><i class="fa-solid fa-map-location-dot"></i> Departamento:</label>
+                <select id="filtroDepto" class="form-select" onchange="cargarMunicipiosFiltro(this.value); filtrar();" style="height: auto; padding: 0.5rem; background: rgba(255,255,255,0.05);">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;"><i class="fa-solid fa-city"></i> Ciudad:</label>
+                <select id="filtroCiudad" class="form-select" onchange="filtrar()" style="height: auto; padding: 0.5rem; background: rgba(255,255,255,0.05);">
+                    <option value="">Todas</option>
                 </select>
             </div>
         </div>
@@ -5139,6 +5170,7 @@ function recargarEntidadesEditar(codAdministrador) {
 // Carga inicial por AJAX
 $(document).ready(function() {
     console.log("DOM listo, iniciando load(1)");
+    cargarDepartamentosFiltro();
     setTimeout(function() { load(1); }, 100);
 });
 
@@ -5147,6 +5179,9 @@ function load(page) {
     var searchEl = document.getElementById('searchInput');
     var filterEl = document.getElementById('filtroDoc');
     var sortEl = document.getElementById('sortMain');
+    var asesorEl = document.getElementById('filtroAsesor');
+    var deptoEl = document.getElementById('filtroDepto');
+    var ciudadEl = document.getElementById('filtroCiudad');
     
     if (!searchEl || !filterEl || !sortEl) {
         console.error("No se encontraron los elementos de filtro/búsqueda");
@@ -5156,6 +5191,9 @@ function load(page) {
     var busqueda = searchEl.value;
     var filtro_doc = filterEl.value;
     var sort = sortEl.value;
+    var cod_asesor = asesorEl ? asesorEl.value : '';
+    var cod_depto = deptoEl ? deptoEl.value : '';
+    var cod_municipio = ciudadEl ? ciudadEl.value : '';
     
     $("#allyList").html('<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 1rem;"></i><p>Cargando aliados...</p></div>');
     $(".pagination-container").hide();
@@ -5172,6 +5210,9 @@ function load(page) {
             busqueda: busqueda,
             filtro_doc: filtro_doc,
             sort: sort,
+            cod_asesor: cod_asesor,
+            cod_departamento: cod_depto,
+            cod_municipio: cod_municipio,
             cod_coordinador: cod_coordinador,
             cod_administrador: cod_administrador_get,
             _t: new Date().getTime() // Cache buster
@@ -5206,6 +5247,38 @@ function filtrar() {
     window.searchTimeout = setTimeout(function() { 
         load(1);
     }, 500); 
+}
+
+function cargarDepartamentosFiltro() {
+    var $select = $('#filtroDepto');
+    $.ajax({
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) {
+            if (response.success && response.departamentos) {
+                $.each(response.departamentos, function(i, dept) {
+                    $select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>');
+                });
+            }
+        }
+    });
+}
+
+function cargarMunicipiosFiltro(codDepto) {
+    var $select = $('#filtroCiudad');
+    $select.html('<option value="">Todas</option>');
+    if (!codDepto) return;
+    
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php?cod_departamento=' + codDepto, 
+        type: 'GET', dataType: 'json',
+        success: function(response) {
+            if (response.success && response.municipios) {
+                $.each(response.municipios, function(i, muni) {
+                    $select.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>');
+                });
+            }
+        }
+    });
 }
 
 // Variable para controlar si la identificación es válida
