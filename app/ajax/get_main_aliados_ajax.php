@@ -160,7 +160,7 @@ if ($total_registros > 0):
     endwhile;
     
     // Renderizar paginación al final
-    echo '<div style="grid-column: 1/-1; margin-top: 1rem;">';
+    echo '<div class="pagination-wrapper-ajax" style="grid-column: 1/-1; margin-top: 1rem;">';
     echo paginate('', $pagina, $total_paginas, 2);
     echo '</div>';
 else: ?>

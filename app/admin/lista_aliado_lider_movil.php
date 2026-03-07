@@ -1422,6 +1422,21 @@ select[id^="edit_municipio_tienda_"] option {
         padding: 0 0.75rem;
     }
 }
+
+.pagination-wrapper-ajax {
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+.pagination-btn a {
+    color: inherit;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 </style>
 <!-- Select2 CDN -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
