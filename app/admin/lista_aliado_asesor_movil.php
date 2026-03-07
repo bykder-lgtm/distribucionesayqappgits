@@ -1027,9 +1027,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
         <button class="add-button" style="margin-bottom: 0; flex: 1.5;" onclick="abrirModal()">
             <i class="fa-solid fa-plus"></i> Registrar Nuevo Aliado
         </button>
+        <!--
         <button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" onclick="abrirModalRapido()">
             <i class="fa-solid fa-bolt"></i> Registro Rápido
         </button>
+-->
         <a href="lista_firma_digital_documentos_asesor_movil.php" class="add-button" style="margin-bottom: 0; flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; text-decoration: none;">
             <i class="fa-solid fa-file-signature"></i> Ver Firmas
         </a>

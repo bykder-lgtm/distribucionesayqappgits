@@ -1594,7 +1594,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     <!-- Botones de Acción -->
     <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;" class="animate-in delay-1">
         <button class="add-button" style="margin-bottom: 0; flex: 1;" onclick="abrirModalRegistro('normal')"><i class="fa-solid fa-plus"></i>Tienda Normal</button>
-        <button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);" onclick="abrirModalRegistro('rapida')"><i class="fa-solid fa-bolt"></i>Tienda Rápida</button>
+        <!--<button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);" onclick="abrirModalRegistro('rapida')"><i class="fa-solid fa-bolt"></i>Tienda Rápida</button>-->
     </div>
     <!-- Store List -->
     <div class="store-list" id="storeList">
