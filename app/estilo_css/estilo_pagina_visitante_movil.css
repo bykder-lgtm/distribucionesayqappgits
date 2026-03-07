@@ -691,6 +691,7 @@ main.container {
 }
 
 /* Header del modal */
+
 .modal-header-custom {
   background: linear-gradient(135deg, #4169e1 0%, #5b7ce6 100%);
   border-bottom: 2px solid #00d4ff;
@@ -699,4 +700,9 @@ main.container {
   justify-content: space-between;
   align-items: center;
   border-radius: 18px 18px 0 0;
+}
+
+/* SweetAlert2 z-index override to ensure it's always on top of other modals */
+.swal2-container {
+    z-index: 100000 !important;
 }

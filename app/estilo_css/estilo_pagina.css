@@ -2438,3 +2438,7 @@
      vertical-align: middle;
      white-space: nowrap;
 }
+/* SweetAlert2 z-index override to ensure it's always on top of other modals */
+.swal2-container {
+    z-index: 100000 !important;
+}
