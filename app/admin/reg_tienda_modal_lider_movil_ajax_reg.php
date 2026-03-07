@@ -109,6 +109,7 @@ if (isset($_POST['identificacion_tercero'])) {
     $nombre_sistema_contable                                        = isset($_POST['nombre_sistema_contable']) ? trim(addslashes($_POST['nombre_sistema_contable'])) : '';
     $cod_banco_cuenta                                               = isset($_POST['cod_banco_cuenta']) ? intval($_POST['cod_banco_cuenta']) : 0;
     $ubicacion_gps_tienda                                           = isset($_POST['ubicacion_gps_tienda']) ? trim(addslashes($_POST['ubicacion_gps_tienda'])) : '';
+    $tipo_tienda                                                    = isset($_POST['tipo_tienda']) ? trim(addslashes($_POST['tipo_tienda'])) : 'normal';
 	//---------------------------------------------------------------------------------------------------------------------------------//
 	$nombre_tienda                                                  = $nombre1_tercero;
     $nombre_tipo_tercero                                            = 'TIENDA';
@@ -147,16 +148,32 @@ if (isset($_POST['identificacion_tercero'])) {
     $cod_coordinador                                                = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
     $cod_asesor                                                     = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
 
-	//---------------------------------------------------------------------------------------------------------------------------------//
-	// Se verifica si la tienda ya existe con esa identificación
-	$sql_existe = "SELECT cod_tienda FROM tbl15_tienda WHERE identificacion_tercero = '$identificacion_tercero'";
-	$res_existe = mysqli_query($conectar, $sql_existe);
-	if ($res_existe && mysqli_num_rows($res_existe) > 0) {
+    // Si es tienda rápida y faltan datos de jerarquía, el líder creador se asigna a sí mismo
+    if($tipo_tienda === 'rapida' && $cod_lider === 0) {
+        $cod_lider = $cod_administrador;
+    }
+
+    // Validación básica
+    if(empty($nombre1_tercero)) {
         $respuesta_ajax['success'] = false;
-        $respuesta_ajax['message'] = "Ya existe una tienda registrada con el documento $identificacion_tercero";
+        $respuesta_ajax['message'] = "El nombre de la tienda es obligatorio.";
         header('Content-Type: application/json');
         echo json_encode($respuesta_ajax);
         exit;
+    }
+
+	//---------------------------------------------------------------------------------------------------------------------------------//
+	// Se verifica si la tienda ya existe con esa identificación (solo si se proporcionó una)
+    if (!empty($identificacion_tercero)) {
+        $sql_existe = "SELECT cod_tienda FROM tbl15_tienda WHERE identificacion_tercero = '$identificacion_tercero'";
+        $res_existe = mysqli_query($conectar, $sql_existe);
+        if ($res_existe && mysqli_num_rows($res_existe) > 0) {
+            $respuesta_ajax['success'] = false;
+            $respuesta_ajax['message'] = "Ya existe una tienda registrada con el documento $identificacion_tercero";
+            header('Content-Type: application/json');
+            echo json_encode($respuesta_ajax);
+            exit;
+        }
     }
 
 	$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero,

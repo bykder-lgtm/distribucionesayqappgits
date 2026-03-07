@@ -2599,11 +2599,7 @@ function agregarVendedorALista(nombre, telefono) {
 
 function finalizarVendedoresYPasarAProductos() {
     cerrarModalVendedor();
-    Swal.fire({
-        title: '¡Vendedores Listos!', text: '¿Deseas registrar ahora los productos de la tienda?', icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, ir a productos', cancelButtonText: 'No, finalizar aquí', confirmButtonColor: '#f59e0b', cancelButtonColor: '#6c757d', background: '#1a1f2e', color: 'white'
-    }).then((result) => {
-        if (result.isConfirmed) { irCrearProductos(); } else { location.reload(); }
-    });
+    //Swal.fire({ title: '¡Vendedores Listos!', text: '¿Deseas registrar ahora los productos de la tienda?', icon: 'question', showCancelButton: true, confirmButtonText: 'Sí, ir a productos', cancelButtonText: 'No, finalizar aquí', confirmButtonColor: '#f59e0b', cancelButtonColor: '#6c757d', background: '#1a1f2e', color: 'white' }).then((result) => { if (result.isConfirmed) { irCrearProductos(); } else { location.reload(); } });
 }
 // =====================================================
 // FUNCIONES PARA MODAL DE FIRMA ELECTRÓNICA
