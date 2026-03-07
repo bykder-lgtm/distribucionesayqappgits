@@ -100,7 +100,7 @@ body {
 }
 
 /* SweetAlert z-index fix */
-.swal-high-zindex {
+.swal-high-zindex, .swal2-container {
     z-index: 100000 !important;
 }
 
@@ -885,13 +885,17 @@ body {
 .delay-1 { animation-delay: 0.1s; }
 .delay-2 { animation-delay: 0.2s; }
 
-/* SweetAlert z-index fix */
-.swal-high-zindex {
-    z-index: 9999 !important;
+/* SweetAlert z-index fix - FORZAR SIEMPRE POR ENCIMA DE MODALES */
+.swal2-container {
+    z-index: 100000 !important;
 }
 
-.swal-high-zindex .swal2-container {
-    z-index: 9999 !important;
+.swal-high-zindex {
+    z-index: 100000 !important;
+}
+
+.swal2-container.swal-high-zindex {
+    z-index: 100000 !important;
 }
 
 /* ============================================ */
@@ -1661,9 +1665,7 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
 // Cargar departamentos en el modal de registro
 function cargarDepartamentosRegistro() {
     $.ajax({
-        url: '../admin/obtener_departamentos_ajax.php',
-        type: 'GET',
-        dataType: 'json',
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             if (response.success) {
                 var select = $('#cod_departamento');
@@ -2272,11 +2274,23 @@ function ejecutarRegistroProducto() {
     var precioCompraRaw = document.getElementById('producto_precio_compra').value.replace(/\D/g, '');
     document.getElementById('precio_compra_producto_hidden').value = precioCompraRaw;
     
+    // Asegurar que el código de la tienda esté presente
+    let codTiendaProducto = document.getElementById('producto_cod_tienda').value;
+    if (!codTiendaProducto && window._tiendaRegistrada) {
+        codTiendaProducto = window._tiendaRegistrada.cod_tienda;
+        document.getElementById('producto_cod_tienda').value = codTiendaProducto;
+    }
+    
     var formData = new FormData(form);
+    // Verificación final de cod_tienda
+    if (!formData.get('cod_tienda') && codTiendaProducto) {
+        formData.append('cod_tienda', codTiendaProducto);
+    }
+
     const nom = document.getElementById('producto_nombre').value;
     const precio = document.getElementById('producto_precio_venta').value;
     
-    Swal.fire({ title: 'Registrando Producto...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
+    Swal.fire({ title: 'Registrando Producto...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     $.ajax({
         url: 'reg_producto_tienda_ajax.php', type: 'POST', data: formData, processData: false, contentType: false,
         success: function(responseText) {
@@ -2284,33 +2298,36 @@ function ejecutarRegistroProducto() {
             let response;
             try {
                 let cleanJson = responseText;
-                const firstBrace = responseText.indexOf('{');
-                const lastBrace = responseText.lastIndexOf('}');
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    cleanJson = responseText.substring(firstBrace, lastBrace + 1);
+                if (typeof responseText === 'string') {
+                    const firstBrace = responseText.indexOf('{');
+                    const lastBrace = responseText.lastIndexOf('}');
+                    if (firstBrace !== -1 && lastBrace !== -1) { cleanJson = responseText.substring(firstBrace, lastBrace + 1); }
                 }
-                response = JSON.parse(cleanJson);
+                response = typeof cleanJson === 'object' ? cleanJson : JSON.parse(cleanJson);
             } catch (e) {
-                Swal.fire({ icon: 'error', title: 'Error de formato', text: 'El servidor no devolvió un JSON válido.', background: '#1a1f2e', color: 'white' });
+                console.error("Error parseando respuesta producto:", e, responseText);
+                Swal.fire({ icon: 'error', title: 'Error de respuesta', text: 'El servidor devolvió un formato inválido.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 return;
             }
 
             Swal.close();
             if(response.success) {
                 setTimeout(function() {
-                    Swal.fire({ icon: 'success', title: '¡Producto Registrado!', text: 'El producto "' + nom + '" se agregó correctamente.', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white' });
+                    Swal.fire({ icon: 'success', title: '¡Producto Registrado!', text: 'El producto "' + nom + '" se agregó correctamente.', confirmButtonColor: '#f59e0b', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     agregarProductoALista(nom, precio);
                     form.reset();
+                    // Restaurar datos esenciales después del reset
+                    document.getElementById('producto_cod_tienda').value = codTiendaProducto;
                     if(document.getElementById('preview_producto_img')) document.getElementById('preview_producto_img').style.display = 'none';
                 }, 400);
             } else {
-                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             Swal.close();
             console.error("Error AJAX Producto:", status, error, xhr.responseText);
-            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Problema al comunicarse con el servidor.', background: '#1a1f2e', color: 'white' });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Problema al comunicarse con el servidor.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -2367,7 +2384,7 @@ function ejecutarRegistroTienda() {
     $.ajax({
         url: url, type: 'POST', data: formData, processData: false, contentType: false,
         success: function(responseText) {
-            console.log("Respuesta recibida:", responseText);
+            //console.log("Respuesta recibida:", responseText);
             let response;
             try {
                 let cleanJson = responseText;
@@ -2407,9 +2424,7 @@ function ejecutarRegistroTienda() {
 // FUNCIONES PARA FLUJO POST-REGISTRO
 // =====================================================
 function abrirModalConfirmacion(nombreTienda) { 
-    if (!nombreTienda && window._tiendaRegistrada) {
-        nombreTienda = window._tiendaRegistrada.nombre_tienda;
-    }
+    if (!nombreTienda && window._tiendaRegistrada) { nombreTienda = window._tiendaRegistrada.nombre_tienda; }
     if (nombreTienda) { 
         const el = document.getElementById('confirmNombreTienda');
         if (el) el.textContent = nombreTienda; 
@@ -2481,12 +2496,24 @@ function ejecutarRegistroVendedor() {
         return;
     }
     
+    // Asegurar que el código de la tienda esté presente
+    let codTiendaVendedor = document.getElementById('vendedor_cod_tienda').value;
+    if (!codTiendaVendedor && window._tiendaRegistrada) {
+        codTiendaVendedor = window._tiendaRegistrada.cod_tienda;
+        document.getElementById('vendedor_cod_tienda').value = codTiendaVendedor;
+    }
+    
     var formData = new FormData(form);
+    // Verificación final de cod_tienda
+    if (!formData.get('cod_tienda') && codTiendaVendedor) {
+        formData.append('cod_tienda', codTiendaVendedor);
+    }
+
     const nom = document.getElementById('vendedor_nombre').value;
     const ape = document.getElementById('vendedor_apellido').value;
     const tel = document.getElementById('vendedor_telefono').value;
     
-    Swal.fire({ title: 'Registrando Vendedor...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
+    Swal.fire({ title: 'Registrando Vendedor...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     $.ajax({
         url: 'reg_vendedor_tienda_ajax.php', type: 'POST', data: formData, processData: false, contentType: false,
         success: function(responseText) {
@@ -2494,32 +2521,50 @@ function ejecutarRegistroVendedor() {
             let response;
             try {
                 let cleanJson = responseText;
-                const firstBrace = responseText.indexOf('{');
-                const lastBrace = responseText.lastIndexOf('}');
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    cleanJson = responseText.substring(firstBrace, lastBrace + 1);
+                if (typeof responseText === 'string') {
+                    const firstBrace = responseText.indexOf('{');
+                    const lastBrace = responseText.lastIndexOf('}');
+                    if (firstBrace !== -1 && lastBrace !== -1) { cleanJson = responseText.substring(firstBrace, lastBrace + 1); }
                 }
-                response = JSON.parse(cleanJson);
+                response = typeof cleanJson === 'object' ? cleanJson : JSON.parse(cleanJson);
             } catch (e) {
-                Swal.fire({ icon: 'error', title: 'Error de formato', text: 'El servidor no devolvió un JSON válido.', background: '#1a1f2e', color: 'white' });
+                console.error("Error parseando respuesta vendedor:", e, responseText);
+                Swal.fire({ icon: 'error', title: 'Error de respuesta', text: 'El servidor devolvió un formato inválido.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 return;
             }
 
             Swal.close();
             if(response.success) {
                 setTimeout(function() {
-                    Swal.fire({ icon: 'success', title: '¡Vendedor Registrado!', text: 'El vendedor ' + nom + ' ' + ape + ' ha sido registrado con éxito.', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white' });
+                    Swal.fire({ 
+                        icon: 'success', 
+                        title: '¡Vendedor Registrado!', 
+                        html: `
+                            <p>El vendedor <strong>${nom} ${ape}</strong> ha sido registrado con éxito.</p>
+                            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 12px; border-radius: 10px; margin-top: 15px; text-align: left; font-size: 0.9rem;">
+                                <p style="margin: 0 0 5px 0; color: #10b981; font-weight: 700;">Credenciales de acceso:</p>
+                                <p style="margin: 3px 0; color: white;"><strong>Usuario:</strong> ${response.usuario}</p>
+                                <p style="margin: 0; color: white;"><strong>Contraseña:</strong> ${response.contrasena_inicial}</p>
+                            </div>
+                        `,
+                        confirmButtonColor: '#10b981', 
+                        background: '#1a1f2e', 
+                        color: 'white', 
+                        customClass: { container: 'swal-high-zindex' } 
+                    });
                     agregarVendedorALista(nom + ' ' + ape, tel);
                     form.reset();
+                    // Restaurar el cod_tienda después del reset
+                    document.getElementById('vendedor_cod_tienda').value = codTiendaVendedor;
                 }, 400);
             } else {
-                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             Swal.close();
             console.error("Error AJAX Vendedor:", status, error, xhr.responseText);
-            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Problema al comunicarse con el servidor.', background: '#1a1f2e', color: 'white' });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Problema al comunicarse con el servidor.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -4210,27 +4255,20 @@ function archivarTienda(codTienda, nombre) {
                     <input type="email" class="form-input" name="correo_tercero" id="vendedor_correo" placeholder="correo@email.com" required>
                 </div>
                 
-                <button type="button" class="reg-submit-btn vendedor-theme" onclick="ejecutarRegistroVendedor()">
-                    <i class="fa-solid fa-user-plus"></i> Registrar Vendedor
-                </button>
+                <button type="button" class="reg-submit-btn vendedor-theme" onclick="ejecutarRegistroVendedor()"><i class="fa-solid fa-user-plus"></i> Registrar Vendedor</button>
             </form>
             
             <div class="items-registrados" id="listaVendedoresRegistrados" style="display: none;">
                 <div class="items-registrados-title">
-                    <i class="fa-solid fa-users"></i> Vendedores Registrados
-                    <span class="badge-count" id="contadorVendedores">0</span>
+                    <i class="fa-solid fa-users"></i> Vendedores Registrados<span class="badge-count" id="contadorVendedores">0</span>
                 </div>
                 <div id="vendedoresRegistradosList"></div>
             </div>
         </div>
         
         <div class="reg-modal-footer">
-            <button class="reg-footer-btn back-btn" onclick="cerrarModalVendedor()">
-                <i class="fa-solid fa-arrow-left"></i> Volver
-            </button>
-            <button class="reg-footer-btn finish-btn" onclick="finalizarVendedoresYPasarAProductos()">
-                <i class="fa-solid fa-check"></i> Finalizar Vendedores
-            </button>
+            <button class="reg-footer-btn back-btn" onclick="cerrarModalVendedor()"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+            <button class="reg-footer-btn finish-btn" onclick="finalizarVendedoresYPasarAProductos()"><i class="fa-solid fa-check"></i> Finalizar Vendedores</button>
         </div>
     </div>
 </div>
@@ -4244,10 +4282,7 @@ function archivarTienda(codTienda, nombre) {
         </div>
         
         <div class="reg-modal-body producto-theme">
-            <div class="reg-tienda-badge">
-                <i class="fa-solid fa-store"></i>
-                Tienda: <strong id="productoNombreTienda"></strong>
-            </div>
+            <div class="reg-tienda-badge"><i class="fa-solid fa-store"></i>Tienda: <strong id="productoNombreTienda"></strong></div>
             
             <form id="formRegistroProducto" enctype="multipart/form-data" onsubmit="return false;">
                 <input type="hidden" id="producto_cod_tienda" name="cod_tienda" value="">
@@ -4266,10 +4301,18 @@ function archivarTienda(codTienda, nombre) {
                 
                 <div class="form-row">
                     <div class="form-group">
+                        <label class="form-label">Precio de Compra ($)</label>
+                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_compra" placeholder="$ 0" oninput="formatearPrecio(this)">
+                        <input type="hidden" name="precio_compra_producto" id="precio_compra_producto_hidden" value="0">
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">Precio Venta ($) *</label>
                         <input type="text" class="form-input" inputmode="numeric" id="producto_precio_venta" placeholder="$ 0" oninput="formatearPrecio(this)">
                         <input type="hidden" name="precio_venta_producto" id="precio_venta_producto_hidden" value="0">
                     </div>
+                </div>
+
+                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Categoría</label>
                         <select class="form-select" name="cod_categoria" id="producto_categoria">
@@ -4281,6 +4324,10 @@ function archivarTienda(codTienda, nombre) {
                                     <option value="<?php echo $cat['cod_categoria']; ?>"><?php echo ucwords(strtolower($cat['nombre_categoria'])); ?></option>
                             <?php } } ?>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <input type="text" class="form-input" name="descripcion_producto" id="producto_descripcion" placeholder="Opcional">
                     </div>
                 </div>
                 
@@ -4299,18 +4346,6 @@ function archivarTienda(codTienda, nombre) {
                             <option value="1">Activo</option>
                             <option value="0">Inactivo</option>
                         </select>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label">Precio de Compra ($)</label>
-                        <input type="text" class="form-input" inputmode="numeric" id="producto_precio_compra" placeholder="$ 0" oninput="formatearPrecio(this)">
-                        <input type="hidden" name="precio_compra_producto" id="precio_compra_producto_hidden" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Descripción</label>
-                        <input type="text" class="form-input" name="descripcion_producto" id="producto_descripcion" placeholder="Opcional">
                     </div>
                 </div>
 
@@ -4337,12 +4372,8 @@ function archivarTienda(codTienda, nombre) {
         </div>
         
         <div class="reg-modal-footer">
-            <button class="reg-footer-btn back-btn" onclick="cerrarModalProducto()">
-                <i class="fa-solid fa-arrow-left"></i> Volver
-            </button>
-            <button class="reg-footer-btn finish-btn" onclick="location.reload()">
-                <i class="fa-solid fa-check"></i> Finalizar
-            </button>
+            <button class="reg-footer-btn back-btn" onclick="cerrarModalProducto()"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+            <button class="reg-footer-btn finish-btn" onclick="location.reload()"><i class="fa-solid fa-check"></i> Finalizar</button>
         </div>
     </div>
 </div>

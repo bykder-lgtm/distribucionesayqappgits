@@ -5,7 +5,7 @@ include_once('../session/funciones_admin.php');
 header('Content-Type: application/json');
 date_default_timezone_set("America/Bogota");
 // Verificar sesión
-if (!verificar_usuario()) { echo json_encode(array('success' => false, 'message' => 'Sesión no válida')); exit; }
+if (!verificar_usuario()) { echo json_encode(array('success' => false, 'message' => 'Sesión no válida', 'mensaje' => 'Sesión no válida')); exit; }
 
 $cuenta_actual                                                      = $_SESSION['usuario'];
 $cod_administrador_sesion                                           = $_SESSION['cod_administrador'];
@@ -21,10 +21,9 @@ try {
     $apellido1_tercero_post                                             = isset($_POST['apellido1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['apellido1_tercero'])) : '';
     $telefono1_tercero                                                  = isset($_POST['telefono1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['telefono1_tercero'])) : '';
     $correo_tercero                                                     = isset($_POST['correo_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['correo_tercero'])) : '';
-    $correo_tercero                                                     = isset($_POST['correo_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['correo_tercero'])) : '';
     // Validar campos requeridos
-    if ($cod_tienda <= 0) { echo json_encode(array('success' => false, 'message' => 'Código de tienda inválido')); exit; }
-    if (empty($identificacion_tercero)) { echo json_encode(array('success' => false, 'message' => 'La identificación es obligatoria')); exit; }
+    if ($cod_tienda <= 0) { echo json_encode(array('success' => false, 'message' => 'Código de tienda inválido', 'mensaje' => 'Código de tienda inválido')); exit; }
+    if (empty($identificacion_tercero)) { echo json_encode(array('success' => false, 'message' => 'La identificación es obligatoria', 'mensaje' => 'La identificación es obligatoria')); exit; }
     // Si se enviaron nombre y apellido por separado, construir nombres_apellidos_tercero
     if (!empty($nombre1_tercero_post)) {
         $nombre1_tercero = $nombre1_tercero_post;
@@ -34,24 +33,24 @@ try {
         $nombre1_tercero = $nombres_apellidos_tercero;
         $apellido1_tercero = '';
     } else {
-        echo json_encode(array('success' => false, 'message' => 'El nombre es obligatorio')); exit;
+        echo json_encode(array('success' => false, 'message' => 'El nombre es obligatorio', 'mensaje' => 'El nombre es obligatorio')); exit;
     }
-    if (empty($telefono1_tercero)) { echo json_encode(array('success' => false, 'message' => 'El teléfono es obligatorio')); exit; }
-    if (empty($correo_tercero)) { echo json_encode(array('success' => false, 'message' => 'El correo es obligatorio')); exit; }
+    if (empty($telefono1_tercero)) { echo json_encode(array('success' => false, 'message' => 'El teléfono es obligatorio', 'mensaje' => 'El teléfono es obligatorio')); exit; }
+    if (empty($correo_tercero)) { echo json_encode(array('success' => false, 'message' => 'El correo es obligatorio', 'mensaje' => 'El correo es obligatorio')); exit; }
     // Validar formato de correo
-    if (!filter_var($correo_tercero, FILTER_VALIDATE_EMAIL)) { echo json_encode(array('success' => false, 'message' => 'El correo electrónico no es válido')); exit; }
+    if (!filter_var($correo_tercero, FILTER_VALIDATE_EMAIL)) { echo json_encode(array('success' => false, 'message' => 'El correo electrónico no es válido', 'mensaje' => 'El correo electrónico no es válido')); exit; }
     // Verificar que la tienda existe y obtener información del aliado
     $sql_tienda = "SELECT cod_tienda, cod_aliado_estrategico FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
     $result_tienda = mysqli_query($conectar, $sql_tienda);
-    if (!$result_tienda) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de tienda: ' . mysqli_error($conectar))); exit; }
-    if (mysqli_num_rows($result_tienda) == 0) { echo json_encode(array('success' => false, 'message' => 'La tienda no existe')); exit; }
+    if (!$result_tienda) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de tienda', 'mensaje' => 'Error en consulta de tienda: ' . mysqli_error($conectar))); exit; }
+    if (mysqli_num_rows($result_tienda) == 0) { echo json_encode(array('success' => false, 'message' => 'La tienda no existe', 'mensaje' => 'La tienda no existe')); exit; }
     $info_tienda = mysqli_fetch_assoc($result_tienda);
     $cod_aliado_estrategico                                             = $info_tienda['cod_aliado_estrategico'];
     // Verificar si el vendedor ya existe para esta tienda
     $sql_verificar = "SELECT cod_administrador FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion_tercero' AND cod_seguridad = '2' AND cod_vendedor = '$cod_tienda'";
     $result_verificar = mysqli_query($conectar, $sql_verificar);
-    if (!$result_verificar) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de verificación: ' . mysqli_error($conectar))); exit; }
-    if (mysqli_num_rows($result_verificar) > 0) { echo json_encode(array('success' => false, 'message' => 'Ya existe un vendedor con esta identificación para esta tienda')); exit; }
+    if (!$result_verificar) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de verificación', 'mensaje' => 'Error en consulta de verificación: ' . mysqli_error($conectar))); exit; }
+    if (mysqli_num_rows($result_verificar) > 0) { echo json_encode(array('success' => false, 'message' => 'Ya existe un vendedor con esta identificación para esta tienda', 'mensaje' => 'Ya existe un vendedor con esta identificación para esta tienda')); exit; }
 
     // Obtener información del asesor (lider y coordinator)
     if ($cod_aliado_estrategico > 0) {
@@ -106,12 +105,13 @@ try {
     '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico')";
     if (mysqli_query($conectar, $sql_insert)) {
         $cod_administrador_insertado = mysqli_insert_id($conectar);
-        echo json_encode(array('success' => true, 'message' => 'Vendedor registrado correctamente. Credenciales: Usuario: ' . $cuenta . ' / Contraseña: ' . $identificacion_tercero, 'cod_administrador' => $cod_administrador_insertado, 'usuario' => $cuenta, 'contrasena_inicial' => $identificacion_tercero));
+        $msg = 'Vendedor registrado correctamente. Credenciales: Usuario: ' . $cuenta . ' / Contraseña: ' . $identificacion_tercero;
+        echo json_encode(array('success' => true, 'message' => $msg, 'mensaje' => $msg, 'cod_administrador' => $cod_administrador_insertado, 'usuario' => $cuenta, 'contrasena_inicial' => $identificacion_tercero));
     } else {
-        echo json_encode(array('success' => false, 'message' => 'Error al registrar el vendedor: ' . mysqli_error($conectar)));
+        echo json_encode(array('success' => false, 'message' => 'Error al registrar el vendedor', 'mensaje' => 'Error al registrar el vendedor: ' . mysqli_error($conectar)));
     }
 } catch (Exception $e) {
-    echo json_encode(array('success' => false, 'message' => 'Error en el servidor: ' . $e->getMessage()));
+    echo json_encode(array('success' => false, 'message' => 'Error en el servidor: ' . $e->getMessage(), 'mensaje' => 'Error en el servidor: ' . $e->getMessage()));
 }
 mysqli_close($conectar);
 ?>

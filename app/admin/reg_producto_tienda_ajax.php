@@ -3,7 +3,7 @@ include_once('../conexiones/conexione.php');
 include_once('../evitar_mensaje_error/error.php');
 date_default_timezone_set("America/Bogota");
 include ("../session/funciones_admin.php");
-if (verificar_usuario()){ } else { header('Content-Type: application/json'); echo json_encode(['success' => false, 'message' => 'Sesión no válida']); exit; }
+if (verificar_usuario()){ } else { header('Content-Type: application/json'); echo json_encode(['success' => false, 'message' => 'Sesión no válida', 'mensaje' => 'Sesión no válida']); exit; }
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -42,19 +42,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     // Validaciones básicas
-    if (empty($nombre_producto)) { echo json_encode(['success' => false, 'message' => 'El nombre del producto es obligatorio']); exit; }
-    if (empty($cod_producto_barra)) { echo json_encode(['success' => false, 'message' => 'El código de producto es obligatorio']); exit; }
-    if ($precio_compra_producto < 0 || $precio_venta_producto < 0) { echo json_encode(['success' => false, 'message' => 'Los precios no pueden ser negativos']); exit; }
+    if (empty($nombre_producto)) { echo json_encode(['success' => false, 'message' => 'El nombre del producto es obligatorio', 'mensaje' => 'El nombre del producto es obligatorio']); exit; }
+    if (empty($cod_producto_barra)) { echo json_encode(['success' => false, 'message' => 'El código de producto es obligatorio', 'mensaje' => 'El código de producto es obligatorio']); exit; }
+    if ($precio_compra_producto < 0 || $precio_venta_producto < 0) { echo json_encode(['success' => false, 'message' => 'Los precios no pueden ser negativos', 'mensaje' => 'Los precios no pueden ser negativos']); exit; }
     // Verificar que la tienda existe
     $check_tienda = "SELECT cod_tienda FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
     $result_tienda = mysqli_query($conectar, $check_tienda);
     
-    if (mysqli_num_rows($result_tienda) == 0) { echo json_encode(['success' => false, 'message' => 'La tienda no existe']); exit; }
+    if (mysqli_num_rows($result_tienda) == 0) { echo json_encode(['success' => false, 'message' => 'La tienda no existe', 'mensaje' => 'La tienda no existe']); exit; }
     // Verificar si el código de producto ya existe en esta tienda
     $check_codigo = "SELECT cod_producto FROM tbl15_producto WHERE cod_producto_barra = '$cod_producto_barra' AND cod_tienda = '$cod_tienda'";
     $result_codigo = mysqli_query($conectar, $check_codigo);
     
-    if (mysqli_num_rows($result_codigo) > 0) { echo json_encode(['success' => false, 'message' => 'Ya existe un producto con este código en la tienda']); exit; }    
+    if (mysqli_num_rows($result_codigo) > 0) { echo json_encode(['success' => false, 'message' => 'Ya existe un producto con este código en la tienda', 'mensaje' => 'Ya existe un producto con este código en la tienda']); exit; }    
     // Insertar el producto
     $sql_insert = "INSERT INTO tbl15_producto (cod_tienda, cod_producto_barra, nombre_producto, und_producto, precio_compra_producto, precio_venta_producto, cod_categoria,
     iva_ptj, descripcion_producto, cod_estado, fecha_creacion, active_producto, url_img_orig_producto, url_img_min_producto, url_img_producto_orig, url_img_producto_min) 
@@ -63,12 +63,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result_insert = mysqli_query($conectar, $sql_insert);
     
     if ($result_insert) {
-        echo json_encode(['success' => true, 'message' => 'Producto registrado correctamente', 'cod_producto' => mysqli_insert_id($conectar)]);
+        echo json_encode(['success' => true, 'message' => 'Producto registrado correctamente', 'mensaje' => 'Producto registrado correctamente', 'cod_producto' => mysqli_insert_id($conectar)]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Error al registrar el producto: ' . mysqli_error($conectar) ]);
+        echo json_encode(['success' => false, 'message' => 'Error al registrar el producto', 'mensaje' => 'Error al registrar el producto: ' . mysqli_error($conectar) ]);
     }
     
 } else {
-    echo json_encode(['success' => false, 'message' => 'Método no permitido']);
+    echo json_encode(['success' => false, 'message' => 'Método no permitido', 'mensaje' => 'Método no permitido']);
 }
 ?>

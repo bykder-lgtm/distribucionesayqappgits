@@ -196,6 +196,7 @@ if (isset($_POST['identificacion_tercero'])) {
 	$respuesta_ajax['correo_tercero']              = $correo_tercero;
 	$respuesta_ajax['telefono1_tercero']           = $telefono1_tercero;
 	$respuesta_ajax['mensaje']                     = 'Hecho correctamente.';
+	$respuesta_ajax['message']                     = 'Hecho correctamente.';
 
 	echo json_encode($respuesta_ajax);
 }
