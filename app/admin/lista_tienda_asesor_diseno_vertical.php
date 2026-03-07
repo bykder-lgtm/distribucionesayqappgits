@@ -150,20 +150,31 @@ $nombre_estado_factura               = "ABIERTA";
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Teléfono *</label>
-                                <input type="text" name="telefono1_tercero" id="telefono1_tercero" class="form-control" required>
+                                <label>Departamento *</label>
+                                <select name="cod_departamento" id="cod_departamento" class="form-control" onchange="cargarMunicipiosRegistro()" required>
+                                    <option value="">Seleccione Departamento</option>
+                                    <?php 
+                                    $sql_dept = "SELECT cod_departamento, nombre_departamento FROM tbl15_departamento ORDER BY nombre_departamento ASC";
+                                    $res_dept = mysqli_query($conectar, $sql_dept);
+                                    while($row_d = mysqli_fetch_assoc($res_dept)){
+                                        echo "<option value='".$row_d['cod_departamento']."'>".$row_d['nombre_departamento']."</option>";
+                                    }
+                                    ?>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Correo *</label>
-                                <input type="email" name="correo_tercero" id="correo_tercero" class="form-control" required>
+                                <label>Municipio *</label>
+                                <select name="cod_municipio" id="cod_municipio" class="form-control" required>
+                                    <option value="">Seleccione Municipio</option>
+                                </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>Dirección</label>
-                                <input type="text" name="direccion_tercero" id="direccion_tercero" class="form-control">
+                                <label>Barrio</label>
+                                <input type="text" name="barrio_tercero" id="barrio_tercero" class="form-control" placeholder="Ej: Centro, El Recreo">
                             </div>
                         </div>
                     </div>
@@ -549,6 +560,62 @@ $nombre_estado_factura               = "ABIERTA";
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Departamento *</label>
+                                <select name="cod_departamento_edit" id="cod_departamento_edit" class="form-control" onchange="cargarMunicipiosEdicion()" required>
+                                    <option value="">Seleccione Departamento</option>
+                                    <?php 
+                                    $res_dept_e = mysqli_query($conectar, $sql_dept);
+                                    mysqli_data_seek($res_dept_e, 0);
+                                    while($row_d_e = mysqli_fetch_assoc($res_dept_e)){
+                                        echo "<option value='".$row_d_e['cod_departamento']."'>".$row_d_e['nombre_departamento']."</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Municipio *</label>
+                                <select name="cod_municipio_edit" id="cod_municipio_edit" class="form-control" required>
+                                    <option value="">Seleccione Municipio</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Barrio</label>
+                                <input type="text" name="barrio_tercero_edit" id="barrio_tercero_edit" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección: Ubicación GPS (Solo en Edición) -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 style="margin-top: 15px; margin-bottom: 10px; border-bottom: 2px solid #ddd; padding-bottom: 5px;"><i class="fa fa-map-marker-alt"></i> Ubicación GPS</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Coordenadas GPS</label>
+                                <input type="text" name="ubicacion_gps_tienda_edit" id="ubicacion_gps_tienda_edit" class="form-control" placeholder="Ej: 4.7110,-74.0721" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn btn-success btn-block" onclick="obtenerUbicacionGPS('edit')">
+                                    <i class="fa fa-crosshairs"></i> Obtener Ubicación
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="gps_status_edit" style="display:none; padding: 8px; border-radius: 4px; margin-bottom: 10px;"></div>
+
                     <!-- Información del Representante -->
                     <div class="row">
                         <div class="col-md-12"><h5 style="margin-top: 15px; margin-bottom: 10px; border-bottom: 2px solid #ddd; padding-bottom: 5px;"><i class="fa fa-user-tie"></i> Información del Representante</h5></div>
@@ -732,9 +799,12 @@ $nombre_estado_factura               = "ABIERTA";
 
 <script>
 // Función para obtener ubicación GPS
-function obtenerUbicacionGPS() {
-    var input = document.getElementById('ubicacion_gps_tienda');
-    var status = document.getElementById('gps_status');
+function obtenerUbicacionGPS(mode) {
+    var inputId = mode === 'edit' ? 'ubicacion_gps_tienda_edit' : 'ubicacion_gps_tienda';
+    var statusId = mode === 'edit' ? 'gps_status_edit' : 'gps_status';
+    
+    var input = document.getElementById(inputId);
+    var status = document.getElementById(statusId);
     
     if (!navigator.geolocation) {
         status.style.display = 'block';
@@ -781,6 +851,73 @@ function obtenerUbicacionGPS() {
             maximumAge: 0
         }
     );
+}
+
+function cargarMunicipiosRegistro() {
+    var codDepartamento = $('#cod_departamento').val();
+    var selectMuni = $('#cod_municipio');
+    selectMuni.empty();
+    selectMuni.append('<option value="">Cargando...</option>');
+    
+    if (!codDepartamento) {
+        selectMuni.html('<option value="">Seleccione Municipio</option>');
+        return;
+    }
+    
+    $.ajax({
+        type: 'GET',
+        url: '../admin/obtener_municipios_ajax.php',
+        data: { cod_departamento: codDepartamento },
+        dataType: 'json',
+        success: function(response) {
+            selectMuni.empty();
+            if (response.success && response.municipios.length > 0) {
+                selectMuni.append('<option value="">Seleccione Municipio</option>');
+                $.each(response.municipios, function(index, muni) {
+                    selectMuni.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>');
+                });
+            } else {
+                selectMuni.append('<option value="">Sin municipios</option>');
+            }
+        },
+        error: function() {
+            selectMuni.empty().append('<option value="">Error al cargar</option>');
+        }
+    });
+}
+
+function cargarMunicipiosEdicion(selectedMuni) {
+    var codDepartamento = $('#cod_departamento_edit').val();
+    var selectMuni = $('#cod_municipio_edit');
+    selectMuni.empty();
+    selectMuni.append('<option value="">Cargando...</option>');
+    
+    if (!codDepartamento) {
+        selectMuni.html('<option value="">Seleccione Municipio</option>');
+        return;
+    }
+    
+    $.ajax({
+        type: 'GET',
+        url: '../admin/obtener_municipios_ajax.php',
+        data: { cod_departamento: codDepartamento },
+        dataType: 'json',
+        success: function(response) {
+            selectMuni.empty();
+            if (response.success && response.municipios.length > 0) {
+                selectMuni.append('<option value="">Seleccione Municipio</option>');
+                $.each(response.municipios, function(index, muni) {
+                    var selected = (selectedMuni && muni.cod_municipio == selectedMuni) ? 'selected' : '';
+                    selectMuni.append('<option value="' + muni.cod_municipio + '" ' + selected + '>' + muni.nombre_municipio + '</option>');
+                });
+            } else {
+                selectMuni.append('<option value="">Sin municipios</option>');
+            }
+        },
+        error: function() {
+            selectMuni.empty().append('<option value="">Error al cargar</option>');
+        }
+    });
 }
 
 // Función para previsualizar imágenes
@@ -1221,6 +1358,16 @@ function cargarDatosTienda(codTienda) {
                 $('#telefono1_tercero_edit').val(t.telefono1_tercero);
                 $('#correo_tercero_edit').val(t.correo_tercero);
                 $('#direccion_tercero_edit').val(t.direccion_tercero);
+                $('#barrio_tercero_edit').val(t.barrio_tercero);
+                $('#ubicacion_gps_tienda_edit').val(t.ubicacion_gps_tienda);
+                
+                // Ubicación (Departamento y Municipio)
+                $('#cod_departamento_edit').val(t.cod_departamento);
+                if (t.cod_departamento && t.cod_departamento > 0) {
+                    cargarMunicipiosEdicion(t.cod_municipio);
+                } else {
+                    $('#cod_municipio_edit').empty().append('<option value="">Seleccione Municipio</option>');
+                }
                 
                 // Información del representante
                 $('#nombre_representante_edit').val(t.nombre_representante);
@@ -1323,6 +1470,10 @@ $('#btn_actualizar_tienda').on('click', function() {
         telefono1_tercero: $('#telefono1_tercero_edit').val(),
         correo_tercero: $('#correo_tercero_edit').val(),
         direccion_tercero: $('#direccion_tercero_edit').val(),
+        barrio_tercero: $('#barrio_tercero_edit').val(),
+        cod_departamento: $('#cod_departamento_edit').val(),
+        cod_municipio: $('#cod_municipio_edit').val(),
+        ubicacion_gps_tienda: $('#ubicacion_gps_tienda_edit').val(),
         cod_aliado_estrategico: $('#cod_aliado_estrategico_edit').val(),
         nombre_representante: $('#nombre_representante_edit').val(),
         documento_representante: $('#documento_representante_edit').val(),

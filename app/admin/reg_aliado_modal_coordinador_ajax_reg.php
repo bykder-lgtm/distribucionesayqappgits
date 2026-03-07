@@ -42,12 +42,13 @@ if (isset($_POST['identificacion_tercero'])) {
 	$cod_asesor                                                     = intval($_POST['cod_asesor']);
 	$direccion_tercero                                              = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
 	$barrio_tercero                                                 = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
+	$cod_departamento                                               = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+	$cod_municipio                                                  = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
 	// Nuevos campos de tipo de cliente y sector
-	$nombre_tipo_cliente                                            = isset($_POST['nombre_tipo_cliente']) ? addslashes($_POST['nombre_tipo_cliente']) : 1;
+	$nombre_tipo_cliente                                            = isset($_POST['nombre_tipo_cliente']) ? addslashes($_POST['nombre_tipo_cliente']) : 'PERSONA_NATURAL';
 	$cod_tipo_sector                                                = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
 	$nit_razon_social                                               = isset($_POST['nit_razon_social']) ? trim(addslashes($_POST['nit_razon_social'])) : '';
-    //$cod_asesor                                                     = intval($_POST['cod_asesor']);
-	//$nombres_apellidos_tercero                                      = $nombre1_tercero.' '.$apellido1_tercero;
+    $nombre_razon_social                                            = isset($_POST['nombre_razon_social']) ? trim(addslashes($_POST['nombre_razon_social'])) : '';
     $cedula                                                         = $identificacion_tercero;
     $nombres                                                        = $nombre1_tercero;
     $apellidos                                                      = $apellido1_tercero;
@@ -86,11 +87,11 @@ if (isset($_POST['identificacion_tercero'])) {
 		$sql_data = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, 
         nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion, 
         cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, correo, telefono, cuenta, contrasena, 
-        cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, cod_tipo_sector, nit_razon_social) 
-		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', '$barrio_tercero', 
+        cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, cod_tipo_sector, nit_razon_social, nombre_razon_social, cod_departamento, cod_municipio) 
+		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', UPPER('$direccion_tercero'), UPPER('$barrio_tercero'), 
         UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion', 
         '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$creador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$correo', '$telefono', '$cuenta', '$contrasena', 
-        '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_tipo_sector', '$nit_razon_social')";
+        '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_tipo_sector', '$nit_razon_social', UPPER('$nombre_razon_social'), '$cod_departamento', '$cod_municipio')";
 		$exec_data = mysqli_query($conectar, $sql_data);
         //---------------------------------------------------------------------------------------------------------------------------------//
         if ($exec_data && mysqli_affected_rows($conectar) > 0) { 

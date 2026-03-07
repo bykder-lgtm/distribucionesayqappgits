@@ -94,9 +94,12 @@ if (isset($_POST['identificacion_tercero'])) {
 	$telefono1_tercero                                              = trim(addslashes($_POST['telefono1_tercero']));
 	$correo_tercero                                                 = trim(addslashes($_POST['correo_tercero']));
 	$direccion_tercero                                              = trim(addslashes($_POST['direccion_tercero']));
+    $barrio_tercero                                                 = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
+    $cod_departamento                                               = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+    $cod_municipio                                                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
     $cod_aliado_estrategico                                         = intval($_POST['cod_aliado_estrategico']);
     $nombre_representante                                           = isset($_POST['nombre_representante']) ? trim(addslashes($_POST['nombre_representante'])) : '';
-    $documento_representante                                        = isset($_POST['documento_representante']) ? intval($_POST['documento_representante']) : 0;
+    $documento_representante                                        = isset($_POST['identificacion_representante']) ? intval($_POST['identificacion_representante']) : 0;
     $correo_representante                                           = isset($_POST['correo_representante']) ? trim(addslashes($_POST['correo_representante'])) : '';
     $nombre_tipo_industria                                          = isset($_POST['nombre_tipo_industria']) ? trim(addslashes($_POST['nombre_tipo_industria'])) : '';
     $nombre_tipo_subindustria                                       = isset($_POST['nombre_tipo_subindustria']) ? trim(addslashes($_POST['nombre_tipo_subindustria'])) : '';
@@ -153,16 +156,16 @@ if (isset($_POST['identificacion_tercero'])) {
     if($existe_dato_aliado > 0) {
 
     } else {
-		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
-        cod_aliado_estrategico, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
+		$sql_data = "INSERT INTO tbl15_tienda (identificacion_tercero, nombre_tienda, abrev_tienda, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero,
+        cod_aliado_estrategico, cod_departamento, cod_municipio, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, fecha_creacion, cod_estado,
         nombre_representante, documento_representante, correo_representante, nombre_tipo_industria, nombre_tipo_subindustria, 
         nombre_tipo_otraindustria, numero_comercios, cod_tipo_sector, existe_rues, venta_presencial, venta_online, 
         nombre_plataforma_ecommerce, nombre_sistema_contable, comision_ptj, cod_banco_cuenta, ubicacion_gps_tienda,
         url_img_orig_tienda, url_img_min_tienda, url_documentacion_rut_tienda, url_documentacion_camaracomercio_tienda,
         url_documentacion_contratofirma_tienda, url_documentacion_extra1_tienda, url_img_fachada_tienda, url_img_interna_tienda,
         url_img_selfieadmin_tienda, url_img_otraopcional_tienda, cod_administrador) 
-        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
-        '$cod_aliado_estrategico', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
+        VALUES ('$identificacion_tercero', UPPER('$nombre_tienda'), UPPER('$abrev_tienda'), UPPER('$nombre1_tercero'), '$telefono1_tercero', '$correo_tercero', UPPER('$direccion_tercero'), UPPER('$barrio_tercero'),
+        '$cod_aliado_estrategico', '$cod_departamento', '$cod_municipio', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$fecha_creacion', '$cod_estado',
         UPPER('$nombre_representante'), '$documento_representante', '$correo_representante', UPPER('$nombre_tipo_industria'), UPPER('$nombre_tipo_subindustria'), 
         UPPER('$nombre_tipo_otraindustria'), '$numero_comercios', '$cod_tipo_sector', '$existe_rues', '$venta_presencial', '$venta_online', 
         '$nombre_plataforma_ecommerce', '$nombre_sistema_contable', '$comision_ptj', '$cod_banco_cuenta', '$ubicacion_gps_tienda',

@@ -24,7 +24,10 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $nombre_tipo_cliente                                                = isset($_POST['nombre_tipo_cliente']) ? trim(addslashes($_POST['nombre_tipo_cliente'])) : "";
     $cod_tipo_sector                                                    = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
     $nit_razon_social                                                   = isset($_POST['nit_razon_social']) ? trim(addslashes($_POST['nit_razon_social'])) : '';
+    $nombre_razon_social                                                = isset($_POST['nombre_razon_social']) ? trim(addslashes($_POST['nombre_razon_social'])) : '';
     $nombre_tipo_identificacion                                         = isset($_POST['nombre_tipo_identificacion']) ? trim(addslashes($_POST['nombre_tipo_identificacion'])) : "";
+    $cod_departamento                                                   = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+    $cod_municipio                                                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
     $direccion_tercero                                                  = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : "";
     $barrio_tercero                                                     = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : "";
     $cod_asesor                                                         = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
@@ -57,8 +60,8 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         $sql_update = "UPDATE tbl15_administrador SET identificacion_tercero = '$identificacion_tercero',  cedula = '$identificacion_tercero', nombre1_tercero = UPPER('$nombre1_tercero'),
         nombres = UPPER('$nombre1_tercero'), apellido1_tercero = UPPER('$apellido1_tercero'), apellidos = UPPER('$apellido1_tercero'), nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'),
         telefono1_tercero = '$telefono1_tercero', telefono = '$telefono1_tercero', correo_tercero = '$correo_tercero', correo = '$correo_tercero', cod_estado_activacion_usuario = '$cod_estado_activacion_usuario',
-        nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', 
-        nombre_tipo_identificacion = '$nombre_tipo_identificacion', direccion_tercero = '$direccion_tercero', barrio_tercero = '$barrio_tercero', cod_asesor = '$cod_asesor'";
+        nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', nombre_razon_social = UPPER('$nombre_razon_social'),
+        nombre_tipo_identificacion = '$nombre_tipo_identificacion', cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio', direccion_tercero = UPPER('$direccion_tercero'), barrio_tercero = UPPER('$barrio_tercero'), cod_asesor = '$cod_asesor'";
         
         // Si se debe cambiar el usuario, agregarlo a la consulta
         if (!empty($nuevo_usuario)) { $sql_update .= ", usuario = '$nuevo_usuario'"; }
@@ -118,12 +121,13 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
                     $cod_estado_entrar_portal                                        = isset($_POST[$cod_estado_entrar_portal_field]) ? '1' : '0';
                     $url_pagina_web_consulta_field                                   = 'url_pagina_web_consulta_' . $cod_entidad;
                     $url_pagina_web_consulta                                         = isset($_POST[$url_pagina_web_consulta_field]) ? trim(addslashes($_POST[$url_pagina_web_consulta_field])) : '';
-                    // Obtener nombre de la entidad crediticia
-                    $sql_nombre_entidad = "SELECT nombre_entidad_crediticia FROM tbl15_entidad_crediticia WHERE cod_entidad_crediticia = '$cod_entidad'";
+                    // Obtener nombre de la entidad crediticia y posicion
+                    $sql_nombre_entidad = "SELECT nombre_entidad_crediticia, cod_posicion FROM tbl15_entidad_crediticia WHERE cod_entidad_crediticia = '$cod_entidad'";
                     $res_nombre_entidad = mysqli_query($conectar, $sql_nombre_entidad);
                     $data_nombre_entidad = mysqli_fetch_assoc($res_nombre_entidad);
 
                     $nombre_entidad_crediticia                                       = isset($data_nombre_entidad['nombre_entidad_crediticia']) ? $data_nombre_entidad['nombre_entidad_crediticia'] : '';
+                    $cod_posicion                                                    = isset($data_nombre_entidad['cod_posicion']) ? $data_nombre_entidad['cod_posicion'] : 0;
                     // Verificar si ya existe el registro
                     $sql_check = "SELECT cod_parametrizacion_entidad_crediticia_aliado FROM tbl15_parametrizacion_entidad_crediticia_aliado WHERE cod_aliado_estrategico = '$cod_administrador' AND cod_entidad_crediticia = '$cod_entidad'";
                     $result_check = mysqli_query($conectar, $sql_check);
@@ -131,20 +135,20 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
                     if (mysqli_num_rows($result_check) > 0) {
                         // Actualizar registro existente
                         $sql_update_entidad = "UPDATE tbl15_parametrizacion_entidad_crediticia_aliado SET interes_ptj = '$interes_ptj', cod_estado_entrar_portal = '$cod_estado_entrar_portal', 
-                        url_pagina_web_consulta = '$url_pagina_web_consulta', cod_estado = '1' WHERE cod_administrador = '$cod_administrador' AND cod_entidad_crediticia = '$cod_entidad'";
+                        url_pagina_web_consulta = '$url_pagina_web_consulta', cod_posicion = '$cod_posicion', cod_estado = '1' WHERE cod_aliado_estrategico = '$cod_administrador' AND cod_entidad_crediticia = '$cod_entidad'";
                         mysqli_query($conectar, $sql_update_entidad);
                     } else {
                         // Insertar nuevo registro
                         $fecha = date("Y-m-d");
                         $sql_insert_entidad = "INSERT INTO tbl15_parametrizacion_entidad_crediticia_aliado 
-                        (cod_administardor, cod_aliado_estrategico, cod_entidad_crediticia, nombre_entidad_crediticia, interes_ptj, aval_ptj, cod_estado_entrar_portal, url_pagina_web_consulta, fecha_creacion, cod_estado) 
-                        VALUES ('$cod_administrador', '$cod_administrador', '$cod_entidad', '$nombre_entidad_crediticia', '$interes_ptj', '0.00', '$cod_estado_entrar_portal', '$url_pagina_web_consulta', '$fecha', '1')";
+                        (cod_administardor, cod_aliado_estrategico, cod_entidad_crediticia, nombre_entidad_crediticia, cod_posicion, interes_ptj, aval_ptj, cod_estado_entrar_portal, url_pagina_web_consulta, fecha_creacion, cod_estado) 
+                        VALUES ('$cod_administrador', '$cod_administrador', '$cod_entidad', '$nombre_entidad_crediticia', '$cod_posicion', '$interes_ptj', '0.00', '$cod_estado_entrar_portal', '$url_pagina_web_consulta', '$fecha', '1')";
                         mysqli_query($conectar, $sql_insert_entidad);
                     }
                 }
             } else {
                 // Si no se seleccionó ninguna entidad, desactivar todas
-                $sql_desactivar = "UPDATE tbl15_parametrizacion_entidad_crediticia_aliado SET cod_estado = '0' WHERE cod_administrador = '$cod_administrador'";
+                $sql_desactivar = "UPDATE tbl15_parametrizacion_entidad_crediticia_aliado SET cod_estado = '0' WHERE cod_aliado_estrategico = '$cod_administrador'";
                 mysqli_query($conectar, $sql_desactivar);
             }
             $afectado = "SI"; 

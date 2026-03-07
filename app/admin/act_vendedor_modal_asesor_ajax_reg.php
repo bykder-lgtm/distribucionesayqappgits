@@ -18,7 +18,10 @@ try {
     $telefono1_tercero                                                  = isset($_POST['telefono1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['telefono1_tercero'])) : '';
     $correo_tercero                                                     = isset($_POST['correo_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['correo_tercero'])) : '';
     $direccion_tercero                                                  = isset($_POST['direccion_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['direccion_tercero'])) : '';
-    $cod_estado_activacion_usuario                                      = isset($_POST['cod_estado_activacion_usuario']) ? intval($_POST['cod_estado_activacion_usuario']) : 1;
+    $barrio_tercero                     = isset($_POST['barrio_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['barrio_tercero'])) : '';
+    $cod_departamento                   = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+    $cod_municipio                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
+    $cod_estado_activacion_usuario       = isset($_POST['cod_estado_activacion_usuario']) ? intval($_POST['cod_estado_activacion_usuario']) : 1;
     // Construir nombre completo
     $nombres_apellidos_tercero                                          = trim($nombre1_tercero . ' ' . $apellido1_tercero);
     // ==================== VALIDACIONES ====================
@@ -36,12 +39,11 @@ try {
         identificacion_tercero = '$identificacion_tercero', cedula = '$identificacion_tercero', nombre1_tercero = UPPER('$nombre1_tercero'), nombres = UPPER('$nombre1_tercero'),
         apellido1_tercero = UPPER('$apellido1_tercero'), apellidos = UPPER('$apellido1_tercero'), nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'),
         telefono1_tercero = '$telefono1_tercero', telefono = '$telefono1_tercero', correo_tercero = '$correo_tercero', correo = '$correo_tercero',
-        direccion_tercero = '$direccion_tercero', cod_estado_activacion_usuario = '$cod_estado_activacion_usuario' WHERE cod_administrador = '$cod_administrador' AND cod_seguridad = '2'";
-    if (mysqli_query($conectar, $sql_update)) {
-        echo json_encode(array('success' => true, 'message' => 'Vendedor actualizado correctamente'));
-    } else {
-        echo json_encode(array('success' => false, 'message' => 'Error al actualizar el vendedor: ' . mysqli_error($conectar)));
-    }
+        direccion_tercero = UPPER('$direccion_tercero'), barrio_tercero = UPPER('$barrio_tercero'), 
+        cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio',
+        cod_estado_activacion_usuario = '$cod_estado_activacion_usuario' WHERE cod_administrador = '$cod_administrador' AND cod_seguridad = '2'";
+    if (mysqli_query($conectar, $sql_update)) { echo json_encode(array('success' => true, 'message' => 'Vendedor actualizado correctamente'));
+    } else { echo json_encode(array('success' => false, 'message' => 'Error al actualizar el vendedor: ' . mysqli_error($conectar))); }
 } catch (Exception $e) {
     echo json_encode(array('success' => false, 'message' => 'Error en el servidor: ' . $e->getMessage()));
 }

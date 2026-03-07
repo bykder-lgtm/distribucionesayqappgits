@@ -10,6 +10,10 @@ $nombre_tienda                       = isset($_POST['nombre_tienda']) ? mysqli_r
 $telefono1_tercero                   = isset($_POST['telefono1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['telefono1_tercero'])) : '';
 $correo_tercero                      = isset($_POST['correo_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['correo_tercero'])) : '';
 $direccion_tercero                   = isset($_POST['direccion_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['direccion_tercero'])) : '';
+$barrio_tercero                      = isset($_POST['barrio_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['barrio_tercero'])) : '';
+$cod_departamento                    = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+$cod_municipio                       = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
+$ubicacion_gps_tienda                = isset($_POST['ubicacion_gps_tienda']) ? mysqli_real_escape_string($conectar, trim($_POST['ubicacion_gps_tienda'])) : '';
 $cod_aliado_estrategico              = isset($_POST['cod_aliado_estrategico']) ? intval($_POST['cod_aliado_estrategico']) : 0;
 // Nuevos campos
 $nombre_representante                = isset($_POST['nombre_representante']) ? mysqli_real_escape_string($conectar, trim($_POST['nombre_representante'])) : '';
@@ -33,7 +37,7 @@ if (empty($nombre_tienda) || $identificacion_tercero <= 0) { echo json_encode(ar
 // Actualizar tienda
 $sql = "UPDATE tbl15_tienda SET 
 identificacion_tercero = '$identificacion_tercero', nombre_tienda = UPPER('$nombre_tienda'), nombre1_tercero = UPPER('$nombre_tienda'), telefono1_tercero = '$telefono1_tercero',
-correo_tercero = '$correo_tercero', direccion_tercero = '$direccion_tercero', cod_aliado_estrategico = '$cod_aliado_estrategico', nombre_representante = UPPER('$nombre_representante'),
+correo_tercero = '$correo_tercero', direccion_tercero = UPPER('$direccion_tercero'), barrio_tercero = UPPER('$barrio_tercero'), cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio', ubicacion_gps_tienda = '$ubicacion_gps_tienda', cod_aliado_estrategico = '$cod_aliado_estrategico', nombre_representante = UPPER('$nombre_representante'),
 documento_representante = '$documento_representante', correo_representante = '$correo_representante', nombre_tipo_industria = UPPER('$nombre_tipo_industria'),
 nombre_tipo_subindustria = UPPER('$nombre_tipo_subindustria'), nombre_tipo_otraindustria = UPPER('$nombre_tipo_otraindustria'), numero_comercios = '$numero_comercios',
 existe_rues = '$existe_rues', venta_presencial = '$venta_presencial', venta_online = '$venta_online', nombre_plataforma_ecommerce = '$nombre_plataforma_ecommerce',

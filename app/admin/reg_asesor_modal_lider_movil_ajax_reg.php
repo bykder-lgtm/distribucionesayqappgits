@@ -21,21 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefono                                                           = isset($_POST['telefono1_tercero']) ? trim(addslashes($_POST['telefono1_tercero'])) : '';
     $sexo                                                               = isset($_POST['nombre_sexo']) ? trim(addslashes($_POST['nombre_sexo'])) : 'O';
     $cod_coordinador                                                    = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
-
+    $direccion                                                          = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
+    $barrio                                                             = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
+    $cod_departamento                                                   = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+    $cod_municipio                                                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
     // Validar campos obligatorios
-    if (empty($identificacion) || empty($nombre1) || empty($apellido1) || empty($correo) || empty($telefono) || empty($cod_coordinador)) { 
-        echo json_encode(['status' => 'error', 'message' => 'Por favor complete todos los campos obligatorios.']);  
-        exit; 
-    }
-
+    if (empty($identificacion) || empty($nombre1) || empty($apellido1) || empty($correo) || empty($telefono) || empty($cod_coordinador)) { echo json_encode(['status' => 'error', 'message' => 'Por favor complete todos los campos obligatorios.']); exit; }
     // Verificar si ya existe (por cédula)
     $sql_check = "SELECT cod_administrador FROM tbl15_administrador WHERE (cedula = '$identificacion')";
     $res_check = mysqli_query($conectar, $sql_check);
-    if (mysqli_num_rows($res_check) > 0) { 
-        echo json_encode(['status' => 'error', 'message' => 'El asesor ya se encuentra registrado (cédula duplicada).']); 
-        exit; 
-    }
-
+    if (mysqli_num_rows($res_check) > 0) { echo json_encode(['status' => 'error', 'message' => 'El asesor ya se encuentra registrado (cédula duplicada).']); exit; }
 	//---------------------------------------------------------------------------------------------------------------------------------//
     $sql_autoincremento_administrador = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$base_datos' AND TABLE_NAME = 'tbl15_administrador'";
     $exec_autoincremento_administrador = mysqli_query($conectar, $sql_autoincremento_administrador) or die(mysqli_error($conectar));
@@ -65,17 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql_insert = "INSERT INTO tbl15_administrador (cedula, nombres, apellidos, nombre_sexo, cuenta, contrasena, correo, telefono, cod_seguridad, nombre_tipo_tercero, nombre_tipo_identificacion, 
     identificacion_tercero, nombres_apellidos_tercero, digito_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, 
     telefono1_tercero, correo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, cod_lider, cod_coordinador, cod_asesor, cod_estado_activacion_usuario, 
-    fecha_creacion, url_pag_redirec_ini_sesion) 
+    fecha_creacion, url_pag_redirec_ini_sesion, direccion_tercero, barrio_tercero, cod_departamento, cod_municipio) 
     VALUES ('$identificacion', UPPER('$nombres'), UPPER('$apellidos'), '$sexo', '$cuenta', '$contrasena', '$correo', '$telefono', '$cod_seguridad', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', 
     '$identificacion', UPPER('$nombres_apellidos_tercero'), '', UPPER('$nombre1'), UPPER('$nombre2'), UPPER('$apellido1'), UPPER('$apellido2'), 
     '$telefono', '$correo', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$cod_administrador_actual', '$cod_coordinador', '$cod_asesor_id', '$cod_estado_activacion_usuario', 
-    '$fecha_creacion', '$url_pag_redirec_ini_sesion')";
-
-    if (mysqli_query($conectar, $sql_insert)) { 
-        echo json_encode(['status' => 'success', 'message' => 'Asesor registrado correctamente.']); 
-    } else { 
-        echo json_encode(['status' => 'error', 'message' => 'Error al registrar en base de datos: ' . mysqli_error($conectar)]); 
-    }
+    '$fecha_creacion', '$url_pag_redirec_ini_sesion', UPPER('$direccion'), UPPER('$barrio'), '$cod_departamento', '$cod_municipio')";
+    if (mysqli_query($conectar, $sql_insert)) {  echo json_encode(['status' => 'success', 'message' => 'Asesor registrado correctamente.']); } else { echo json_encode(['status' => 'error', 'message' => 'Error al registrar en base de datos: ' . mysqli_error($conectar)]); }
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Método no permitido']);
 }

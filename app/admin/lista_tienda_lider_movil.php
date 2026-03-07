@@ -1711,17 +1711,44 @@ function cargarMunicipiosRegistroConPreseleccion(codDepartamento, selectedMuni) 
     selectMuni.append('<option value="">Seleccione un municipio *</option>');
     if (!codDepartamento) return;
     $.ajax({
-        url: '../admin/obtener_municipios_ajax.php',
-        type: 'GET',
-        data: { cod_departamento: codDepartamento },
-        dataType: 'json',
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
         success: function(response) {
             if (response.success) {
                 $.each(response.municipios, function(index, muni) {
                     var isSelected = (selectedMuni && muni.cod_municipio == selectedMuni) ? ' selected' : '';
-                    selectMuni.append('<option value="' + muni.cod_municipio + '"' + isSelected + '>' +
-                                    muni.nombre_municipio + '</option>');
+                    selectMuni.append('<option value="' + muni.cod_municipio + '"' + isSelected + '>' + muni.nombre_municipio + '</option>');
                 });
+            }
+        }
+    });
+}
+
+// ====================== REGISTRO DE VENDEDORES (GEOLOCALIZACION) ======================
+function cargarDepartamentosVendedor(prefix) {
+    $.ajax({
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                var select = $('#' + prefix + 'cod_departamento');
+                select.empty();
+                select.append('<option value="">Seleccione Departamento *</option>');
+                $.each(response.departamentos, function(index, dept) { select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>'); });
+            }
+        }
+    });
+}
+
+function cargarMunicipiosVendedor(prefix) {
+    var codDepartamento = $('#' + prefix + 'cod_departamento').val();
+    var selectMuni = $('#' + prefix + 'cod_municipio');
+    selectMuni.empty();
+    selectMuni.append('<option value="">Seleccione un municipio *</option>');
+    if (!codDepartamento) return;
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                $.each(response.municipios, function(index, muni) { selectMuni.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>'); });
             }
         }
     });
@@ -1830,10 +1857,7 @@ function actualizarBancosYComision(select) {
         prellenarDatosAliado(codAliado);
         
         $.ajax({
-            url: 'obtener_bancos_cuenta_por_aliado_ajax.php',
-            type: 'POST',
-            data: { cod_aliado_estrategico: codAliado },
-            dataType: 'json',
+            url: 'obtener_bancos_cuenta_por_aliado_ajax.php', type: 'POST', data: { cod_aliado_estrategico: codAliado }, dataType: 'json',
             success: function(response) {
                 bancoSelect.innerHTML = '';
                 
@@ -1888,9 +1912,7 @@ function prellenarDatosAliado(codAliado) {
                 setVal('cod_tipo_sector', a.cod_tipo_sector);
                 if (a.cod_departamento) {
                     $('#cod_departamento').val(a.cod_departamento).trigger('change');
-                    setTimeout(function() {
-                        cargarMunicipiosRegistroConPreseleccion(a.cod_departamento, a.cod_municipio);
-                    }, 500);
+                    setTimeout(function() { cargarMunicipiosRegistroConPreseleccion(a.cod_departamento, a.cod_municipio); }, 500);
                 }
             }
         }
@@ -1961,8 +1983,7 @@ function filtrarTiendas(busqueda) {
     window.searchTimeout = setTimeout(function() { 
         const urlParams = new URLSearchParams(window.location.search);
         const cod_coordinador = urlParams.get('cod_coordinador') || '';
-        window.location.href = 'lista_tienda_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + 
-                             '&cod_coordinador=' + encodeURIComponent(cod_coordinador); 
+        window.location.href = 'lista_tienda_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + '&cod_coordinador=' + encodeURIComponent(cod_coordinador); 
     }, 500); 
 }
 
@@ -1970,10 +1991,7 @@ function editarTienda(codTienda) {
     Swal.fire({ title: 'Cargando...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
     
     $.ajax({
-        url: 'get_tienda_modal_lider_ajax.php',
-        type: 'POST',
-        data: { cod_tienda: codTienda },
-        dataType: 'json',
+        url: 'get_tienda_modal_lider_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             Swal.close();
             if(response.success) {
@@ -2008,11 +2026,7 @@ function editarTienda(codTienda) {
                     if (t.cod_departamento) {
                         $('#cod_departamento').val(t.cod_departamento);
                         cargarMunicipiosRegistro();
-                        setTimeout(() => {
-                            if (t.cod_municipio) {
-                                $('#cod_municipio').val(t.cod_municipio);
-                            }
-                        }, 500);
+                        setTimeout(() => { if (t.cod_municipio) { $('#cod_municipio').val(t.cod_municipio); } }, 500);
                     }
                 }, 500);
                 // Cargar bancos (simulado manualmente ya que es dependiente)
@@ -2360,9 +2374,7 @@ function ejecutarRegistroTienda() {
                 if (typeof responseText === 'string') {
                     const firstBrace = responseText.indexOf('{');
                     const lastBrace = responseText.lastIndexOf('}');
-                    if (firstBrace !== -1 && lastBrace !== -1) {
-                        cleanJson = responseText.substring(firstBrace, lastBrace + 1);
-                    }
+                    if (firstBrace !== -1 && lastBrace !== -1) { cleanJson = responseText.substring(firstBrace, lastBrace + 1); }
                 }
                 response = typeof cleanJson === 'object' ? cleanJson : JSON.parse(cleanJson);
             } catch (e) {
@@ -2391,7 +2403,6 @@ function ejecutarRegistroTienda() {
         }
     });
 }
-
 // =====================================================
 // FUNCIONES PARA FLUJO POST-REGISTRO
 // =====================================================
@@ -2427,6 +2438,9 @@ function irCrearVendedores() {
         document.getElementById('vendedoresRegistradosList').innerHTML = '';
         document.getElementById('listaVendedoresRegistrados').style.display = 'none';
         document.getElementById('contadorVendedores').textContent = '0';
+        
+        // Cargar departamentos para el vendedor
+        cargarDepartamentosVendedor('vendedor_');
         
         document.getElementById('modalRegistroVendedor').classList.add('show');
     } else { location.reload(); }
@@ -2871,6 +2885,9 @@ function enviarPorCorreo() {
             <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
                 <strong style="color: #8b5cf6;">Tienda:</strong> <span id="vendedor_nombre_tienda" style="color: white;"></span>
             </div>
+            <div id="vendedor_info_adicional" style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.85rem; padding: 0.5rem; border-left: 3px solid #8b5cf6;">
+                <i class="fa-solid fa-location-dot"></i> <span id="vendedor_tienda_ubicacion"></span>
+            </div>
             <form id="formAgregarVendedor">
                 <input type="hidden" id="vendedor_cod_tienda" name="cod_tienda">
                 
@@ -2899,6 +2916,31 @@ function enviarPorCorreo() {
                 <div class="form-group">
                     <label class="form-label">Correo Electrónico *</label>
                     <input type="email" class="form-input" id="vend_correo" name="correo_tercero" placeholder="correo@ejemplo.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Dirección *</label>
+                    <input type="text" class="form-input" id="vend_direccion" name="direccion_tercero" placeholder="Ej: Calle 10 # 20-30" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Departamento *</label>
+                        <select class="form-select" name="cod_departamento" id="vend_cod_departamento" onchange="cargarMunicipiosVendedor('vend_')" required>
+                            <option value="">Seleccione Departamento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio *</label>
+                        <select class="form-select" name="cod_municipio" id="vend_cod_municipio" required>
+                            <option value="">Seleccione Municipio</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Barrio</label>
+                    <input type="text" class="form-input" name="barrio_tercero" id="vend_barrio" placeholder="Opcional">
                 </div>
 
                 <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.75rem; margin-top: 1rem;">
@@ -3929,9 +3971,42 @@ document.getElementById('modalAgregarBanco').addEventListener('click', function(
 });
 
 // ====================== GESTIÓN DE VENDEDOR TIENDA ======================
-function abrirModalAgregarVendedor(codTienda, nombreTienda) {
+function abrirModalAgregarVendedor(codTienda, nombreTienda, direccion, barrio, codDept, codMuni) {
     document.getElementById('vendedor_cod_tienda').value = codTienda;
     document.getElementById('vendedor_nombre_tienda').textContent = nombreTienda;
+    
+    // Pre-llenar ubicación si está disponible
+    document.getElementById('vendedor_tienda_ubicacion').textContent = (direccion || '') + (barrio ? ' - ' + barrio : '');
+    
+    // Pre-llenar campos de ubicación para el vendedor (por defecto los de la tienda)
+    if (direccion) document.getElementById('vend_direccion').value = direccion;
+    if (barrio) document.getElementById('vend_barrio').value = barrio;
+    
+    // Cargar departamentos y pre-seleccionar si es necesario
+    cargarDepartamentosVendedor('vend_');
+    if (codDept) {
+        setTimeout(function() {
+            $('#vend_cod_departamento').val(codDept).trigger('change');
+            if (codMuni) {
+                // Función auxiliar para cargar municipios con preselección específica para prefijo
+                $.ajax({
+                    url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDept }, dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            var selectMuni = $('#vend_cod_municipio');
+                            selectMuni.empty();
+                            selectMuni.append('<option value="">Seleccione un municipio *</option>');
+                            $.each(response.municipios, function(index, muni) {
+                                var isSelected = (muni.cod_municipio == codMuni) ? ' selected' : '';
+                                selectMuni.append('<option value="' + muni.cod_municipio + '"' + isSelected + '>' + muni.nombre_municipio + '</option>');
+                            });
+                        }
+                    }
+                });
+            }
+        }, 800);
+    }
+    
     document.getElementById('modalAgregarVendedor').classList.add('show');
 }
 
@@ -3961,6 +4036,50 @@ $('#formAgregarVendedor').on('submit', function(e) {
         Swal.fire({ icon: 'warning', title: 'Correo inválido', text: 'Por favor ingresa un correo electrónico válido', background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' } });
         return;
     }
+
+    var formData = new FormData(this);
+    
+    Swal.fire({ title: 'Registrando Vendedor...', html: '<i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #8b5cf6;"></i>', showConfirmButton: false, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+    
+    $.ajax({
+        url: '../admin/agregar_vendedor_tienda_lider_ajax.php',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            Swal.close();
+            if (response.success) {
+                cerrarModalAgregarVendedor();
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Vendedor Registrado!',
+                    html: `
+                        <p>${response.message}</p>
+                        <div style="background: rgba(139, 92, 246, 0.1); padding: 10px; border-radius: 8px; margin-top: 15px; text-align: left;">
+                            <p style="margin: 0; color: #8b5cf6;"><strong>Credenciales de acceso:</strong></p>
+                            <p style="margin: 5px 0 0 0; color: white;">Usuario: ${response.usuario}</p>
+                            <p style="margin: 2px 0 0 0; color: white;">Contraseña: ${response.contrasena_inicial}</p>
+                        </div>
+                    `,
+                    background: '#1a1f2e',
+                    color: 'white',
+                    confirmButtonColor: '#8b5cf6',
+                    customClass: { container: 'swal-high-zindex' }
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo registrar el vendedor', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
+            }
+        },
+        error: function(xhr, status, error) {
+            Swal.close();
+            console.error('Error:', error);
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
+        }
+    });
 });
 
 function archivarTienda(codTienda, nombre) {
@@ -4089,6 +4208,31 @@ function archivarTienda(codTienda, nombre) {
                 <div class="form-group">
                     <label class="form-label">Correo *</label>
                     <input type="email" class="form-input" name="correo_tercero" id="vendedor_correo" placeholder="correo@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Dirección *</label>
+                    <input type="text" class="form-input" name="direccion_tercero" id="vendedor_direccion" placeholder="Ej: Calle 10 # 20-30" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Departamento *</label>
+                        <select class="form-select" name="cod_departamento" id="vendedor_cod_departamento" onchange="cargarMunicipiosVendedor('vendedor_')" required>
+                            <option value="">Seleccione Departamento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio *</label>
+                        <select class="form-select" name="cod_municipio" id="vendedor_cod_municipio" required>
+                            <option value="">Seleccione Municipio</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Barrio</label>
+                    <input type="text" class="form-input" name="barrio_tercero" id="vendedor_barrio" placeholder="Opcional">
                 </div>
                 
                 <button type="button" class="reg-submit-btn vendedor-theme" onclick="ejecutarRegistroVendedor()">

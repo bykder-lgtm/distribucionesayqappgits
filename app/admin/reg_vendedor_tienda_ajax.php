@@ -22,6 +22,9 @@ try {
     $telefono1_tercero                                                  = isset($_POST['telefono1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['telefono1_tercero'])) : '';
     $correo_tercero                                                     = isset($_POST['correo_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['correo_tercero'])) : '';
     $direccion_tercero                                                  = isset($_POST['direccion_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['direccion_tercero'])) : '';
+    $barrio_tercero                                                     = isset($_POST['barrio_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['barrio_tercero'])) : '';
+    $cod_departamento                                                   = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+    $cod_municipio                                                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
     // Validar campos requeridos
     if ($cod_tienda <= 0) { echo json_encode(array('success' => false, 'message' => 'Código de tienda inválido')); exit; }
     if (empty($identificacion_tercero)) { echo json_encode(array('success' => false, 'message' => 'La identificación es obligatoria')); exit; }
@@ -94,12 +97,12 @@ try {
     $cod_caja_virtual                                                   = 1;
     $cod_caja                                                           = 1;
     // Insertar el vendedor
-    $sql_insert = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero,
+    $sql_insert = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, cod_departamento, cod_municipio,
     nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion,
     cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, 
     correo, telefono, cuenta, contrasena, cod_vendedor, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, 
     cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico) 
-    VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero',
+    VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', UPPER('$direccion_tercero'), UPPER('$barrio_tercero'), '$cod_departamento', '$cod_municipio',
     UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion',
     '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$cuenta_actual', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'),
     '$correo_tercero', '$telefono1_tercero', '$cuenta', '$contrasena', '$cod_tienda', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina',

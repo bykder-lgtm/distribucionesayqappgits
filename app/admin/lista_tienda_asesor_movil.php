@@ -1656,7 +1656,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 </div>
 
                 <div class="store-quick-actions">
-                    <button type="button" class="btn-quick-action btn-vendedor" onclick="abrirRegistroVendedorDirecto(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>')">
+                    <button type="button" class="btn-quick-action btn-vendedor" onclick="abrirModalAgregarVendedor(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>', '<?php echo addslashes($tienda['direccion_tercero']); ?>', '<?php echo $tienda['cod_departamento']; ?>', '<?php echo $tienda['cod_municipio']; ?>', '<?php echo addslashes($tienda['barrio_tercero']); ?>')">
                         <i class="fa-solid fa-user-plus"></i> Vendedor
                     </button>
                     <button type="button" class="btn-quick-action btn-producto" onclick="abrirRegistroProductoDirecto(<?php echo $tienda['cod_tienda']; ?>, '<?php echo addslashes($tienda['nombre_tienda']); ?>')">
@@ -4801,10 +4801,72 @@ document.getElementById('modalAgregarBanco').addEventListener('click', function(
 });
 
 // ====================== GESTIÓN DE VENDEDOR TIENDA ======================
-function abrirModalAgregarVendedor(codTienda, nombreTienda) {
+function abrirModalAgregarVendedor(codTienda, nombreTienda, direccion, depto, mun, barrio) {
     document.getElementById('vendedor_cod_tienda').value = codTienda;
     document.getElementById('vendedor_nombre_tienda').textContent = nombreTienda;
+    
+    // Mostrar información de ubicación de la tienda como referencia
+    const infoLoc = document.getElementById('storeLocationInfo');
+    if (infoLoc) {
+        infoLoc.style.display = 'block';
+        document.getElementById('storeAddr').textContent = direccion || 'No registrada';
+        document.getElementById('storeBarrio').textContent = barrio || 'No registrado';
+    }
+    
+    // Limpiar formulario y cargar departamentos
+    $('#formAgregarVendedor')[0].reset();
+    document.getElementById('vendedor_cod_tienda').value = codTienda;
+    
+    // Pre-poblar campos de ubicación con los de la tienda
+    if (direccion) document.getElementById('vend_direccion').value = direccion;
+    if (barrio) document.getElementById('vend_barrio').value = barrio;
+    
+    cargarDepartamentosVendedor(depto, mun);
+    
     document.getElementById('modalAgregarVendedor').classList.add('show');
+}
+
+function cargarDepartamentosVendedor(selectedDepto = null, selectedMun = null) {
+    $.ajax({
+        url: '../admin/obtener_departamentos_ajax.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            let options = '<option value="">Seleccione Departamento</option>';
+            if (response.success && response.departamentos) {
+                response.departamentos.forEach(d => {
+                    options += `<option value="${d.id_departamento}" ${selectedDepto == d.id_departamento ? 'selected' : ''}>${d.departamento.toUpperCase()}</option>`;
+                });
+            }
+            $('#vend_departamento').html(options);
+            if (selectedDepto) {
+                cargarMunicipiosVendedor(selectedDepto, selectedMun);
+            }
+        }
+    });
+}
+
+function cargarMunicipiosVendedor(deptoId = null, selectedMun = null) {
+    const id = deptoId || $('#vend_departamento').val();
+    if (!id) {
+        $('#vend_municipio').html('<option value="">Seleccione Departamento primero</option>');
+        return;
+    }
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php',
+        type: 'GET',
+        data: { id_departamento: id },
+        dataType: 'json',
+        success: function(response) {
+            let options = '<option value="">Seleccione Municipio</option>';
+            if (response.success && response.municipios) {
+                response.municipios.forEach(m => {
+                    options += `<option value="${m.id_municipio}" ${selectedMun == m.id_municipio ? 'selected' : ''}>${m.municipio.toUpperCase()}</option>`;
+                });
+            }
+            $('#vend_municipio').html(options);
+        }
+    });
 }
 
 function cerrarModalAgregarVendedor() {

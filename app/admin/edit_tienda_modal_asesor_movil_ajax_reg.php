@@ -26,6 +26,8 @@ $correo_representante = isset($_POST['correo_representante']) && !empty($_POST['
 $cod_aliado_estrategico = isset($_POST['cod_aliado_estrategico']) ? mysqli_real_escape_string($conectar, $_POST['cod_aliado_estrategico']) : '';
 $cod_banco_cuenta = isset($_POST['cod_banco_cuenta']) ? mysqli_real_escape_string($conectar, $_POST['cod_banco_cuenta']) : '';
 $ubicacion_gps_tienda = isset($_POST['ubicacion_gps_tienda']) ? mysqli_real_escape_string($conectar, $_POST['ubicacion_gps_tienda']) : '';
+$cod_departamento = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+$cod_municipio = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
 $cod_tipo_tienda = ($cod_aliado_estrategico == '0' || empty($cod_aliado_estrategico)) ? 1 : 0;
 
 // Funciones para procesar archivos e imágenes
@@ -64,6 +66,8 @@ $campos_update[] = "cod_aliado_estrategico = '$cod_aliado_estrategico'";
 $campos_update[] = "cod_banco_cuenta = '$cod_banco_cuenta'";
 $campos_update[] = "ubicacion_gps_tienda = '$ubicacion_gps_tienda'";
 $campos_update[] = "cod_tipo_tienda = '$cod_tipo_tienda'";
+$campos_update[] = "cod_departamento = '$cod_departamento'";
+$campos_update[] = "cod_municipio = '$cod_municipio'";
 $sql_update = "UPDATE tbl15_tienda SET " . implode(", ", $campos_update);
 // Procesar logo de la tienda
 $imgs_logo = procesarImagen('imagen_tienda', '../archivador/img_tienda/orig/');
