@@ -599,8 +599,27 @@ body {
 
 .action-btn.archive {
     background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    color: #f87171;
     border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+/* Status Badges for Modal Docs */
+.status-complete {
+    background: rgba(16, 185, 129, 0.2);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+.status-partial {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
+.status-empty {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
 }
 
 .action-btn.archive:hover {
@@ -1674,12 +1693,14 @@ AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_ad
 $res_firmados_total = mysqli_query($conectar, $sql_firmados_total);
 $total_firmados = ($res_firmados_total) ? mysqli_fetch_assoc($res_firmados_total)['total'] : 0;
 
-// Total Documentos Cargados
-$sql_docs_total = "SELECT SUM(CASE WHEN (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
-SUM(CASE WHEN (url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
-SUM(CASE WHEN (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL) THEN 1 ELSE 0 END) as total
-FROM tbl15_administrador a WHERE a.cod_seguridad = '23'
-AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+// Total Aliados con Documentación (Al menos un documento)
+$sql_docs_total = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23'
+AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))
+AND (
+    (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) OR 
+    (url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) OR 
+    (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL)
+)";
 $res_docs_total = mysqli_query($conectar, $sql_docs_total);
 $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_total)['total'] : 0;
 ?>
@@ -6303,38 +6324,77 @@ function escapeHtmlMovil(text) {
 </div>
 
 <!-- Modal Documentos Cargados -->
-<div class="modal-overlay" id="modalDocumentosCargados" style="z-index: 6000; align-items: center; padding: 20px;">
-    <div class="modal-content" style="max-width: 800px; border-radius: 20px;">
+<div class="modal-overlay" id="modalDocumentosCargados" style="z-index: 6000; align-items: flex-end; padding: 0;">
+    <div class="modal-content" style="max-width: 800px; border-radius: 20px 20px 0 0;">
         <div class="modal-header" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
             <h2 style="color: white;"><i class="fa-solid fa-folder-open"></i> Documentos Cargados</h2>
             <button class="modal-close" onclick="cerrarModalDocumentos()"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body" style="max-height: 85vh; padding: 0;">
-            <!-- Filtros y Ordenamiento -->
-            <div style="background: rgba(139, 92, 246, 0.05); padding: 1.25rem; border-bottom: 1px solid rgba(139, 92, 246, 0.2); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px);">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label" style="font-size: 0.8rem; opacity: 0.7;"><i class="fa-solid fa-filter"></i> Filtrar por estado:</label>
-                        <select class="form-select" id="filterDocsEstado" onchange="aplicarFiltrosDocumentos()" style="background: rgba(255,255,255,0.05); border-color: rgba(59, 130, 246, 0.3);">
+            <!-- Filtros y Ordenamiento (Replicando los de la página principal) -->
+            <div style="background: rgba(139, 92, 246, 0.05); padding: 1rem; border-bottom: 1px solid rgba(139, 92, 246, 0.2); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 0.75rem;">
+                <div class="search-bar" style="width: 100%; position: relative; display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 12px; padding: 0.5rem 1rem;">
+                    <i class="fa-solid fa-search" style="color: rgba(255,255,255,0.4); margin-right: 0.75rem;"></i>
+                    <input type="text" id="modalSearchInput" placeholder="Buscar por nombre, NIT, ID..." onkeyup="aplicarFiltrosDocumentos()" style="background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.9rem;">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-filter"></i> Documentos:</label>
+                        <select id="modalFiltroDoc" class="form-select" onchange="aplicarFiltrosDocumentos()" style="height: auto; padding: 0.4rem; background: rgba(255,255,255,0.05); font-size: 0.85rem;">
                             <option value="todos">Todos los aliados</option>
-                            <option value="completo">Todos los documentos (3)</option>
-                            <option value="alguno">Uno o más documentos</option>
-                            <option value="ninguno">Sin documentos cargados</option>
+                            <option value="completo">Completo (3 docs)</option>
+                            <option value="alguno">Uno o más docs</option>
+                            <option value="ninguno">Sin documentos</option>
                         </select>
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label" style="font-size: 0.8rem; opacity: 0.7;"><i class="fa-solid fa-sort"></i> Ordenar por:</label>
-                        <select class="form-select" id="sortDocs" onchange="aplicarFiltrosDocumentos()" style="background: rgba(255,255,255,0.05); border-color: rgba(59, 130, 246, 0.3);">
-                            <option value="fecha_desc">Fecha de cargue (Más reciente)</option>
-                            <option value="fecha_asc">Fecha de cargue (Más antiguo)</option>
-                            <option value="nombre_asc">Nombre Aliado (A - Z)</option>
-                            <option value="nombre_desc">Nombre Aliado (Z - A)</option>
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-sort"></i> Ordenar:</label>
+                        <select id="modalSortDocs" class="form-select" onchange="aplicarFiltrosDocumentos()" style="height: auto; padding: 0.4rem; background: rgba(255,255,255,0.05); font-size: 0.85rem;">
+                            <option value="fecha_desc">Cargue (Reciente)</option>
+                            <option value="fecha_asc">Cargue (Antiguo)</option>
+                            <option value="nombre_asc">Nombre (A-Z)</option>
+                            <option value="nombre_desc">Nombre (Z-A)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-user-tie"></i> Asesor:</label>
+                        <select id="modalFiltroAsesor" class="form-select" onchange="aplicarFiltrosDocumentos()" style="height: auto; padding: 0.4rem; background: rgba(255,255,255,0.05); font-size: 0.85rem;">
+                            <option value="">Todos</option>
+                            <?php 
+                            mysqli_data_seek($res_asesor, 0);
+                            while ($asesor = mysqli_fetch_assoc($res_asesor)): 
+                            ?>
+                            <option value="<?php echo $asesor['cod_administrador']; ?>"><?php echo $asesor['nombres_apellidos_tercero']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-calendar"></i> Fecha Reg:</label>
+                        <input type="date" id="modalFiltroFechaReg" class="form-input" onchange="aplicarFiltrosDocumentos()" style="padding: 0.35rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; width: 100%; font-size: 0.85rem;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-map-location-dot"></i> Depto:</label>
+                        <select id="modalFiltroDepto" class="form-select" onchange="modalCargarMunicipios(this.value); aplicarFiltrosDocumentos();" style="height: auto; padding: 0.4rem; background: rgba(255,255,255,0.05); font-size: 0.85rem;">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-city"></i> Ciudad:</label>
+                        <select id="modalFiltroCiudad" class="form-select" onchange="aplicarFiltrosDocumentos()" style="height: auto; padding: 0.4rem; background: rgba(255,255,255,0.05); font-size: 0.85rem;">
+                            <option value="">Todas</option>
                         </select>
                     </div>
                 </div>
             </div>
             
-            <div id="bodyDocumentosCargados" style="padding: 1.25rem; overflow-y: auto; max-height: calc(85vh - 120px);">
+            <div id="bodyDocumentosCargados" style="padding: 1.25rem; overflow-y: auto; max-height: 60vh; min-height: 250px;">
                 <div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado...</p></div>
             </div>
         </div>
@@ -6406,101 +6466,133 @@ function cerrarModalVerFirma() {
     $("#modalVerFirma").removeClass("show").hide();
 }
 
-var datosDocumentosGlobal = [];
-
-function abrirModalDocumentosCargados(total) {
+function abrirModalDocumentosCargados() {
     $("#modalDocumentosCargados").addClass("show").css("display", "flex");
-    $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Cargando listado de aliados...</p></div>');
     
     // Resetear filtros al abrir
-    $('#filterDocsEstado').val('todos');
-    $('#sortDocs').val('fecha_desc');
+    $('#modalSearchInput').val('');
+    $('#modalFiltroDoc').val('todos');
+    $('#modalSortDocs').val('fecha_desc');
+    $('#modalFiltroAsesor').val('');
+    $('#modalFiltroDepto').val('');
+    $('#modalFiltroCiudad').val('');
+    $('#modalFiltroFechaReg').val('');
+    
+    // Cargar departamentos si aún no están cargados
+    if ($('#modalFiltroDepto option').length <= 1) {
+        modalCargarDepartamentos();
+    }
 
+    aplicarFiltrosDocumentos();
+}
+
+function modalCargarDepartamentos() {
+    var $select = $('#modalFiltroDepto');
     $.ajax({
-        url: '../ajax/get_aliados_documentos_ajax.php', type: 'GET', dataType: 'json',
+        url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
-            datosDocumentosGlobal = response;
-            aplicarFiltrosDocumentos();
-        },
-        error: function() { 
-            $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al obtener el listado de documentos.</p></div>'); 
+            if (response.success && response.departamentos) {
+                $.each(response.departamentos, function(i, dept) {
+                    $select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>');
+                });
+            }
+        }
+    });
+}
+
+function modalCargarMunicipios(codDepto) {
+    var $select = $('#modalFiltroCiudad');
+    $select.html('<option value="">Todas</option>');
+    if (!codDepto) return;
+    
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php?cod_departamento=' + codDepto, 
+        type: 'GET', dataType: 'json',
+        success: function(response) {
+            if (response.success && response.municipios) {
+                $.each(response.municipios, function(i, muni) {
+                    $select.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>');
+                });
+            }
         }
     });
 }
 
 function aplicarFiltrosDocumentos() {
-    let filtrados = [...datosDocumentosGlobal];
-    const estado = $('#filterDocsEstado').val();
-    const orden = $('#sortDocs').val();
+    $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem;"><i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #3b82f6;"></i><p style="margin-top: 1rem; color: rgba(255,255,255,0.7);">Filtrando aliados...</p></div>');
+    
+    // Capturar todos los filtros del modal
+    var busqueda = $('#modalSearchInput').val();
+    var filtro_doc = $('#modalFiltroDoc').val();
+    var sort = $('#modalSortDocs').val();
+    var cod_asesor = $('#modalFiltroAsesor').val();
+    var cod_depto = $('#modalFiltroDepto').val();
+    var cod_municipio = $('#modalFiltroCiudad').val();
+    var fecha_reg = $('#modalFiltroFechaReg').val();
 
-    // 1. Filtrar
-    if (estado === 'completo') {
-        filtrados = filtrados.filter(a => a.total_cargados >= 3);
-    } else if (estado === 'alguno') {
-        filtrados = filtrados.filter(a => a.total_cargados > 0);
-    } else if (estado === 'ninguno') {
-        filtrados = filtrados.filter(a => a.total_cargados === 0);
-    }
-
-    // 2. Ordenar
-    filtrados.sort((a, b) => {
-        if (orden === 'fecha_desc') {
-            return new Date(b.fecha_raw) - new Date(a.fecha_raw);
-        } else if (orden === 'fecha_asc') {
-            return new Date(a.fecha_raw) - new Date(b.fecha_raw);
-        } else if (orden === 'nombre_asc') {
-            return a.nombres_apellidos_tercero.localeCompare(b.nombres_apellidos_tercero);
-        } else if (orden === 'nombre_desc') {
-            return b.nombres_apellidos_tercero.localeCompare(a.nombres_apellidos_tercero);
+    $.ajax({
+        url: '../ajax/get_aliados_documentos_ajax.php', 
+        type: 'GET', 
+        data: {
+            busqueda: busqueda,
+            filtro_doc: filtro_doc,
+            sort: sort,
+            cod_asesor: cod_asesor,
+            cod_departamento: cod_depto,
+            cod_municipio: cod_municipio,
+            fecha_registro: fecha_reg
+        },
+        dataType: 'json',
+        success: function(response) {
+            renderizarListaDocumentos(response);
+        },
+        error: function() { 
+            $("#bodyDocumentosCargados").html('<div style="text-align: center; padding: 2rem; color: #ef4444;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Error al obtener el listado filtrado.</p></div>'); 
         }
-        return 0;
     });
-
-    renderizarDocumentos(filtrados);
 }
 
-function renderizarDocumentos(aliados) {
-    let html = '<div style="display: grid; gap: 1rem;">';
-    
+function renderizarListaDocumentos(aliados) {
+    let html = '<div style="display: grid; gap: 1rem; width: 100%;">';
     if (aliados && aliados.length > 0) {
         aliados.forEach(function(aliado) {
             let docsHtml = '';
-            if (aliado.documentos.length > 0) {
+            if (aliado.documentos && aliado.documentos.length > 0) {
                 aliado.documentos.forEach(function(doc) {
-                    if (doc.existe) {
-                        docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px solid rgba(59, 130, 246, 0.2);"><i class="fa-solid fa-file-pdf"></i> ${doc.nombre}</span>`;
-                    } else {
-                        docsHtml += `<span style="display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(239, 68, 68, 0.1); color: #f87171; padding: 0.3rem 0.7rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; border: 1px dashed rgba(239, 68, 68, 0.4);"><i class="fa-solid fa-file-circle-xmark"></i> ${doc.nombre} (No existe)</span>`;
-                    }
+                    let icon = doc.nombre.includes('RUT') ? 'fa-file-invoice' : (doc.nombre.includes('Cámara') ? 'fa-building' : 'fa-id-card');
+                    let color = doc.existe ? '#10b981' : '#f59e0b';
+                    let labelStatus = doc.existe ? '' : ' <span style="font-size: 0.65rem; opacity: 0.7;">(No existe)</span>';
+                    
+                    docsHtml += `
+                        <div onclick="window.open('${doc.url}', '_blank')" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s ease; flex: 1; min-width: 140px;">
+                            <i class="fa-solid ${icon}" style="color: ${color}; font-size: 0.9rem;"></i>
+                            <span style="color: rgba(255,255,255,0.9); font-size: 0.8rem; font-weight: 600;">${doc.nombre}${labelStatus}</span>
+                        </div>
+                    `;
                 });
             } else {
-                docsHtml = '<span style="color: rgba(255,255,255,0.4); font-style: italic; font-size: 0.8rem;">Sin documentos registrados</span>';
+                docsHtml = '<div style="color: rgba(255,255,255,0.3); font-style: italic; font-size: 0.8rem; padding: 0.5rem;">Sin documentos registrados</div>';
             }
             
-            let cardStyle = 'background: rgba(255,255,255,0.03); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 1.25rem;';
-            let statusLabel = '';
+            let status_class = aliado.total_cargados === 3 ? 'status-complete' : (aliado.total_cargados > 0 ? 'status-partial' : 'status-empty');
+            let status_text = aliado.total_cargados === 3 ? 'Completo' : (aliado.total_cargados > 0 ? aliado.total_cargados + '/3 Docs' : 'Pendiente');
             
-            if (aliado.total_cargados === 0) {
-                cardStyle = 'background: rgba(255,255,255,0.02); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 1.25rem; opacity: 0.8;';
-            } else if (aliado.alguno_falta) {
-                cardStyle = 'background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 1.25rem;';
-                statusLabel = '<div style="color: #f87171; font-size: 0.75rem; font-weight: 700; margin-top: 5px;"><i class="fa-solid fa-triangle-exclamation"></i> FALTAN ARCHIVOS EN EL SERVIDOR</div>';
-            } else if (aliado.total_cargados >= 3) {
-                cardStyle = 'background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 1.25rem;';
-                statusLabel = '<div style="color: #34d399; font-size: 0.75rem; font-weight: 700; margin-top: 5px;"><i class="fa-solid fa-check-circle"></i> EXPEDIENTE COMPLETO</div>';
-            }
+            let border_color = aliado.total_cargados === 3 ? 'rgba(16, 185, 129, 0.3)' : (aliado.total_cargados > 0 ? 'rgba(245, 158, 11, 0.3)' : 'rgba(255, 255, 255, 0.1)');
+            let bg_gradient = aliado.total_cargados === 3 ? 'rgba(16, 185, 129, 0.05)' : (aliado.total_cargados > 0 ? 'rgba(245, 158, 11, 0.05)' : 'rgba(255, 255, 255, 0.02)');
 
             html += `
-                <div style="${cardStyle}">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem;">
-                        <div>
-                            <div style="color: white; font-weight: 700; font-size: 1.1rem;">${aliado.nombres_apellidos_tercero}</div>
-                            <div style="color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.25rem;"><i class="fa-solid fa-calendar"></i> Registro: ${aliado.fecha}</div>
-                            ${statusLabel}
+                <div class="animate-in" style="background: ${bg_gradient}; border: 1px solid ${border_color}; border-radius: 16px; padding: 1rem; transition: all 0.3s ease; margin-bottom: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; gap: 1rem;">
+                        <div style="flex: 1;">
+                            <div style="color: white; font-weight: 700; font-size: 1rem; line-height: 1.2;">${aliado.nombres_apellidos_tercero}</div>
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.4rem;">
+                                <span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;"><i class="fa-solid fa-calendar"></i> Reg: ${aliado.fecha}</span>
+                                <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;" class="${status_class}">${status_text}</span>
+                            </div>
                         </div>
                         ${aliado.total_cargados > 0 ? `
-                        <button onclick="gestionarDescargaEmailDoc('${aliado.cod_administrador}', '${aliado.nombres_apellidos_tercero}')" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.6rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); cursor: pointer; transition: all 0.3s ease;">
-                            <i class="fa-solid fa-file-zipper"></i> Compartir
+                        <button onclick="gestionarDescargaEmailDoc('${aliado.cod_administrador}', '${aliado.nombres_apellidos_tercero}')" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; white-space: nowrap;">
+                            <i class="fa-solid fa-file-zipper"></i> ZIP
                         </button>` : ''}
                     </div>
                     <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
@@ -6510,11 +6602,31 @@ function renderizarDocumentos(aliados) {
             `;
         });
     } else {
-        html += '<div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.4);"><i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i><h3>Resultados vacíos</h3><p>No se encontraron aliados que coincidan con el filtro seleccionado.</p></div>';
+        html += `
+            <div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.3); width: 100%;">
+                <i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;"></i>
+                <h3 style="color: white; font-size: 1.1rem; margin-bottom: 0.5rem;">Sin resultados</h3>
+                <p style="font-size: 0.85rem;">No se encontraron aliados con esos criterios.</p>
+            </div>
+        `;
     }
     
     html += '</div>';
     $("#bodyDocumentosCargados").html(html);
+
+    // Trigger animations
+    setTimeout(() => {
+        $("#bodyDocumentosCargados .animate-in").each(function(i) {
+            var el = $(this);
+            setTimeout(() => {
+                el.css({
+                    'opacity': '1',
+                    'transform': 'translateY(0)',
+                    'transition': 'all 0.4s ease'
+                });
+            }, i * 30);
+        });
+    }, 50);
 }
 
 function cerrarModalDocumentos() { $("#modalDocumentosCargados").removeClass("show").hide(); }

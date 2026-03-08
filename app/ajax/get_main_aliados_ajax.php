@@ -5,10 +5,7 @@ ini_set('display_errors', 1);
 include_once('../conexiones/conexione.php');
 include_once('pagination.php');
 
-if (!isset($_SESSION['cod_administrador'])) {
-    echo '<div class="empty-state"><h3>Sesión expirada</h3><p>Por favor, vuelve a iniciar sesión.</p></div>';
-    exit;
-}
+if (!isset($_SESSION['cod_administrador'])) { echo '<div class="empty-state"><h3>Sesión expirada</h3><p>Por favor, vuelve a iniciar sesión.</p></div>'; exit; }
 
 $cod_administrador = $_SESSION['cod_administrador'];
 
@@ -63,20 +60,17 @@ $sql_firmados = "SELECT COUNT(DISTINCT f.cod_aliado_estrategico) as total FROM t
 $res_firmados = mysqli_query($conectar, $sql_firmados);
 $total_firmados = ($res_firmados) ? mysqli_fetch_assoc($res_firmados)['total'] : 0;
 
-// Conteo documentos (filtrado)
-$sql_docs = "SELECT SUM(CASE WHEN (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
-SUM(CASE WHEN (url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) THEN 1 ELSE 0 END) +
-SUM(CASE WHEN (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL) THEN 1 ELSE 0 END) as total
-FROM tbl15_administrador a $where";
+// Conteo documentos (filtrado por aliados con al menos un documento)
+$sql_docs = "SELECT COUNT(*) as total FROM tbl15_administrador a $where AND (
+    (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) OR 
+    (url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) OR 
+    (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL)
+)";
 $res_docs = mysqli_query($conectar, $sql_docs);
 $total_docs_cargados = ($res_docs) ? mysqli_fetch_assoc($res_docs)['total'] : 0;
 
 // Inyectar datos de estadísticas para que el JS los capture
-echo '<div id="stats-data" style="display:none;" 
-      data-total="'.$total_registros.'" 
-      data-firmados="'.$total_firmados.'" 
-      data-docs="'.$total_docs_cargados.'"></div>';
-
+echo '<div id="stats-data" style="display:none;" data-total="'.$total_registros.'" data-firmados="'.$total_firmados.'" data-docs="'.$total_docs_cargados.'"></div>';
 // Selección
 $order_by = "a.cod_administrador DESC";
 if ($sort == 'id_asc') { $order_by = "a.cod_administrador ASC"; }
