@@ -6372,12 +6372,6 @@ function escapeHtmlMovil(text) {
                             <?php endwhile; ?>
                         </select>
                     </div>
-                    <div class="filter-group">
-                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-calendar"></i> Fecha Reg:</label>
-                        <input type="date" id="modalFiltroFechaReg" class="form-input" onchange="aplicarFiltrosDocumentos()" style="padding: 0.35rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; width: 100%; font-size: 0.85rem;">
-                    </div>
-                </div>
-
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                     <div class="filter-group">
                         <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-map-location-dot"></i> Depto:</label>
@@ -6391,6 +6385,33 @@ function escapeHtmlMovil(text) {
                             <option value="">Todas</option>
                         </select>
                     </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-calendar"></i> Fecha Reg:</label>
+                        <input type="date" id="modalFiltroFechaReg" class="form-input" onchange="aplicarFiltrosDocumentos()" style="padding: 0.35rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; width: 100%; font-size: 0.85rem;">
+                    </div>
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-calendar-check"></i> Fecha Doc:</label>
+                        <input type="date" id="modalFiltroFechaDoc" class="form-input" onchange="aplicarFiltrosDocumentos()" style="padding: 0.35rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; width: 100%; font-size: 0.85rem;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas del Modal (Replicando diseño header-stats) -->
+            <div class="header-stats" style="padding: 1rem; margin-top: 0; justify-content: center; background: rgba(139, 92, 246, 0.02); border-bottom: 1px solid rgba(139, 92, 246, 0.1); gap: 0.75rem;">
+                <div class="header-stat" style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); flex: 1; min-width: 0;">
+                    <div class="header-stat-value" id="modal-stat-total" style="font-size: 1.1rem; line-height: 1;">0</div>
+                    <div class="header-stat-label" style="font-size: 0.6rem; margin-top: 2px;">Resultado</div>
+                </div>
+                <div class="header-stat" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); flex: 1; min-width: 0;">
+                    <div class="header-stat-value" id="modal-stat-firmados" style="font-size: 1.1rem; line-height: 1;">0</div>
+                    <div class="header-stat-label" style="font-size: 0.6rem; margin-top: 2px;">Firmados</div>
+                </div>
+                <div class="header-stat" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); flex: 1; min-width: 0;">
+                    <div class="header-stat-value" id="modal-stat-docs" style="font-size: 1.1rem; line-height: 1;">0</div>
+                    <div class="header-stat-label" style="font-size: 0.6rem; margin-top: 2px;">Con Docs</div>
                 </div>
             </div>
             
@@ -6530,6 +6551,8 @@ function aplicarFiltrosDocumentos() {
     var cod_municipio = $('#modalFiltroCiudad').val();
     var fecha_reg = $('#modalFiltroFechaReg').val();
 
+    var fecha_doc = $('#modalFiltroFechaDoc').val();
+
     $.ajax({
         url: '../ajax/get_aliados_documentos_ajax.php', 
         type: 'GET', 
@@ -6540,7 +6563,8 @@ function aplicarFiltrosDocumentos() {
             cod_asesor: cod_asesor,
             cod_departamento: cod_depto,
             cod_municipio: cod_municipio,
-            fecha_registro: fecha_reg
+            fecha_registro: fecha_reg,
+            fecha_documentacion: fecha_doc
         },
         dataType: 'json',
         success: function(response) {
@@ -6552,7 +6576,15 @@ function aplicarFiltrosDocumentos() {
     });
 }
 
-function renderizarListaDocumentos(aliados) {
+function renderizarListaDocumentos(response) {
+    let aliados = response.aliados || [];
+    let stats = response.stats || { total: 0, firmados: 0, docs: 0 };
+    
+    // Actualizar cajas de estadísticas del modal
+    $("#modal-stat-total").text(stats.total);
+    $("#modal-stat-firmados").text(stats.firmados);
+    $("#modal-stat-docs").text(stats.docs);
+
     let html = '<div style="display: grid; gap: 1rem; width: 100%;">';
     if (aliados && aliados.length > 0) {
         aliados.forEach(function(aliado) {

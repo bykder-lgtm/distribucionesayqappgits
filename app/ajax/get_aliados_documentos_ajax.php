@@ -65,5 +65,28 @@ if ($res) {
         $aliados[] = ['cod_administrador' => $row['cod_administrador'], 'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'] ?: ($row['nombres'] . ' ' . $row['apellidos']), 'fecha' => date('d/m/Y', strtotime($row['fecha_documentacion'])), 'fecha_raw' => $row['fecha_documentacion'], 'documentos' => $docs, 'total_cargados' => count($docs), 'alguno_falta' => $alguno_falta];
     }
 }
-echo json_encode($aliados);
+// Calcular estadísticas filtradas para el modal
+$sql_firmados = "SELECT COUNT(DISTINCT f.cod_aliado_estrategico) as total 
+FROM tbl15_firma_digital_documento f INNER JOIN tbl15_administrador a ON f.cod_aliado_estrategico = a.cod_administrador
+$where AND f.cod_estado_firma_signature = 1";
+$res_firmados = mysqli_query($conectar, $sql_firmados);
+$total_firmados = ($res_firmados) ? mysqli_fetch_assoc($res_firmados)['total'] : 0;
+
+$sql_docs_count = "SELECT COUNT(*) as total FROM tbl15_administrador a $where 
+AND (
+    (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_rut_aliado IS NOT NULL) OR 
+    (a.url_documentacion_camaracomercio_aliado != '' AND a.url_documentacion_camaracomercio_aliado IS NOT NULL) OR 
+    (a.url_documentacion_cedula_aliado != '' AND a.url_documentacion_cedula_aliado IS NOT NULL)
+)";
+$res_docs_count = mysqli_query($conectar, $sql_docs_count);
+$total_docs_count = ($res_docs_count) ? mysqli_fetch_assoc($res_docs_count)['total'] : 0;
+
+echo json_encode([
+    'aliados' => $aliados,
+    'stats' => [
+        'total' => count($aliados),
+        'firmados' => (int)$total_firmados,
+        'docs' => (int)$total_docs_count
+    ]
+]);
 ?>
