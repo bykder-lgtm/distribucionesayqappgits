@@ -404,6 +404,7 @@ body {
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    min-height: 360px; /* Altura mínima reducida */
 }
 
 @media (max-width: 768px) {
@@ -465,11 +466,12 @@ body {
 .ally-details {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.4rem;
-    margin-bottom: 0.75rem;
+    gap: 0.2rem; /* Espaciado entre items reducido */
+    margin-bottom: 0.5rem;
     border-top: 1px solid rgba(255,255,255,0.05);
-    padding-top: 0.75rem;
+    padding-top: 0.5rem;
     flex: 1;
+    min-height: 140px; /* Altura fija reducida */
 }
 
 @media (max-width: 480px) {
@@ -483,6 +485,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    height: 20px; /* Altura de item reducida */
 }
 
 .ally-detail i {
@@ -503,8 +506,8 @@ body {
 }
 
 [style*="grid-column: 1 / -1"] span {
-    white-space: normal;
-    word-break: break-all;
+    white-space: nowrap; /* Mantener una sola línea para estaticidad */
+    word-break: normal;
 }
 
 
@@ -513,15 +516,15 @@ body {
 .ally-stats {
     display: flex;
     gap: 0.5rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
+    margin-top: 0.4rem; /* Reducido */
+    padding-top: 0.4rem; /* Reducido */
     border-top: 1px solid rgba(139, 92, 246, 0.15);
 }
 
 .ally-stat-item {
     flex: 1;
     text-align: center;
-    padding: 0.4rem;
+    padding: 0.15rem 0.4rem; /* Padding vertical muy reducido */
     border-radius: 8px;
     background: rgba(139, 92, 246, 0.08);
     cursor: pointer;
@@ -536,10 +539,11 @@ body {
 }
 
 .ally-stat-number {
-    font-size: 1.1rem;
+    font-size: 0.95rem; /* Tamaño reducido */
     font-weight: 700;
     color: #8b5cf6;
     display: block;
+    line-height: 1.1;
 }
 
 .ally-stat-label {
@@ -552,7 +556,7 @@ body {
 .ally-quick-actions {
     display: flex;
     gap: 0.5rem;
-    margin-top: 0.75rem;
+    margin-top: 0.4rem; /* Reducido */
 }
 
 .btn-quick-action {
@@ -588,8 +592,8 @@ body {
 .ally-actions {
     display: flex;
     gap: 0.5rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
+    margin-top: 0.4rem; /* Reducido */
+    padding-top: 0.4rem; /* Reducido */
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
@@ -606,10 +610,10 @@ body {
 
 .action-btn {
     flex: 1;
-    padding: 0.5rem;
+    padding: 0.35rem; /* Reducido */
     border-radius: 10px;
     border: none;
-    font-size: 0.75rem;
+    font-size: 0.72rem; /* Ligeramente reducido */
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -1031,17 +1035,17 @@ body {
 .ally-actions {
     display: flex;
     gap: 0.5rem;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
+    margin-top: 0.4rem; /* Reducido */
+    padding-top: 0.4rem; /* Reducido */
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .action-btn {
     flex: 1;
-    padding: 0.7rem;
+    padding: 0.35rem; /* Reducido */
     border-radius: 10px;
     border: none;
-    font-size: 0.85rem;
+    font-size: 0.72rem; /* Ligeramente reducido */
     font-weight: 600;
     cursor: pointer;
     display: flex;

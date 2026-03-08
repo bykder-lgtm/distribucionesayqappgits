@@ -99,20 +99,45 @@ if ($total_registros > 0):
             </div>
             
             <div class="ally-details">
-                <?php if(!empty($row['telefono'])): ?><div class="ally-detail"><i class="fa-solid fa-phone"></i><span><?php echo $row['telefono']; ?></span></div><?php endif; ?>
-                <?php if(!empty($row['nombre_asesor'])): ?><div class="ally-detail"><i class="fa-solid fa-user-tie" style="color: #a78bfa;"></i><span title="Asesor">Asesor: <?php echo ucwords(strtolower($row['nombre_asesor'])); ?></span></div><?php endif; ?>
-                <?php if(!empty($row['correo'])): ?><div class="ally-detail" style="grid-column: 1 / -1;"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($row['correo']); ?></span></div><?php endif; ?>
+                <div class="ally-detail">
+                    <i class="fa-solid fa-phone"></i>
+                    <span><?php echo !empty($row['telefono']) ? $row['telefono'] : '---'; ?></span>
+                </div>
                 
-                <?php if(!empty($row['nombre_municipio'])): ?>
-                <div class="ally-detail"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i><span><?php echo ucwords(strtolower($row['nombre_municipio'])); ?><?php echo !empty($row['nombre_departamento']) ? ', '.ucwords(strtolower($row['nombre_departamento'])) : ''; ?></span></div>
-                <?php endif; ?>
+                <div class="ally-detail">
+                    <i class="fa-solid fa-user-tie" style="color: #a78bfa;"></i>
+                    <span title="Asesor">Asesor: <?php echo !empty($row['nombre_asesor']) ? ucwords(strtolower($row['nombre_asesor'])) : '---'; ?></span>
+                </div>
                 
-                <?php if(!empty($row['barrio_tercero'])): ?>
-                <div class="ally-detail"><i class="fa-solid fa-map-pin" style="color: #3b82f6;"></i><span>Barrio: <?php echo ucwords(strtolower($row['barrio_tercero'])); ?></span></div>
-                <?php endif; ?>
+                <div class="ally-detail">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span><?php echo !empty($row['correo']) ? strtolower($row['correo']) : '---'; ?></span>
+                </div>
 
-                <?php if(!empty($row['cuenta'])): ?><div class="ally-detail"><i class="fa-solid fa-user-gear"></i><span>User: <?php echo $row['cuenta']; ?></span></div><?php endif; ?>
-                <?php if(!empty($row['fecha'])): ?><div class="ally-detail"><i class="fa-solid fa-calendar-day" style="color: #f59e0b;"></i><span><?php echo date('d/m/Y', strtotime($row['fecha'])); ?></span></div><?php endif; ?>
+                <div class="ally-detail">
+                    <i class="fa-solid fa-percentage" style="color: #10b981;"></i>
+                    <span title="Comisión">Comisión: <?php echo !empty($row['comision_ptj']) ? $row['comision_ptj'].'%' : '0%'; ?></span>
+                </div>
+                
+                <div class="ally-detail">
+                    <i class="fa-solid fa-location-dot" style="color: #ef4444;"></i>
+                    <span><?php echo !empty($row['nombre_municipio']) ? ucwords(strtolower($row['nombre_municipio'])) . (!empty($row['nombre_departamento']) ? ', ' . ucwords(strtolower($row['nombre_departamento'])) : '') : '---'; ?></span>
+                </div>
+                
+                <div class="ally-detail">
+                    <i class="fa-solid fa-map-pin" style="color: #3b82f6;"></i>
+                    <span>Barrio: <?php echo !empty($row['barrio_tercero']) ? ucwords(strtolower($row['barrio_tercero'])) : '---'; ?></span>
+                </div>
+
+                <div class="ally-detail">
+                    <i class="fa-solid fa-user-gear"></i>
+                    <span>User: <?php echo !empty($row['cuenta']) ? $row['cuenta'] : '---'; ?></span>
+                </div>
+                
+                <div class="ally-detail">
+                    <i class="fa-solid fa-calendar-day" style="color: #f59e0b;"></i>
+                    <span><?php echo !empty($row['fecha']) ? date('d/m/Y', strtotime($row['fecha'])) : '---'; ?></span>
+                </div>
 
                 <?php 
                 $tiene_firma = !empty($row['url_img_firma_prof_ori']);
