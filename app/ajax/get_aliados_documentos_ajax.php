@@ -81,12 +81,5 @@ AND (
 $res_docs_count = mysqli_query($conectar, $sql_docs_count);
 $total_docs_count = ($res_docs_count) ? mysqli_fetch_assoc($res_docs_count)['total'] : 0;
 
-echo json_encode([
-    'aliados' => $aliados,
-    'stats' => [
-        'total' => count($aliados),
-        'firmados' => (int)$total_firmados,
-        'docs' => (int)$total_docs_count
-    ]
-]);
+echo json_encode(['aliados' => $aliados, 'stats' => ['total' => count($aliados), 'firmados' => (int)$total_firmados, 'docs' => (int)$total_docs_count]]);
 ?>

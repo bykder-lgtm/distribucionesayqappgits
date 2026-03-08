@@ -795,15 +795,15 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
     </div>
 </div>
 
-<!-- Modal Editar Coordinador -->
-<div class="modal-overlay" id="modalEditarCoordinador" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;">
+<!-- Modal Editar Revisor -->
+<div class="modal-overlay" id="modalEditarRevisor" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;">
     <div class="modal-content" style="background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
         <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 1.5rem; border-radius: 20px 20px 0 0; position: relative; display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-edit"></i> Editar Coordinador</h2>
+            <h2 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-edit"></i> Editar Revisor</h2>
             <button class="modal-close" onclick="cerrarModalEditar()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body" style="padding: 1.5rem;">
-            <form id="formEditarCoordinador" onsubmit="editarCoordinador(event)">
+            <form id="formEditarRevisor" onsubmit="editarRevisor(event)">
                 <input type="hidden" name="cod_administrador_edit" id="cod_administrador_edit">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     
@@ -862,7 +862,7 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
  <?php include_once("../menu/05_modulo_menu_lider_movil.php"); ?>
 
 <script>
-function filtrar(busqueda) { if (busqueda.length > 2 || busqueda.length === 0) { window.location.href = 'lista_coordinador_lider_movil.php?busqueda=' + encodeURIComponent(busqueda); } }
+function filtrar(busqueda) { if (busqueda.length > 2 || busqueda.length === 0) { window.location.href = 'lista_revisor_lider_movil.php?busqueda=' + encodeURIComponent(busqueda); } }
 
 // Auto búsqueda después de 1 segundo de inactividad
 let searchTimeout;
@@ -874,12 +874,12 @@ document.getElementById('searchInput').addEventListener('keyup', function(e) {
 
 // Modal Logic
 function abrirModalRegistro() {
-    document.getElementById('modalRegistroCoordinador').style.display = 'flex';
+    document.getElementById('modalRegistroRevisor').style.display = 'flex';
 }
 
 function cerrarModalRegistro() {
-    document.getElementById('modalRegistroCoordinador').style.display = 'none';
-    document.getElementById('formRegistroCoordinador').reset();
+    document.getElementById('modalRegistroRevisor').style.display = 'none';
+    document.getElementById('formRegistroRevisor').reset();
 }
 
 // Edit Modal Logic
@@ -892,20 +892,20 @@ function abrirModalEditar(datos) {
     document.getElementById('telefono1_edit').value = datos.telefono;
     document.getElementById('cod_lider_edit').value = datos.cod_lider;
     
-    document.getElementById('modalEditarCoordinador').style.display = 'flex';
+    document.getElementById('modalEditarRevisor').style.display = 'flex';
 }
 
 function cerrarModalEditar() {
-    document.getElementById('modalEditarCoordinador').style.display = 'none';
+    document.getElementById('modalEditarRevisor').style.display = 'none';
 }
 
-function editarCoordinador(e) {
+function editarRevisor(e) {
     e.preventDefault();
-    const form = document.getElementById('formEditarCoordinador');
+    const form = document.getElementById('formEditarRevisor');
     const formData = new FormData(form);
 
     Swal.fire({
-        title: 'Actualizando Coordinador...',
+        title: 'Actualizando Revisor...',
         text: 'Por favor espere',
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); },
@@ -913,7 +913,7 @@ function editarCoordinador(e) {
     });
 
     $.ajax({
-        url: 'proceso_editar_coordinador_lider_movil_ajax.php',
+        url: 'proceso_editar_revisor_lider_movil_ajax.php',
         type: 'POST',
         data: formData,
         contentType: false,
@@ -944,14 +944,14 @@ function editarCoordinador(e) {
 }
 
 // AJAX Registration
-function registrarCoordinador(e) {
+function registrarRevisor(e) {
     e.preventDefault();
     
-    const form = document.getElementById('formRegistroCoordinador');
+    const form = document.getElementById('formRegistroRevisor');
     const formData = new FormData(form);
 
     Swal.fire({
-        title: 'Registrando Coordinador...',
+        title: 'Registrando Revisor...',
         text: 'Por favor espere',
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); },
@@ -961,7 +961,7 @@ function registrarCoordinador(e) {
     });
 
     $.ajax({
-        url: 'reg_coordinador_modal_lider_movil_ajax_reg.php',
+        url: 'reg_revisor_modal_lider_movil_ajax_reg.php',
         type: 'POST',
         data: formData,
         contentType: false,
@@ -976,7 +976,7 @@ function registrarCoordinador(e) {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // WhatsApp Notification
-                        const connect_whatsapp = 'https://api.whatsapp.com/send?phone=57' + formData.get('telefono1_tercero') + '&text=Hola ' + formData.get('nombre1_tercero') + ', te damos la bienvenida como Coordinador. Tu usuario es: ' + formData.get('identificacion_tercero') + ' y tu contraseña es: ' + formData.get('identificacion_tercero');
+                        const connect_whatsapp = 'https://api.whatsapp.com/send?phone=57' + formData.get('telefono1_tercero') + '&text=Hola ' + formData.get('nombre1_tercero') + ', te damos la bienvenida como Revisor. Tu usuario es: ' + formData.get('identificacion_tercero') + ' y tu contraseña es: ' + formData.get('identificacion_tercero');
                         window.open(connect_whatsapp, '_blank');
                         location.reload();
                     } else if (result.isDenied) {
