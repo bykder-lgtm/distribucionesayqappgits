@@ -28,6 +28,8 @@ $cod_aliado_get = isset($_GET['cod_administrador']) ? trim(mysqli_real_escape_st
 $cod_asesor = isset($_GET['cod_asesor']) ? (int)$_GET['cod_asesor'] : 0;
 $cod_depto = isset($_GET['cod_departamento']) ? (int)$_GET['cod_departamento'] : 0;
 $cod_muni = isset($_GET['cod_municipio']) ? (int)$_GET['cod_municipio'] : 0;
+$fecha_registro = isset($_GET['fecha_registro']) ? mysqli_real_escape_string($conectar, $_GET['fecha_registro']) : '';
+$fecha_doc_filtro = isset($_GET['fecha_documentacion']) ? mysqli_real_escape_string($conectar, $_GET['fecha_documentacion']) : '';
 
 $where = "WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
@@ -38,6 +40,8 @@ if ($cod_coordinador_filtro > 0) { $where .= " AND a.cod_coordinador = '$cod_coo
 if ($cod_asesor > 0) { $where .= " AND a.cod_asesor = '$cod_asesor'"; }
 if ($cod_depto > 0) { $where .= " AND a.cod_departamento = '$cod_depto'"; }
 if ($cod_muni > 0) { $where .= " AND a.cod_municipio = '$cod_muni'"; }
+if (!empty($fecha_registro)) { $where .= " AND DATE(a.fecha) = '$fecha_registro'"; }
+if (!empty($fecha_doc_filtro)) { $where .= " AND DATE(a.fecha_documentacion) = '$fecha_doc_filtro'"; }
 
 if ($filtro_doc == '1') {
     $where .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))";
@@ -61,6 +65,8 @@ elseif ($sort == 'nombre_asc') { $order_by = "a.nombres_apellidos_tercero ASC"; 
 elseif ($sort == 'nombre_desc') { $order_by = "a.nombres_apellidos_tercero DESC"; }
 elseif ($sort == 'fecha_desc') { $order_by = "a.fecha_hora DESC"; }
 elseif ($sort == 'fecha_asc') { $order_by = "a.fecha_hora ASC"; }
+elseif ($sort == 'doc_fecha_desc') { $order_by = "a.fecha_documentacion DESC"; }
+elseif ($sort == 'doc_fecha_asc') { $order_by = "a.fecha_documentacion ASC"; }
 
 $sql = "SELECT a.*, ase.nombres_apellidos_tercero as nombre_asesor, dep.nombre_departamento, mun.nombre_municipio FROM tbl15_administrador a
 LEFT JOIN tbl15_administrador ase ON a.cod_asesor = ase.cod_administrador LEFT JOIN tbl15_departamento dep ON a.cod_departamento = dep.cod_departamento
@@ -108,15 +114,10 @@ if ($total_registros > 0):
                     <i class="fa-solid fa-user-tie" style="color: #a78bfa;"></i>
                     <span title="Asesor">Asesor: <?php echo !empty($row['nombre_asesor']) ? ucwords(strtolower($row['nombre_asesor'])) : '---'; ?></span>
                 </div>
-                
+
                 <div class="ally-detail">
                     <i class="fa-solid fa-envelope"></i>
                     <span><?php echo !empty($row['correo']) ? strtolower($row['correo']) : '---'; ?></span>
-                </div>
-
-                <div class="ally-detail">
-                    <i class="fa-solid fa-percentage" style="color: #10b981;"></i>
-                    <span title="Comisión">Comisión: <?php echo !empty($row['comision_ptj']) ? $row['comision_ptj'].'%' : '0%'; ?></span>
                 </div>
                 
                 <div class="ally-detail">
@@ -133,10 +134,15 @@ if ($total_registros > 0):
                     <i class="fa-solid fa-user-gear"></i>
                     <span>User: <?php echo !empty($row['cuenta']) ? $row['cuenta'] : '---'; ?></span>
                 </div>
-                
+
                 <div class="ally-detail">
                     <i class="fa-solid fa-calendar-day" style="color: #f59e0b;"></i>
-                    <span><?php echo !empty($row['fecha']) ? date('d/m/Y', strtotime($row['fecha'])) : '---'; ?></span>
+                    <span title="Fecha Registro">Reg: <?php echo !empty($row['fecha']) ? date('d/m/Y', strtotime($row['fecha'])) : '---'; ?></span>
+                </div>
+
+                <div class="ally-detail">
+                    <i class="fa-solid fa-file-invoice" style="color: #8b5cf6;"></i>
+                    <span title="Fecha Documentación">Doc: <?php echo (!empty($row['fecha_documentacion']) && $row['fecha_documentacion'] != '0000-00-00 00:00:00') ? date('d/m/Y', strtotime($row['fecha_documentacion'])) : '---'; ?></span>
                 </div>
 
                 <?php 
@@ -147,9 +153,15 @@ if ($total_registros > 0):
                     <i class="fa-solid fa-signature" style="color: <?php echo $tiene_firma ? '#10b981' : '#ef4444'; ?>;"></i>
                     <span>Firma: <?php echo $tiene_firma ? 'Cargada' : 'Pendiente'; ?></span>
                 </div>
+
                 <div class="ally-detail">
                     <i class="fa-solid fa-file-circle-check" style="color: <?php echo $documentos_completos ? '#10b981' : '#f59e0b'; ?>;"></i>
                     <span>Docs: <?php echo $documentos_completos ? 'Completos' : ($total_docs > 0 ? 'Parcial ('.$total_docs.'/3)' : 'Pendiente'); ?></span>
+                </div>
+
+                <div class="ally-detail">
+                    <i class="fa-solid fa-clock-rotate-left" style="color: #6366f1;"></i>
+                    <span>Cargue: <?php echo (!empty($row['fecha_documentacion']) && $row['fecha_documentacion'] != '0000-00-00 00:00:00') ? date('H:i', strtotime($row['fecha_documentacion'])) : '--:--'; ?></span>
                 </div>
             </div>
 

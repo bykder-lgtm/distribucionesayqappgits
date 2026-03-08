@@ -404,7 +404,7 @@ body {
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    min-height: 360px; /* Altura mínima reducida */
+    min-height: 400px; /* Ajustado para el nuevo layout de 6 filas */
 }
 
 @media (max-width: 768px) {
@@ -471,7 +471,7 @@ body {
     border-top: 1px solid rgba(255,255,255,0.05);
     padding-top: 0.5rem;
     flex: 1;
-    min-height: 140px; /* Altura fija reducida */
+    min-height: 160px; /* Incrementado para 6 filas */
 }
 
 @media (max-width: 480px) {
@@ -1731,7 +1731,20 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
                     <option value="nombre_desc" <?php echo $sort == 'nombre_desc' ? 'selected' : ''; ?>>Nombre (Z-A)</option>
                     <option value="fecha_desc" <?php echo $sort == 'fecha_desc' ? 'selected' : ''; ?>>Registro (Reciente)</option>
                     <option value="fecha_asc" <?php echo $sort == 'fecha_asc' ? 'selected' : ''; ?>>Registro (Antiguo)</option>
+                    <option value="doc_fecha_desc" <?php echo $sort == 'doc_fecha_desc' ? 'selected' : ''; ?>>Documentación (Reciente)</option>
+                    <option value="doc_fecha_asc" <?php echo $sort == 'doc_fecha_asc' ? 'selected' : ''; ?>>Documentación (Antiguo)</option>
                 </select>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;"><i class="fa-solid fa-calendar"></i> Fecha Registro:</label>
+                <input type="date" id="filtroFechaReg" class="form-input" onchange="filtrar()" style="padding: 0.4rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; width: 100%;">
+            </div>
+            <div class="filter-group">
+                <label style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-bottom: 0.25rem;"><i class="fa-solid fa-file-invoice"></i> Fecha Doc:</label>
+                <input type="date" id="filtroFechaDoc" class="form-input" onchange="filtrar()" style="padding: 0.4rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; width: 100%;">
             </div>
         </div>
 
@@ -5216,6 +5229,8 @@ function load(page) {
     var asesorEl = document.getElementById('filtroAsesor');
     var deptoEl = document.getElementById('filtroDepto');
     var ciudadEl = document.getElementById('filtroCiudad');
+    var fechaRegEl = document.getElementById('filtroFechaReg');
+    var fechaDocEl = document.getElementById('filtroFechaDoc');
     
     if (!searchEl || !filterEl || !sortEl) {
         console.error("No se encontraron los elementos de filtro/búsqueda");
@@ -5228,6 +5243,8 @@ function load(page) {
     var cod_asesor = asesorEl ? asesorEl.value : '';
     var cod_depto = deptoEl ? deptoEl.value : '';
     var cod_municipio = ciudadEl ? ciudadEl.value : '';
+    var fecha_reg = fechaRegEl ? fechaRegEl.value : '';
+    var fecha_doc = fechaDocEl ? fechaDocEl.value : '';
     
     $("#allyList").html('<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 1rem;"></i><p>Cargando aliados...</p></div>');
     $(".pagination-container").hide();
@@ -5247,6 +5264,8 @@ function load(page) {
             cod_asesor: cod_asesor,
             cod_departamento: cod_depto,
             cod_municipio: cod_municipio,
+            fecha_registro: fecha_reg,
+            fecha_documentacion: fecha_doc,
             cod_coordinador: cod_coordinador,
             cod_administrador: cod_administrador_get,
             _t: new Date().getTime() // Cache buster
