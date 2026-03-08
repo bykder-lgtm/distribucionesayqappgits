@@ -10,7 +10,7 @@ $menu_asesores       = ['lista_asesor_lider_movil.php'];
 $menu_aliados        = ['lista_aliado_lider_movil.php', 'lista_aliado_asesor_lider_movil.php'];
 $menu_tiendas        = ['lista_tienda_lider_movil.php', 'lista_producto_lider_movil.php'];
 $menu_consultas      = ['lista_consultas_lider_movil.php'];
-$menu_config         = ['config_lider_movil.php', 'parametrizacion_cuota_entidad_crediticia_lider_movil.php'];
+$menu_config         = ['config_lider_movil.php', 'parametrizacion_cuota_entidad_crediticia_lider_movil.php', 'lista_archivados_lider_movil.php'];
 ?>
 <!-- Bottom Navigation -->
 <!-- Bottom Navigation -->

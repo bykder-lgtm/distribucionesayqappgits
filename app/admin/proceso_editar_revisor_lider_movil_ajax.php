@@ -25,10 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'Por favor complete todos los campos obligatorios.']); 
         exit; 
     }
-    
     // Preparar nombres completos
     $nombres_apellidos_tercero = trim("$nombres $apellidos");
-    
     // Actualizar Revisor
     $sql_update = "UPDATE tbl15_administrador SET cedula = '$cedula', identificacion_tercero = '$cedula', nombres = UPPER('$nombres'),
         apellidos = UPPER('$apellidos'), nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'), correo = '$correo',

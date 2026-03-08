@@ -15,7 +15,7 @@ $cod_muni = isset($_GET['cod_municipio']) ? (int)$_GET['cod_municipio'] : 0;
 $fecha_registro = isset($_GET['fecha_registro']) ? mysqli_real_escape_string($conectar, $_GET['fecha_registro']) : '';
 $fecha_doc_filtro = isset($_GET['fecha_documentacion']) ? mysqli_real_escape_string($conectar, $_GET['fecha_documentacion']) : '';
 
-$where = "WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+$where = "WHERE a.cod_seguridad = '23' AND a.cod_estado != 0 AND a.cod_estado_activacion_usuario != 3 AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
 if (!empty($busqueda)) { $where .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%' OR a.barrio_tercero LIKE '%$busqueda%')"; }
 if ($cod_asesor > 0) { $where .= " AND a.cod_asesor = '$cod_asesor'"; }
@@ -32,12 +32,17 @@ if ($filtro_doc == '1' || $filtro_doc == 'alguno') {
     $where .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))";
 }
 
-$order_by = "a.fecha_documentacion DESC";
-if ($sort == 'fecha_asc') { $order_by = "a.fecha_documentacion ASC"; }
+$order_by = "a.cod_administrador DESC"; // Default ID DESC
+if ($sort == 'id_asc') { $order_by = "a.cod_administrador ASC"; }
 elseif ($sort == 'nombre_asc') { $order_by = "a.nombres_apellidos_tercero ASC"; }
 elseif ($sort == 'nombre_desc') { $order_by = "a.nombres_apellidos_tercero DESC"; }
+elseif ($sort == 'fecha_desc') { $order_by = "a.fecha DESC"; }
+elseif ($sort == 'fecha_asc') { $order_by = "a.fecha ASC"; }
+elseif ($sort == 'doc_fecha_desc') { $order_by = "a.fecha_documentacion DESC"; }
+elseif ($sort == 'doc_fecha_asc') { $order_by = "a.fecha_documentacion ASC"; }
 
-$sql = "SELECT a.cod_administrador, a.nombres, a.apellidos, a.nombres_apellidos_tercero, a.fecha_documentacion, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado
+$sql = "SELECT a.cod_administrador, a.nombres, a.apellidos, a.nombres_apellidos_tercero, a.nombre_razon_social, a.barrio_tercero, a.fecha_documentacion, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado,
+(SELECT ase.nombres_apellidos_tercero FROM tbl15_administrador ase WHERE ase.cod_administrador = a.cod_asesor LIMIT 1) as nombre_asesor
 FROM tbl15_administrador a $where
 ORDER BY $order_by";
 $res = mysqli_query($conectar, $sql);
@@ -62,7 +67,21 @@ if ($res) {
                 $docs[] = ['nombre' => $nombre, 'url' => $url, 'existe' => $existe];
             }
         }
-        $aliados[] = ['cod_administrador' => $row['cod_administrador'], 'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'] ?: ($row['nombres'] . ' ' . $row['apellidos']), 'fecha' => date('d/m/Y', strtotime($row['fecha_documentacion'])), 'fecha_raw' => $row['fecha_documentacion'], 'documentos' => $docs, 'total_cargados' => count($docs), 'alguno_falta' => $alguno_falta];
+        $nombre_razon_social = trim($row['nombre_razon_social']);
+        $nombre_comercial = !empty($nombre_razon_social) ? $nombre_razon_social : '';
+        
+        $aliados[] = [
+            'cod_administrador' => $row['cod_administrador'], 
+            'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'] ?: ($row['nombres'].' '.$row['apellidos']), 
+            'nombre_comercial' => $nombre_comercial,
+            'barrio' => $row['barrio_tercero'], 
+            'asesor' => $row['nombre_asesor'] ?: 'N/A', 
+            'fecha' => date('d/m/Y', strtotime($row['fecha_documentacion'])), 
+            'fecha_raw' => $row['fecha_documentacion'], 
+            'documentos' => $docs, 
+            'total_cargados' => count($docs), 
+            'alguno_falta' => $alguno_falta
+        ];
     }
 }
 // Calcular estadísticas filtradas para el modal

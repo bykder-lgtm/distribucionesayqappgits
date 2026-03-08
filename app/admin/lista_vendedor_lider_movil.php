@@ -558,13 +558,9 @@ $busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar,
 $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 
 // Consulta para contar el total de registros
-$sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total 
-               FROM tbl15_administrador a 
-               WHERE a.cod_seguridad = '2' ";
+$sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '2' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3' ";
 
-if (!empty($busqueda)) { 
-    $sql_conteo .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
-}
+if (!empty($busqueda)) { $sql_conteo .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
 $resultado_conteo = mysqli_query($conectar, $sql_conteo);
 $fila_conteo = mysqli_fetch_assoc($resultado_conteo);
@@ -575,15 +571,11 @@ $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_tienda, a.cod_aliado_estrategico,
 (SELECT nombre_tienda FROM tbl15_tienda WHERE cod_tienda = a.cod_tienda) as nombre_tienda
 FROM tbl15_administrador a 
-WHERE a.cod_seguridad = '2' ";
+WHERE a.cod_seguridad = '2' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3' ";
 
-if (!empty($busqueda)) { 
-    $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
-}
+if (!empty($busqueda)) { $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
-if ($cod_coordinador_filtro > 0) {
-    $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'";
-}
+if ($cod_coordinador_filtro > 0) { $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'"; }
 
 $sql .= " ORDER BY a.cod_administrador DESC LIMIT $inicio, $registros_por_pagina";
 $resultado = mysqli_query($conectar, $sql);

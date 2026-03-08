@@ -560,7 +560,7 @@ $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coor
 // Consulta para contar el total de registros
 $sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total 
                FROM tbl15_administrador a 
-               WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
+               WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3'";
 
 if (!empty($busqueda)) { 
     $sql_conteo .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 
@@ -581,7 +581,7 @@ $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, 
 (SELECT COUNT(*) FROM tbl15_tienda t WHERE t.cod_aliado_estrategico IN (SELECT ali2.cod_administrador FROM tbl15_administrador ali2 WHERE ali2.cod_asesor = a.cod_administrador AND ali2.cod_seguridad = '23')) as total_tiendas,
 (SELECT COUNT(*) FROM tbl15_administrador v WHERE v.cod_seguridad = '2' AND v.cod_aliado_estrategico IN (SELECT ali3.cod_administrador FROM tbl15_administrador ali3 WHERE ali3.cod_asesor = a.cod_administrador AND ali3.cod_seguridad = '23')) as total_vendedores
 FROM tbl15_administrador a 
-WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22'";
+WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '22' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3'";
 
 if (!empty($busqueda)) { 
     $sql .= " AND (a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; 

@@ -558,7 +558,7 @@ $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GE
 // Consulta para contar el total de registros
 $sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total 
                FROM tbl15_administrador a 
-               WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '21'";
+               WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '21' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3'";
 if (!empty($busqueda)) { $sql_conteo .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 $resultado_conteo = mysqli_query($conectar, $sql_conteo);
 $fila_conteo = mysqli_fetch_assoc($resultado_conteo);
@@ -571,7 +571,7 @@ $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, 
 (SELECT COUNT(*) FROM tbl15_administrador WHERE cod_coordinador = a.cod_administrador AND cod_seguridad = '23') as total_aliados,
 (SELECT COUNT(*) FROM tbl15_tienda WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_coordinador = a.cod_administrador AND cod_seguridad = '23')) as total_tiendas
 FROM tbl15_administrador a 
-WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '21'";
+WHERE a.cod_lider = '$cod_administrador' AND a.cod_seguridad = '21' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3'";
 
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 

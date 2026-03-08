@@ -526,20 +526,20 @@ $mes_anterior = date("Y-m", strtotime("-1 month"));
 
 // === CONSULTAS PARA KPIs - LIDER VE TODO ===
 // Total Aliados
-$sql_obtener_aliados = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE 1";
+$sql_obtener_aliados = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE cod_estado != '0' AND cod_estado_activacion_usuario != '3'";
 $resultado_aliados = mysqli_query($conectar, $sql_obtener_aliados);
 $datos_aliados = mysqli_fetch_assoc($resultado_aliados);
 $total_aliados = isset($datos_aliados['total']) ? $datos_aliados['total'] : 0;
 
 // Total Tiendas (TODAS - El líder ve todo)
-$sql_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE 1";
+$sql_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_estado != '0'";
 $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
 $datos_tiendas = mysqli_fetch_assoc($resultado_tiendas);
 $total_tiendas = isset($datos_tiendas['total']) ? $datos_tiendas['total'] : 0;
 
 // Total Créditos Activos (Estado ABIERTA) - TODOS
 $sql_creditos_activos = "SELECT COUNT(*) as total, COALESCE(SUM(monto_deuda), 0) as valor_total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda 
-WHERE ifv.nombre_estado_factura = 'ABIERTA'";
+WHERE ifv.nombre_estado_factura = 'ABIERTA' AND t.cod_estado != '0'";
 $resultado_activos = mysqli_query($conectar, $sql_creditos_activos);
 $datos_activos = mysqli_fetch_assoc($resultado_activos);
 $total_creditos_activos = isset($datos_activos['total']) ? $datos_activos['total'] : 0;
@@ -547,21 +547,21 @@ $valor_cartera = isset($datos_activos['valor_total']) ? $datos_activos['valor_to
 
 // Créditos cerrados (Estado CERRADA) - TODOS
 $sql_creditos_cerrados = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda 
-WHERE ifv.nombre_estado_factura = 'CERRADA'";
+WHERE ifv.nombre_estado_factura = 'CERRADA' AND t.cod_estado != '0'";
 $resultado_cerrados = mysqli_query($conectar, $sql_creditos_cerrados);
 $datos_cerrados = mysqli_fetch_assoc($resultado_cerrados);
 $total_creditos_cerrados = isset($datos_cerrados['total']) ? $datos_cerrados['total'] : 0;
 
 // Créditos nuevos del mes actual - TODOS
 $sql_creditos_mes = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda 
-WHERE DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes_actual'";
+WHERE DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes_actual' AND t.cod_estado != '0'";
 $resultado_mes = mysqli_query($conectar, $sql_creditos_mes);
 $datos_mes = mysqli_fetch_assoc($resultado_mes);
 $creditos_mes_actual = isset($datos_mes['total']) ? $datos_mes['total'] : 0;
 
 // Créditos del mes anterior (para comparación) - TODOS
 $sql_creditos_mes_ant = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda 
-WHERE DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes_anterior'";
+WHERE DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes_anterior' AND t.cod_estado != '0'";
 $resultado_mes_ant = mysqli_query($conectar, $sql_creditos_mes_ant);
 $datos_mes_ant = mysqli_fetch_assoc($resultado_mes_ant);
 $creditos_mes_anterior = isset($datos_mes_ant['total']) ? $datos_mes_ant['total'] : 0;
@@ -571,13 +571,13 @@ $cambio_porcentaje = 0;
 if ($creditos_mes_anterior > 0) { $cambio_porcentaje = round((($creditos_mes_actual - $creditos_mes_anterior) / $creditos_mes_anterior) * 100, 1); }
 
 // Notificaciones pendientes - TODAS
-$sql_notificaciones = "SELECT COUNT(*) as total FROM tbl15_notificacion_alerta_renovacion WHERE cod_estado = '0'";
+$sql_notificaciones = "SELECT COUNT(*) as total FROM tbl15_notificacion_alerta_renovacion WHERE cod_estado = '0'"; // Ya tiene filtro por estado
 $resultado_notif = mysqli_query($conectar, $sql_notificaciones);
 $datos_notif = mysqli_fetch_assoc($resultado_notif);
 $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0;
 
 // Tiendas registradas este mes - TODAS
-$sql_tiendas_mes = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE DATE_FORMAT(fecha_creacion, '%Y-%m') = '$mes_actual'";
+$sql_tiendas_mes = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE DATE_FORMAT(fecha_creacion, '%Y-%m') = '$mes_actual' AND cod_estado != '0'";
 $resultado_tiendas_mes = mysqli_query($conectar, $sql_tiendas_mes);
 $datos_tiendas_mes = mysqli_fetch_assoc($resultado_tiendas_mes);
 $tiendas_mes_actual = isset($datos_tiendas_mes['total']) ? $datos_tiendas_mes['total'] : 0;
@@ -591,7 +591,7 @@ for ($i = 5; $i >= 0; $i--) {
     $nombre_mes = date("M", strtotime("-$i months"));
     
     $sql_tendencia = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda 
-    WHERE DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes'";
+    WHERE DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes' AND t.cod_estado != '0'";
     $resultado_tendencia = mysqli_query($conectar, $sql_tendencia);
     $datos_tendencia = mysqli_fetch_assoc($resultado_tendencia);
     
@@ -600,7 +600,7 @@ for ($i = 5; $i >= 0; $i--) {
 }
 
 // Últimas tiendas registradas - TODAS
-$sql_ultimas_tiendas = "SELECT cod_tienda, nombre_tienda, fecha_creacion, abrev_tienda FROM tbl15_tienda ORDER BY fecha_creacion DESC LIMIT 5";
+$sql_ultimas_tiendas = "SELECT cod_tienda, nombre_tienda, fecha_creacion, abrev_tienda FROM tbl15_tienda WHERE cod_estado != '0' ORDER BY fecha_creacion DESC LIMIT 5";
 $resultado_ultimas_tiendas = mysqli_query($conectar, $sql_ultimas_tiendas);
 
 // Nombre del mes en español

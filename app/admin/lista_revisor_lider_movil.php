@@ -556,9 +556,7 @@ $inicio = ($pagina - 1) * $registros_por_pagina;
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
 
 // Consulta para contar el total de registros
-$sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total 
-               FROM tbl15_administrador a 
-               WHERE a.cod_seguridad = '27'";
+$sql_conteo = "SELECT COUNT(DISTINCT a.cod_administrador) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '27' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3'";
 if (!empty($busqueda)) { $sql_conteo .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 $resultado_conteo = mysqli_query($conectar, $sql_conteo);
 $fila_conteo = mysqli_fetch_assoc($resultado_conteo);
@@ -567,8 +565,7 @@ $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 
 // Consulta de revisores (cod_seguridad = '27')
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_lider
-FROM tbl15_administrador a 
-WHERE a.cod_seguridad = '27'";
+FROM tbl15_administrador a WHERE a.cod_seguridad = '27' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3'";
 
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 
@@ -873,9 +870,7 @@ document.getElementById('searchInput').addEventListener('keyup', function(e) {
 });
 
 // Modal Logic
-function abrirModalRegistro() {
-    document.getElementById('modalRegistroRevisor').style.display = 'flex';
-}
+function abrirModalRegistro() { document.getElementById('modalRegistroRevisor').style.display = 'flex'; }
 
 function cerrarModalRegistro() {
     document.getElementById('modalRegistroRevisor').style.display = 'none';
@@ -895,50 +890,26 @@ function abrirModalEditar(datos) {
     document.getElementById('modalEditarRevisor').style.display = 'flex';
 }
 
-function cerrarModalEditar() {
-    document.getElementById('modalEditarRevisor').style.display = 'none';
-}
+function cerrarModalEditar() { document.getElementById('modalEditarRevisor').style.display = 'none'; }
 
 function editarRevisor(e) {
     e.preventDefault();
     const form = document.getElementById('formEditarRevisor');
     const formData = new FormData(form);
 
-    Swal.fire({
-        title: 'Actualizando Revisor...',
-        text: 'Por favor espere',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); },
-        background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Actualizando Revisor...', text: 'Por favor espere', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
     $.ajax({
-        url: 'proceso_editar_revisor_lider_movil_ajax.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: 'json',
+        url: 'proceso_editar_revisor_lider_movil_ajax.php', type: 'POST', data: formData, contentType: false, processData: false, dataType: 'json',
         success: function(response) {
             if (response.status === 'success') {
-                Swal.fire({
-                    icon: 'success', title: '¡Actualización Exitosa!', text: response.message,
-                    background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' }
-                }).then(() => {
-                    location.reload();
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualización Exitosa!', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); });
             } else {
-                Swal.fire({
-                    icon: 'error', title: 'Error', text: response.message,
-                    background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
-            Swal.fire({
-                icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor',
-                background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -950,23 +921,10 @@ function registrarRevisor(e) {
     const form = document.getElementById('formRegistroRevisor');
     const formData = new FormData(form);
 
-    Swal.fire({
-        title: 'Registrando Revisor...',
-        text: 'Por favor espere',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); },
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Registrando Revisor...', text: 'Por favor espere', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
     $.ajax({
-        url: 'reg_revisor_modal_lider_movil_ajax_reg.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: 'json',
+        url: 'reg_revisor_modal_lider_movil_ajax_reg.php', type: 'POST', data: formData, contentType: false, processData: false, dataType: 'json',
         success: function(response) {
             if (response.status === 'success') {
                 Swal.fire({
@@ -981,15 +939,7 @@ function registrarRevisor(e) {
                         location.reload();
                     } else if (result.isDenied) {
                         // Email Notification (AJAX PHPMailer)
-                        Swal.fire({
-                            title: 'Enviando Correo...',
-                            text: 'Por favor espere',
-                            allowOutsideClick: false,
-                            didOpen: () => { Swal.showLoading(); },
-                            background: '#1a1f2e',
-                            color: 'white',
-                            customClass: { container: 'swal-high-zindex' }
-                        });
+                        Swal.fire({ title: 'Enviando Correo...', text: 'Por favor espere', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
                         const emailData = new FormData();
                         emailData.append('email_destino', formData.get('correo_tercero'));
@@ -998,48 +948,16 @@ function registrarRevisor(e) {
                         emailData.append('contrasena', formData.get('identificacion_tercero'));
 
                         $.ajax({
-                            url: 'enviar_email_bienvenida_asesor.php',
-                            type: 'POST',
-                            data: emailData,
-                            contentType: false,
-                            processData: false,
-                            dataType: 'json',
+                            url: 'enviar_email_bienvenida_asesor.php', type: 'POST', data: emailData, contentType: false, processData: false, dataType: 'json',
                             success: function(emailResponse) {
                                 if (emailResponse.success) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: '¡Correo Enviado!',
-                                        text: emailResponse.message,
-                                        background: '#1a1f2e',
-                                        color: 'white',
-                                        confirmButtonColor: '#8b5cf6',
-                                        customClass: { container: 'swal-high-zindex' }
-                                    }).then(() => {
-                                        cerrarModalRegistro();
-                                        location.reload();
-                                    });
+                                    Swal.fire({ icon: 'success', title: '¡Correo Enviado!', text: emailResponse.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' } }).then(() => { cerrarModalRegistro(); location.reload(); });
                                 } else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error al Enviar',
-                                        text: emailResponse.message,
-                                        background: '#1a1f2e',
-                                        color: 'white',
-                                        confirmButtonColor: '#ef4444',
-                                        customClass: { container: 'swal-high-zindex' }
-                                    });
+                                    Swal.fire({ icon: 'error', title: 'Error al Enviar', text: emailResponse.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
                                 }
                             },
                             error: function() {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error de Conexión',
-                                    text: 'No se pudo conectar con el servidor de correo',
-                                    background: '#1a1f2e',
-                                    color: 'white',
-                                    confirmButtonColor: '#ef4444',
-                                    customClass: { container: 'swal-high-zindex' }
-                                });
+                                Swal.fire({ icon: 'error', title: 'Error de Conexión', text: 'No se pudo conectar con el servidor de correo', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
                             }
                         });
                     } else {
@@ -1048,28 +966,12 @@ function registrarRevisor(e) {
                     }
                 });
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.message,
-                    background: '#1a1f2e',
-                    color: 'white',
-                    confirmButtonColor: '#ef4444',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             console.log('Error Response:', xhr.responseText);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de conexión',
-                text: 'No se pudo conectar con el servidor. Línea de error: ' + error,
-                background: '#1a1f2e',
-                color: 'white',
-                confirmButtonColor: '#ef4444',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor. Línea de error: ' + error, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -1114,9 +1016,7 @@ function abrirModalStats(cod_coordinador, tipo) {
     modal.style.display = 'flex';
 
     $.ajax({
-        url: 'get_stats_detalles_coordinador_ajax.php',
-        type: 'POST',
-        data: { cod_coordinador: cod_coordinador, tipo: tipo },
+        url: 'get_stats_detalles_coordinador_ajax.php', type: 'POST', data: { cod_coordinador: cod_coordinador, tipo: tipo },
         success: function(response) {
             content.innerHTML = response;
         },
@@ -1145,30 +1045,13 @@ function archivarEntidad(codAdmin, nombre, tipoEntidad) {
         color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Archivando...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); },
-                background: '#1a1f2e',
-                color: 'white'
-            });
+            Swal.fire({ title: 'Archivando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
 
             $.ajax({
-                url: 'proceso_archivar_entidad_lider_movil_ajax.php',
-                type: 'POST',
-                data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad },
-                dataType: 'json',
+                url: 'proceso_archivar_entidad_lider_movil_ajax.php', type: 'POST', data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Archivado!',
-                            text: response.message,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            background: '#1a1f2e',
-                            color: 'white'
-                        }).then(() => { location.reload(); });
+                        Swal.fire({ icon: 'success', title: '¡Archivado!', text: response.message, timer: 2000, timerProgressBar: true, background: '#1a1f2e', color: 'white' }).then(() => { location.reload(); });
                     } else {
                         Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });
                     }

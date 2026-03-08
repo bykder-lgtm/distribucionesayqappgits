@@ -1571,10 +1571,7 @@ select[id^="edit_municipio_tienda_"] option {
 <?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 
 <!-- Loader Container -->
-<div id="loader-wrapper">
-    <span class="loader"></span>
-    <span class="loader-text">Cargando aliados...</span>
-</div>
+<div id="loader-wrapper"><span class="loader"></span><span class="loader-text">Cargando aliados...</span></div>
 
 <?php
 // Parámetros de paginación
@@ -1748,12 +1745,12 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
                 <select id="sortMain" class="form-select" onchange="filtrar()" style="height: auto; padding: 0.5rem; background: rgba(255,255,255,0.05);">
                     <option value="id_desc" <?php echo $sort == 'id_desc' || $sort == '' ? 'selected' : ''; ?>>ID (Z-A)</option>
                     <option value="id_asc" <?php echo $sort == 'id_asc' ? 'selected' : ''; ?>>ID (A-Z)</option>
-                    <option value="nombre_asc" <?php echo $sort == 'nombre_asc' ? 'selected' : ''; ?>>Nombre (A-Z)</option>
-                    <option value="nombre_desc" <?php echo $sort == 'nombre_desc' ? 'selected' : ''; ?>>Nombre (Z-A)</option>
-                    <option value="fecha_desc" <?php echo $sort == 'fecha_desc' ? 'selected' : ''; ?>>Registro (Reciente)</option>
-                    <option value="fecha_asc" <?php echo $sort == 'fecha_asc' ? 'selected' : ''; ?>>Registro (Antiguo)</option>
-                    <option value="doc_fecha_desc" <?php echo $sort == 'doc_fecha_desc' ? 'selected' : ''; ?>>Documentación (Reciente)</option>
-                    <option value="doc_fecha_asc" <?php echo $sort == 'doc_fecha_asc' ? 'selected' : ''; ?>>Documentación (Antiguo)</option>
+                    <option value="nombre_asc" <?php echo $sort == 'nombre_asc' ? 'selected' : ''; ?>>Nombre Aliado (A-Z)</option>
+                    <option value="nombre_desc" <?php echo $sort == 'nombre_desc' ? 'selected' : ''; ?>>Nombre Aliado (Z-A)</option>
+                    <option value="fecha_desc" <?php echo $sort == 'fecha_desc' ? 'selected' : ''; ?>>Registro Aliado (Reciente)</option>
+                    <option value="fecha_asc" <?php echo $sort == 'fecha_asc' ? 'selected' : ''; ?>>Registro Aliado (Antiguo)</option>
+                    <option value="doc_fecha_desc" <?php echo $sort == 'doc_fecha_desc' ? 'selected' : ''; ?>>Documentación Aliado (Reciente)</option>
+                    <option value="doc_fecha_asc" <?php echo $sort == 'doc_fecha_asc' ? 'selected' : ''; ?>>Documentación Aliado (Antiguo)</option>
                 </select>
             </div>
         </div>
@@ -6342,19 +6339,23 @@ function escapeHtmlMovil(text) {
                     <div class="filter-group">
                         <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-filter"></i> Documentos:</label>
                         <select id="modalFiltroDoc" class="form-select" onchange="aplicarFiltrosDocumentos()" style="height: auto; padding: 0.4rem; background: rgba(255,255,255,0.05); font-size: 0.85rem;">
-                            <option value="todos">Todos los aliados</option>
-                            <option value="completo">Completo (3 docs)</option>
-                            <option value="alguno">Uno o más docs</option>
-                            <option value="ninguno">Sin documentos</option>
+                            <option value="todos">Todos</option>
+                            <option value="completo">Completo (3)</option>
+                            <option value="alguno">Uno o más</option>
+                            <option value="ninguno">Sin anexos</option>
                         </select>
                     </div>
                     <div class="filter-group">
                         <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-sort"></i> Ordenar:</label>
                         <select id="modalSortDocs" class="form-select" onchange="aplicarFiltrosDocumentos()" style="height: auto; padding: 0.4rem; background: rgba(255,255,255,0.05); font-size: 0.85rem;">
-                            <option value="fecha_desc">Cargue (Reciente)</option>
-                            <option value="fecha_asc">Cargue (Antiguo)</option>
-                            <option value="nombre_asc">Nombre (A-Z)</option>
-                            <option value="nombre_desc">Nombre (Z-A)</option>
+                            <option value="id_desc">ID (Z-A)</option>
+                            <option value="id_asc">ID (A-Z)</option>
+                            <option value="nombre_asc">Nombre Aliado (A-Z)</option>
+                            <option value="nombre_desc">Nombre Aliado (Z-A)</option>
+                            <option value="fecha_desc">Registro Aliado (Reciente)</option>
+                            <option value="fecha_asc">Registro Aliado (Antiguo)</option>
+                            <option value="doc_fecha_desc">Documentación Aliado (Reciente)</option>
+                            <option value="doc_fecha_asc">Documentación Aliado (Antiguo)</option>
                         </select>
                     </div>
                 </div>
@@ -6372,6 +6373,12 @@ function escapeHtmlMovil(text) {
                             <?php endwhile; ?>
                         </select>
                     </div>
+                    <div class="filter-group">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-calendar"></i> Fecha Reg:</label>
+                        <input type="date" id="modalFiltroFechaReg" class="form-control" onchange="aplicarFiltrosDocumentos()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 0.8rem; padding: 0.35rem;">
+                    </div>
+                </div>
+
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                     <div class="filter-group">
                         <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-map-location-dot"></i> Depto:</label>
@@ -6387,14 +6394,10 @@ function escapeHtmlMovil(text) {
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 0.75rem;">
                     <div class="filter-group">
-                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-calendar"></i> Fecha Reg:</label>
-                        <input type="date" id="modalFiltroFechaReg" class="form-input" onchange="aplicarFiltrosDocumentos()" style="padding: 0.35rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; width: 100%; font-size: 0.85rem;">
-                    </div>
-                    <div class="filter-group">
-                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-calendar-check"></i> Fecha Doc:</label>
-                        <input type="date" id="modalFiltroFechaDoc" class="form-input" onchange="aplicarFiltrosDocumentos()" style="padding: 0.35rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(139,92,246,0.2); border-radius: 8px; width: 100%; font-size: 0.85rem;">
+                        <label style="display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 0.2rem;"><i class="fa-solid fa-file-invoice"></i> Fecha Doc:</label>
+                        <input type="date" id="modalFiltroFechaDoc" class="form-control" onchange="aplicarFiltrosDocumentos()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 0.8rem; padding: 0.35rem;">
                     </div>
                 </div>
             </div>
@@ -6473,9 +6476,7 @@ function abrirModalAliadosFirmados() {
     });
 }
 
-function cerrarModalFirmados() {
-    $("#modalAliadosFirmados").removeClass("show").hide();
-}
+function cerrarModalFirmados() { $("#modalAliadosFirmados").removeClass("show").hide(); }
 
 function verFirma(base64, nombre) {
     $("#imgFirmaDigital").attr("src", base64);
@@ -6483,32 +6484,54 @@ function verFirma(base64, nombre) {
     $("#modalVerFirma").addClass("show").css("display", "flex");
 }
 
-function cerrarModalVerFirma() {
-    $("#modalVerFirma").removeClass("show").hide();
-}
+function cerrarModalVerFirma() { $("#modalVerFirma").removeClass("show").hide(); }
 
 function abrirModalDocumentosCargados() {
     $("#modalDocumentosCargados").addClass("show").css("display", "flex");
     
-    // Resetear filtros al abrir
-    $('#modalSearchInput').val('');
-    $('#modalFiltroDoc').val('todos');
-    $('#modalSortDocs').val('fecha_desc');
-    $('#modalFiltroAsesor').val('');
-    $('#modalFiltroDepto').val('');
-    $('#modalFiltroCiudad').val('');
-    $('#modalFiltroFechaReg').val('');
-    
-    // Cargar departamentos si aún no están cargados
-    if ($('#modalFiltroDepto option').length <= 1) {
-        modalCargarDepartamentos();
-    }
+    // Obtener valores de los filtros de la página principal
+    var valSearch   = $('#searchInput').val() || '';
+    var valDoc      = $('#filtroDoc').val() || '';
+    var valSort     = $('#sortMain').val() || 'fecha_desc';
+    var valAsesor   = $('#filtroAsesor').val() || '';
+    var valDepto    = $('#filtroDepto').val() || '';
+    var valCiudad   = $('#filtroCiudad').val() || '';
+    var valFechaReg = $('#filtroFechaReg').val() || '';
+    var valFechaDoc = $('#filtroFechaDoc').val() || '';
 
-    aplicarFiltrosDocumentos();
+    // Mapeo de valores para el filtro de documentos (el main usa números, el modal usa texto)
+    var mapaDoc = { '2': 'completo', '1': 'alguno', '3': 'ninguno', '': 'todos' };
+    var mappedDoc = mapaDoc[valDoc] || 'todos';
+    
+    // Sincronizar valores al modal
+    $('#modalSearchInput').val(valSearch);
+    $('#modalFiltroDoc').val(mappedDoc);
+    $('#modalSortDocs').val(valSort);
+    $('#modalFiltroAsesor').val(valAsesor);
+    $('#modalFiltroDepto').val(valDepto);
+    $('#modalFiltroFechaReg').val(valFechaReg);
+    $('#modalFiltroFechaDoc').val(valFechaDoc);
+
+    // Cargar departamentos del modal y luego ciudad
+    modalCargarDepartamentos(valDepto, valCiudad);
+    
+    // Aplicar filtros iniciales
+    setTimeout(function() {
+        aplicarFiltrosDocumentos();
+    }, 500);
 }
 
-function modalCargarDepartamentos() {
+function modalCargarDepartamentos(selectedDepto = '', selectedCiudad = '') {
     var $select = $('#modalFiltroDepto');
+    // Evitar duplicados si ya están cargados
+    if ($select.find('option').length > 1) {
+        if (selectedDepto) {
+            $select.val(selectedDepto);
+            modalCargarMunicipios(selectedDepto, selectedCiudad);
+        }
+        return;
+    }
+    
     $.ajax({
         url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
@@ -6516,12 +6539,16 @@ function modalCargarDepartamentos() {
                 $.each(response.departamentos, function(i, dept) {
                     $select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>');
                 });
+                if (selectedDepto) {
+                    $select.val(selectedDepto);
+                    modalCargarMunicipios(selectedDepto, selectedCiudad);
+                }
             }
         }
     });
 }
 
-function modalCargarMunicipios(codDepto) {
+function modalCargarMunicipios(codDepto, selectedCiudad = '') {
     var $select = $('#modalFiltroCiudad');
     $select.html('<option value="">Todas</option>');
     if (!codDepto) return;
@@ -6534,6 +6561,9 @@ function modalCargarMunicipios(codDepto) {
                 $.each(response.municipios, function(i, muni) {
                     $select.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>');
                 });
+                if (selectedCiudad) {
+                    $select.val(selectedCiudad);
+                }
             }
         }
     });
@@ -6616,10 +6646,15 @@ function renderizarListaDocumentos(response) {
                 <div class="animate-in" style="background: ${bg_gradient}; border: 1px solid ${border_color}; border-radius: 16px; padding: 1rem; transition: all 0.3s ease; margin-bottom: 0.75rem;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; gap: 1rem;">
                         <div style="flex: 1;">
-                            <div style="color: white; font-weight: 700; font-size: 1rem; line-height: 1.2;">${aliado.nombres_apellidos_tercero}</div>
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.4rem;">
+                             <div style="color: white; font-weight: 700; font-size: 1rem; line-height: 1.2;">${aliado.nombres_apellidos_tercero}</div>
+                             ${aliado.nombre_comercial ? `<div style="color: #8b5cf6; font-size: 0.85rem; font-weight: 600; margin-top: 0.15rem;"><i class="fa-solid fa-store" style="font-size: 0.75rem;"></i> ${aliado.nombre_comercial}</div>` : ''}
+                            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-top: 0.4rem;">
                                 <span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;"><i class="fa-solid fa-calendar"></i> Reg: ${aliado.fecha}</span>
                                 <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;" class="${status_class}">${status_text}</span>
+                            </div>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.35rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.35rem;">
+                                <span style="color: rgba(255,255,255,0.7); font-size: 0.72rem; display: flex; align-items: center; gap: 0.35rem;"><i class="fa-solid fa-user-tie" style="color: #8b5cf6; font-size: 0.65rem;"></i> ${aliado.asesor}</span>
+                                <span style="color: rgba(255,255,255,0.7); font-size: 0.72rem; display: flex; align-items: center; gap: 0.35rem;"><i class="fa-solid fa-location-dot" style="color: #8b5cf6; font-size: 0.65rem;"></i> ${aliado.barrio || 'Sin barrio'}</span>
                             </div>
                         </div>
                         ${aliado.total_cargados > 0 ? `

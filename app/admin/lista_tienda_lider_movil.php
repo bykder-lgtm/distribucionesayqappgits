@@ -1072,7 +1072,7 @@ $inicio = ($pagina - 1) * $registros_por_pagina;
 $busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar, $_GET['busqueda'])) : '';
 $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 // Subquery para obtener los cod_administrador de los aliados que pertenecen a este líder
-$subquery_aliados_lider = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_lider = '$cod_administrador'";
+$subquery_aliados_lider = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_lider = '$cod_administrador' AND cod_estado != '0' AND cod_estado_activacion_usuario != '3'";
 if ($cod_coordinador_filtro > 0) { $subquery_aliados_lider .= " AND cod_coordinador = '$cod_coordinador_filtro'"; }
 // Consulta para contar el total de tiendas (para la paginación)
 $sql_conteo = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider)";
@@ -1685,7 +1685,6 @@ function cargarDepartamentosRegistro() {
         }
     });
 }
-
 // Cargar municipios cuando se selecciona un departamento en el modal de registro
 function cargarMunicipiosRegistro() {
     var codDepartamento = $('#cod_departamento').val();
@@ -1706,7 +1705,6 @@ function cargarMunicipiosRegistro() {
             console.error('Error al cargar municipios');  }
     });
 }
-
 // Cargar municipios con preselección
 function cargarMunicipiosRegistroConPreseleccion(codDepartamento, selectedMuni) {
     var selectMuni = $('#cod_municipio');
@@ -1725,7 +1723,6 @@ function cargarMunicipiosRegistroConPreseleccion(codDepartamento, selectedMuni) 
         }
     });
 }
-
 // ====================== REGISTRO DE VENDEDORES (GEOLOCALIZACION) ======================
 function cargarDepartamentosVendedor(prefix) {
     $.ajax({
@@ -1740,7 +1737,6 @@ function cargarDepartamentosVendedor(prefix) {
         }
     });
 }
-
 function cargarMunicipiosVendedor(prefix) {
     var codDepartamento = $('#' + prefix + 'cod_departamento').val();
     var selectMuni = $('#' + prefix + 'cod_municipio');
@@ -1756,7 +1752,6 @@ function cargarMunicipiosVendedor(prefix) {
         }
     });
 }
-
 function abrirModalRegistro(tipo) {
     const form = document.getElementById('formRegistroTienda');
     form.reset();
@@ -1899,10 +1894,7 @@ function actualizarBancosYComision(select) {
 function prellenarDatosAliado(codAliado) {
     if (!codAliado) return;
     $.ajax({
-        url: 'obtener_datos_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_aliado: codAliado },
-        dataType: 'json',
+        url: 'obtener_datos_aliado_ajax.php', type: 'POST', data: { cod_aliado: codAliado }, dataType: 'json',
         success: function(response) {
             if (response.success && response.aliado) {
                 var a = response.aliado;
@@ -2177,7 +2169,6 @@ function mostrarPreviewDocumento(url, contenedor, titulo) {
         `;
         contenedor.appendChild(mensaje);
     }
-    
     contenedor.style.display = 'block';
 }
 
@@ -2206,7 +2197,6 @@ function mostrarImagenesCargadas(tienda) {
         previewLogo.style.cursor = 'pointer';
         previewLogo.onclick = function() { window.open(tienda.url_img_orig_tienda, '_blank'); };
     }
-    
     // Fachada
     if (tienda.url_img_fachada_tienda && tienda.url_img_fachada_tienda.trim() !== '') {
         const previewFachada = document.getElementById('preview_fachada');
@@ -2215,7 +2205,6 @@ function mostrarImagenesCargadas(tienda) {
         previewFachada.style.cursor = 'pointer';
         previewFachada.onclick = function() { window.open(tienda.url_img_fachada_tienda, '_blank'); };
     }
-    
     // Interna
     if (tienda.url_img_interna_tienda && tienda.url_img_interna_tienda.trim() !== '') {
         const previewInterna = document.getElementById('preview_interna');
@@ -2224,7 +2213,6 @@ function mostrarImagenesCargadas(tienda) {
         previewInterna.style.cursor = 'pointer';
         previewInterna.onclick = function() { window.open(tienda.url_img_interna_tienda, '_blank'); };
     }
-    
     // Selfie con Admin
     if (tienda.url_img_selfieadmin_tienda && tienda.url_img_selfieadmin_tienda.trim() !== '') {
         const previewSelfie = document.getElementById('preview_selfie');

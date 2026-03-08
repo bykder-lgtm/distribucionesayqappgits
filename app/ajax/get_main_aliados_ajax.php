@@ -28,7 +28,7 @@ $cod_muni = isset($_GET['cod_municipio']) ? (int)$_GET['cod_municipio'] : 0;
 $fecha_registro = isset($_GET['fecha_registro']) ? mysqli_real_escape_string($conectar, $_GET['fecha_registro']) : '';
 $fecha_doc_filtro = isset($_GET['fecha_documentacion']) ? mysqli_real_escape_string($conectar, $_GET['fecha_documentacion']) : '';
 
-$where = "WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+$where = "WHERE a.cod_seguridad = '23' AND a.cod_estado != 0 AND a.cod_estado_activacion_usuario != 3 AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
 if (!empty($cod_aliado_get)) { $where .= " AND a.cod_administrador = '$cod_aliado_get'"; }
 
@@ -170,11 +170,6 @@ if ($total_registros > 0):
                 <div class="ally-detail">
                     <i class="fa-solid fa-file-circle-check" style="color: <?php echo $documentos_completos ? '#10b981' : '#f59e0b'; ?>;"></i>
                     <span>Docs: <?php echo $documentos_completos ? 'Completos' : ($total_docs > 0 ? 'Parcial ('.$total_docs.'/3)' : 'Pendiente'); ?></span>
-                </div>
-
-                <div class="ally-detail">
-                    <i class="fa-solid fa-clock-rotate-left" style="color: #6366f1;"></i>
-                    <span>Cargue: <?php echo (!empty($row['fecha_documentacion']) && $row['fecha_documentacion'] != '0000-00-00 00:00:00') ? date('H:i', strtotime($row['fecha_documentacion'])) : '--:--'; ?></span>
                 </div>
             </div>
 
