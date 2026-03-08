@@ -1691,15 +1691,15 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
         <p>Gestiona tu red de aliados estratégicos</p>
         <div class="header-stats">
             <div class="header-stat">
-                <div class="header-stat-value"><?php echo $total_registros; ?></div>
+                <div class="header-stat-value" id="stat-total-aliados"><?php echo $total_registros; ?></div>
                 <div class="header-stat-label">Total Aliados</div>
             </div>
             <div class="header-stat clickable-stat" onclick="abrirModalAliadosFirmados()" style="cursor: pointer;">
-                <div class="header-stat-value"><?php echo $total_firmados; ?></div>
+                <div class="header-stat-value" id="stat-aliados-firmados"><?php echo $total_firmados; ?></div>
                 <div class="header-stat-label">Aliados Firmados</div>
             </div>
-            <div class="header-stat clickable-stat" onclick="abrirModalDocumentosCargados(<?php echo $total_documentos_cargados; ?>)" style="cursor: pointer;">
-                <div class="header-stat-value"><?php echo $total_documentos_cargados; ?></div>
+            <div class="header-stat clickable-stat" onclick="abrirModalDocumentosCargados()" style="cursor: pointer;">
+                <div class="header-stat-value" id="stat-docs-cargados"><?php echo $total_documentos_cargados; ?></div>
                 <div class="header-stat-label">Docs Cargados</div>
             </div>
         </div>
@@ -5273,6 +5273,14 @@ function load(page) {
         success: function(data) {
             console.log("Datos cargados. Longitud:", data.length);
             $("#allyList").html(data);
+
+            // Actualizar estadísticas del header
+            var stats = $("#stats-data");
+            if (stats.length > 0) {
+                $("#stat-total-aliados").text(stats.data('total'));
+                $("#stat-aliados-firmados").text(stats.data('firmados'));
+                $("#stat-docs-cargados").text(stats.data('docs'));
+            }
             
             // Garantizar que los elementos se vuelvan visibles con una pequeña transición
             setTimeout(() => {
