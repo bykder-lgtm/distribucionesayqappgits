@@ -29,7 +29,8 @@
 </li>
 -->
 <li class=""><a href="../admin/lista_info_factura_venta_coordinador_diseno_vertical.php"><i class="fa fa-list-alt"></i> Lista de Creditos</a></li>
-<li class=""><a href="../admin/lista_aliado_coordinador_diseno_vertical.php"><i class="fa fa-list-alt"></i> Lista de Aliados</a></li>
+<li class=""><a href="../admin/lista_aliado_lider_diseno_vertical.php"><i class="fa fa-users"></i> Lista de Aliados</a></li>
+<li class=""><a href="../admin/lista_usuario_archivado.php"><i class="fa fa-box-archive"></i> Usuarios Archivados</a></li>
 <li class=""><a href="../admin/lista_tienda_coordinador_diseno_vertical.php"><i class="fa fa-list-alt"></i> Lista de Tiendas</a></li>
 <li class=""><a href="../admin/lista_producto_coordinador_diseno_vertical.php"><i class="fa fa-list-alt"></i> Lista de Productos</a></li>
 

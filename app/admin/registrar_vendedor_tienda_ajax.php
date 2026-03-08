@@ -90,11 +90,11 @@ if (isset($_POST['identificacion_tercero'])) {
 		$sql_data = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
         nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion, 
         cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, correo, telefono, cuenta, contrasena, 
-        cod_vendedor, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico) 
+        cod_vendedor, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico, cod_estado) 
 		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
         UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion', 
         '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$creador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$correo', '$telefono', '$cuenta', '$contrasena', 
-        '$cod_tienda', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico')";
+        '$cod_tienda', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico', '1')";
 		$exec_data = mysqli_query($conectar, $sql_data);
         if ($exec_data && mysqli_affected_rows($conectar) > 0) { $afectado = "SI"; $cod_administrador = mysqli_insert_id($conectar); } else { $afectado = "NO"; $error_mysql = mysqli_error($conectar); }
     }

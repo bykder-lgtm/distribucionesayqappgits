@@ -31,6 +31,7 @@
 <li class=""><a href="../admin/lista_info_factura_venta_revisor_diseno_vertical.php"><i class="fa fa-list-alt"></i> Creditos</a></li>
 <li class=""><a href="../admin/lista_info_factura_venta_abierta_revisor_diseno_vertical.php"><i class="fa fa-list-alt"></i> Creditos Abiertos</a></li>
 <li class=""><a href="../admin/lista_info_factura_venta_cerrada_revisor_diseno_vertical.php"><i class="fa fa-list-alt"></i> Creditos Cerrados</a></li>
+<li class=""><a href="../admin/lista_usuario_archivado.php"><i class="fa fa-box-archive"></i> Usuarios Archivados</a></li>
 
 <!--
 <li class=""><a href="../admin/lista_banner_slider.php"><i class="fa fa-ticket"></i> Banner Slider</a></li>

@@ -24,37 +24,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $barrio                                                             = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
     $cod_departamento                                                   = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
     $cod_municipio                                                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
-    
     // Validar campos obligatorios
-    if (empty($identificacion) || empty($nombre1) || empty($apellido1) || empty($correo) || empty($telefono)) { 
-        echo json_encode(['status' => 'error', 'message' => 'Por favor complete todos los campos obligatorios.']);  
-        exit; 
-    }
-    
+    if (empty($identificacion) || empty($nombre1) || empty($apellido1) || empty($correo) || empty($telefono)) { echo json_encode(['status' => 'error', 'message' => 'Por favor complete todos los campos obligatorios.']); exit; }
     // Verificar si ya existe (por cédula)
     $sql_check = "SELECT cod_administrador FROM tbl15_administrador WHERE (cedula = '$identificacion')";
     $res_check = mysqli_query($conectar, $sql_check);
-    if (mysqli_num_rows($res_check) > 0) { 
-        echo json_encode(['status' => 'error', 'message' => 'El revisor ya se encuentra registrado (cédula duplicada).']); 
-        exit; 
-    }
-
+    if (mysqli_num_rows($res_check) > 0) { echo json_encode(['status' => 'error', 'message' => 'El revisor ya se encuentra registrado (cédula duplicada).']); exit; }
+    
     $sql_autoincremento_administrador = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$base_datos' AND TABLE_NAME = 'tbl15_administrador'";
     $exec_autoincremento_administrador = mysqli_query($conectar, $sql_autoincremento_administrador) or die(mysqli_error($conectar));
     $datos_autoincremento_administrador = mysqli_fetch_assoc($exec_autoincremento_administrador);
 
     $cod_administrador_incre                                            = $datos_autoincremento_administrador['AUTO_INCREMENT'];
     $cuenta                                                             = $identificacion.'-'.$cod_administrador_incre;
-
     // El lider actual es el cod_lider
     $cod_lider                                                          = $cod_administrador_actual;
-
     // Preparar datos calculados
     $nombres_apellidos_tercero                                          = trim("$nombre1 $nombre2 $apellido1 $apellido2");
     $nombres                                                            = trim("$nombre1 $nombre2");
     $apellidos                                                          = trim("$apellido1 $apellido2");
     $contrasena                                                         = sha1($identificacion); // Encriptación SHA1
-    
     // Valores fijos para Revisor
     $cod_seguridad                                                      = 27;
     $nombre_tipo_tercero                                                = 'REVISOR';
@@ -66,20 +55,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $url_pag_redirec_ini_sesion                                         = '../admin/dashboard_lider_movil.php'; // Ajustar si tiene dashboard propio
 
     // Insertar Nuevo Revisor
-    $sql_insert = "INSERT INTO tbl15_administrador (cedula, nombres, apellidos, nombre_sexo, cuenta, contrasena, correo, telefono, cod_seguridad, nombre_tipo_tercero, nombre_tipo_identificacion, 
-    identificacion_tercero, nombres_apellidos_tercero, digito_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, 
-    telefono1_tercero, correo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, cod_lider, cod_estado_activacion_usuario, 
-    fecha_creacion, url_pag_redirec_ini_sesion, direccion_tercero, barrio_tercero, cod_departamento, cod_municipio) 
-    VALUES ('$identificacion', UPPER('$nombres'), UPPER('$apellidos'), '$sexo', '$cuenta', '$contrasena', '$correo', '$telefono', '$cod_seguridad', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', 
-    '$identificacion', UPPER('$nombres_apellidos_tercero'), '', UPPER('$nombre1'), UPPER('$nombre2'), UPPER('$apellido1'), UPPER('$apellido2'), 
-    '$telefono', '$correo', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$cod_lider', '$cod_estado_activacion_usuario', 
-    '$fecha_creacion', '$url_pag_redirec_ini_sesion', UPPER('$direccion'), UPPER('$barrio'), '$cod_departamento', '$cod_municipio')";
-    
-    if (mysqli_query($conectar, $sql_insert)) { 
-        echo json_encode(['status' => 'success', 'message' => 'Revisor registrado correctamente.']); 
-    } else { 
-        echo json_encode(['status' => 'error', 'message' => 'Error al registrar en base de datos: ' . mysqli_error($conectar)]); 
-    }
+    $sql_insert = "INSERT INTO tbl15_administrador (cedula, nombres, apellidos, nombre_sexo, cuenta, contrasena, correo, telefono, cod_seguridad, 
+    nombre_tipo_tercero, nombre_tipo_identificacion, identificacion_tercero, nombres_apellidos_tercero, nombre1_tercero, nombre2_tercero, 
+    apellido1_tercero, apellido2_tercero, telefono1_tercero, correo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, 
+    cod_lider, cod_estado_activacion_usuario, cod_estado, fecha_creacion, url_pag_redirec_ini_sesion, direccion_tercero, barrio_tercero, 
+    cod_departamento, cod_municipio) 
+    VALUES ('$identificacion', UPPER('$nombres'), UPPER('$apellidos'), '$sexo', '$cuenta', '$contrasena', '$correo', '$telefono', '$cod_seguridad', 
+    '$nombre_tipo_tercero', '$nombre_tipo_identificacion', '$identificacion', UPPER('$nombres_apellidos_tercero'), UPPER('$nombre1'), UPPER('$nombre2'), 
+    UPPER('$apellido1'), UPPER('$apellido2'), '$telefono', '$correo', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', 
+    '$cod_lider', '$cod_estado_activacion_usuario', '1', '$fecha_creacion', '$url_pag_redirec_ini_sesion', UPPER('$direccion'), UPPER('$barrio'), 
+    '$cod_departamento', '$cod_municipio')";
+    if (mysqli_query($conectar, $sql_insert)) { echo json_encode(['status' => 'success', 'message' => 'Revisor registrado correctamente.']); } else { echo json_encode(['status' => 'error', 'message' => 'Error al registrar en base de datos: ' . mysqli_error($conectar)]); }
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Método no permitido']);
 }

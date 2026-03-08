@@ -40,10 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cod_coordinador                                                    = $cod_administrador_incre;
     $cuenta                                                             = $identificacion.'-'.$cod_administrador_incre;
 	//---------------------------------------------------------------------------------------------------------------------------------//
-
     // El lider actual es el cod_lider del nuevo coordinador
     $cod_lider                                                          = $cod_administrador_actual;
-
     // Preparar datos calculados
     $nombres_apellidos_tercero                                          = trim("$nombre1 $nombre2 $apellido1 $apellido2");
     $nombres                                                            = trim("$nombre1 $nombre2");
@@ -61,11 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Insertar Nuevo Coordinador
     $sql_insert = "INSERT INTO tbl15_administrador (cedula, nombres, apellidos, nombre_sexo, cuenta, contrasena, correo, telefono, cod_seguridad, nombre_tipo_tercero, nombre_tipo_identificacion, 
     identificacion_tercero, nombres_apellidos_tercero, digito_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, 
-    telefono1_tercero, correo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, cod_lider, cod_coordinador, cod_estado_activacion_usuario, 
+    telefono1_tercero, correo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, cod_lider, cod_coordinador, cod_estado_activacion_usuario, cod_estado, 
     fecha_creacion, url_pag_redirec_ini_sesion, direccion_tercero, barrio_tercero, cod_departamento, cod_municipio) 
     VALUES ('$identificacion', UPPER('$nombres'), UPPER('$apellidos'), '$sexo', '$cuenta', '$contrasena', '$correo', '$telefono', '$cod_seguridad', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', 
     '$identificacion', UPPER('$nombres_apellidos_tercero'), '', UPPER('$nombre1'), UPPER('$nombre2'), UPPER('$apellido1'), UPPER('$apellido2'), 
-    '$telefono', '$correo', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$cod_lider', '$cod_coordinador', '$cod_estado_activacion_usuario', 
+    '$telefono', '$correo', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$cod_lider', '$cod_coordinador', '$cod_estado_activacion_usuario', '1', 
     '$fecha_creacion', '$url_pag_redirec_ini_sesion', UPPER('$direccion'), UPPER('$barrio'), '$cod_departamento', '$cod_municipio')";
     if (mysqli_query($conectar, $sql_insert)) { echo json_encode(['status' => 'success', 'message' => 'Coordinador registrado correctamente.']); } else { echo json_encode(['status' => 'error', 'message' => 'Error al registrar en base de datos: ' . mysqli_error($conectar)]); }
 } else {

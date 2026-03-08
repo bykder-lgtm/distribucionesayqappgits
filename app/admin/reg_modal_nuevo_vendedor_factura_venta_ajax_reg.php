@@ -4,13 +4,9 @@ include_once('../admin/class_php/funcion_cryptor_descryptor_class.php');
 include_once('../evitar_mensaje_error/error.php');
 date_default_timezone_set("America/Bogota");
 include ("../session/funciones_admin.php");
-if (verificar_usuario()){
-//print "Bienvenido (a), <strong>".$_SESSION['usuario'].", </strong>al sistema.";
-    } else { header("Location:../index.php");
-}
+if (verificar_usuario()){ } else { header("Location:../index.php"); }
 $cuenta_actual                              = DAXCRYPTOR::descriptardax($_SESSION['usuario_cryp']);
 //$cuenta                                     = $_SESSION['usuario'];
-
 $retorno_array                              = array();
 $retorno_array2                             = array();
 $codigoHTML_menu                            = '';
@@ -50,8 +46,7 @@ if (isset($_POST['cod_info_factura_venta'])) {
     $cod_tienda                                    = $info_info_factura_venta['cod_tienda'];
     $cod_aliado_estrategico                        = $info_info_factura_venta['cod_administrador_aliado_estrategico'];
     $cod_seguridad                                 = '2';
-
-	$fecha_creacion = date("Y-m-d H:i:s");
+	$fecha_creacion                                = date("Y-m-d H:i:s");
 
 	$sql_data = "INSERT INTO tbl15_vendedor (cod_vendedor, cedula, nombres, apellidos, identificacion_tercero, nombre1_tercero, apellido1_tercero, 
 	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, fecha_creacion) 
@@ -60,9 +55,9 @@ if (isset($_POST['cod_info_factura_venta'])) {
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
 	$sql_data = "INSERT INTO tbl15_administrador (cod_administrador, cedula, nombres, apellidos, identificacion_tercero, nombre1_tercero, apellido1_tercero, 
-	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, cod_seguridad, fecha_creacion, url_pag_redirec_ini_sesion) 
+	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, cod_seguridad, fecha_creacion, url_pag_redirec_ini_sesion, cod_estado) 
 	VALUES ('$cod_administrador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), 
-	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$cod_seguridad', '$fecha_creacion', '../admin/dashboard_vendedor_movil.php')";
+	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$cod_seguridad', '$fecha_creacion', '../admin/dashboard_vendedor_movil.php', '1')";
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
 	$sql_info_factura_venta = sprintf("UPDATE tbl15_info_factura_venta SET cod_vendedor = '$cod_administrador' WHERE (cod_info_factura_venta = '$cod_info_factura_venta')");

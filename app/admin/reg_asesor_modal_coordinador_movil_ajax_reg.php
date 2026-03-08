@@ -58,11 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Insertar Nuevo Asesor
     $sql_insert = "INSERT INTO tbl15_administrador (cedula, nombres, apellidos, nombre_sexo, cuenta, contrasena, correo, telefono, cod_seguridad, nombre_tipo_tercero, nombre_tipo_identificacion, 
     identificacion_tercero, nombres_apellidos_tercero, digito_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, 
-    telefono1_tercero, correo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, cod_lider, cod_coordinador, cod_asesor, cod_estado_activacion_usuario, 
+    telefono1_tercero, correo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, cod_lider, cod_coordinador, cod_asesor, cod_estado_activacion_usuario, cod_estado, 
     fecha_creacion, url_pag_redirec_ini_sesion) 
     VALUES ('$identificacion', UPPER('$nombres'), UPPER('$apellidos'), '$sexo', '$cuenta', '$contrasena', '$correo', '$telefono', '$cod_seguridad', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', 
     '$identificacion', UPPER('$nombres_apellidos_tercero'), '', UPPER('$nombre1'), UPPER('$nombre2'), UPPER('$apellido1'), UPPER('$apellido2'), 
-    '$telefono', '$correo', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$cod_lider', '$cod_administrador_actual', '$cod_asesor', '$cod_estado_activacion_usuario', 
+    '$telefono', '$correo', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$cod_lider', '$cod_administrador_actual', '$cod_asesor', '$cod_estado_activacion_usuario', '1', 
     '$fecha_creacion', '$url_pag_redirec_ini_sesion')";
     if (mysqli_query($conectar, $sql_insert)) { echo json_encode(['status' => 'success', 'message' => 'Asesor registrado correctamente.']); } else { echo json_encode(['status' => 'error', 'message' => 'Error al registrar en base de datos: ' . mysqli_error($conectar)]); }
 } else {

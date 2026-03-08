@@ -91,7 +91,7 @@ if (isset($_GET["cod_administrador"])) {
 	$fecha_expiracion_cupon_descuento                      = $matriz_consulta['fecha_expiracion_cupon_descuento'];
 	$hora_expiracion_cupon_descuento                       = $matriz_consulta['hora_expiracion_cupon_descuento'];
 	$num_max_caja_mesa_usuario                             = $matriz_consulta['num_max_caja_mesa_usuario'];
-	$cod_estado                                            = $matriz_consulta['cod_estado'];
+	$cod_estado                                            = 1;
 	$cod_estado_prod                                       = $matriz_consulta['cod_estado_prod'];
 	$cod_estado_prod_reg_producto                          = $matriz_consulta['cod_estado_prod_reg_producto'];
 	$cod_estado_prod_asig_subproducto                      = $matriz_consulta['cod_estado_prod_asig_subproducto'];

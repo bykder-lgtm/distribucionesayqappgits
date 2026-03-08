@@ -89,12 +89,12 @@ try {
     // Insertar el vendedor
     $sql_insert = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, cod_departamento, cod_municipio,
     nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion,
-    cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, 
+    cod_seguridad, cod_estado_activacion_usuario, cod_estado, fecha, fecha_hora, creador, cedula, nombres, apellidos, 
     correo, telefono, cuenta, contrasena, cod_vendedor, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, 
     cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico) 
     VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', UPPER('$direccion_tercero'), UPPER('$barrio_tercero'), '$cod_departamento', '$cod_municipio',
     UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion',
-    '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$cuenta_actual', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'),
+    '$cod_seguridad', '$cod_estado_activacion_usuario', '1', '$fecha', '$fecha_hora', '$cuenta_actual', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'),
     '$correo_tercero', '$telefono1_tercero', '$cuenta', '$contrasena', '$cod_tienda', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina',
     '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico')";
     if (mysqli_query($conectar, $sql_insert)) {

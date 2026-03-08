@@ -101,12 +101,12 @@ try {
     nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion,
     cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, 
     correo, telefono, cuenta, contrasena, cod_vendedor, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, 
-    cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico) 
+    cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico, cod_estado) 
     VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', UPPER('$direccion_tercero'), UPPER('$barrio_tercero'), '$cod_departamento', '$cod_municipio',
     UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion',
     '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$cuenta_actual', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'),
     '$correo_tercero', '$telefono1_tercero', '$cuenta', '$contrasena', '$cod_tienda', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina',
-    '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico')";
+    '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico', '1')";
     if (mysqli_query($conectar, $sql_insert)) {
         $cod_administrador_insertado = mysqli_insert_id($conectar);
         echo json_encode(array('success' => true, 'message' => 'Vendedor registrado correctamente. Credenciales: Usuario: ' . $cuenta . ' / Contraseña: ' . $identificacion_tercero, 'cod_administrador' => $cod_administrador_insertado, 'usuario' => $cuenta, 'contrasena_inicial' => $identificacion_tercero));

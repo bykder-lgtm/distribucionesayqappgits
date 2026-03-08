@@ -46,9 +46,9 @@ try {
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 */
 	$sql_data = "INSERT INTO tbl15_administrador (cod_administrador, cedula, nombres, apellidos, identificacion_tercero, nombre1_tercero, apellido1_tercero, 
-	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, cod_seguridad, fecha_creacion, url_pag_redirec_ini_sesion) 
+	nombre_tipo_identificacion, cuenta, cod_tienda, cod_aliado_estrategico, cod_seguridad, fecha_creacion, url_pag_redirec_ini_sesion, cod_estado) 
 	VALUES ('$cod_administrador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), 
-	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$cod_seguridad', '$fecha_creacion', '../admin/dashboard_vendedor_movil.php')";
+	'$nombre_tipo_identificacion', '$cuenta', '$cod_tienda', '$cod_aliado_estrategico', '$cod_seguridad', '$fecha_creacion', '../admin/dashboard_vendedor_movil.php', '1')";
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
 	$sql_info_factura_venta = sprintf("UPDATE tbl15_info_factura_venta SET cod_vendedor = '$cod_administrador' WHERE (cod_info_factura_venta = '$cod_info_factura_venta')");
@@ -67,21 +67,9 @@ try {
     $cod_vendedor_nuevo = mysqli_insert_id($conectar);
     mysqli_stmt_close($stmt);
     
-    if ($cod_vendedor_nuevo > 0) {
-        echo json_encode(array(
-            'success' => true,
-            'message' => 'Vendedor registrado correctamente',
-            'cod_vendedor' => $cod_vendedor_nuevo
-        ));
-    } else {
-        throw new Exception('No se pudo obtener el código del vendedor registrado');
-    }
-    
+    if ($cod_vendedor_nuevo > 0) { echo json_encode(array('success' => true, 'message' => 'Vendedor registrado correctamente', 'cod_vendedor' => $cod_vendedor_nuevo)); } else { throw new Exception('No se pudo obtener el código del vendedor registrado'); }
 } catch (Exception $e) {
-    echo json_encode(array(
-        'success' => false,
-        'message' => $e->getMessage()
-    ));
+    echo json_encode(array('success' => false, 'message' => $e->getMessage() ));
 }
 mysqli_close($conectar);
 ?>

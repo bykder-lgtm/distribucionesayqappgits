@@ -32,6 +32,7 @@
 <li class=""><a href="../admin/lista_aliado_asesor_diseno_vertical.php"><i class="fa fa-list-alt"></i> Lista de Aliados</a></li>
 <li class=""><a href="../admin/lista_tienda_asesor_diseno_vertical.php"><i class="fa fa-list-alt"></i> Lista de Tiendas</a></li>
 <li class=""><a href="../admin/lista_producto_asesor_diseno_vertical.php"><i class="fa fa-list-alt"></i> Lista de Productos</a></li>
+<li class=""><a href="../admin/lista_usuario_archivado.php"><i class="fa fa-box-archive"></i> Usuarios Archivados</a></li>
 
 <!--
 <li class=""><a href="../admin/lista_banner_slider.php"><i class="fa fa-ticket"></i> Banner Slider</a></li>

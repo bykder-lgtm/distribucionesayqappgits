@@ -132,13 +132,13 @@ if (isset($_GET["cod_tercero"])) {
 	cod_estado_cliente, cod_estado_lider, cod_estado_coordinador, cod_estado_asesor, cod_estado_proveedor, cod_estado_vendedor, 
 	cod_estado_aliado_estrategico, cod_estado_entidad_crediticia, cod_seguridad, cedula, nombres, apellidos, cuenta, contrasena, 
 	cod_tipo_aplicacion, cod_estado_activacion_usuario, nombre_tipo_tercero, cod_tipo_tercero, fecha, fecha_hora, 
-	cod_cliente, cod_lider, cod_coordinador, cod_asesor, cod_vendedor, cod_proveedor, cod_aliado_estrategico, cod_entidad_crediticia) 
+	cod_cliente, cod_lider, cod_coordinador, cod_asesor, cod_vendedor, cod_proveedor, cod_aliado_estrategico, cod_entidad_crediticia, cod_estado) 
 	VALUES ('$cod_administrador', '$cod_tercero', '$nombre_tipo_identificacion', '$identificacion_tercero', '$nombre1_tercero', '$nombre2_tercero', '$apellido1_tercero', '$apellido2_tercero', '$direccion_tercero', 
 	'$telefono1_tercero', '$correo_tercero', '$fecha_nac_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', 
 	'$cod_estado_cliente', '$cod_estado_lider', '$cod_estado_coordinador', '$cod_estado_asesor', '$cod_estado_proveedor', '$cod_estado_vendedor', 
 	'$cod_estado_aliado_estrategico', '$cod_estado_entidad_crediticia', '$cod_seguridad', '$cedula', '$nombres', '$apellidos', '$cuenta', '$contrasena', 
 	'$cod_tipo_aplicacion', '$cod_estado_activacion_usuario', '$nombre_tipo_tercero', '$cod_tipo_tercero', '$fecha', '$fecha_hora', 
-	'$cod_cliente', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_vendedor', '$cod_proveedor', '$cod_aliado_estrategico', '$cod_entidad_crediticia')";
+	'$cod_cliente', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_vendedor', '$cod_proveedor', '$cod_aliado_estrategico', '$cod_entidad_crediticia', '1')";
 	$resultado_sql1 = mysqli_query($conectar, $agreg) or die(mysqli_error($conectar));
 ?>
 <META HTTP-EQUIV="REFRESH" CONTENT="0; <?php echo $pagina_redirect?>">

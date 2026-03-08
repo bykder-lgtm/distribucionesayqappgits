@@ -78,9 +78,9 @@ if($busqueda_ajax <> NULL) {
 
 if($action == 'ajax') {
     $sTable = "tbl15_administrador";
-    $sWhere = " WHERE (cod_lider = '$cod_administrador')";
+    $sWhere = " WHERE (cod_lider = '$cod_administrador') AND (cod_estado != '0' AND cod_estado_activacion_usuario != '3')";
     if ($busqueda_ajax != "") {
-        $sWhere = " WHERE (cod_lider = '$cod_administrador') AND ( ";
+        $sWhere = " WHERE (cod_lider = '$cod_administrador') AND (cod_estado != '0' AND cod_estado_activacion_usuario != '3') AND ( ";
         for ( $i=0 ; $i<count($aColumns) ; $i++ ) { $sWhere .= $aColumns[$i]." LIKE '%".$busqueda_ajax."%' OR "; }
         $sWhere = substr_replace($sWhere, "", -3);
         $sWhere .= ')';

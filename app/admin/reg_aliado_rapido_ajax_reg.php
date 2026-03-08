@@ -49,12 +49,12 @@ if (isset($_POST['nombres_apellidos_tercero'])) {
     nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, cod_seguridad, 
     cod_estado_activacion_usuario, cod_estado_usuario_prueba, fecha, fecha_hora, creador, 
     cedula, nombres, correo, telefono, cuenta, contrasena, cod_aliado_estrategico, 
-    url_pag_redirec_ini_sesion, cod_lider, cod_coordinador, cod_asesor) 
+    url_pag_redirec_ini_sesion, cod_lider, cod_coordinador, cod_asesor, cod_estado) 
     VALUES (UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', 
     UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$cod_seguridad', 
     '$cod_estado_activacion_usuario', '$cod_estado_usuario_prueba', '$fecha', '$fecha_hora', '$creador', 
     '$identificacion_tercero', UPPER('$nombre1_tercero'), '$correo_tercero', '$telefono1_tercero', '$cuenta', '$contrasena', '$next_id', 
-    '$url_pag_redirec_ini_sesion', '$cod_lider', '$cod_coordinador', '$cod_asesor')";
+    '$url_pag_redirec_ini_sesion', '$cod_lider', '$cod_coordinador', '$cod_asesor', '1')";
     if (mysqli_query($conectar, $sql_insert)) {
         $cod_aliado = mysqli_insert_id($conectar);
         // Crear tienda automática por defecto para el aliado rápido

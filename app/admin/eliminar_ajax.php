@@ -286,10 +286,10 @@ VALUES ('$cod_administrador', '$cedula', '$nombres', '$apellidos', '$nombre_sexo
 '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$nombre_impresora', '$tamano_papel_impresora', '$cod_estado')";
 $exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
-$borrar_sql = sprintf("DELETE FROM $tab WHERE $campo = '$llave'");
-$Result1 = mysqli_query($conectar, $borrar_sql) or die(mysqli_error($conectar));
+	$borrar_sql = sprintf("UPDATE $tab SET cod_estado = '0', cod_estado_activacion_usuario = '3' WHERE $campo = '$llave'");
+	$Result1 = mysqli_query($conectar, $borrar_sql) or die(mysqli_error($conectar));
 
-if ( mysqli_affected_rows($conectar) > 0) { echo "ELIMINADO SI"; } else { echo "ELIMINADO NO"; }
+	if ( mysqli_affected_rows($conectar) > 0) { echo "ELIMINADO SI"; } else { echo "ELIMINADO NO"; }
 }
 //----------------------------------------------------------------------------------------------------------------------------------//
 //----------------------------------------------------------------------------------------------------------------------------------//
@@ -497,17 +497,7 @@ if ( mysqli_affected_rows($conectar) > 0) { echo "ELIMINADO SI"; } else { echo "
 elseif ($tipo == 'eliminar' && $tab == 'tbl15_administrador') {
 $llave                        = intval($_POST['llave']);
 
-$borrar_sql = sprintf("DELETE FROM $tab WHERE $campo = '$llave'");
-$Result1 = mysqli_query($conectar, $borrar_sql) or die(mysqli_error($conectar));
-
-if ( mysqli_affected_rows($conectar) > 0) { echo "ELIMINADO SI"; } else { echo "ELIMINADO NO"; }
-}
-//----------------------------------------------------------------------------------------------------------------------------------//
-//----------------------------------------------------------------------------------------------------------------------------------//
-elseif ($tipo == 'eliminar' && $tab == 'tbl15_empresa_contratante') {
-$llave                        = intval($_POST['llave']);
-
-$borrar_sql = sprintf("DELETE FROM $tab WHERE $campo = '$llave'");
+$borrar_sql = sprintf("UPDATE $tab SET cod_estado = '0', cod_estado_activacion_usuario = '3' WHERE $campo = '$llave'");
 $Result1 = mysqli_query($conectar, $borrar_sql) or die(mysqli_error($conectar));
 
 if ( mysqli_affected_rows($conectar) > 0) { echo "ELIMINADO SI"; } else { echo "ELIMINADO NO"; }

@@ -739,7 +739,7 @@ if(mysqli_num_rows(@$consultar_entidad) > 0) 	{
 		cod_estado_usuario_cambiar_tipo_rol, cod_estado_facturacion_venta_dependencia_user, 
 		cod_estado_facturacion_venta_precio_venta_predet_user, cod_estado_facturacion_venta_acceso_facturas_otros_user,
 		nombre_tipo_precio_venta_predet_user, numero_precio_user, identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, 
-		total_base_cierre_caja, num_max_caja_mesa_usuario, limite_max_venta_temp_por_caja_mesa_usuario, total_saldo_recarga, url_pag_redirec_ini_sesion, cod_tienda) 
+		total_base_cierre_caja, num_max_caja_mesa_usuario, limite_max_venta_temp_por_caja_mesa_usuario, total_saldo_recarga, url_pag_redirec_ini_sesion, cod_tienda, cod_estado) 
 		VALUES ('$cedula', '$nombres', '$apellidos', '$nombre_sexo', '$cuenta', '$contrasena', '$correo', '$cod_seguridad', '$cod_tipo_historia_clinica', '$telefono', 
 		'$estilo_css', '$creador', '$fecha_hora', '$fecha', '$reg_medico', 
 		'$cod_estado_prod', '$cod_estado_prod_reg_producto', '$cod_estado_prod_asig_subproducto', '$cod_estado_prod_cargar_factura_compra', 
@@ -894,7 +894,7 @@ if(mysqli_num_rows(@$consultar_entidad) > 0) 	{
 		'$cod_estado_usuario_cambiar_tipo_rol', '$cod_estado_facturacion_venta_dependencia_user', 
 		'$cod_estado_facturacion_venta_precio_venta_predet_user', '$cod_estado_facturacion_venta_acceso_facturas_otros_user',
 		'$nombre_tipo_precio_venta_predet_user', '$numero_precio_user', '$identificacion_tercero', '$nombre1_tercero', '$apellido1_tercero', '$telefono1_tercero', '$correo_tercero', 
-		'$total_base_cierre_caja', '$num_max_caja_mesa_usuario', '$limite_max_venta_temp_por_caja_mesa_usuario', '$total_saldo_recarga', '$url_pag_redirec_ini_sesion', '$cod_tienda')";
+		'$total_base_cierre_caja', '$num_max_caja_mesa_usuario', '$limite_max_venta_temp_por_caja_mesa_usuario', '$total_saldo_recarga', '$url_pag_redirec_ini_sesion', '$cod_tienda', '1')";
 		$resultado_sql1 = mysqli_query($conectar, $agreg) or die(mysqli_error($conectar));
 ?>
 <META HTTP-EQUIV="REFRESH" CONTENT="0; ../admin/lista_usuario.php">
