@@ -13,6 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombres                = isset($_POST['nombres_edit']) ? trim(addslashes($_POST['nombres_edit'])) : '';
     $apellidos              = isset($_POST['apellidos_edit']) ? trim(addslashes($_POST['apellidos_edit'])) : '';
     $correo                 = isset($_POST['correo_edit']) ? trim(addslashes($_POST['correo_edit'])) : '';
+    $telefono               = isset($_POST['telefono1_edit']) ? trim(addslashes($_POST['telefono1_edit'])) : '';
+    $cod_coordinador        = isset($_POST['cod_coordinador_edit']) ? intval($_POST['cod_coordinador_edit']) : 0;
+    $cod_lider              = isset($_POST['cod_lider_edit']) ? intval($_POST['cod_lider_edit']) : 0;
     $direccion              = isset($_POST['direccion_edit']) ? trim(addslashes($_POST['direccion_edit'])) : '';
     $barrio                 = isset($_POST['barrio_edit']) ? trim(addslashes($_POST['barrio_edit'])) : '';
     $cod_departamento       = isset($_POST['cod_departamento_edit']) ? intval($_POST['cod_departamento_edit']) : 0;

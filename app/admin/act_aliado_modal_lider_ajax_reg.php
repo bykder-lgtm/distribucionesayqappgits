@@ -13,11 +13,10 @@ $respuesta_ajax                                                     = array();
 if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['action'] == 'editar') {
     
     $cod_administrador                                                  = intval($_POST['cod_administrador']);
-    $identificacion_tercero                                             = intval($_POST['identificacion_tercero']);
+    $identificacion_tercero                                             = trim(addslashes($_POST['identificacion_tercero']));
     $nombre1_tercero                                                    = trim(addslashes($_POST['nombre1_tercero']));
     $apellido1_tercero                                                  = trim(addslashes($_POST['apellido1_tercero']));
     $telefono1_tercero                                                  = trim(addslashes($_POST['telefono1_tercero']));
-    $correo_tercero                                                     = trim(addslashes($_POST['correo_tercero']));
     $correo_tercero                                                     = trim(addslashes($_POST['correo_tercero']));
     $cod_estado_activacion_usuario                                      = intval($_POST['cod_estado_activacion_usuario']);
     // Nuevos campos
@@ -30,6 +29,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $cod_coordinador                                                    = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
     
     // MISSING FIELDS
+    $nombres_apellidos_tercero                                          = isset($_POST['nombres_apellidos_tercero']) ? trim(addslashes($_POST['nombres_apellidos_tercero'])) : ($nombre1_tercero . ' ' . $apellido1_tercero);
     $nombre_razon_social                                                = isset($_POST['nombre_razon_social']) ? trim(addslashes($_POST['nombre_razon_social'])) : '';
     $cod_departamento                                                   = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
     $cod_municipio                                                      = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
@@ -53,7 +53,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $nueva_password                                                     = '';
     if ($cambiar_password && isset($_POST['nueva_password']) && !empty($_POST['nueva_password'])) { $nueva_password = trim(addslashes($_POST['nueva_password'])); }
     // Calculated fields
-    $nombres_apellidos_tercero                                          = $nombre1_tercero . ' ' . $apellido1_tercero;
+    // $nombres_apellidos_tercero ya fue capturado arriba de forma inteligente
     $fecha_modificacion                                                 = date("Y-m-d");
     $fecha_hora_modificacion                                            = date("H:i:s");
     // Check if cod_administrador exists
@@ -112,7 +112,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
             }
             // Ejecutar actualización de documentos solo si hay cambios
             if ($docs_para_actualizar) { $sql_update_docs .= ", fecha_documentacion = '".date('Y-m-d H:i:s')."' WHERE cod_administrador = '$cod_administrador'"; mysqli_query($conectar, $sql_update_docs); }
-            // Actualizar parametrización de entidades crediticias
+            // Actualizar parametrización de entidades crediticias (Solo si se envían desde un formulario compatible)
             if (isset($_POST['entidades']) && is_array($_POST['entidades'])) {
                 // Primero, desactivar todas las parametrizaciones existentes de este aliado
                 $sql_desactivar = "UPDATE tbl15_parametrizacion_entidad_crediticia_aliado SET cod_estado = '0' WHERE cod_aliado_estrategico = '$cod_administrador'";
@@ -153,10 +153,6 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
                         mysqli_query($conectar, $sql_insert_entidad);
                     }
                 }
-            } else {
-                // Si no se seleccionó ninguna entidad, desactivar todas
-                $sql_desactivar = "UPDATE tbl15_parametrizacion_entidad_crediticia_aliado SET cod_estado = '0' WHERE cod_aliado_estrategico = '$cod_administrador'";
-                mysqli_query($conectar, $sql_desactivar);
             }
             $afectado = "SI"; 
             // Construir mensaje según lo que se actualizó

@@ -88,9 +88,9 @@ if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero']) && iss
 	$nombre1_tercero                                                = trim(addslashes($_POST['nombre1_tercero']));
     $cod_aliado_estrategico                                         = intval($_POST['cod_aliado_estrategico']);
     // Generar identificación automática si no viene (basado en timestamp + aliado)
-    $identificacion_tercero                                         = isset($_POST['identificacion_tercero']) && !empty($_POST['identificacion_tercero']) ? intval($_POST['identificacion_tercero']) : '';
+    $identificacion_tercero                                         = isset($_POST['identificacion_tercero']) && !empty($_POST['identificacion_tercero']) ? trim(addslashes($_POST['identificacion_tercero'])) : '';
     // Campos con valores por defecto si no vienen del formulario
-	$telefono1_tercero                                              = isset($_POST['telefono1_tercero']) && !empty($_POST['telefono1_tercero']) ? trim(addslashes($_POST['telefono1_tercero'])) : '';
+	$telefono1_tercero                                              = isset($_POST['telefono_tienda']) && !empty($_POST['telefono_tienda']) ? trim(addslashes($_POST['telefono_tienda'])) : '';
 	$correo_tercero                                                 = isset($_POST['correo_tercero']) && !empty($_POST['correo_tercero']) ? trim(addslashes($_POST['correo_tercero'])) : '';
 	$direccion_tercero                                              = isset($_POST['direccion_tercero']) && !empty($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
     $barrio_tercero                                                 = isset($_POST['barrio_tercero']) && !empty($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
@@ -98,7 +98,7 @@ if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero']) && iss
     $cod_municipio                                                  = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
     // Representante legal - valores por defecto
     $nombre_representante                                           = isset($_POST['nombre_representante']) && !empty($_POST['nombre_representante']) ? trim(addslashes($_POST['nombre_representante'])) : '';
-    $documento_representante                                        = isset($_POST['documento_representante']) && !empty($_POST['documento_representante']) ? intval($_POST['documento_representante']) : 0;
+    $documento_representante                                        = isset($_POST['documento_representante']) && !empty($_POST['documento_representante']) ? trim(addslashes($_POST['documento_representante'])) : '';
     $correo_representante                                           = isset($_POST['correo_representante']) && !empty($_POST['correo_representante']) ? trim(addslashes($_POST['correo_representante'])) : '';
     $nombre_tipo_industria                                          = isset($_POST['nombre_tipo_industria']) ? trim(addslashes($_POST['nombre_tipo_industria'])) : '';
     $nombre_tipo_subindustria                                       = isset($_POST['nombre_tipo_subindustria']) ? trim(addslashes($_POST['nombre_tipo_subindustria'])) : '';

@@ -10,9 +10,9 @@ if ($cod_tienda <= 0) { echo json_encode(['success' => false, 'message' => 'ID d
 // Asegurar codificación UTF-8
 mysqli_set_charset($conectar, "utf8mb4");
 // Consultar datos de la tienda
-$sql = "SELECT * FROM tbl15_tienda WHERE cod_tienda = ? AND cod_administrador = ?";
+$sql = "SELECT * FROM tbl15_tienda WHERE cod_tienda = ?";
 $stmt = mysqli_prepare($conectar, $sql);
-mysqli_stmt_bind_param($stmt, "ii", $cod_tienda, $cod_administrador);
+mysqli_stmt_bind_param($stmt, "i", $cod_tienda);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 if ($row = mysqli_fetch_assoc($result)) {

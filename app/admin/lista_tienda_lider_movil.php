@@ -2004,11 +2004,20 @@ function editarTienda(codTienda) {
                 document.getElementById('documento_representante').value = t.documento_representante || '';
                 document.getElementById('telefono1_tercero').value = t.telefono1_tercero;
                 document.getElementById('direccion_tercero').value = t.direccion_tercero;
+                document.getElementById('barrio_tercero').value = t.barrio_tercero || '';
                 document.getElementById('correo_tercero').value = t.correo_tercero;
                 document.getElementById('cod_aliado_estrategico').value = t.cod_aliado_estrategico || '';
                 document.getElementById('cod_lider').value = t.cod_lider || '';
                 document.getElementById('cod_coordinador').value = t.cod_coordinador || '';
                 document.getElementById('cod_asesor').value = t.cod_asesor || '';
+                
+                // Nuevos campos de información del negocio
+                if (document.getElementById('cod_tipo_sector')) document.getElementById('cod_tipo_sector').value = t.cod_tipo_sector || '';
+                if (document.getElementById('existe_rues')) document.getElementById('existe_rues').value = t.existe_rues || '';
+                if (document.getElementById('venta_presencial')) document.getElementById('venta_presencial').value = t.venta_presencial || '';
+                if (document.getElementById('venta_online')) document.getElementById('venta_online').value = t.venta_online || '';
+                if (document.getElementById('nombre_plataforma_ecommerce')) document.getElementById('nombre_plataforma_ecommerce').value = t.nombre_plataforma_ecommerce || '';
+                if (document.getElementById('nombre_sistema_contable')) document.getElementById('nombre_sistema_contable').value = t.nombre_sistema_contable || '';
                 
                 // Actualizar Select2 para mostrar los valores seleccionados
                 $('.select2-simple').trigger('change');

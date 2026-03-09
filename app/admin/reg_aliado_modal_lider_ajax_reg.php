@@ -98,6 +98,7 @@ if (isset($_POST['identificacion_tercero'])) {
             $afectado = "SI";
             // Obtener el cod_administrador recién insertado
             $cod_administrador = mysqli_insert_id($conectar);
+            $cod_aliado_estrategico = $cod_administrador; // Sync with real ID
             
             // Guardar parametrización de entidades crediticias
             if (isset($_POST['entidades']) && is_array($_POST['entidades'])) {

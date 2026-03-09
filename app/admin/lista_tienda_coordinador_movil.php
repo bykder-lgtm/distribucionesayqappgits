@@ -1662,9 +1662,18 @@ function editarTienda(codTienda) {
                 document.getElementById('documento_representante').value = t.documento_representante || '';
                 document.getElementById('telefono1_tercero').value = t.telefono1_tercero;
                 document.getElementById('direccion_tercero').value = t.direccion_tercero;
+                document.getElementById('barrio_tercero').value = t.barrio_tercero || '';
                 document.getElementById('correo_tercero').value = t.correo_tercero;
                 document.getElementById('cod_aliado_estrategico').value = t.cod_aliado_estrategico;
                 document.getElementById('ubicacion_gps_tienda').value = t.ubicacion_gps_tienda;
+                
+                // Nuevos campos de información del negocio
+                if (document.getElementById('cod_tipo_sector')) document.getElementById('cod_tipo_sector').value = t.cod_tipo_sector || '';
+                if (document.getElementById('existe_rues')) document.getElementById('existe_rues').value = t.existe_rues || '';
+                if (document.getElementById('venta_presencial')) document.getElementById('venta_presencial').value = t.venta_presencial || '';
+                if (document.getElementById('venta_online')) document.getElementById('venta_online').value = t.venta_online || '';
+                if (document.getElementById('nombre_plataforma_ecommerce')) document.getElementById('nombre_plataforma_ecommerce').value = t.nombre_plataforma_ecommerce || '';
+                if (document.getElementById('nombre_sistema_contable')) document.getElementById('nombre_sistema_contable').value = t.nombre_sistema_contable || '';
                 
                 // Cargar departamentos y luego municipios con valores guardados
                 cargarDepartamentosRegistro();
@@ -1936,7 +1945,7 @@ document.getElementById('formRegistroTienda').addEventListener('submit', functio
     }
    
     var accion = document.getElementById('accion').value;
-    var url = accion === 'editar' ? 'edit_tienda_modal_coordinador_movil_ajax_reg2.php' : '../admin/reg_tienda_modal_coordinador_movil_ajax_reg.php';
+    var url = accion === 'editar' ? 'edit_tienda_modal_coordinador_movil_ajax_reg.php' : '../admin/reg_tienda_modal_coordinador_movil_ajax_reg.php';
     var titulo = accion === 'editar' ? 'Actualizando...' : 'Registrando...';
     var successTitle = accion === 'editar' ? '¡Tienda Actualizada!' : '¡Tienda Registrada!';
     var successMsg = accion === 'editar' ? 'Los datos han sido actualizados exitosamente.' : 'La tienda ha sido creada correctamente.';

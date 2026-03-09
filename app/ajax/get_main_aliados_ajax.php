@@ -88,6 +88,7 @@ $resultado = mysqli_query($conectar, $sql);
 if (!$resultado) { echo "Error en consulta: " . mysqli_error($conectar); exit; }
 
 if ($total_registros > 0):
+
     while ($row = mysqli_fetch_assoc($resultado)):
         $nombre_completo = !empty($row['nombres_apellidos_tercero']) ? $row['nombres_apellidos_tercero'].' ('.$row['nombres'].' '.$row['apellidos'].')' : trim($row['nombres'].' '.$row['apellidos']);
         $cod_estado = $row['cod_estado_activacion_usuario'];

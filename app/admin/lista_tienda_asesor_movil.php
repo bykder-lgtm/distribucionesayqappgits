@@ -1794,6 +1794,25 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     </div>
                 </div>
 
+                <!-- Sección: Representante Legal -->
+                <div class="form-section-title"><i class="fa-solid fa-user-tie"></i> Representante Legal</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-input" name="nombre_representante" id="nombre_representante">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">NIT / Documento</label>
+                        <input type="number" class="form-input" name="documento_representante" id="documento_representante">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo</label>
+                        <input type="email" class="form-input" name="correo_representante" id="correo_representante">
+                    </div>
+                </div>
+
                 <!-- Sección: Información del Negocio -->
                 <div class="form-section-title"><i class="fa-solid fa-briefcase"></i> Información del Negocio</div>
 
@@ -2619,8 +2638,22 @@ function editarTienda(codTienda) {
                 document.getElementById('identificacion_tercero_reg').value = t.identificacion_tercero || '';
                 document.getElementById('telefono1_tercero_reg').value = t.telefono1_tercero;
                 document.getElementById('direccion_tercero').value = t.direccion_tercero;
+                document.getElementById('barrio_tercero').value = t.barrio_tercero;
                 document.getElementById('correo_tercero_reg').value = t.correo_tercero;
                 document.getElementById('ubicacion_gps_tienda').value = t.ubicacion_gps_tienda;
+                
+                // Campos Representante Legal
+                if (document.getElementById('nombre_representante')) document.getElementById('nombre_representante').value = t.nombre_representante || '';
+                if (document.getElementById('documento_representante')) document.getElementById('documento_representante').value = t.documento_representante || '';
+                if (document.getElementById('correo_representante')) document.getElementById('correo_representante').value = t.correo_representante || '';
+                
+                // Nuevos campos de información del negocio
+                if (document.getElementById('cod_tipo_sector')) document.getElementById('cod_tipo_sector').value = t.cod_tipo_sector || '';
+                if (document.getElementById('existe_rues')) document.getElementById('existe_rues').value = t.existe_rues || '';
+                if (document.getElementById('venta_presencial')) document.getElementById('venta_presencial').value = t.venta_presencial || '';
+                if (document.getElementById('venta_online')) document.getElementById('venta_online').value = t.venta_online || '';
+                if (document.getElementById('nombre_plataforma_ecommerce')) document.getElementById('nombre_plataforma_ecommerce').value = t.nombre_plataforma_ecommerce || '';
+                if (document.getElementById('nombre_sistema_contable')) document.getElementById('nombre_sistema_contable').value = t.nombre_sistema_contable || '';
                 
                 // Cargar departamentos y luego municipios con valores guardados
                 cargarDepartamentosRegistro();

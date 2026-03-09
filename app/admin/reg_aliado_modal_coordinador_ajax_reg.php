@@ -87,17 +87,18 @@ if (isset($_POST['identificacion_tercero'])) {
 		$sql_data = "INSERT INTO tbl15_administrador (identificacion_tercero, nombre1_tercero, apellido1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, barrio_tercero, 
         nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion, 
         cod_seguridad, cod_estado_activacion_usuario, cod_estado, fecha, fecha_hora, creador, cedula, nombres, apellidos, correo, telefono, cuenta, contrasena, 
-        cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, cod_tipo_sector, nit_razon_social, nombre_razon_social, cod_departamento, cod_municipio) 
+        cod_aliado_estrategico, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, cod_lider, cod_coordinador, cod_asesor, cod_tipo_sector, nit_razon_social, nombre_razon_social, cod_departamento, cod_municipio, fecha_creacion) 
 		VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', UPPER('$direccion_tercero'), UPPER('$barrio_tercero'), 
         UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion', 
         '$cod_seguridad', '$cod_estado_activacion_usuario', '1', '$fecha', '$fecha_hora', '$creador', '$cedula', UPPER('$nombres'), UPPER('$apellidos'), '$correo', '$telefono', '$cuenta', '$contrasena', 
-        '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_tipo_sector', '$nit_razon_social', UPPER('$nombre_razon_social'), '$cod_departamento', '$cod_municipio')";
+        '$cod_aliado_estrategico', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_tipo_sector', '$nit_razon_social', UPPER('$nombre_razon_social'), '$cod_departamento', '$cod_municipio', '".date('Y-m-d H:i:s')."')";
 		$exec_data = mysqli_query($conectar, $sql_data);
         //---------------------------------------------------------------------------------------------------------------------------------//
         if ($exec_data && mysqli_affected_rows($conectar) > 0) { 
             $afectado = "SI";
             // Obtener el cod_administrador recién insertado
             $cod_administrador = mysqli_insert_id($conectar);
+            $cod_aliado_estrategico = $cod_administrador; // Sync with real ID
             
             // Guardar parametrización de entidades crediticias
             if (isset($_POST['entidades']) && is_array($_POST['entidades'])) {

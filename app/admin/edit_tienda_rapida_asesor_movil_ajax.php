@@ -15,17 +15,43 @@ if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero'])) {
     
     $nombre_tienda = trim(addslashes($_POST['nombre1_tercero']));
     $identificacion_tercero = isset($_POST['identificacion_tercero']) ? trim(addslashes($_POST['identificacion_tercero'])) : '';
-    $telefono1_tercero = isset($_POST['telefono1_tercero']) ? trim(addslashes($_POST['telefono1_tercero'])) : '';
+    $telefono1_tercero = isset($_POST['telefono_tienda']) ? trim(addslashes($_POST['telefono_tienda'])) : '';
     $correo_tercero = isset($_POST['correo_tercero']) ? trim(addslashes($_POST['correo_tercero'])) : '';
     $direccion_tercero = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
     $barrio_tercero = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
     $cod_departamento = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
     $cod_municipio = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
+    $ubicacion_gps_tienda = isset($_POST['ubicacion_gps_tienda']) ? trim(addslashes($_POST['ubicacion_gps_tienda'])) : '';
 
-    $sql_update = "UPDATE tbl15_tienda SET nombre_tienda = UPPER('$nombre_tienda'), nombre1_tercero = UPPER('$nombre_tienda'), identificacion_tercero = '$identificacion_tercero',
-    nit_razon_social = '$identificacion_tercero', telefono1_tercero = '$telefono1_tercero', correo_tercero = '$correo_tercero', direccion_tercero = '$direccion_tercero',
-    barrio_tercero = UPPER('$barrio_tercero'), cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio', cod_tipo_tienda = 1, cod_aliado_estrategico = 0
-    WHERE cod_tienda = $cod_tienda AND cod_administrador = '$cod_administrador'";
+    // Nuevos campos de información del negocio (opcionales en rápida pero presentes en el form)
+    $cod_tipo_sector = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
+    $existe_rues = isset($_POST['existe_rues']) ? trim(addslashes($_POST['existe_rues'])) : '';
+    $venta_presencial = isset($_POST['venta_presencial']) ? trim(addslashes($_POST['venta_presencial'])) : '';
+    $venta_online = isset($_POST['venta_online']) ? trim(addslashes($_POST['venta_online'])) : '';
+    $nombre_plataforma_ecommerce = isset($_POST['nombre_plataforma_ecommerce']) ? trim(addslashes($_POST['nombre_plataforma_ecommerce'])) : '';
+    $nombre_sistema_contable = isset($_POST['nombre_sistema_contable']) ? trim(addslashes($_POST['nombre_sistema_contable'])) : '';
+
+    $sql_update = "UPDATE tbl15_tienda SET 
+    nombre_tienda = UPPER('$nombre_tienda'), 
+    nombre1_tercero = UPPER('$nombre_tienda'), 
+    identificacion_tercero = '$identificacion_tercero',
+    nit_razon_social = '$identificacion_tercero', 
+    telefono1_tercero = '$telefono1_tercero', 
+    correo_tercero = '$correo_tercero', 
+    direccion_tercero = UPPER('$direccion_tercero'),
+    barrio_tercero = UPPER('$barrio_tercero'), 
+    cod_departamento = '$cod_departamento', 
+    cod_municipio = '$cod_municipio', 
+    ubicacion_gps_tienda = '$ubicacion_gps_tienda',
+    cod_tipo_sector = '$cod_tipo_sector',
+    existe_rues = '$existe_rues',
+    venta_presencial = '$venta_presencial',
+    venta_online = '$venta_online',
+    nombre_plataforma_ecommerce = UPPER('$nombre_plataforma_ecommerce'),
+    nombre_sistema_contable = UPPER('$nombre_sistema_contable'),
+    cod_tipo_tienda = 1, 
+    cod_aliado_estrategico = 0
+    WHERE cod_tienda = $cod_tienda";
     if (mysqli_query($conectar, $sql_update)) {
         echo json_encode(['success' => true, 'nombre_tienda' => $nombre_tienda, 'mensaje' => 'Tienda rápida actualizada con éxito.']);
     } else {

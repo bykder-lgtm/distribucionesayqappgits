@@ -63,6 +63,6 @@ if ($url_camara) { $sql_update .= ", url_camara_comercio_tienda = '$url_camara'"
 $imgs_logo = procesarImagen('url_img_logo_tienda', '../archivador/tienda/imagen/original/');
 if ($imgs_logo['orig']) { $sql_update .= ", url_img_logo_tienda = '{$imgs_logo['min']}', url_img_orig_logo_tienda = '{$imgs_logo['orig']}'"; }
 
-$sql_update .= " WHERE cod_tienda = $cod_tienda AND cod_administrador = '$cod_administrador'";
+$sql_update .= " WHERE cod_tienda = $cod_tienda";
 if (mysqli_query($conectar, $sql_update)) { echo json_encode(['success' => true, 'message' => 'Tienda actualizada correctamente', 'nombre_tienda' => $nombre_tienda]); } else { echo json_encode(['success' => false, 'message' => 'Error al actualizar: ' . mysqli_error($conectar)]); }
 ?>

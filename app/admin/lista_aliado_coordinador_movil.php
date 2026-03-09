@@ -1652,10 +1652,11 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                                 <div class="input-group-mini">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">% Adtvo:</label>
                                     <input type="number" step="0.01" min="0" max="100" class="form-input" name="interes_<?php echo $entidad['cod_entidad_crediticia']; ?>" value="<?php echo $entidad['aliado_estrategico_interes_ptj']; ?>" placeholder="0.00" style="width: 70px; padding: 0.3rem 0.4rem; font-size: 0.8rem; text-align: center; border: none; background: rgba(255,255,255,0.1); color: white;">
+                                    <input type="hidden" name="url_pagina_web_consulta_<?php echo $entidad['cod_entidad_crediticia']; ?>" value="<?php echo $entidad['url_pagina_web_consulta']; ?>">
                                 </div>
                                 <div class="input-group-mini">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Portal:</label>
-                                    <input type="checkbox" name="activar_portal_<?php echo $entidad['cod_entidad_crediticia']; ?>" value="1" style="accent-color: #10b981; width: 16px; height: 16px; cursor: pointer;">
+                                    <input type="checkbox" name="cod_estado_entrar_portal_<?php echo $entidad['cod_entidad_crediticia']; ?>" value="1" style="accent-color: #10b981; width: 16px; height: 16px; cursor: pointer;">
                                 </div>
                             </div>
                         </div>

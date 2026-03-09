@@ -591,6 +591,10 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
 // Consulta de líderes para la opción de cambiar líder
 $sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
 $res_lideres = mysqli_query($conectar, $sql_lideres);
+
+// Consulta de aliados para asignar vendedores
+$sql_aliados = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
+$res_aliados = mysqli_query($conectar, $sql_aliados);
 ?>
 
     <!-- Header -->
@@ -682,8 +686,8 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
         <?php else: ?>
             <div class="empty-state">
                 <i class="fa-solid fa-user-tie-slash"></i>
-                <h3>No hay asesores</h3>
-                <p>No se encontraron registros de asesores asignados</p>
+                <h3>No hay vendedores</h3>
+                <p>No se encontraron registros de vendedores asignados</p>
             </div>
         <?php endif; ?>
     </div>
@@ -691,7 +695,7 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
     <!-- Paginación -->
     <div class="pagination-container animate-in delay-3">
         <div style="width: 100%; text-align: center; color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-bottom: 0.75rem; font-weight: 500; background: rgba(139, 92, 246, 0.1); padding: 0.5rem; border-radius: 10px; border: 1px solid rgba(139, 92, 246, 0.2);">
-            Mostrando <span style="color: #a78bfa; font-weight: 700;"><?php echo $total_registros_pagina; ?></span> de <span style="color: #a78bfa; font-weight: 700;"><?php echo $total_registros_global; ?></span> asesores
+            Mostrando <span style="color: #a78bfa; font-weight: 700;"><?php echo $total_registros_pagina; ?></span> de <span style="color: #a78bfa; font-weight: 700;"><?php echo $total_registros_global; ?></span> vendedores
         </div>
         
         <?php if ($total_paginas > 1): ?>
@@ -766,14 +770,14 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                     </div>
 
                     <div>
-                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Coordinador Asignado *</label>
-                        <select name="cod_coordinador" id="cod_coordinador" class="form-input" required style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Aliado Asignado *</label>
+                        <select name="cod_aliado" id="cod_aliado" class="form-input" required style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
                             <option value="" style="color: black;">Seleccionar...</option>
                             <?php 
-                            mysqli_data_seek($res_coordinadores, 0);
-                            while ($coord = mysqli_fetch_assoc($res_coordinadores)): 
+                            mysqli_data_seek($res_aliados, 0);
+                            while ($aliado = mysqli_fetch_assoc($res_aliados)): 
                             ?>
-                            <option value="<?php echo $coord['cod_administrador']; ?>" style="color: black;"><?php echo $coord['nombres_apellidos_tercero']; ?></option>
+                            <option value="<?php echo $aliado['cod_administrador']; ?>" style="color: black;"><?php echo $aliado['nombres_apellidos_tercero']; ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
@@ -782,7 +786,7 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
 
                 <div style="margin-top: 1.5rem;">
                     <button type="submit" class="submit-btn" style="width: 100%; background: #8b5cf6; color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
-                        <i class="fa-solid fa-user-plus"></i> Registrar Asesor
+                        <i class="fa-solid fa-user-plus"></i> Registrar Vendedor
                     </button>
                     <button type="button" onclick="cerrarModalRegistro()" style="width: 100%; background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 0.75rem; border-radius: 12px; cursor: pointer; font-weight: 600; margin-top: 0.5rem; transition: all 0.3s ease;">
                         Cancelar
@@ -797,11 +801,11 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
 <div class="modal-overlay" id="modalEditarAsesor" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;">
     <div class="modal-content" style="background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
         <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 1.5rem; border-radius: 20px 20px 0 0; position: relative; display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-edit"></i> Editar Asesor</h2>
+            <h2 style="color: white; font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-edit"></i> Editar Vendedor</h2>
             <button class="modal-close" onclick="cerrarModalEditar()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;"><i class="fa-solid fa-times"></i></button>
         </div>
         <div class="modal-body" style="padding: 1.5rem;">
-            <form id="formEditarAsesor" onsubmit="editarAsesor(event)">
+            <form id="formEditarVendedor" onsubmit="editarVendedor(event)">
                 <input type="hidden" name="cod_administrador_edit" id="cod_administrador_edit">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     
@@ -842,13 +846,13 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                     </div>
                     
                     <div>
-                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Coordinador Asignado</label>
-                        <select name="cod_coordinador_edit" id="cod_coordinador_edit" class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Aliado Asignado</label>
+                        <select name="cod_aliado_edit" id="cod_aliado_edit" class="form-input" style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
                             <?php 
-                            mysqli_data_seek($res_coordinadores, 0);
-                            while ($coord = mysqli_fetch_assoc($res_coordinadores)): 
+                            mysqli_data_seek($res_aliados, 0);
+                            while ($aliado = mysqli_fetch_assoc($res_aliados)): 
                             ?>
-                            <option value="<?php echo $coord['cod_administrador']; ?>" style="color: black;"><?php echo $coord['nombres_apellidos_tercero']; ?></option>
+                            <option value="<?php echo $aliado['cod_administrador']; ?>" style="color: black;"><?php echo $aliado['nombres_apellidos_tercero']; ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
@@ -891,12 +895,12 @@ document.getElementById('searchInput').addEventListener('keyup', function(e) {
 
 // Modal Logic
 function abrirModalRegistro() {
-    document.getElementById('modalRegistroAsesor').style.display = 'flex';
+    document.getElementById('modalRegistroVendedor').style.display = 'flex';
 }
 
 function cerrarModalRegistro() {
-    document.getElementById('modalRegistroAsesor').style.display = 'none';
-    document.getElementById('formRegistroAsesor').reset();
+    document.getElementById('modalRegistroVendedor').style.display = 'none';
+    document.getElementById('formRegistroVendedor').reset();
 }
 
 // Edit Modal Logic
@@ -907,7 +911,7 @@ function abrirModalEditar(datos) {
     document.getElementById('apellidos_edit').value = datos.apellidos;
     document.getElementById('correo_edit').value = datos.correo;
     document.getElementById('telefono1_edit').value = datos.telefono;
-    document.getElementById('cod_coordinador_edit').value = datos.cod_coordinador;
+    document.getElementById('cod_aliado_edit').value = datos.cod_aliado_estrategico;
     document.getElementById('cod_lider_edit').value = datos.cod_lider;
     
     document.getElementById('modalEditarAsesor').style.display = 'flex';
@@ -917,13 +921,13 @@ function cerrarModalEditar() {
     document.getElementById('modalEditarAsesor').style.display = 'none';
 }
 
-function editarAsesor(e) {
+function editarVendedor(e) {
     e.preventDefault();
-    const form = document.getElementById('formEditarAsesor');
+    const form = document.getElementById('formEditarVendedor');
     const formData = new FormData(form);
 
     Swal.fire({
-        title: 'Actualizando Asesor...',
+        title: 'Actualizando Vendedor...',
         text: 'Por favor espere',
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); },
@@ -931,7 +935,7 @@ function editarAsesor(e) {
     });
 
     $.ajax({
-        url: 'proceso_editar_asesor_lider_movil_ajax.php',
+        url: 'proceso_editar_vendedor_lider_movil_ajax.php',
         type: 'POST',
         data: formData,
         contentType: false,
@@ -979,7 +983,7 @@ function registrarAsesor(e) {
     });
 
     $.ajax({
-        url: 'reg_asesor_modal_lider_movil_ajax_reg.php',
+        url: 'reg_vendedor_modal_lider_movil_ajax_reg.php',
         type: 'POST',
         data: formData,
         contentType: false,
@@ -1143,7 +1147,7 @@ function archivarEntidad(codAdmin, nombre, tipoEntidad) {
 
 // Close modal when clicking outside
 window.onclick = function(event) {
-    const modal = document.getElementById('modalRegistroAsesor');
+    const modal = document.getElementById('modalRegistroVendedor');
     if (event.target == modal) {
         cerrarModalRegistro();
     }
