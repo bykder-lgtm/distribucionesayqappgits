@@ -1690,11 +1690,9 @@ $total_firmados = ($res_firmados_total) ? mysqli_fetch_assoc($res_firmados_total
 // Total Aliados con Documentación (Al menos un documento)
 $sql_docs_total = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0'
 AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))
-AND (
-    (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) OR 
+AND ((url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) OR 
     (url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) OR 
-    (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL)
-)";
+    (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL))";
 $res_docs_total = mysqli_query($conectar, $sql_docs_total);
 $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_total)['total'] : 0;
 ?>
@@ -1716,6 +1714,11 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
             <div class="header-stat clickable-stat" onclick="abrirModalDocumentosCargados()" style="cursor: pointer;">
                 <div class="header-stat-value" id="stat-docs-cargados"><?php echo $total_documentos_cargados; ?></div>
                 <div class="header-stat-label">Docs Cargados</div>
+            </div>
+            <!-- Botón Descargar Reporte (Excel/PDF) -->
+            <div class="header-stat clickable-stat" onclick="abrirModalDescarga()" style="cursor: pointer; background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4);">
+                <div class="header-stat-value" style="color: #a78bfa;"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                <div class="header-stat-label" style="color: #a78bfa;">Descargar Reporte</div>
             </div>
         </div>
     </div>
@@ -5228,13 +5231,13 @@ function recargarEntidadesEditar(codAdministrador) {
 
 // Carga inicial por AJAX
 $(document).ready(function() {
-    console.log("DOM listo, iniciando load(1)");
+    //console.log("DOM listo, iniciando load(1)");
     cargarDepartamentosFiltro();
     setTimeout(function() { load(1); }, 100);
 });
 
 function load(page) {
-    console.log("Ejecutando load para página:", page);
+    //console.log("Ejecutando load para página:", page);
     var searchEl = document.getElementById('searchInput');
     var filterEl = document.getElementById('filtroDoc');
     var sortEl = document.getElementById('sortMain');
@@ -5283,7 +5286,7 @@ function load(page) {
             _t: new Date().getTime() // Cache buster
         },
         success: function(data) {
-            console.log("Datos cargados. Longitud:", data.length);
+            //console.log("Datos cargados. Longitud:", data.length);
             $("#allyList").html(data);
 
             // Actualizar estadísticas del header
@@ -5298,12 +5301,7 @@ function load(page) {
             setTimeout(() => {
                 $("#allyList .animate-in").each(function(i) {
                     var el = $(this);
-                    setTimeout(() => {
-                        el.css({
-                            'opacity': '1',
-                            'transform': 'translateY(0)',
-                            'transition': 'all 0.4s ease'
-                        });
+                    setTimeout(() => { el.css({'opacity': '1', 'transform': 'translateY(0)', 'transition': 'all 0.4s ease' });
                     }, i * 30);
                 });
             }, 100);
@@ -5470,9 +5468,7 @@ $('#formRegistro').on('submit', function(e) {
                     document.getElementById('modalConfirmacionRegistro').classList.add('show');
                 }
             } else if(resp.afectado === 'EXISTE') {
-                Swal.fire({ 
-                    icon: 'warning', title: 'Aliado Existente', text: resp.mensaje || 'Este aliado ya está registrado en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'warning', title: 'Aliado Existente', text: resp.mensaje || 'Este aliado ya está registrado en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             } else {
                 var errorMsg = resp.mensaje || 'Error al registrar el aliado';
                 if(resp.error) { errorMsg += '\n\nDetalle: ' + resp.error; }
@@ -5482,9 +5478,7 @@ $('#formRegistro').on('submit', function(e) {
         error: function(xhr, status, error) {
             Swal.close();
             console.log('Error AJAX:', xhr.responseText); // Debug
-            Swal.fire({ 
-                icon: 'error',  title: 'Error',  text: 'Error de conexión. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error',  title: 'Error',  text: 'Error de conexión. Intenta nuevamente.',  background: '#1a1f2e',  color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
@@ -5520,9 +5514,7 @@ $('#formEditar').on('submit', function(e) {
 
 // Cerrar modales al hacer clic fuera
 $('.modal-overlay').on('click', function(e) {
-    if (e.target === this) {
-        $(this).removeClass('show');
-    }
+    if (e.target === this) { $(this).removeClass('show'); }
 });
 
 // ====================== SISTEMA DE COMPARTIR DOCUMENTACIÓN ======================
@@ -6676,18 +6668,7 @@ function renderizarListaDocumentos(response) {
     $("#bodyDocumentosCargados").html(html);
 
     // Trigger animations
-    setTimeout(() => {
-        $("#bodyDocumentosCargados .animate-in").each(function(i) {
-            var el = $(this);
-            setTimeout(() => {
-                el.css({
-                    'opacity': '1',
-                    'transform': 'translateY(0)',
-                    'transition': 'all 0.4s ease'
-                });
-            }, i * 30);
-        });
-    }, 50);
+    setTimeout(() => { $("#bodyDocumentosCargados .animate-in").each(function(i) { var el = $(this); setTimeout(() => { el.css({ 'opacity': '1', 'transform': 'translateY(0)', 'transition': 'all 0.4s ease' }); }, i * 30); }); }, 50);
 }
 
 function cerrarModalDocumentos() { $("#modalDocumentosCargados").removeClass("show").hide(); }
@@ -6734,9 +6715,7 @@ function solicitarCorreoEnvio(zipPath, nombreAliado) {
     Swal.fire({
         title: 'Enviar por Correo', text: 'Ingresa el correo electrónico del destinatario:', input: 'email', inputPlaceholder: 'ejemplo@correo.com', showCancelButton: true, confirmButtonText: 'Enviar', cancelButtonText: 'Cancelar', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', inputAttributes: { autocapitalize: 'off', autocorrect: 'off' }, customClass: { container: 'swal-high-zindex' }
     }).then((result) => {
-        if (result.isConfirmed) {
-            enviarZipPorEmail(zipPath, result.value, nombreAliado);
-        }
+        if (result.isConfirmed) { enviarZipPorEmail(zipPath, result.value, nombreAliado); }
     });
 }
 
@@ -6761,26 +6740,14 @@ function enviarZipPorEmail(zipPath, email, nombreAliado) {
 }
 function archivarEntidad(codAdmin, nombre, tipoEntidad) {
     Swal.fire({
-        title: '¿Archivar ' + tipoEntidad + '?',
-        text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6e7881',
-        confirmButtonText: 'Sí, archivar',
-        cancelButtonText: 'Cancelar',
-        background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+        title: '¿Archivar ' + tipoEntidad + '?', text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6e7881', confirmButtonText: 'Sí, archivar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
     }).then((result) => {
         if (result.isConfirmed) {
             Swal.fire({ title: 'Archivando...', allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }, didOpen: () => { Swal.showLoading(); } });
             $.ajax({
                 url: 'proceso_archivar_entidad_lider_movil_ajax.php', type: 'POST', data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad }, dataType: 'json',
                 success: function(response) {
-                    if (response.success) {
-                        Swal.fire({ icon: 'success', title: '¡Archivado!', text: response.message, timer: 2000, timerProgressBar: true, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); });
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-                    }
+                    if (response.success) { Swal.fire({ icon: 'success', title: '¡Archivado!', text: response.message, timer: 2000, timerProgressBar: true, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); }); } else { Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } }); }
                 },
                 error: function() {
                     Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
@@ -6788,6 +6755,69 @@ function archivarEntidad(codAdmin, nombre, tipoEntidad) {
             });
         }
     });
+}
+
+function abrirModalDescarga() {
+    Swal.fire({
+        title: 'Selecciona el formato',
+        html: `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+                <div onclick="procesarDescarga('excel')" style="cursor: pointer; padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border: 2px solid #10b981; border-radius: 12px; transition: all 0.3s; text-align: center;">
+                    <i class="fa-solid fa-file-excel" style="font-size: 2.5rem; color: #10b981; margin-bottom: 0.5rem;"></i>
+                    <div style="font-weight: bold; color: white;">EXCEL</div>
+                    <div style="font-size: 0.75rem; color: #10b981; margin-top: 0.25rem;">Formato .xlsx</div>
+                </div>
+                <div onclick="procesarDescarga('pdf')" style="cursor: pointer; padding: 1.5rem; background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: 12px; transition: all 0.3s; text-align: center;">
+                    <i class="fa-solid fa-file-pdf" style="font-size: 2.5rem; color: #ef4444; margin-bottom: 0.5rem;"></i>
+                    <div style="font-weight: bold; color: white;">PDF</div>
+                    <div style="font-size: 0.75rem; color: #ef4444; margin-top: 0.25rem;">Formato .pdf</div>
+                </div>
+            </div>
+            <p style="margin-top: 1.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.5);">Se aplicarán los filtros actuales de la lista.</p>
+        `,
+        showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
+    });
+}
+
+function procesarDescarga(formato) {
+    // Cerrar el modal de elección
+    Swal.close();
+
+    // Capturar filtros actuales
+    var busqueda = $('#searchInput').val() || '';
+    var filtro_doc = $('#filtroDoc').val() || '';
+    var cod_asesor = $('#filtroAsesor').val() || '';
+    var cod_depto = $('#filtroDepto').val() || '';
+    var cod_municipio = $('#filtroCiudad').val() || '';
+    var fecha_reg = $('#filtroFechaReg').val() || '';
+    var fecha_doc = $('#filtroFechaDoc').val() || '';
+
+    // Determinar destino
+    var file = (formato === 'excel') ? 'descargar_excel_aliados_movil.php' : 'descargar_pdf_aliados_movil.php';
+    
+    // Construir URL con parámetros
+    var url = file + '?';
+    url += 'busqueda=' + encodeURIComponent(busqueda);
+    url += '&filtro_doc=' + encodeURIComponent(filtro_doc);
+    url += '&cod_asesor=' + encodeURIComponent(cod_asesor);
+    url += '&cod_departamento=' + encodeURIComponent(cod_depto);
+    url += '&cod_municipio=' + encodeURIComponent(cod_municipio);
+    url += '&fecha_registro=' + encodeURIComponent(fecha_reg);
+    url += '&fecha_documentacion=' + encodeURIComponent(fecha_doc);
+
+    // Notificación y descarga
+    Swal.fire({ title: 'Preparando descarga...', text: 'Tu archivo se generará en unos segundos.', icon: 'info', timer: 1500, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+
+    // Descarga mediante iframe oculto para evitar recarga de página
+    var iframeId = 'download_iframe';
+    var iframe = document.getElementById(iframeId);
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = iframeId;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+    }
+    iframe.src = url;
 }
 </script>
 </body>
