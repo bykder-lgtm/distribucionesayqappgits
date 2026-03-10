@@ -1588,7 +1588,7 @@ $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, 
 $sort = isset($_GET['sort']) ? mysqli_real_escape_string($conectar, $_GET['sort']) : 'id_desc';
 $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 // Consulta base para contar el total de registros (OPTIMIZADO)
-$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
 if (!empty($cod_aliado_get)) { $sql_conteo .= " AND a.cod_administrador = '$cod_aliado_get'"; }
 if (!empty($busqueda)) { $sql_conteo .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; }
@@ -1610,7 +1610,7 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 
 // Consulta de aliados con LIMIT
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.cod_lider, a.cod_coordinador, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
-FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 if (!empty($cod_aliado_get)) { $sql .= " AND a.cod_administrador = '$cod_aliado_get'"; }
 if (!empty($busqueda)) { $sql .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; }
 if ($cod_coordinador_filtro > 0) { $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'"; }
@@ -6484,7 +6484,6 @@ function abrirModalDocumentosCargados() {
     var valCiudad   = $('#filtroCiudad').val() || '';
     var valFechaReg = $('#filtroFechaReg').val() || '';
     var valFechaDoc = $('#filtroFechaDoc').val() || '';
-
     // Mapeo de valores para el filtro de documentos (el main usa números, el modal usa texto)
     var mapaDoc = { '2': 'completo', '1': 'alguno', '3': 'ninguno', '': 'todos' };
     var mappedDoc = mapaDoc[valDoc] || 'todos';
@@ -6497,14 +6496,10 @@ function abrirModalDocumentosCargados() {
     $('#modalFiltroDepto').val(valDepto);
     $('#modalFiltroFechaReg').val(valFechaReg);
     $('#modalFiltroFechaDoc').val(valFechaDoc);
-
     // Cargar departamentos del modal y luego ciudad
     modalCargarDepartamentos(valDepto, valCiudad);
-    
     // Aplicar filtros iniciales
-    setTimeout(function() {
-        aplicarFiltrosDocumentos();
-    }, 500);
+    setTimeout(function() { aplicarFiltrosDocumentos(); }, 500);
 }
 
 function modalCargarDepartamentos(selectedDepto = '', selectedCiudad = '') {
@@ -6522,9 +6517,7 @@ function modalCargarDepartamentos(selectedDepto = '', selectedCiudad = '') {
         url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
         success: function(response) {
             if (response.success && response.departamentos) {
-                $.each(response.departamentos, function(i, dept) {
-                    $select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>');
-                });
+                $.each(response.departamentos, function(i, dept) { $select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>'); });
                 if (selectedDepto) {
                     $select.val(selectedDepto);
                     modalCargarMunicipios(selectedDepto, selectedCiudad);
@@ -6540,16 +6533,11 @@ function modalCargarMunicipios(codDepto, selectedCiudad = '') {
     if (!codDepto) return;
     
     $.ajax({
-        url: '../admin/obtener_municipios_ajax.php?cod_departamento=' + codDepto, 
-        type: 'GET', dataType: 'json',
+        url: '../admin/obtener_municipios_ajax.php?cod_departamento=' + codDepto, type: 'GET', dataType: 'json',
         success: function(response) {
             if (response.success && response.municipios) {
-                $.each(response.municipios, function(i, muni) {
-                    $select.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>');
-                });
-                if (selectedCiudad) {
-                    $select.val(selectedCiudad);
-                }
+                $.each(response.municipios, function(i, muni) { $select.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>'); });
+                if (selectedCiudad) { $select.val(selectedCiudad); }
             }
         }
     });
@@ -6566,23 +6554,10 @@ function aplicarFiltrosDocumentos() {
     var cod_depto = $('#modalFiltroDepto').val();
     var cod_municipio = $('#modalFiltroCiudad').val();
     var fecha_reg = $('#modalFiltroFechaReg').val();
-
     var fecha_doc = $('#modalFiltroFechaDoc').val();
 
     $.ajax({
-        url: '../ajax/get_aliados_documentos_ajax.php', 
-        type: 'GET', 
-        data: {
-            busqueda: busqueda,
-            filtro_doc: filtro_doc,
-            sort: sort,
-            cod_asesor: cod_asesor,
-            cod_departamento: cod_depto,
-            cod_municipio: cod_municipio,
-            fecha_registro: fecha_reg,
-            fecha_documentacion: fecha_doc
-        },
-        dataType: 'json',
+        url: '../ajax/get_aliados_documentos_ajax.php', type: 'GET', data: { busqueda: busqueda, filtro_doc: filtro_doc, sort: sort, cod_asesor: cod_asesor, cod_departamento: cod_depto, cod_municipio: cod_municipio, fecha_registro: fecha_reg, fecha_documentacion: fecha_doc }, dataType: 'json',
         success: function(response) {
             renderizarListaDocumentos(response);
         },
@@ -6663,10 +6638,8 @@ function renderizarListaDocumentos(response) {
             </div>
         `;
     }
-    
     html += '</div>';
     $("#bodyDocumentosCargados").html(html);
-
     // Trigger animations
     setTimeout(() => { $("#bodyDocumentosCargados .animate-in").each(function(i) { var el = $(this); setTimeout(() => { el.css({ 'opacity': '1', 'transform': 'translateY(0)', 'transition': 'all 0.4s ease' }); }, i * 30); }); }, 50);
 }
@@ -6692,7 +6665,6 @@ function gestionarDescargaEmailDoc(cod_aliado, nombre_aliado) {
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                        
                         // Notificar que la descarga inició sin cerrar el modal principal
                         Swal.fire({ icon: 'success', title: 'Descarga Iniciada', text: 'El archivo se está descargando.', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     } else if (result.isDenied) {
@@ -6712,11 +6684,7 @@ function gestionarDescargaEmailDoc(cod_aliado, nombre_aliado) {
 }
 
 function solicitarCorreoEnvio(zipPath, nombreAliado) {
-    Swal.fire({
-        title: 'Enviar por Correo', text: 'Ingresa el correo electrónico del destinatario:', input: 'email', inputPlaceholder: 'ejemplo@correo.com', showCancelButton: true, confirmButtonText: 'Enviar', cancelButtonText: 'Cancelar', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', inputAttributes: { autocapitalize: 'off', autocorrect: 'off' }, customClass: { container: 'swal-high-zindex' }
-    }).then((result) => {
-        if (result.isConfirmed) { enviarZipPorEmail(zipPath, result.value, nombreAliado); }
-    });
+    Swal.fire({ title: 'Enviar por Correo', text: 'Ingresa el correo electrónico del destinatario:', input: 'email', inputPlaceholder: 'ejemplo@correo.com', showCancelButton: true, confirmButtonText: 'Enviar', cancelButtonText: 'Cancelar', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', inputAttributes: { autocapitalize: 'off', autocorrect: 'off' }, customClass: { container: 'swal-high-zindex' } }).then((result) => { if (result.isConfirmed) { enviarZipPorEmail(zipPath, result.value, nombreAliado); } });
 }
 
 function enviarZipPorEmail(zipPath, email, nombreAliado) {
@@ -6782,7 +6750,6 @@ function abrirModalDescarga() {
 function procesarDescarga(formato) {
     // Cerrar el modal de elección
     Swal.close();
-
     // Capturar filtros actuales
     var busqueda = $('#searchInput').val() || '';
     var filtro_doc = $('#filtroDoc').val() || '';
@@ -6791,10 +6758,9 @@ function procesarDescarga(formato) {
     var cod_municipio = $('#filtroCiudad').val() || '';
     var fecha_reg = $('#filtroFechaReg').val() || '';
     var fecha_doc = $('#filtroFechaDoc').val() || '';
-
+    var cod_coordinador = '<?php echo $cod_coordinador_filtro; ?>';
     // Determinar destino
     var file = (formato === 'excel') ? 'descargar_excel_aliados_movil.php' : 'descargar_pdf_aliados_movil.php';
-    
     // Construir URL con parámetros
     var url = file + '?';
     url += 'busqueda=' + encodeURIComponent(busqueda);
@@ -6804,10 +6770,9 @@ function procesarDescarga(formato) {
     url += '&cod_municipio=' + encodeURIComponent(cod_municipio);
     url += '&fecha_registro=' + encodeURIComponent(fecha_reg);
     url += '&fecha_documentacion=' + encodeURIComponent(fecha_doc);
-
+    url += '&cod_coordinador=' + encodeURIComponent(cod_coordinador);
     // Notificación y descarga
     Swal.fire({ title: 'Preparando descarga...', text: 'Tu archivo se generará en unos segundos.', icon: 'info', timer: 1500, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-
     // Descarga mediante iframe oculto para evitar recarga de página
     var iframeId = 'download_iframe';
     var iframe = document.getElementById(iframeId);
