@@ -1588,7 +1588,7 @@ $filtro_doc = isset($_GET['filtro_doc']) ? mysqli_real_escape_string($conectar, 
 $sort = isset($_GET['sort']) ? mysqli_real_escape_string($conectar, $_GET['sort']) : 'id_desc';
 $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coordinador'] : 0;
 // Consulta base para contar el total de registros (OPTIMIZADO)
-$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
 if (!empty($cod_aliado_get)) { $sql_conteo .= " AND a.cod_administrador = '$cod_aliado_get'"; }
 if (!empty($busqueda)) { $sql_conteo .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; }
@@ -1610,7 +1610,7 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 
 // Consulta de aliados con LIMIT
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.cod_lider, a.cod_coordinador, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
-FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 if (!empty($cod_aliado_get)) { $sql .= " AND a.cod_administrador = '$cod_aliado_get'"; }
 if (!empty($busqueda)) { $sql .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; }
 if ($cod_coordinador_filtro > 0) { $sql .= " AND a.cod_coordinador = '$cod_coordinador_filtro'"; }
@@ -1638,7 +1638,7 @@ $resultado = mysqli_query($conectar, $sql);
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
     a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora 
-    FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+    FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0' AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador')OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 
     if (!empty($cod_aliado_get)) { $sql .= " AND a.cod_administrador = '$cod_aliado_get'"; }
     if (!empty($busqueda)) { $sql .= " AND (a.cod_administrador = '$busqueda' OR a.cod_administrador LIKE '$busqueda' OR a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%' OR a.nit_razon_social LIKE '%$busqueda%' OR a.nombre_razon_social LIKE '%$busqueda%')"; }
@@ -1655,17 +1655,14 @@ if (!$resultado) {
     $resultado = mysqli_query($conectar, $sql);
 }
 // Consultas para combos - Líder (20)
-$sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY nombres_apellidos_tercero ASC";
+$sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_lider = mysqli_query($conectar, $sql_lider);
 // Consultas para combos - lider (21)
-$sql_coord = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY nombres_apellidos_tercero ASC";
+$sql_coord = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_coord = mysqli_query($conectar, $sql_coord);
 // Consultas para combos - Asesor (22)// Por defecto se preselecciona el actual
-$sql_asesor = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
+$sql_asesor = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_asesor = mysqli_query($conectar, $sql_asesor);
-// Consulta de entidades crediticias
-$sql_entidades = "SELECT cod_entidad_crediticia, nombre_entidad_crediticia, url_pagina_web_consulta, aliado_estrategico_interes_ptj FROM tbl15_entidad_crediticia WHERE cod_estado = '1' ORDER BY cod_posicion ASC";
-$res_entidades = mysqli_query($conectar, $sql_entidades);
 // Consulta de entidades crediticias
 $sql_entidades = "SELECT cod_entidad_crediticia, nombre_entidad_crediticia, url_pagina_web_consulta, aliado_estrategico_interes_ptj FROM tbl15_entidad_crediticia WHERE cod_estado = '1' ORDER BY cod_posicion ASC";
 $res_entidades = mysqli_query($conectar, $sql_entidades);
@@ -1685,13 +1682,13 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 // Total Aliados que han firmado
 $sql_firmados_total = "SELECT COUNT(DISTINCT f.cod_aliado_estrategico) as total 
 FROM tbl15_firma_digital_documento f INNER JOIN tbl15_administrador a ON f.cod_aliado_estrategico = a.cod_administrador
-WHERE f.cod_estado_firma_signature = 1 AND a.cod_seguridad = '23' 
+WHERE f.cod_estado_firma_signature = 1 AND a.cod_seguridad = '23' AND a.cod_estado != '0' 
 AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
 $res_firmados_total = mysqli_query($conectar, $sql_firmados_total);
 $total_firmados = ($res_firmados_total) ? mysqli_fetch_assoc($res_firmados_total)['total'] : 0;
 
 // Total Aliados con Documentación (Al menos un documento)
-$sql_docs_total = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23'
+$sql_docs_total = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_seguridad = '23' AND a.cod_estado != '0'
 AND (a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador') OR a.cod_asesor IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))
 AND (
     (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) OR 

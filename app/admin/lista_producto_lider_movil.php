@@ -539,7 +539,7 @@ $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GE
 $cod_tienda_filtro = isset($_GET['tienda']) ? mysqli_real_escape_string($conectar, $_GET['tienda']) : '';
 
 // Consulta de productos
-$sql_productos = "SELECT p.*, t.nombre_tienda FROM tbl15_producto p INNER JOIN tbl15_tienda t ON p.cod_tienda = t.cod_tienda WHERE t.cod_administrador = '$cod_administrador' AND t.cod_estado = '1'";
+$sql_productos = "SELECT p.*, t.nombre_tienda FROM tbl15_producto p INNER JOIN tbl15_tienda t ON p.cod_tienda = t.cod_tienda WHERE t.cod_administrador = '$cod_administrador' AND t.cod_estado != '0' AND p.cod_estado != '0'";
 
 if (!empty($busqueda)) { $sql_productos .= " AND (p.nombre_producto LIKE '%$busqueda%' OR p.cod_producto_barra LIKE '%$busqueda%')"; }
 if (!empty($cod_tienda_filtro)) { $sql_productos .= " AND p.cod_tienda = '$cod_tienda_filtro'"; }

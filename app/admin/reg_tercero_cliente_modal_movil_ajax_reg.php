@@ -136,10 +136,10 @@ if (isset($_POST['identificacion_tercero'])) {
 
 		$sql_data = "INSERT INTO tbl15_tercero (cod_tercero, nombre_tipo_tercero, nombre_tipo_tercero_modulo_creacion, nombre_tipo_identificacion, identificacion_tercero, 
 		nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, telefono1_tercero, correo_tercero, direccion_tercero, 
-		nombre_estado_civil, fecha_creacion, cod_administrador, cod_estado_cliente, nombres_apellidos_tercero) 
+		nombre_estado_civil, fecha_creacion, cod_administrador, cod_estado_cliente, nombres_apellidos_tercero, cod_intermediario_credito) 
 		VALUES ('$cod_tercero', '$nombre_tipo_tercero', '$nombre_tipo_tercero_modulo_creacion', '$nombre_tipo_identificacion', '$identificacion_tercero', 
 		UPPER('$nombre1_tercero'), UPPER('$nombre2_tercero'), UPPER('$apellido1_tercero'), UPPER('$apellido2_tercero'), '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', 
-		'$nombre_estado_civil', '$fecha_creacion', '$cod_administrador', '$cod_estado_cliente', UPPER('$nombres_apellidos_tercero'))";
+		'$nombre_estado_civil', '$fecha_creacion', '$cod_administrador', '$cod_estado_cliente', UPPER('$nombres_apellidos_tercero'), '1')";
 		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
     }
 	//---------------------------------------------------------------------------------------------------------------------------------//

@@ -1,5 +1,5 @@
 <?php
-$mostrar_datos_sql = "SELECT * FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
+$mostrar_datos_sql = "SELECT * FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda' AND cod_estado != '0'";
 $consulta = mysqli_query($conectar, $mostrar_datos_sql) or die(mysqli_error($conectar));
 $matriz_consulta = mysqli_fetch_assoc($consulta);
 

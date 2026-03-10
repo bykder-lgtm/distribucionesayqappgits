@@ -355,6 +355,17 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
                 </div>
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>
+
+            <a href="lista_archivados_asesor_movil.php" class="menu-item">
+                <div class="menu-item-icon purple">
+                    <i class="fa-solid fa-box-archive"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Archivo</div>
+                    <div class="menu-item-desc">Registros archivados</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
             
             <a href="lista_notificacion_alerta_renovacion_asesor_movil.php" class="menu-item">
                 <div class="menu-item-icon orange">

@@ -271,18 +271,19 @@ $nombre_estado_factura                       = "ABIERTA";
 /* ----------------------------------------------------------------------------------------------------------------------- */
     if($action == 'ajax') {
 // escaping, additionally removing everything that could be (html/javascript-) code
-     $sTable = "tbl15_tercero RIGHT JOIN tbl15_info_factura_venta ON tbl15_tercero.cod_tercero = tbl15_info_factura_venta.cod_tercero LEFT JOIN tbl15_entidad_crediticia ON tbl15_info_factura_venta.cod_entidad_crediticia = tbl15_entidad_crediticia.cod_entidad_crediticia";
+     $sTable = "tbl15_tercero RIGHT JOIN tbl15_info_factura_venta ON tbl15_tercero.cod_tercero = tbl15_info_factura_venta.cod_tercero LEFT JOIN tbl15_entidad_crediticia ON tbl15_info_factura_venta.cod_entidad_crediticia = tbl15_entidad_crediticia.cod_entidad_crediticia INNER JOIN tbl15_tienda t ON tbl15_info_factura_venta.cod_tienda = t.cod_tienda";
 
-     $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico')";
-    if ( $_GET['busqueda_ajax'] != "" ) {
-        $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND ( ";
+     $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND t.cod_estado != '0'";
+    if ( isset($_GET['busqueda_ajax']) && $_GET['busqueda_ajax'] != "" ) {
+        $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND t.cod_estado != '0' AND ( ";
         for ( $i=0 ; $i<count($aColumns) ; $i++ ) {
             $sWhere .= $aColumns[$i]." LIKE '$busq_aprox_der".$busqueda_ajax."$busq_aprox_izq' OR ";
         }
         $sWhere = substr_replace( $sWhere, "", -3 );
         $sWhere .= ')';
     }
-if ($_GET['busqueda_ajax'] == "") { $sWhere.=" ORDER BY tbl15_info_factura_venta.fecha_modificacion DESC"; } else { $sWhere.=" ORDER BY tbl15_info_factura_venta.fecha_modificacion DESC"; }
+    
+    $order_by = " ORDER BY tbl15_info_factura_venta.fecha_modificacion DESC";
 
 include_once('../admin/paginacion_ajax_buscador_sistecredito.php'); //include pagination file
 
@@ -332,7 +333,7 @@ include_once('../admin/paginacion_ajax_buscador_sistecredito.php'); //include pa
     tbl15_info_factura_venta.cod_estado_facturacion, tbl15_info_factura_venta.codigo_estado_facturacion, tbl15_info_factura_venta.codigo_tipo_estado_cargue_documentacion, 
     tbl15_info_factura_venta.cuenta, tbl15_info_factura_venta.cod_caja_virtual, tbl15_info_factura_venta.numero_cuota, tbl15_info_factura_venta.fecha_ymdhis, 
     tbl15_info_factura_venta.url_img_orig_producto
-	FROM $sTable $sWhere LIMIT $registro_inicio, $numero_registro_por_pagina";
+	FROM $sTable $sWhere $order_by LIMIT $registro_inicio, $numero_registro_por_pagina";
 	$consulta_datos_cuenta_cobrar = mysqli_query($conectar, $calcular_datos_cuenta_cobrar) or die(mysqli_error($conectar));
 	while ($datos_cuenta_cobrar = mysqli_fetch_assoc($consulta_datos_cuenta_cobrar)) {
 
@@ -377,35 +378,35 @@ include_once('../admin/paginacion_ajax_buscador_sistecredito.php'); //include pa
         $fecha_ymdhis                                                   = $datos_cuenta_cobrar['fecha_ymdhis'];
         $url_comprobante_pago                                           = $datos_cuenta_cobrar['url_img_orig_producto'];
         /* ----------------------------------------------------------------------------------------------------------/ */
-        $sql_administrador_lider = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_lider')";
+        $sql_administrador_lider = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_lider') AND cod_estado != '0'";
         $consulta_administrador_lider = mysqli_query($conectar, $sql_administrador_lider) or die(mysqli_error($conectar));
         $datos_administrador_lider = mysqli_fetch_assoc($consulta_administrador_lider);
 
-        $nombres_apellidos_lider                                        = $datos_administrador_lider['nombres'].' '.$datos_administrador_lider['apellidos'];
+        $nombres_apellidos_lider = ($datos_administrador_lider) ? $datos_administrador_lider['nombres'].' '.$datos_administrador_lider['apellidos'] : "N/A";
         /* ----------------------------------------------------------------------------------------------------------/ */
-        $sql_administrador_coordinador = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_coordinador')";
+        $sql_administrador_coordinador = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_coordinador') AND cod_estado != '0'";
         $consulta_administrador_coordinador = mysqli_query($conectar, $sql_administrador_coordinador) or die(mysqli_error($conectar));
         $datos_administrador_coordinador = mysqli_fetch_assoc($consulta_administrador_coordinador);
 
-        $nombres_apellidos_coordinador                                  = $datos_administrador_coordinador['nombres'].' '.$datos_administrador_coordinador['apellidos'];
+        $nombres_apellidos_coordinador = ($datos_administrador_coordinador) ? $datos_administrador_coordinador['nombres'].' '.$datos_administrador_coordinador['apellidos'] : "N/A";
         /* ----------------------------------------------------------------------------------------------------------/ */
-        $sql_administrador_asesor = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_asesor')";
+        $sql_administrador_asesor = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_asesor') AND cod_estado != '0'";
         $consulta_administrador_asesor = mysqli_query($conectar, $sql_administrador_asesor) or die(mysqli_error($conectar));
         $datos_administrador_asesor = mysqli_fetch_assoc($consulta_administrador_asesor);
 
-        $nombres_apellidos_asesor                                       = $datos_administrador_asesor['nombres'].' '.$datos_administrador_asesor['apellidos'];
+        $nombres_apellidos_asesor = ($datos_administrador_asesor) ? $datos_administrador_asesor['nombres'].' '.$datos_administrador_asesor['apellidos'] : "N/A";
         /* ----------------------------------------------------------------------------------------------------------/ */
-        $sql_administrador_aliado_estrategico = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_aliado_estrategico')";
+        $sql_administrador_aliado_estrategico = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_aliado_estrategico') AND cod_estado != '0'";
         $consulta_administrador_aliado_estrategico = mysqli_query($conectar, $sql_administrador_aliado_estrategico) or die(mysqli_error($conectar));
         $datos_administrador_aliado_estrategico = mysqli_fetch_assoc($consulta_administrador_aliado_estrategico);
 
-        $nombres_apellidos_aliado_estrategico                           = $datos_administrador_aliado_estrategico['nombres'].' '.$datos_administrador_aliado_estrategico['apellidos'];
+        $nombres_apellidos_aliado_estrategico = ($datos_administrador_aliado_estrategico) ? $datos_administrador_aliado_estrategico['nombres'].' '.$datos_administrador_aliado_estrategico['apellidos'] : "N/A";
         /* ----------------------------------------------------------------------------------------------------------/ */
-        $sql_administrador_revisor = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_revisor')";
+        $sql_administrador_revisor = "SELECT nombres, apellidos FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador_revisor') AND cod_estado != '0'";
         $consulta_administrador_revisor = mysqli_query($conectar, $sql_administrador_revisor) or die(mysqli_error($conectar));
         $datos_administrador_revisor = mysqli_fetch_assoc($consulta_administrador_revisor);
 
-        $nombres_apellidos_revisor                                       = $datos_administrador_revisor['nombres'].' '.$datos_administrador_revisor['apellidos'];
+        $nombres_apellidos_revisor = ($datos_administrador_revisor) ? $datos_administrador_revisor['nombres'].' '.$datos_administrador_revisor['apellidos'] : "N/A";
         /* ----------------------------------------------------------------------------------------------------------/ */
         $sql_entidad_crediticia = "SELECT * FROM tbl15_entidad_crediticia WHERE (cod_entidad_crediticia = '$cod_entidad_crediticia')";
         $consulta_entidad_crediticia = mysqli_query($conectar, $sql_entidad_crediticia) or die(mysqli_error($conectar));
@@ -413,7 +414,7 @@ include_once('../admin/paginacion_ajax_buscador_sistecredito.php'); //include pa
 
         $nombre_entidad_crediticia                                      = $datos_entidad_crediticia['nombre_entidad_crediticia'];
         /* ----------------------------------------------------------------------------------------------------------/ */
-		$sql_tienda = "SELECT nombre_tienda FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
+		$sql_tienda = "SELECT nombre_tienda FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda' AND cod_estado != '0'";
 		$consulta_tienda = mysqli_query($conectar, $sql_tienda);
 		$datos_tienda = mysqli_fetch_assoc($consulta_tienda);
         $existe_tienda = mysqli_num_rows($consulta_tienda);
@@ -435,7 +436,7 @@ include_once('../admin/paginacion_ajax_buscador_sistecredito.php'); //include pa
 
         $nombre_banco_cuenta                                          = $datos_banco_cuenta['nombre_banco_cuenta'].$separador_texto.$datos_banco_cuenta['numero_banco_cuenta'] ?: "No especificado";
         /* ----------------------------------------------------------------------------------------------------------/ */
-        $sql_vendedor = "SELECT * FROM tbl15_vendedor WHERE (cod_vendedor = '$cod_vendedor')";
+        $sql_vendedor = "SELECT * FROM tbl15_vendedor WHERE (cod_vendedor = '$cod_vendedor') AND cod_estado != '0'";
         $consulta_vendedor = mysqli_query($conectar, $sql_vendedor) or die(mysqli_error($conectar));
         $datos_vendedor = mysqli_fetch_assoc($consulta_vendedor);
         $existe_vendedor = mysqli_num_rows($consulta_vendedor);
@@ -468,7 +469,7 @@ include_once('../admin/paginacion_ajax_buscador_sistecredito.php'); //include pa
         $nombre_tipo_forma_pago_operador_credito                      = $datos_tipo_forma_pago_operador_credito['nombre_tipo_forma_pago'];
         /* ----------------------------------------------------------------------------------------------------------/ */
 		// Obtener nombre del administrador (aliado)
-		$sql_aliado = "SELECT nombre1_tercero, apellido1_tercero FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador_factura'";
+		$sql_aliado = "SELECT nombre1_tercero, apellido1_tercero FROM tbl15_administrador WHERE cod_administrador = '$cod_administrador_factura' AND cod_estado != '0'";
 		$consulta_aliado = mysqli_query($conectar, $sql_aliado);
 		$datos_aliado = mysqli_fetch_assoc($consulta_aliado);
         $existe_aliado = mysqli_num_rows($consulta_aliado);

@@ -115,11 +115,11 @@ if ((isset($_POST["insersion"])) && ($_POST["insersion"] == "formulario_de_inser
 	$sql_data = "INSERT INTO tbl15_cuentas_cobrar (cod_cuentas_cobrar, cod_factura, cod_tipo_forma_pago, monto_deuda, subtotal, abonado, total_pendiente, total_valor_venta, monto_deuda_mas_interes, 
 	total_valor_recibir, total, vendedor, cuenta, mensaje, nombre_producto, 
 	cod_tercero, cod_cliente, cod_entidad_crediticia, cod_lider, cod_coordinador, cod_asesor, cod_vendedor, cod_proveedor, cod_aliado_estrategico, monto_deuda_sin_interes, 
-	fecha_pago, fecha_pago_periodo_orig, fecha_reg, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, url_img_orig_producto) 
+	fecha_pago, fecha_pago_periodo_orig, fecha_reg, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, url_img_orig_producto, cod_intermediario_credito) 
 	VALUES ('$cod_cuentas_cobrar', '$cod_factura', '$cod_tipo_forma_pago', '$monto_deuda', '$subtotal', '$abonado', '$total_pendiente', '$total_valor_venta', '$monto_deuda_mas_interes',
 	'$total_valor_recibir', '$total', '$vendedor', '$cuenta', '$mensaje', '$nombre_producto', 
 	'$cod_tercero', '$cod_cliente', '$cod_entidad_crediticia', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_vendedor', '$cod_proveedor', '$cod_aliado_estrategico', '$monto_deuda_sin_interes', 
-	'$fecha_pago', '$fecha_pago_periodo_orig', '$fecha_reg', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', '$url_img_orig_producto')";
+	'$fecha_pago', '$fecha_pago_periodo_orig', '$fecha_reg', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', '$url_img_orig_producto', '1')";
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 /* ----------------------------------------------------------------------------------------------------------/ */
 	$sql_datos_cuenta_cobrar = "SELECT SUM(monto_deuda) AS total_monto_deuda_cuenta_cobrar, SUM(subtotal) AS total_subtotal_cuenta_cobrar, SUM(abonado) AS total_abonado_cuenta_cobrar 

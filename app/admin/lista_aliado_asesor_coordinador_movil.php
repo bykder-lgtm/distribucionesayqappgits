@@ -1092,7 +1092,7 @@ $cod_asesor = isset($_GET['cod_asesor']) ? intval($_GET['cod_asesor']) : '';
 // Obtener información del asesor si se proporcionó cod_asesor
 $nombre_asesor = '';
 if (!empty($cod_asesor)) {
-    $sql_info_asesor = "SELECT nombres_apellidos_tercero, nombres, apellidos FROM tbl15_administrador WHERE cod_administrador = '$cod_asesor' AND cod_seguridad = '22'";
+    $sql_info_asesor = "SELECT nombres_apellidos_tercero, nombres, apellidos FROM tbl15_administrador WHERE cod_administrador = '$cod_asesor' AND cod_seguridad = '22' AND cod_estado != '0'";
     $res_info_asesor = mysqli_query($conectar, $sql_info_asesor);
     if ($res_info_asesor && mysqli_num_rows($res_info_asesor) > 0) {
         $info_asesor = mysqli_fetch_assoc($res_info_asesor);
@@ -1102,27 +1102,27 @@ if (!empty($cod_asesor)) {
 
 // Consulta de aliados asignados a este asesor
 // La versión de escritorio filtra por cod_asesor = $cod_administrador
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE (a.cod_asesor = '$cod_asesor' AND a.cod_seguridad = '23')";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE (a.cod_asesor = '$cod_asesor' AND a.cod_seguridad = '23' AND a.cod_estado != '0')";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 $sql .= " ORDER BY a.cod_administrador DESC";
 $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla (posiblemente porque el campo url_documentacion_cedula_aliado no existe), intentar sin ese campo
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
-    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE (a.cod_asesor = '$cod_asesor' AND a.cod_seguridad = '23')";
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.cod_tipo_sector, a.nit_razon_social FROM tbl15_administrador a WHERE (a.cod_asesor = '$cod_asesor' AND a.cod_seguridad = '23' AND a.cod_estado != '0')";
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
     $sql .= " ORDER BY a.cod_administrador DESC";
     $resultado = mysqli_query($conectar, $sql);
 }
 $total_registros = $resultado ? mysqli_num_rows($resultado) : 0;
 // Consultas para combos - Líder (20)
-$sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY nombres_apellidos_tercero ASC";
+$sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_lider = mysqli_query($conectar, $sql_lider);
 // Consultas para combos - Coordinador (21)
-$sql_coord = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY nombres_apellidos_tercero ASC";
+$sql_coord = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_coord = mysqli_query($conectar, $sql_coord);
 // Consultas para combos - Asesor (22)// Por defecto se preselecciona el actual
-$sql_asesor = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
+$sql_asesor = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_asesor = mysqli_query($conectar, $sql_asesor);
 // Consulta de entidades crediticias
 $sql_entidades = "SELECT cod_entidad_crediticia, nombre_entidad_crediticia, url_pagina_web_consulta, aliado_estrategico_interes_ptj FROM tbl15_entidad_crediticia WHERE cod_estado = '1' ORDER BY cod_posicion ASC";

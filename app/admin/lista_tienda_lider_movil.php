@@ -1075,7 +1075,7 @@ $cod_coordinador_filtro = isset($_GET['cod_coordinador']) ? (int)$_GET['cod_coor
 $subquery_aliados_lider = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_lider = '$cod_administrador' AND cod_estado != '0' AND cod_estado_activacion_usuario != '3'";
 if ($cod_coordinador_filtro > 0) { $subquery_aliados_lider .= " AND cod_coordinador = '$cod_coordinador_filtro'"; }
 // Consulta para contar el total de tiendas (para la paginación)
-$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider)";
+$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider) AND cod_estado != '0'";
 if (!empty($busqueda)) { $sql_conteo .= " AND (nombre_tienda LIKE '%$busqueda%' OR identificacion_tercero LIKE '%$busqueda%' OR nombre1_tercero LIKE '%$busqueda%' OR cod_tienda LIKE '$busqueda')"; }
 $resultado_conteo = mysqli_query($conectar, $sql_conteo);
 $fila_conteo = mysqli_fetch_assoc($resultado_conteo);
@@ -1084,33 +1084,33 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 // Consulta principal adaptada para paginación
 $sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, 
 (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos 
-FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_lider)";
+FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_lider) AND t.cod_estado != '0'";
 if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%' OR t.cod_tienda LIKE '$busqueda')"; }
 
 $sql_tiendas .= " ORDER BY t.fecha_creacion DESC LIMIT $inicio, $registros_por_pagina";
 $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
 $total_tiendas_pagina = ($resultado_tiendas) ? mysqli_num_rows($resultado_tiendas) : 0;
 // Contar tiendas con firma
-$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != ''";
+$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != '' AND cod_estado != '0'";
 $resultado_con_firma = mysqli_query($conectar, $sql_con_firma);
 $tiendas_con_firma = 0;
 if ($resultado_con_firma) { $datos_con_firma = mysqli_fetch_assoc($resultado_con_firma); $tiendas_con_firma = isset($datos_con_firma['total']) ? intval($datos_con_firma['total']) : 0; }
 // Contar tiendas con GPS
-$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != ''";
+$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_lider) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != '' AND cod_estado != '0'";
 $resultado_con_gps = mysqli_query($conectar, $sql_con_gps);
 $tiendas_con_gps = 0;
 if ($resultado_con_gps) { $datos_con_gps = mysqli_fetch_assoc($resultado_con_gps); $tiendas_con_gps = isset($datos_con_gps['total']) ? intval($datos_con_gps['total']) : 0; }
 // Obtener aliados estratégicos para el select (cod_seguridad = 23)
-$sql_aliados = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, comision_ptj FROM tbl15_administrador WHERE cod_seguridad = '23' ORDER BY nombres_apellidos_tercero ASC";
+$sql_aliados = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, comision_ptj FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $resultado_aliados = mysqli_query($conectar, $sql_aliados);
 // Obtener Líderes (cod_seguridad = 21)
-$sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY nombres_apellidos_tercero ASC";
+$sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $resultado_lideres = mysqli_query($conectar, $sql_lideres);
 // Obtener Coordinadores (cod_seguridad = 22)
-$sql_coordinadores = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
+$sql_coordinadores = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $resultado_coordinadores = mysqli_query($conectar, $sql_coordinadores);
 // Obtener Asesores (cod_seguridad = 2)
-$sql_asesores = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '2' ORDER BY nombres_apellidos_tercero ASC";
+$sql_asesores = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '2' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $resultado_asesores = mysqli_query($conectar, $sql_asesores);
 // Consulta de tipos de sector para el formulario de registro de tienda
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
@@ -1161,13 +1161,13 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                 // Consultar vendedores de esta tienda (desde tbl15_administrador)
                 $cod_aliado_tienda = $tienda['cod_aliado_estrategico'];
                 $sql_vendedores_tienda = "SELECT cod_administrador, nombres_apellidos_tercero, identificacion_tercero, telefono1_tercero FROM tbl15_administrador 
-                WHERE cod_seguridad = '2' AND cod_aliado_estrategico = '$cod_aliado_tienda' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
+                WHERE cod_seguridad = '2' AND cod_aliado_estrategico = '$cod_aliado_tienda' AND cod_estado_activacion_usuario = '1' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
                 $res_vendedores_tienda = mysqli_query($conectar, $sql_vendedores_tienda);
                 $total_vendedores_tienda = $res_vendedores_tienda ? mysqli_num_rows($res_vendedores_tienda) : 0;
 
                 // Contar productos de esta tienda
                 $cod_tienda_actual = $tienda['cod_tienda'];
-                $sql_total_prod = "SELECT COUNT(*) as total FROM tbl15_producto WHERE cod_tienda = '$cod_tienda_actual'";
+                $sql_total_prod = "SELECT COUNT(*) as total FROM tbl15_producto WHERE cod_tienda = '$cod_tienda_actual' AND cod_estado != '0'";
                 $consulta_total_prod = mysqli_query($conectar, $sql_total_prod);
                 $datos_total_prod = mysqli_fetch_assoc($consulta_total_prod);
                 $total_productos_tienda = $datos_total_prod['total'];

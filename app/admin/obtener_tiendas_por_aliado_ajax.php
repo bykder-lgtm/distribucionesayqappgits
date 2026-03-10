@@ -12,7 +12,7 @@ $response = array('success' => false, 'tiendas' => array(), 'mensaje' => '');
 if ($cod_aliado_estrategico > 0) {
     // Consultar tiendas según cod_aliado_estrategico - INCLUYE cod_departamento y cod_municipio
     $consulta_sql = "SELECT cod_tienda, nombre_tienda, identificacion_tercero, nombre1_tercero, telefono1_tercero, correo_tercero, direccion_tercero, cod_departamento, cod_municipio, comision_ptj, cod_estado 
-    FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado_estrategico' ORDER BY nombre_tienda ASC";
+    FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado_estrategico' AND cod_estado != '0' ORDER BY nombre_tienda ASC";
     $consulta = mysqli_query($conectar, $consulta_sql);
     
     if ($consulta && mysqli_num_rows($consulta) > 0) {

@@ -242,13 +242,13 @@ if (isset($_POST['cod_producto_codifcryp'])) {
 		cod_tercero, cod_entidad_crediticia, cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico, monto_deuda_sin_interes, 
 		fecha_pago, fecha_reg, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, 
 		subtotal_sin_interes, numero_cuota, monto_cuota, interes_ptj, monto_cuota_interes, nombre_tipo_cobro, fecha_creacion, cod_administrador, nombre1_tercero, 
-		nombre2_tercero, apellido1_tercero, apellido2_tercero, identificacion_tercero) 
+		nombre2_tercero, apellido1_tercero, apellido2_tercero, identificacion_tercero, cod_intermediario_credito) 
 		VALUES ('$cod_cuentas_cobrar', '$cod_factura', '$cod_tipo_forma_pago', '$monto_deuda', '$subtotal', '$total_pendiente', '$total_valor_venta', '$monto_deuda_mas_interes',
 		'$total_valor_recibir', '$vendedor', '$cuenta', '$cod_producto', '$cod_producto_barra', '$nombre_producto', 
 		'$cod_tercero', '$cod_entidad_crediticia', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico', '$monto_deuda_sin_interes', 
 		'$fecha_pago', '$fecha_reg', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', 
 		'$subtotal_sin_interes', '$numero_cuota', '$monto_cuota', '$interes_ptj', '$monto_cuota_interes', '$nombre_tipo_cobro', '$fecha_creacion', '$cod_administrador', '$nombre1_tercero', 
-		'$nombre2_tercero', '$apellido1_tercero', '$apellido2_tercero', '$identificacion_tercero')";
+		'$nombre2_tercero', '$apellido1_tercero', '$apellido2_tercero', '$identificacion_tercero', '1')";
 		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 /*
 		$sql_cuenta_cobrar_tercero = sprintf("UPDATE tbl15_tercero SET cod_estado_cuenta_cobrar = '$cod_estado_cuenta_cobrar', total_monto_deuda_cuenta_cobrar = '$total_monto_deuda_cuenta_cobrar', 
@@ -298,12 +298,12 @@ if (isset($_POST['cod_producto_codifcryp'])) {
 		nombre_tipo_identificacion, identificacion_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, 
 		fecha_nac_tercero, fecha_expedicion_tercero, telefono1_tercero, correo_tercero, direccion_tercero, nombre_estado_civil, fecha_creacion, 
 		cod_administrador, cod_estado_cliente, fecha_expiracion_cupon_descuento, nombre_actividad_ecoemp, direccion_contacto1, tel_contacto1, cod_seguridad, 
-		cod_estado_cuenta_cobrar, total_monto_deuda_cuenta_cobrar, total_subtotal_cuenta_cobrar, total_abonado_cuenta_cobrar, fecha_modificacion_cuenta_cobrar) 
+		cod_estado_cuenta_cobrar, total_monto_deuda_cuenta_cobrar, total_subtotal_cuenta_cobrar, total_abonado_cuenta_cobrar, fecha_modificacion_cuenta_cobrar, cod_intermediario_credito) 
 		VALUES ('$cod_tercero', '$nombre_tipo_tercero', '$nombre_tipo_tercero_modulo_creacion', '$cod_producto', '$valor_credito', '$cod_entidad_crediticia', '$cod_tipo_cobro', '$cod_meses_credito', 
 		'$nombre_tipo_identificacion', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$nombre2_tercero'), UPPER('$apellido1_tercero'), UPPER('$apellido2_tercero'), 
 		'$fecha_nac_tercero', '$fecha_expedicion_tercero', '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', '$nombre_estado_civil', '$fecha_creacion', 
 		'$cod_administrador', '$cod_estado_cliente', '$fecha_expiracion_cupon_descuento', '$nombre_actividad_ecoemp', '$direccion_contacto1', '$tel_contacto1', '$cod_seguridad', 
-		'$cod_estado_cuenta_cobrar', '$total_monto_deuda_cuenta_cobrar', '$total_subtotal_cuenta_cobrar', '$total_abonado_cuenta_cobrar', '$fecha_modificacion_cuenta_cobrar')";
+		'$cod_estado_cuenta_cobrar', '$total_monto_deuda_cuenta_cobrar', '$total_subtotal_cuenta_cobrar', '$total_abonado_cuenta_cobrar', '$fecha_modificacion_cuenta_cobrar', '1')";
 		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
 		$sql_data = "INSERT INTO tbl15_cuentas_cobrar (cod_cuentas_cobrar, cod_factura, cod_tipo_forma_pago, monto_deuda, subtotal, total_pendiente, total_valor_venta, monto_deuda_mas_interes, 
@@ -311,13 +311,13 @@ if (isset($_POST['cod_producto_codifcryp'])) {
 		cod_tercero, cod_entidad_crediticia, cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico, monto_deuda_sin_interes, 
 		fecha_pago, fecha_reg, fecha, fecha_mes, anyo, fecha_invert, fecha_seg, 
 		subtotal_sin_interes, numero_cuota, monto_cuota, interes_ptj, monto_cuota_interes, nombre_tipo_cobro, fecha_creacion, cod_administrador, nombre1_tercero, 
-		nombre2_tercero, apellido1_tercero, apellido2_tercero, identificacion_tercero) 
+		nombre2_tercero, apellido1_tercero, apellido2_tercero, identificacion_tercero, cod_intermediario_credito) 
 		VALUES ('$cod_cuentas_cobrar', '$cod_factura', '$cod_tipo_forma_pago', '$monto_deuda', '$subtotal', '$total_pendiente', '$total_valor_venta', '$monto_deuda_mas_interes',
 		'$total_valor_recibir', '$vendedor', '$cuenta', '$cod_producto', '$cod_producto_barra', '$nombre_producto', 
 		'$cod_tercero', '$cod_entidad_crediticia', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico', '$monto_deuda_sin_interes', 
 		'$fecha_pago', '$fecha_reg', '$fecha', '$fecha_mes', '$anyo', '$fecha_invert', '$fecha_seg', 
 		'$subtotal_sin_interes', '$numero_cuota', '$monto_cuota', '$interes_ptj', '$monto_cuota_interes', '$nombre_tipo_cobro', '$fecha_creacion', '$cod_administrador', '$nombre1_tercero', 
-		'$nombre2_tercero', '$apellido1_tercero', '$apellido2_tercero', '$identificacion_tercero')";
+		'$nombre2_tercero', '$apellido1_tercero', '$apellido2_tercero', '$identificacion_tercero', '1')";
 		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
     }
 	//---------------------------------------------------------------------------------------------------------------------------------//

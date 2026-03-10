@@ -311,7 +311,8 @@ body {
 $sql_notif = "SELECT COUNT(*) as total FROM tbl15_notificacion_alerta_renovacion WHERE cod_administrador = '$cod_administrador' AND cod_estado = '0'";
 $resultado_notif = mysqli_query($conectar, $sql_notif);
 $datos_notif = mysqli_fetch_assoc($resultado_notif);
-$total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0;
+
+$total_notificaciones                                           = isset($datos_notif['total']) ? $datos_notif['total'] : 0;
 ?>
 
 <main class="page-container">
@@ -352,6 +353,28 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
                 <div class="menu-item-content">
                     <div class="menu-item-title">Mis Tiendas</div>
                     <div class="menu-item-desc">Gestionar tiendas afiliadas</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+            <a href="lista_vendedor_coordinador_movil.php" class="menu-item">
+                <div class="menu-item-icon purple">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Mis Vendedores</div>
+                    <div class="menu-item-desc">Gestionar equipo de ventas</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+            <a href="lista_archivados_coordinador_movil.php" class="menu-item">
+                <div class="menu-item-icon purple">
+                    <i class="fa-solid fa-box-archive"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Archivo</div>
+                    <div class="menu-item-desc">Registros archivados</div>
                 </div>
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>

@@ -507,23 +507,23 @@ $mes_actual = date("Y-m");
 $mes_anterior = date("Y-m", strtotime("-1 month"));
 // === CONSULTAS PARA KPIs ===
 // Total Créditos Activos (Estado ABIERTA)
-$sql_creditos_activos = "SELECT COUNT(*) as total, COALESCE(SUM(monto_deuda), 0) as valor_total FROM tbl15_info_factura_venta WHERE cod_administrador_aliado_estrategico = '$cod_administrador' AND nombre_estado_factura = 'ABIERTA'";
+$sql_creditos_activos = "SELECT COUNT(*) as total, COALESCE(SUM(ifv.monto_deuda), 0) as valor_total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' AND ifv.nombre_estado_factura = 'ABIERTA' AND t.cod_estado != '0'";
 $resultado_activos = mysqli_query($conectar, $sql_creditos_activos);
 $datos_activos = mysqli_fetch_assoc($resultado_activos);
 $total_creditos_activos                                             = isset($datos_activos['total']) ? $datos_activos['total'] : 0;
 $valor_cartera                                                      = isset($datos_activos['valor_total']) ? $datos_activos['valor_total'] : 0;
 // Créditos cerrados (Estado CERRADA)
-$sql_creditos_cerrados = "SELECT COUNT(*) as total, COALESCE(SUM(monto_deuda), 0) as valor_total FROM tbl15_info_factura_venta WHERE cod_administrador_aliado_estrategico = '$cod_administrador' AND nombre_estado_factura = 'CERRADA'";
+$sql_creditos_cerrados = "SELECT COUNT(*) as total, COALESCE(SUM(ifv.monto_deuda), 0) as valor_total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' AND ifv.nombre_estado_factura = 'CERRADA' AND t.cod_estado != '0'";
 $resultado_cerrados = mysqli_query($conectar, $sql_creditos_cerrados);
 $datos_cerrados = mysqli_fetch_assoc($resultado_cerrados);
 $total_creditos_cerrados                                            = isset($datos_cerrados['total']) ? $datos_cerrados['total'] : 0;
 // Créditos del mes actual
-$sql_creditos_mes = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta WHERE cod_administrador_aliado_estrategico = '$cod_administrador' AND DATE_FORMAT(fecha_creacion, '%Y-%m') = '$mes_actual'";
+$sql_creditos_mes = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' AND DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes_actual' AND t.cod_estado != '0'";
 $resultado_mes = mysqli_query($conectar, $sql_creditos_mes);
 $datos_mes = mysqli_fetch_assoc($resultado_mes);
 $creditos_mes_actual                                                = isset($datos_mes['total']) ? $datos_mes['total'] : 0;
 // Créditos del mes anterior (para comparación)
-$sql_creditos_mes_ant = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta WHERE cod_administrador_aliado_estrategico = '$cod_administrador' AND DATE_FORMAT(fecha_creacion, '%Y-%m') = '$mes_anterior'";
+$sql_creditos_mes_ant = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' AND DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes_anterior' AND t.cod_estado != '0'";
 $resultado_mes_ant = mysqli_query($conectar, $sql_creditos_mes_ant);
 $datos_mes_ant = mysqli_fetch_assoc($resultado_mes_ant);
 $creditos_mes_anterior                                              = isset($datos_mes_ant['total']) ? $datos_mes_ant['total'] : 0;
@@ -531,14 +531,15 @@ $creditos_mes_anterior                                              = isset($dat
 $cambio_porcentaje = 0;
 if ($creditos_mes_anterior > 0) { $cambio_porcentaje = round((($creditos_mes_actual - $creditos_mes_anterior) / $creditos_mes_anterior) * 100, 1); }
 // Productos en catálogo
-$sql_productos = "SELECT COUNT(*) as total FROM tbl15_catalogo_producto WHERE cod_administrador_aliado_estrategico = '$cod_administrador' AND cod_estado = '1'";
+$sql_productos = "SELECT COUNT(*) as total FROM tbl15_catalogo_producto cp INNER JOIN tbl15_tienda t ON cp.cod_tienda = t.cod_tienda WHERE cp.cod_administrador_aliado_estrategico = '$cod_administrador' AND cp.cod_estado = '1' AND t.cod_estado != '0'";
 $resultado_productos = mysqli_query($conectar, $sql_productos);
 $total_productos                                                    = 0;
 if ($resultado_productos) { $datos_productos = mysqli_fetch_assoc($resultado_productos); $total_productos = isset($datos_productos['total']) ? $datos_productos['total'] : 0; }
 // === DATOS PARA GRÁFICOS ===
 // Créditos por estado de facturación
 $sql_por_estado = "SELECT ef.nombre_estado_facturacion, COUNT(*) as cantidad FROM tbl15_info_factura_venta ifv 
-LEFT JOIN tbl15_estado_facturacion ef ON ifv.codigo_estado_facturacion = ef.codigo_estado_facturacion WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' GROUP BY ef.nombre_estado_facturacion ORDER BY cantidad DESC LIMIT 6";
+INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda
+LEFT JOIN tbl15_estado_facturacion ef ON ifv.codigo_estado_facturacion = ef.codigo_estado_facturacion WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' AND t.cod_estado != '0' GROUP BY ef.nombre_estado_facturacion ORDER BY cantidad DESC LIMIT 6";
 $resultado_por_estado = mysqli_query($conectar, $sql_por_estado);
 $estados_labels                                                     = [];
 $estados_valores                                                    = [];
@@ -546,7 +547,8 @@ $estados_valores                                                    = [];
 while ($row = mysqli_fetch_assoc($resultado_por_estado)) { $estados_labels[] = isset($row['nombre_estado_facturacion']) ? $row['nombre_estado_facturacion'] : 'Sin estado'; $estados_valores[] = $row['cantidad']; }
 // Créditos por entidad crediticia
 $sql_por_entidad = "SELECT ec.nombre_entidad_crediticia, COUNT(*) as cantidad, SUM(ifv.monto_deuda) as valor FROM tbl15_info_factura_venta ifv
-LEFT JOIN tbl15_entidad_crediticia ec ON ifv.cod_entidad_crediticia = ec.cod_entidad_crediticia WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' GROUP BY ec.nombre_entidad_crediticia ORDER BY cantidad DESC LIMIT 5";
+INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda
+LEFT JOIN tbl15_entidad_crediticia ec ON ifv.cod_entidad_crediticia = ec.cod_entidad_crediticia WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' AND t.cod_estado != '0' GROUP BY ec.nombre_entidad_crediticia ORDER BY cantidad DESC LIMIT 5";
 $resultado_por_entidad = mysqli_query($conectar, $sql_por_entidad);
 $entidades_labels                                                   = [];
 $entidades_valores                                                  = [];
@@ -561,7 +563,7 @@ for ($i = 5; $i >= 0; $i--) {
     $mes                                                            = date("Y-m", strtotime("-$i months"));
     $nombre_mes                                                     = date("M", strtotime("-$i months"));
     
-    $sql_tendencia = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta WHERE cod_administrador_aliado_estrategico = '$cod_administrador' AND DATE_FORMAT(fecha_creacion, '%Y-%m') = '$mes'";
+    $sql_tendencia = "SELECT COUNT(*) as total FROM tbl15_info_factura_venta ifv INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' AND DATE_FORMAT(ifv.fecha_creacion, '%Y-%m') = '$mes' AND t.cod_estado != '0'";
     $resultado_tendencia = mysqli_query($conectar, $sql_tendencia);
     $datos_tendencia = mysqli_fetch_assoc($resultado_tendencia);
     
@@ -570,8 +572,11 @@ for ($i = 5; $i >= 0; $i--) {
 }
 // Últimas actividades (últimos créditos registrados)
 $sql_ultimas = "SELECT ifv.cod_info_factura_venta, ifv.monto_deuda, ifv.fecha_ymdhis, ifv.nombre_estado_factura, t.nombre1_tercero, t.apellido1_tercero, t.identificacion_tercero, ef.nombre_estado_facturacion
-FROM tbl15_info_factura_venta ifv LEFT JOIN tbl15_tercero t ON ifv.cod_tercero = t.cod_tercero LEFT JOIN tbl15_estado_facturacion ef ON ifv.codigo_estado_facturacion = ef.codigo_estado_facturacion
-WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' ORDER BY ifv.fecha_ymdhis DESC LIMIT 5";
+FROM tbl15_info_factura_venta ifv 
+INNER JOIN tbl15_tienda tienda ON ifv.cod_tienda = tienda.cod_tienda
+LEFT JOIN tbl15_tercero t ON ifv.cod_tercero = t.cod_tercero 
+LEFT JOIN tbl15_estado_facturacion ef ON ifv.codigo_estado_facturacion = ef.codigo_estado_facturacion
+WHERE ifv.cod_administrador_aliado_estrategico = '$cod_administrador' AND tienda.cod_estado != '0' ORDER BY ifv.fecha_ymdhis DESC LIMIT 5";
 $resultado_ultimas = mysqli_query($conectar, $sql_ultimas);
 
 // Alertas pendientes

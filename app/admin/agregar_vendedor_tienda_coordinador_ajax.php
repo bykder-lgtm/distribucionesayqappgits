@@ -44,7 +44,7 @@ try {
     // Validar formato de correo
     if (!filter_var($correo_tercero, FILTER_VALIDATE_EMAIL)) { echo json_encode(array('success' => false, 'message' => 'El correo electrónico no es válido')); exit; }
     // Verificar que la tienda existe y obtener información del aliado
-    $sql_tienda = "SELECT cod_tienda, cod_aliado_estrategico FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
+    $sql_tienda = "SELECT cod_tienda, cod_aliado_estrategico FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda' AND cod_estado != '0'";
     $result_tienda = mysqli_query($conectar, $sql_tienda);
     if (!$result_tienda) { echo json_encode(array('success' => false, 'message' => 'Error en consulta de tienda: ' . mysqli_error($conectar))); exit; }
     if (mysqli_num_rows($result_tienda) == 0) { echo json_encode(array('success' => false, 'message' => 'La tienda no existe')); exit; }

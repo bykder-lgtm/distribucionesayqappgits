@@ -49,18 +49,18 @@ if (isset($_POST['cod_producto_codifcryp'])) {
 	$exec_autoincremento_info_factura = mysqli_query($conectar, $sql_autoincremento_info_factura) or die(mysqli_error($conectar));
 	$datos_autoincremento_info_factura = mysqli_fetch_assoc($exec_autoincremento_info_factura);
 
-	$cod_tercero                      = $datos_autoincremento_info_factura['AUTO_INCREMENT'];
-    $cod_tercero_codif                = DAXCODIFCRYPTOR::encodifdax($cod_tercero);
-    $cod_tercero_codifcryp            = DAXCODIFCRYPTOR::encriptardax($cod_tercero_codif);
+	$cod_tercero                                                    = $datos_autoincremento_info_factura['AUTO_INCREMENT'];
+    $cod_tercero_codif                                              = DAXCODIFCRYPTOR::encodifdax($cod_tercero);
+    $cod_tercero_codifcryp                                          = DAXCODIFCRYPTOR::encriptardax($cod_tercero_codif);
 
 	$sql_data = "INSERT INTO tbl15_tercero (cod_tercero, nombre_tipo_tercero, nombre_tipo_tercero_modulo_creacion, cod_producto, valor_credito, cod_entidad_crediticia, cod_tipo_cobro, cod_meses_credito, 
 	nombre_tipo_identificacion, identificacion_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, 
 	fecha_nac_tercero, fecha_expedicion_tercero, telefono1_tercero, correo_tercero, direccion_tercero, nombre_estado_civil, fecha_creacion, 
-	cod_administrador, cod_estado_cliente, fecha_expiracion_cupon_descuento, nombre_actividad_ecoemp, direccion_contacto1, tel_contacto1) 
+	cod_administrador, cod_estado_cliente, fecha_expiracion_cupon_descuento, nombre_actividad_ecoemp, direccion_contacto1, tel_contacto1, cod_intermediario_credito) 
 	VALUES ('$cod_tercero', '$nombre_tipo_tercero', '$nombre_tipo_tercero_modulo_creacion', '$cod_producto', '$valor_credito', '$cod_entidad_crediticia', '$cod_tipo_cobro', '$cod_meses_credito', 
 	'$nombre_tipo_identificacion', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$nombre2_tercero'), UPPER('$apellido1_tercero'), UPPER('$apellido2_tercero'), 
 	'$fecha_nac_tercero', '$fecha_expedicion_tercero', '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', '$nombre_estado_civil', '$fecha_creacion', 
-	'$cod_administrador', '$cod_estado_cliente', '$fecha_expiracion_cupon_descuento', '$nombre_actividad_ecoemp', '$direccion_contacto1', '$tel_contacto1')";
+	'$cod_administrador', '$cod_estado_cliente', '$fecha_expiracion_cupon_descuento', '$nombre_actividad_ecoemp', '$direccion_contacto1', '$tel_contacto1', '1')";
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
 	$url_redir = "../admin/lista_cliente_siscredito_visitante_intern.php?cod_tercero_codifcryp=".$cod_tercero_codifcryp;

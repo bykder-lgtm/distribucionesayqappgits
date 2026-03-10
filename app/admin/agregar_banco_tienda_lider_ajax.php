@@ -28,7 +28,7 @@ try {
     if (empty($nombre_titular_cuenta)) { echo json_encode(array('success' => false, 'mensaje' => 'El nombre del titular es obligatorio')); exit; }
     if (empty($identificacion_titular_cuenta)) { echo json_encode(array('success' => false, 'mensaje' => 'La identificación del titular es obligatoria')); exit; }
     // Verificar que la tienda existe y obtener cod_aliado_estrategico
-    $sql_tienda = "SELECT cod_tienda, nombre_tienda, cod_aliado_estrategico FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
+    $sql_tienda = "SELECT cod_tienda, nombre_tienda, cod_aliado_estrategico FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda' AND cod_estado != '0'";
     $result_tienda = mysqli_query($conectar, $sql_tienda);
     if (!$result_tienda) { echo json_encode(array('success' => false, 'mensaje' => 'Error en consulta de tienda: ' . mysqli_error($conectar))); exit; }
     if (mysqli_num_rows($result_tienda) == 0) { echo json_encode(array('success' => false, 'mensaje' => 'La tienda no existe')); exit; }

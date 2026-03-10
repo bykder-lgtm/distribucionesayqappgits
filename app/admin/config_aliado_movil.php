@@ -578,6 +578,17 @@ if (isset($cod_administrador) && !empty($cod_administrador)) {
                 <input type="hidden" id="codAdminAuth" value="<?php echo $cod_administrador; ?>">
             </div>
         </div>
+
+        <!-- Card de Opciones Extra -->
+        <div class="config-card">
+            <div class="config-card-header"><i class="fa fa-folder-open"></i><h3>Otras Opciones</h3></div>
+            <div class="form-group-config">
+                <p style="color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-bottom: 1rem;">Gestione sus registros archivados:</p>
+                <a href="lista_archivados_aliado_movil.php" class="btn-config btn-config-primary" style="background: rgba(65, 105, 225, 0.2); border: 1px solid rgba(65, 105, 225, 0.4);">
+                    <i class="fa fa-box-archive"></i> Ver Registros Archivados
+                </a>
+            </div>
+        </div>
     </div>
 </main>
 

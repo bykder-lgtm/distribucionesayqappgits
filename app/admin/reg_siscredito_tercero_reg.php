@@ -61,16 +61,16 @@ if ((isset($_POST["insersion"])) && ($_POST["insersion"] == "formulario_de_inser
 	if (isset($_POST['cod_pais']) <> '') { $cod_pais = intval($_POST['cod_pais']); } else { $cod_pais = '1'; }
 	if (isset($_POST['cod_departamento']) <> '') { $cod_departamento = intval($_POST['cod_departamento']); } else { $cod_departamento = ''; }
 	if (isset($_POST['cod_municipio']) <> '') { $cod_municipio = intval($_POST['cod_municipio']); } else { $cod_municipio = ''; }
-	$nombre_tipo_tercero_modulo_creacion = $nombre_tipo_tercero;
 
-	$cod_estado_cliente = '0';
-	$cod_estado_lider = '0';
-	$cod_estado_coordinador = '0';
-	$cod_estado_asesor = '0';
-	$cod_estado_vendedor = '0';
-	$cod_estado_proveedor = '0';
-	$cod_estado_aliado_estrategico = '0';
-	$cod_estado_entidad_crediticia = '0';
+	$nombre_tipo_tercero_modulo_creacion    = $nombre_tipo_tercero;
+	$cod_estado_cliente                     = '0';
+	$cod_estado_lider                       = '0';
+	$cod_estado_coordinador                 = '0';
+	$cod_estado_asesor                      = '0';
+	$cod_estado_vendedor                    = '0';
+	$cod_estado_proveedor                   = '0';
+	$cod_estado_aliado_estrategico          = '0';
+	$cod_estado_entidad_crediticia          = '0';
 
 	if ($nombre_tipo_tercero == 'CLIENTE') { 
 		$cod_estado_cliente = '1';
@@ -126,14 +126,14 @@ if ((isset($_POST["insersion"])) && ($_POST["insersion"] == "formulario_de_inser
 		nombre_tipo_regimen, nombre_tipo_impuesto, contacto_tercero, fax_tercero, nombre_tipo_cliente, fecha_nac_tercero, cod_administrador, 
 		cod_estado_dto_tercero, dto1_con_iva_tercero, dto2_con_iva_tercero, dto1_sin_iva_tercero, dto2_sin_iva_tercero, dto1_excento_iva_tercero, 
 		dto2_excento_iva_tercero, total_puntos_redimibles_campanya_tercero, nombre_tipo_tercero_modulo_creacion,
-		cod_estado_cliente, cod_estado_lider, cod_estado_coordinador, cod_estado_asesor, cod_estado_vendedor, cod_estado_proveedor, cod_estado_aliado_estrategico, cod_estado_entidad_crediticia) 
+		cod_estado_cliente, cod_estado_lider, cod_estado_coordinador, cod_estado_asesor, cod_estado_vendedor, cod_estado_proveedor, cod_estado_aliado_estrategico, cod_estado_entidad_crediticia, cod_intermediario_credito) 
 		VALUES ('$nombre_tipo_tercero', '$nombre_tipo_identificacion', '$identificacion_tercero', '$digito_tercero', '$nombre1_tercero', 
 		'$nombre2_tercero', '$apellido1_tercero', '$apellido2_tercero', '$direccion_tercero', '$telefono1_tercero', 
 		'$telefono2_tercero', '$correo_tercero', '$cod_pais', '$cod_departamento', '$cod_municipio', '$nombre_pais', '$nombre_departamento', '$nombre_ciudad', 
 		'$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$contacto_tercero', '$fax_tercero', '$nombre_tipo_cliente', '$fecha_nac_tercero', '$cod_administrador', 
 		'$cod_estado_dto_tercero', '$dto1_con_iva_tercero', '$dto2_con_iva_tercero', '$dto1_sin_iva_tercero', '$dto2_sin_iva_tercero', '$dto1_excento_iva_tercero', 
 		'$dto2_excento_iva_tercero', '$total_puntos_redimibles_campanya_tercero', '$nombre_tipo_tercero_modulo_creacion',
-		'$cod_estado_cliente', '$cod_estado_lider', '$cod_estado_coordinador', '$cod_estado_asesor', '$cod_estado_vendedor', '$cod_estado_proveedor', '$cod_estado_aliado_estrategico', '$cod_estado_entidad_crediticia')";
+		'$cod_estado_cliente', '$cod_estado_lider', '$cod_estado_coordinador', '$cod_estado_asesor', '$cod_estado_vendedor', '$cod_estado_proveedor', '$cod_estado_aliado_estrategico', '$cod_estado_entidad_crediticia', '1')";
 		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 	?>
 	<META HTTP-EQUIV="REFRESH" CONTENT="0; ../admin/lista_siscredito_tercero.php?nombre_tipo_tercero=<?php echo $nombre_tipo_tercero?>">

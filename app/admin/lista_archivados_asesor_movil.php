@@ -5,9 +5,9 @@ $pagina_local           = $_SERVER['PHP_SELF'];
 $cod_base_caja          = "1";
 ?>
 <!-- **************************************************** MODULO DE SESION ******************************************** -->
-<?php include_once("../admin/01_admin_modulo_inicio_sesion_adm_lider.php"); ?>
+<?php include_once("../admin/01_admin_modulo_inicio_sesion_adm_asesor.php"); ?>
 <!-- **************************************************** MODULO DE SESION ******************************************** -->
-<?php include_once("../admin/01_admin_modulo_info_empresa_adm_lider.php"); ?>
+<?php include_once("../admin/01_admin_modulo_info_empresa_adm_asesor.php"); ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -27,7 +27,7 @@ $cod_base_caja          = "1";
 
 <style>
 /* ============================================ */
-/* LISTA ARCHIVADOS LIDER - TEMA OSCURO/PÚRPURA */
+/* LISTA ARCHIVADOS ASESOR - EMERALD/GREEN     */
 /* ============================================ */
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,7 +48,7 @@ body {
 }
 
 .page-header {
-    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border-radius: 20px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -89,6 +89,10 @@ body {
     width: 100%;
 }
 
+.tabs-container { display: flex; gap: 10px; margin-bottom: 1.5rem; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 15px; }
+.tab-btn { flex: 1; padding: 0.75rem; border: none; border-radius: 12px; background: transparent; color: rgba(255,255,255,0.6); font-weight: 700; cursor: pointer; transition: all 0.3s ease; }
+.tab-btn.active { background: #10b981; color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+
 .archivados-list {
     display: flex;
     flex-direction: column;
@@ -104,7 +108,7 @@ body {
     opacity: 0.8;
 }
 
-.archived-card:hover { opacity: 1; transform: translateY(-2px); background: rgba(255, 255, 255, 0.05); border-color: rgba(139, 92, 246, 0.3); }
+.archived-card:hover { opacity: 1; transform: translateY(-2px); background: rgba(255, 255, 255, 0.05); border-color: rgba(16, 185, 129, 0.3); }
 
 .card-header {
     display: flex;
@@ -162,6 +166,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    margin: 0;
 }
 
 .action-btn.restore { background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
@@ -190,7 +195,7 @@ body {
     text-decoration: none;
     font-weight: 600;
 }
-.pagination-btn.active { background: #8b5cf6; }
+.pagination-btn.active { background: #10b981; }
 
 /* Role Colors */
 .role-23 { border-left: 4px solid #8b5cf6; } /* Aliado */
@@ -207,17 +212,12 @@ body {
 <main class="page-container">
     <div class="page-header">
         <h1><i class="fa-solid fa-box-archive"></i> Archivo</h1>
-        <p>Registros archivados del sistema</p>
+        <p>Registros archivados bajo tu gestión</p>
     </div>
-
-    <style>
-    .tabs-container { display: flex; gap: 10px; margin-bottom: 1.5rem; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 15px; }
-    .tab-btn { flex: 1; padding: 0.75rem; border: none; border-radius: 12px; background: transparent; color: rgba(255,255,255,0.6); font-weight: 700; cursor: pointer; transition: all 0.3s ease; }
-    .tab-btn.active { background: #8b5cf6; color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
-    </style>
 
     <?php
     $tab = isset($_GET['tab']) ? $_GET['tab'] : 'personas';
+    $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
     ?>
 
     <div class="tabs-container">
@@ -240,11 +240,9 @@ body {
     if ($pagina <= 0) $pagina = 1;
     $inicio = ($pagina - 1) * $registros_por_pagina;
 
-    $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
-
     if ($tab == 'personas') {
         // Personas (tbl15_administrador)
-        $where = "WHERE (a.cod_estado = 0 OR a.cod_estado_activacion_usuario = 3) AND (a.cod_lider = '$cod_administrador' OR a.cod_administrador = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+        $where = "WHERE (a.cod_estado = 0 OR a.cod_estado_activacion_usuario = 3) AND (a.cod_aliado_estrategico = '$cod_administrador')";
         if (!empty($busqueda)) { $where .= " AND (a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.cedula LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
         
         $sql_total = "SELECT COUNT(*) as total FROM tbl15_administrador a $where";
@@ -254,7 +252,7 @@ body {
         $sql = "SELECT a.* FROM tbl15_administrador a $where ORDER BY a.fecha_creacion DESC LIMIT $inicio, $registros_por_pagina";
     } else {
         // Tiendas (tbl15_tienda)
-        $where = "WHERE t.cod_estado = 0 AND t.cod_aliado_estrategico IN (SELECT a.cod_administrador FROM tbl15_administrador a WHERE a.cod_lider = '$cod_administrador' OR a.cod_coordinador IN (SELECT c.cod_administrador FROM tbl15_administrador c WHERE c.cod_lider = '$cod_administrador'))";
+        $where = "WHERE t.cod_estado = 0 AND t.cod_aliado_estrategico = '$cod_administrador'";
         if (!empty($busqueda)) { $where .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
         
         $sql_total = "SELECT COUNT(*) as total FROM tbl15_tienda t $where";
@@ -339,18 +337,18 @@ body {
     <?php endif; ?>
 </main>
 
-<?php include_once("../menu/05_modulo_menu_lider_movil.php"); ?>
+<?php include_once("../menu/05_modulo_menu_asesor_movil.php"); ?>
 
 <script>
 function filtrar(val) {
     if (val.length > 2 || val.length == 0) {
-        window.location.href = 'lista_archivados_lider_movil.php?tab=<?php echo $tab; ?>&busqueda=' + val;
+        window.location.href = 'lista_archivados_asesor_movil.php?tab=<?php echo $tab; ?>&busqueda=' + val;
     }
 }
 
 function recuperarEntidad(cod, nombre, tipo) {
     Swal.fire({
-        title: '¿Recuperar ' + tipo + '?', text: "El registro de " + nombre + " volverá a estar activo en el sistema.", icon: 'question', showCancelButton: true, confirmButtonColor: '#10b981', cancelButtonColor: '#374151', confirmButtonText: 'Sí, recuperar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
+        title: '¿Recuperar ' + (tipo == 'tienda' ? 'tienda' : 'persona') + '?', text: "El registro de " + nombre + " volverá a estar activo en el sistema.", icon: 'question', showCancelButton: true, confirmButtonColor: '#10b981', cancelButtonColor: '#374151', confirmButtonText: 'Sí, recuperar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({

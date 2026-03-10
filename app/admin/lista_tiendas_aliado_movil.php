@@ -1672,12 +1672,11 @@ $cod_base_caja          = "1";
 
 <?php
 // Verificar cantidad de tiendas del aliado
-$sql_count_tiendas = "SELECT COUNT(*) as total_tiendas FROM tbl15_tienda WHERE (cod_aliado_estrategico = '$cod_administrador')";
+$sql_count_tiendas = "SELECT COUNT(*) as total_tiendas FROM tbl15_tienda WHERE (cod_aliado_estrategico = '$cod_administrador') AND cod_estado != '0'";
 $consulta_count = mysqli_query($conectar, $sql_count_tiendas);
 $datos_count = mysqli_fetch_assoc($consulta_count);
 $total_tiendas_aliado = $datos_count['total_tiendas'];
-?>
-<?php
+
 // Consulta de tipos de sector para el formulario de registro de tienda
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
@@ -1694,48 +1693,47 @@ $datos_aliado = ($res_datos_aliado && mysqli_num_rows($res_datos_aliado) > 0) ? 
             <h1 class="page-title"><i class="fa fa-store"></i> Mis Tiendas</h1>
             <p class="page-subtitle">Gestiona las tiendas asociadas a tu cuenta</p>
         </div>
-        <?php if ($total_tiendas_aliado == 0) { ?>
-        <button class="btn-add-tienda" onclick="abrirModalTienda()"><i class="fa fa-plus"></i> Nueva Tienda</button>
-        <?php } ?>
+        <?php if ($total_tiendas_aliado == 0) { ?><button class="btn-add-tienda" onclick="abrirModalTienda()"><i class="fa fa-plus"></i> Nueva Tienda</button><?php } ?>
     </div>
 
     <!-- Contenedor de tarjetas -->
     <div class="tiendas-grid">
         <?php
         // Obtener las tiendas del aliado logueado
-        $sql_tiendas = "SELECT * FROM tbl15_tienda WHERE (cod_aliado_estrategico = '$cod_administrador') ORDER BY nombre_tienda ASC";
+        $sql_tiendas = "SELECT * FROM tbl15_tienda WHERE (cod_aliado_estrategico = '$cod_administrador') AND cod_estado != '0' ORDER BY nombre_tienda ASC";
         $consulta_tiendas = mysqli_query($conectar, $sql_tiendas);
         if (mysqli_num_rows($consulta_tiendas) > 0) {
             while ($tienda = mysqli_fetch_assoc($consulta_tiendas)) {
-                $cod_tienda_item = $tienda['cod_tienda'];
-                $nombre_tienda = $tienda['nombre_tienda'];
-                $abrev_tienda = $tienda['abrev_tienda'];
-                $direccion_tienda = isset($tienda['direccion_tienda']) ? $tienda['direccion_tienda'] : '';
-                $telefono_tienda = isset($tienda['telefono_tienda']) ? $tienda['telefono_tienda'] : '';
-                $url_img_tienda = isset($tienda['url_img_orig_tienda']) ? $tienda['url_img_orig_tienda'] : '';
-                $cod_estado_tienda = isset($tienda['cod_estado']) ? $tienda['cod_estado'] : '1';
+
+                $cod_tienda_item                                                = $tienda['cod_tienda'];
+                $nombre_tienda                                                  = $tienda['nombre_tienda'];
+                $abrev_tienda                                                   = $tienda['abrev_tienda'];
+                $direccion_tienda                                               = isset($tienda['direccion_tienda']) ? $tienda['direccion_tienda'] : '';
+                $telefono_tienda                                                = isset($tienda['telefono_tienda']) ? $tienda['telefono_tienda'] : '';
+                $url_img_tienda                                                 = isset($tienda['url_img_orig_tienda']) ? $tienda['url_img_orig_tienda'] : '';
+                $cod_estado_tienda                                              = isset($tienda['cod_estado']) ? $tienda['cod_estado'] : '1';
                 
-                $estado_class = ($cod_estado_tienda == '1') ? 'activo' : 'inactivo';
-                $estado_text = ($cod_estado_tienda == '1') ? 'Activa' : 'Inactiva';
-                
+                $estado_class                                                   = ($cod_estado_tienda == '1') ? 'activo' : 'inactivo';
+                $estado_text                                                    = ($cod_estado_tienda == '1') ? 'Activa' : 'Inactiva';
                 // Contar productos de esta tienda
                 $sql_total_prod = "SELECT COUNT(*) as total FROM tbl15_producto WHERE cod_tienda = '$cod_tienda_item'";
                 $consulta_total = mysqli_query($conectar, $sql_total_prod);
                 $datos_total = mysqli_fetch_assoc($consulta_total);
-                $total_productos = $datos_total['total'];
+
+                $total_productos                                                = $datos_total['total'];
                 
                 $sql_activos = "SELECT COUNT(*) as total FROM tbl15_producto WHERE cod_tienda = '$cod_tienda_item' AND nombre_estado = 'HABILITADO'";
                 $consulta_activos = mysqli_query($conectar, $sql_activos);
                 $datos_activos = mysqli_fetch_assoc($consulta_activos);
-                $productos_activos = $datos_activos['total'];
-                
-                $productos_inactivos = $total_productos - $productos_activos;
 
+                $productos_activos                                              = $datos_activos['total'];
+                $productos_inactivos                                            = $total_productos - $productos_activos;
                 // Contar vendedores de esta tienda
                 $sql_total_vend = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE cod_seguridad = '2' AND cod_vendedor = '$cod_tienda_item' AND cod_estado_activacion_usuario = '1'";
                 $consulta_total_vend = mysqli_query($conectar, $sql_total_vend);
                 $datos_total_vend = mysqli_fetch_assoc($consulta_total_vend);
-                $total_vendedores = $datos_total_vend['total'];
+                
+                $total_vendedores                                               = $datos_total_vend['total'];
         ?>
         <div class="tienda-card">
             <div class="tienda-card-header">

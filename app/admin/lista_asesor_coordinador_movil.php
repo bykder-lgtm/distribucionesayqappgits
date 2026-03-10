@@ -502,7 +502,7 @@ $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GE
 $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion,
 COUNT(DISTINCT ali.cod_administrador) as total_aliados
 FROM tbl15_administrador a LEFT JOIN tbl15_administrador ali ON a.cod_administrador = ali.cod_asesor AND ali.cod_seguridad = '23'
-WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '22'";
+WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '22' AND a.cod_estado != '0'";
 
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 

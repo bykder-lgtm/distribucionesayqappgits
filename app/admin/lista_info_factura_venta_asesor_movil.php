@@ -1128,7 +1128,7 @@ SUM(CASE WHEN ifv.nombre_estado_factura = 'CERRADA' THEN 1 ELSE 0 END) as cerrad
 COALESCE(SUM(CASE WHEN ifv.nombre_estado_factura = 'ABIERTA' THEN ifv.monto_deuda ELSE 0 END), 0) as cartera
 FROM tbl15_info_factura_venta ifv
 INNER JOIN tbl15_tienda t ON ifv.cod_tienda = t.cod_tienda
-WHERE t.cod_administrador = '$cod_administrador'";
+WHERE t.cod_administrador = '$cod_administrador' AND t.cod_estado != '0'";
 $resultado_stats = mysqli_query($conectar, $sql_stats);
 $stats = mysqli_fetch_assoc($resultado_stats);
 
@@ -1155,7 +1155,7 @@ LEFT JOIN tbl15_administrador admin_aliado ON ifv.cod_administrador_aliado_estra
 LEFT JOIN tbl15_administrador admin_revisor ON ifv.cod_administrador_revisor = admin_revisor.cod_administrador
 LEFT JOIN tbl15_vendedor vend ON ifv.cod_vendedor = vend.cod_vendedor
 LEFT JOIN tbl15_banco_cuenta bc ON ifv.cod_banco_cuenta = bc.cod_banco_cuenta
-WHERE ifv.cod_administrador_asesor = '$cod_administrador'";
+WHERE ifv.cod_administrador_asesor = '$cod_administrador' AND t.cod_estado != '0'";
 
 if ($estado_filtro != 'TODOS') { $sql_creditos .= " AND ifv.nombre_estado_factura = '$estado_filtro'"; }
 if (!empty($busqueda)) { $sql_creditos .= " AND (ter.nombre1_tercero LIKE '%$busqueda%' OR ter.identificacion_tercero LIKE '%$busqueda%' OR t.nombre_tienda LIKE '%$busqueda%')"; }

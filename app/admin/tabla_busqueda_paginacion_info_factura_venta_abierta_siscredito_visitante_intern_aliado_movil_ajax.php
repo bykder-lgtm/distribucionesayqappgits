@@ -271,11 +271,11 @@ $nombre_estado_factura                       = "ABIERTA";
 /* ----------------------------------------------------------------------------------------------------------------------- */
     if($action == 'ajax') {
 // escaping, additionally removing everything that could be (html/javascript-) code
-     $sTable = "tbl15_tercero RIGHT JOIN tbl15_info_factura_venta ON tbl15_tercero.cod_tercero = tbl15_info_factura_venta.cod_tercero LEFT JOIN tbl15_entidad_crediticia ON tbl15_info_factura_venta.cod_entidad_crediticia = tbl15_entidad_crediticia.cod_entidad_crediticia";
+     $sTable = "tbl15_tercero RIGHT JOIN tbl15_info_factura_venta ON tbl15_tercero.cod_tercero = tbl15_info_factura_venta.cod_tercero LEFT JOIN tbl15_entidad_crediticia ON tbl15_info_factura_venta.cod_entidad_crediticia = tbl15_entidad_crediticia.cod_entidad_crediticia INNER JOIN tbl15_tienda t ON tbl15_info_factura_venta.cod_tienda = t.cod_tienda";
 
-     $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND (tbl15_info_factura_venta.nombre_estado_factura = '$nombre_estado_factura')";
+     $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND (tbl15_info_factura_venta.nombre_estado_factura = '$nombre_estado_factura') AND t.cod_estado != '0'";
     if ( $_GET['busqueda_ajax'] != "" ) {
-        $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND (tbl15_info_factura_venta.nombre_estado_factura = '$nombre_estado_factura') AND ( ";
+        $sWhere = " WHERE (tbl15_info_factura_venta.cod_administrador_aliado_estrategico = '$cod_administrador_aliado_estrategico') AND (tbl15_info_factura_venta.nombre_estado_factura = '$nombre_estado_factura') AND t.cod_estado != '0' AND ( ";
         for ( $i=0 ; $i<count($aColumns) ; $i++ ) {
             $sWhere .= $aColumns[$i]." LIKE '$busq_aprox_der".$busqueda_ajax."$busq_aprox_izq' OR ";
         }

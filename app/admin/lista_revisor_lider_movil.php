@@ -577,7 +577,7 @@ $total_registros_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
 <main class="page-container">
 <?php
 // Consulta de líderes para la opción de cambiar líder
-$sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
+$sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado != '0' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
 $res_lideres = mysqli_query($conectar, $sql_lideres);
 ?>
 

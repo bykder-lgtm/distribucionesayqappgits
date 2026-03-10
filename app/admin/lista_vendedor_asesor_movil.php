@@ -38,8 +38,8 @@ $filtro_estado = isset($_GET['filtro_estado']) ? mysqli_real_escape_string($cone
 $sql = "SELECT v.cod_administrador, v.cedula, v.nombres, v.apellidos, v.cuenta, v.correo, v.telefono,
 v.nombres_apellidos_tercero, v.cod_estado_activacion_usuario, v.identificacion_tercero, v.nombre1_tercero, v.apellido1_tercero, v.telefono1_tercero, v.correo_tercero,
 v.direccion_tercero, v.cod_vendedor, v.cod_aliado_estrategico, v.fecha, v.fecha_hora, t.nombre_tienda, t.cod_tienda,
-a.nombres_apellidos_tercero AS nombre_aliado FROM tbl15_administrador v LEFT JOIN tbl15_tienda t ON v.cod_vendedor = t.cod_tienda LEFT JOIN tbl15_administrador a ON v.cod_aliado_estrategico = a.cod_administrador
-WHERE v.cod_seguridad = '2' AND v.cod_estado != '0' AND v.cod_estado_activacion_usuario != '3' AND v.cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23') ";
+a.nombres_apellidos_tercero AS nombre_aliado FROM tbl15_administrador v INNER JOIN tbl15_tienda t ON v.cod_vendedor = t.cod_tienda LEFT JOIN tbl15_administrador a ON v.cod_aliado_estrategico = a.cod_administrador
+WHERE v.cod_seguridad = '2' AND v.cod_estado != '0' AND v.cod_estado_activacion_usuario != '3' AND t.cod_estado != '0' AND v.cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23') ";
 // Filtro de búsqueda
 if (!empty($busqueda)) { $sql .= " AND (v.nombres_apellidos_tercero LIKE '%$busqueda%' OR v.identificacion_tercero LIKE '%$busqueda%' OR v.cedula LIKE '%$busqueda%' OR v.telefono1_tercero LIKE '%$busqueda%' OR v.correo_tercero LIKE '%$busqueda%')"; }
 // Filtro de estado
@@ -64,7 +64,7 @@ if ($resultado) {
 
 // Obtener lista de aliados para el select de registro
 $sql_aliados = "SELECT cod_administrador, nombres_apellidos_tercero, cedula FROM tbl15_administrador 
-WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
+WHERE cod_asesor = '$cod_administrador' AND cod_seguridad = '23' AND cod_estado_activacion_usuario = '1' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_aliados = mysqli_query($conectar, $sql_aliados);
 ?>
 

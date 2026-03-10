@@ -13,7 +13,7 @@ if (!isset($_SESSION['cod_administrador']) && $_SESSION['cod_administrador']==nu
 	$cod_administrador                    = $_SESSION['cod_administrador'];
 
 	$sql_usuario = "SELECT cod_administrador, cuenta, cedula, contrasena, cod_seguridad, nombres, apellidos, 
-	nombre_sexo, correo, url_img_foto_prof_min, url_img_foto_prof_orig, estilo_css, cod_tienda FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador')";
+	nombre_sexo, correo, url_img_foto_prof_min, url_img_foto_prof_orig, estilo_css, cod_tienda FROM tbl15_administrador WHERE (cod_administrador = '$cod_administrador') AND cod_estado != '0'";
 	$consultar_usuario = mysqli_query($conectar, $sql_usuario) or die(mysqli_error($conectar));
 	$datos_usuar = mysqli_fetch_array($consultar_usuario);
 
@@ -28,9 +28,9 @@ if (!isset($_SESSION['cod_administrador']) && $_SESSION['cod_administrador']==nu
 	$estilo_css_usuario                  = $datos_usuar['estilo_css'];
 	$cod_tienda                          = $datos_usuar['cod_tienda'];
 
-	if ($url_img_foto_prof_min_usuario == '') { $url_img_foto_prof_min_usuario = '../archivador/perfil_usuario/miniatura/perfil-avatar-hombre-icono-redondo_24640-14044.jpg'; } else { $url_img_foto_prof_min_usuario = $url_img_foto_prof_min_usuario; }
+	if ($url_img_foto_prof_min_usuario == '') { $url_img_foto_prof_min_usuario = '../archivador/perfil_usuario/miniatura/perfil-avatar-hombre-icono-redondo_24640-14044.jpg'; }
 
-	$sql_tienda = "SELECT * FROM tbl15_tienda WHERE (cod_tienda = '$cod_tienda')";
+	$sql_tienda = "SELECT * FROM tbl15_tienda WHERE (cod_tienda = '$cod_tienda') AND cod_estado != '0'";
 	$consultar_tienda = mysqli_query($conectar, $sql_tienda) or die(mysqli_error($conectar));
 	$datos_tienda = mysqli_fetch_array($consultar_tienda);
 

@@ -1286,14 +1286,14 @@ $pagina_actual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 if ($pagina_actual < 1) $pagina_actual = 1;
 $offset = ($pagina_actual - 1) * $registros_por_pagina;
 // Primero obtenemos el TOTAL DE REGISTROS para la paginación (con filtros)
-$sql_count = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql_count = "SELECT COUNT(*) as total FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23' AND a.cod_estado != '0'";
 if (!empty($busqueda)) { $sql_count .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 if ($filtro_doc == '1') { $sql_count .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '2') { $sql_count .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '3') { $sql_count .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')"; }
 $res_count = mysqli_query($conectar, $sql_count);
 $total_registros_filtrados = ($res_count) ? mysqli_fetch_assoc($res_count)['total'] : 0;
 $total_paginas = ceil($total_registros_filtrados / $registros_por_pagina);
 // Consulta de aliados asignados a este asesor con LIMIT
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.url_documentacion_cedula_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23' AND a.cod_estado != '0'";
 if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
 // Filtro de documentación
 if ($filtro_doc == '1') { $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '' OR (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))"; } elseif ($filtro_doc == '2') { $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '' AND (a.url_documentacion_cedula_aliado IS NOT NULL AND a.url_documentacion_cedula_aliado != ''))"; } elseif ($filtro_doc == '3') { $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '' AND (a.url_documentacion_cedula_aliado IS NULL OR a.url_documentacion_cedula_aliado = ''))"; }
@@ -1302,7 +1302,7 @@ $resultado = mysqli_query($conectar, $sql);
 // Si la consulta falla, intentar sin el campo de cédula
 if (!$resultado) {
     $sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.comision_ptj, 
-    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23'";
+    a.cod_asesor, a.url_documentacion_rut_aliado, a.url_documentacion_camaracomercio_aliado, a.nombre_tipo_cliente, a.nombre_tipo_identificacion, a.cod_tipo_sector, a.nit_razon_social, a.nombre_razon_social, a.direccion_tercero, a.barrio_tercero, a.cod_departamento, a.cod_municipio, a.fecha, a.fecha_hora FROM tbl15_administrador a WHERE a.cod_coordinador = '$cod_administrador' AND a.cod_seguridad = '23' AND a.cod_estado != '0'";
     if (!empty($busqueda)) { $sql .= " AND (a.cedula LIKE '%$busqueda%' OR a.nombres_apellidos_tercero LIKE '%$busqueda%' OR a.nombres LIKE '%$busqueda%' OR a.apellidos LIKE '%$busqueda%')"; }
     // Filtro de documentación (sin el campo de cédula)
     if ($filtro_doc == '1') { $sql .= " AND (a.url_documentacion_rut_aliado != '' OR a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '2') { $sql .= " AND (a.url_documentacion_rut_aliado != '' AND a.url_documentacion_camaracomercio_aliado != '')"; } elseif ($filtro_doc == '3') { $sql .= " AND (a.url_documentacion_rut_aliado = '' AND a.url_documentacion_camaracomercio_aliado = '')";  }
@@ -1311,27 +1311,27 @@ if (!$resultado) {
 }
 $registros_en_pagina = $resultado ? mysqli_num_rows($resultado) : 0;
 // Consulta original sin LIMIT para saber el TOTAL TOTAL (para el header)
-$sql_total_base = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23'";
+$sql_total_base = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23' AND cod_estado != '0'";
 $res_total_base = mysqli_query($conectar, $sql_total_base);
 $total_aliados_header = ($res_total_base) ? mysqli_fetch_assoc($res_total_base)['total'] : 0;
 // --- TOTALES PARA EL HEADER ---
 // Tiendas totales de los aliados de este coordinador
-$sql_total_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23')";
+$sql_total_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23' AND cod_estado != '0')";
 $res_total_tiendas = mysqli_query($conectar, $sql_total_tiendas);
 $total_tiendas_header = ($res_total_tiendas) ? mysqli_fetch_assoc($res_total_tiendas)['total'] : 0;
 // Cuentas bancarias totales de los aliados de este coordinador
-$sql_total_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23') AND cod_estado = '1'";
+$sql_total_bancos = "SELECT COUNT(*) as total FROM tbl15_banco_cuenta WHERE cod_aliado_estrategico IN (SELECT cod_administrador FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23' AND cod_estado != '0') AND cod_estado = '1'";
 $res_total_bancos = mysqli_query($conectar, $sql_total_bancos);
 $total_bancos_header = ($res_total_bancos) ? mysqli_fetch_assoc($res_total_bancos)['total'] : 0;
 // -----------------------------
 // Consultas para combos - Líder (20)
-$sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' ORDER BY nombres_apellidos_tercero ASC";
+$sql_lider = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_lider = mysqli_query($conectar, $sql_lider);
 // Consultas para combos - Coordinador (21)
-$sql_coord = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY nombres_apellidos_tercero ASC";
+$sql_coord = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_coord = mysqli_query($conectar, $sql_coord);
 // Consultas para combos - Asesor (22)// Por defecto se preselecciona el actual
-$sql_asesor = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
+$sql_asesor = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '22' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_asesor = mysqli_query($conectar, $sql_asesor);
 // Consulta de entidades crediticias
 $sql_entidades = "SELECT cod_entidad_crediticia, nombre_entidad_crediticia, url_pagina_web_consulta, aliado_estrategico_interes_ptj FROM tbl15_entidad_crediticia WHERE cod_estado = '1' ORDER BY cod_posicion ASC";
@@ -1398,7 +1398,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 if ($cod_estado == '1') { $estado_texto = 'Activo'; $estado_bg = 'rgba(16, 185, 129, 0.2)'; $estado_color = '#10b981'; } elseif ($cod_estado == '2') { $estado_texto = 'En Espera'; $estado_bg = 'rgba(245, 158, 11, 0.2)'; $estado_color = '#f59e0b'; } else { $estado_texto = 'Inactivo'; $estado_bg = 'rgba(239, 68, 68, 0.2)'; $estado_color = '#ef4444'; }
                 // Obtener tiendas asociadas a este aliado
                 $cod_aliado = $row['cod_administrador'];
-                $sql_tiendas = "SELECT cod_tienda, nombre_tienda FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado' LIMIT 3";
+                $sql_tiendas = "SELECT cod_tienda, nombre_tienda FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado' AND cod_estado != '0' LIMIT 3";
                 $res_tiendas = mysqli_query($conectar, $sql_tiendas);
                 $tiendas_arr = [];
                 while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_coordinador_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #10b981; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
@@ -1417,7 +1417,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 $lineas_credito_texto = $count_lineas > 0 ? $lineas_credito_html : '<span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">Sin entidades</span>';
                 // --- NUEVAS ESTADÍSTICAS ---
                 // Contar tiendas totales de este aliado
-                $sql_count_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado'";
+                $sql_count_tiendas = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado' AND cod_estado != '0'";
                 $res_count_tiendas = mysqli_query($conectar, $sql_count_tiendas);
                 $total_tiendas_aliado = ($res_count_tiendas) ? mysqli_fetch_assoc($res_count_tiendas)['total'] : 0;
                 // Contar cuentas bancarias de este aliado

@@ -827,19 +827,19 @@ while($categoria = mysqli_fetch_assoc($consulta_categorias)) {
 $contador = 0;
 
 // Construir consulta según filtros
-$sql_producto = "SELECT cod_producto, cod_producto_barra, nombre_producto, und_producto, precio_venta_producto, descripcion_producto, 
-    precio_venta_producto2, url_img_min_producto, url_img_orig_producto, nombre_promocion, nombre_promocion_ing, 
-    cod_categoria, cod_estado, cod_tienda FROM tbl15_producto WHERE (cod_estado = '1')";
+$sql_producto = "SELECT p.cod_producto, p.cod_producto_barra, p.nombre_producto, p.und_producto, p.precio_venta_producto, p.descripcion_producto, 
+    p.precio_venta_producto2, p.url_img_min_producto, p.url_img_orig_producto, p.nombre_promocion, p.nombre_promocion_ing, 
+    p.cod_categoria, p.cod_estado, p.cod_tienda FROM tbl15_producto p INNER JOIN tbl15_tienda t ON p.cod_tienda = t.cod_tienda WHERE p.cod_estado = '1' AND t.cod_estado != '0'";
 
 // Filtro por tienda (si viene por GET)
 if (!empty($cod_tienda_filtro)) {
-    $sql_producto .= " AND (cod_tienda = '$cod_tienda_filtro')";
+    $sql_producto .= " AND (p.cod_tienda = '$cod_tienda_filtro')";
 }
 
 // Filtro por categoría
-if (isset($_GET['cod_categoria']) && $_GET['cod_categoria'] != '') { $cod_categoria = intval($_GET['cod_categoria']); $sql_producto .= " AND (cod_categoria = '$cod_categoria')"; }
+if (isset($_GET['cod_categoria']) && $_GET['cod_categoria'] != '') { $cod_categoria = intval($_GET['cod_categoria']); $sql_producto .= " AND (p.cod_categoria = '$cod_categoria')"; }
 // Filtro por búsqueda
-if (isset($_GET['buscador']) && trim($_GET['buscador']) != '') { $buscador_get = mysqli_real_escape_string($conectar, trim($_GET['buscador'])); $sql_producto .= " AND (nombre_producto LIKE '%$buscador_get%' OR descripcion_producto LIKE '%$buscador_get%' OR cod_producto_barra LIKE '%$buscador_get%')"; }
+if (isset($_GET['buscador']) && trim($_GET['buscador']) != '') { $buscador_get = mysqli_real_escape_string($conectar, trim($_GET['buscador'])); $sql_producto .= " AND (p.nombre_producto LIKE '%$buscador_get%' OR p.descripcion_producto LIKE '%$buscador_get%' OR p.cod_producto_barra LIKE '%$buscador_get%')"; }
 $sql_producto .= " ORDER BY nombre_producto DESC";
 // Si no hay filtros, limitar resultados
 if (!isset($_GET['cod_categoria']) && (!isset($_GET['buscador']) || trim($_GET['buscador']) == '')) { $sql_producto .= " LIMIT 50"; }

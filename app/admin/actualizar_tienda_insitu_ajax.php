@@ -31,7 +31,7 @@ if (empty($correo_tercero)) { echo json_encode(['success' => false, 'mensaje' =>
 if (empty($cod_departamento)) { echo json_encode(['success' => false, 'mensaje' => 'El departamento es requerido']); exit(); }
 if (empty($cod_municipio)) { echo json_encode(['success' => false, 'mensaje' => 'El municipio es requerido']); exit(); }
 // Verificar que la tienda existe
-$sql_verif = "SELECT cod_tienda, cod_aliado_estrategico FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda'";
+$sql_verif = "SELECT cod_tienda, cod_aliado_estrategico FROM tbl15_tienda WHERE cod_tienda = '$cod_tienda' AND cod_estado != '0'";
 $exec_verif = mysqli_query($conectar, $sql_verif) or die(mysqli_error($conectar));
 if (mysqli_num_rows($exec_verif) == 0) { echo json_encode(['success' => false, 'mensaje' => 'Tienda no encontrada']); exit(); }
 // Actualizar los datos de la tienda

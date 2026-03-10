@@ -358,12 +358,12 @@ if (isset($_POST['nombre_tipo_origen_simulacion'])) {
 		nombre_tipo_identificacion, identificacion_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, 
 		fecha_nac_tercero, fecha_expedicion_tercero, telefono1_tercero, correo_tercero, direccion_tercero, nombre_estado_civil, fecha_creacion, 
 		cod_administrador, cod_estado_cliente, direccion_contacto1, tel_contacto1, cod_seguridad, nombres_apellidos_tercero, 
-		cod_estado_acepta_tratamiento_datos, cod_estado_acepta_terminos_condiciones) 
+		cod_estado_acepta_tratamiento_datos, cod_estado_acepta_terminos_condiciones, cod_intermediario_credito) 
 		VALUES ('$cod_tercero', '$nombre_tipo_tercero', '$nombre_tipo_tercero_modulo_creacion', '$cod_producto', '$valor_credito', '$cod_entidad_crediticia', '$cod_tipo_cobro', '$cod_meses_credito', 
 		'$nombre_tipo_identificacion', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$nombre2_tercero'), UPPER('$apellido1_tercero'), UPPER('$apellido2_tercero'), 
 		'$fecha_nac_tercero', '$fecha_expedicion_tercero', '$telefono1_tercero', '$correo_tercero', '$direccion_tercero', '$nombre_estado_civil', '$fecha_creacion', 
 		'$cod_administrador', '$cod_estado_cliente', '$direccion_contacto1', '$tel_contacto1', '$cod_seguridad', UPPER('$nombres_apellidos_tercero'),
-		'$cod_estado_acepta_tratamiento_datos', '$cod_estado_acepta_terminos_condiciones')";
+		'$cod_estado_acepta_tratamiento_datos', '$cod_estado_acepta_terminos_condiciones', '1')";
 		$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
     }
 	//---------------------------------------------------------------------------------------------------------------------------------//
@@ -373,14 +373,14 @@ if (isset($_POST['nombre_tipo_origen_simulacion'])) {
 	monto_cuota_interes, nombre_tipo_cobro, identificacion_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, fecha_nac_tercero, telefono1_tercero, 
 	correo_tercero, direccion_tercero, total_precio_compra, total_precio_venta, cod_entidad_crediticia, cod_tienda, cod_administrador_revisor, 
 	cod_administrador_lider, cod_administrador_coordinador, cod_administrador_asesor, cod_administrador_aliado_estrategico, nombres_apellidos_tercero, 
-	fecha_modificacion, cod_estado_acepta_tratamiento_datos, cod_estado_acepta_terminos_condiciones) 
+	fecha_modificacion, cod_estado_acepta_tratamiento_datos, cod_estado_acepta_terminos_condiciones, cod_intermediario_credito) 
 	VALUES ('$cod_info_factura_venta', '$nombre_estado_factura', '$fecha_ymdhis', '$cuenta', '$cod_estado_factura', '$cod_caja_virtual', '$fecha_dia', '$fecha_mes', 
 	'$fecha_anyo', '$anyo', '$fecha_hora', '$cod_tipo_pago', '$cod_tipo_forma_pago', '$cod_administrador', '$nombre_tipo_factura', '$nombre_tipo_moneda', '$cod_tercero', '$cod_base_caja', '$fecha_creacion', 
 	'$cod_resolucion_facturacion', '$monto_deuda', '$monto_deuda_sin_interes', '$subtotal', '$subtotal_sin_interes', '$numero_cuota', '$monto_cuota', '$interes_ptj', '$monto_deuda_mas_interes', 
 	'$monto_cuota_interes', '$nombre_tipo_cobro', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$nombre2_tercero'), UPPER('$apellido1_tercero'), UPPER('$apellido2_tercero'), '$fecha_nac_tercero', '$telefono1_tercero', 
 	'$correo_tercero', '$direccion_tercero', '$total_precio_compra', '$total_precio_venta', '$cod_entidad_crediticia', '$cod_tienda', '$cod_administrador_revisor', 
 	'$cod_administrador_lider', '$cod_administrador_coordinador', '$cod_administrador_asesor', '$cod_administrador_aliado_estrategico', UPPER('$nombres_apellidos_tercero'),
-	'$fecha_modificacion', '$cod_estado_acepta_tratamiento_datos', '$cod_estado_acepta_terminos_condiciones')";
+	'$fecha_modificacion', '$cod_estado_acepta_tratamiento_datos', '$cod_estado_acepta_terminos_condiciones', '1')";
 	$exec_data = mysqli_query($conectar, $sql_data) or die(mysqli_error($conectar));
 
     if (mysqli_affected_rows($conectar) > 0) { $afectado = "SI"; } else { $afectado = "NO"; }
