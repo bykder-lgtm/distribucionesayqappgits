@@ -62,10 +62,9 @@ $total_firmados = ($res_firmados) ? mysqli_fetch_assoc($res_firmados)['total'] :
 
 // Conteo documentos (filtrado por aliados con al menos un documento)
 $sql_docs = "SELECT COUNT(*) as total FROM tbl15_administrador a $where AND (
-    (url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) OR 
-    (url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) OR 
-    (url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL)
-)";
+(url_documentacion_rut_aliado != '' AND url_documentacion_rut_aliado IS NOT NULL) OR 
+(url_documentacion_camaracomercio_aliado != '' AND url_documentacion_camaracomercio_aliado IS NOT NULL) OR 
+(url_documentacion_cedula_aliado != '' AND url_documentacion_cedula_aliado IS NOT NULL))";
 $res_docs = mysqli_query($conectar, $sql_docs);
 $total_docs_cargados = ($res_docs) ? mysqli_fetch_assoc($res_docs)['total'] : 0;
 

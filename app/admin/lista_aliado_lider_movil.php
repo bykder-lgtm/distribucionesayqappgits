@@ -6654,23 +6654,31 @@ function gestionarDescargaEmailDoc(cod_aliado, nombre_aliado) {
         success: function(response) {
             Swal.close();
             if (response.success) {
+                // Usamos diseño de tarjetas para una mejor experiencia táctil en móvil
                 Swal.fire({
-                    title: '¡ZIP Generado!', text: '¿Qué deseas hacer con los documentos de ' + nombre_aliado + '?', icon: 'success', showCancelButton: true, showDenyButton: true, confirmButtonText: '<i class="fa-solid fa-download"></i> Descargar', denyButtonText: '<i class="fa-solid fa-envelope"></i> Enviar por Correo', cancelButtonText: 'Cerrar', confirmButtonColor: '#3b82f6', denyButtonColor: '#8b5cf6', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Descarga directa sin navegar
-                        const link = document.createElement('a');
-                        link.href = '../' + response.zip_path;
-                        link.setAttribute('download', response.zip_name);
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        // Notificar que la descarga inició sin cerrar el modal principal
-                        Swal.fire({ icon: 'success', title: 'Descarga Iniciada', text: 'El archivo se está descargando.', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-                    } else if (result.isDenied) {
-                        // Solicitar correo para enviar
-                        solicitarCorreoEnvio(response.zip_path, nombre_aliado);
-                    }
+                    title: '¡ZIP Generado!',
+                    html: `
+                        <p style="margin-bottom: 1.5rem; font-size: 0.9rem;">¿Qué deseas hacer con los documentos de <b>${nombre_aliado}</b>?</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-top: 0.5rem;">
+                            <div onclick="Swal.close(); descargarArchivoZIP('../${response.zip_path}', '${response.zip_name}')" style="cursor: pointer; padding: 1.25rem 0.5rem; background: rgba(59, 130, 246, 0.1); border: 2px solid #3b82f6; border-radius: 12px; transition: all 0.3s; text-align: center;">
+                                <i class="fa-solid fa-file-zipper" style="font-size: 1.8rem; color: #3b82f6; margin-bottom: 0.5rem;"></i>
+                                <div style="font-weight: bold; color: white; font-size: 0.8rem;">DESCARGAR</div>
+                                <div style="font-size: 0.65rem; color: #3b82f6; margin-top: 0.25rem;">Guardar ZIP</div>
+                            </div>
+                            <div onclick="Swal.close(); solicitarCorreoEnvio('${response.zip_path}', '${nombre_aliado}')" style="cursor: pointer; padding: 1.25rem 0.5rem; background: rgba(139, 92, 246, 0.1); border: 2px solid #8b5cf6; border-radius: 12px; transition: all 0.3s; text-align: center;">
+                                <i class="fa-solid fa-envelope" style="font-size: 1.8rem; color: #8b5cf6; margin-bottom: 0.5rem;"></i>
+                                <div style="font-weight: bold; color: white; font-size: 0.8rem;">ENVIAR EMAIL</div>
+                                <div style="font-size: 0.65rem; color: #8b5cf6; margin-top: 0.25rem;">Por correo</div>
+                            </div>
+                        </div>
+                    `,
+                    showConfirmButton: false,
+                    showCancelButton: true,
+                    cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
+                    confirmButtonColor: '#3b82f6',
+                    cancelButtonColor: '#4b5563',
+                    background: '#1a1f2e', color: 'white', 
+                    customClass: { container: 'swal-high-zindex' }
                 });
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
@@ -6681,6 +6689,17 @@ function gestionarDescargaEmailDoc(cod_aliado, nombre_aliado) {
             Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión al generar el ZIP', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
+}
+
+function descargarArchivoZIP(url, name) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', name);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    // Notificación de éxito
+    Swal.fire({ icon: 'success', title: '¡Descarga Iniciada!', text: 'El archivo se está descargando en tu dispositivo.', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 }
 
 function solicitarCorreoEnvio(zipPath, nombreAliado) {
