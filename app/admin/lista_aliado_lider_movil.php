@@ -400,11 +400,11 @@ body {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
     border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 16px;
-    padding: 1rem;
+    padding: 1.25rem;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
-    min-height: 400px; /* Ajustado para el nuevo layout de 6 filas */
+    min-height: auto; /* Dejar que crezca con el contenido */
 }
 
 @media (max-width: 768px) {
@@ -466,12 +466,18 @@ body {
 .ally-details {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.2rem; /* Espaciado entre items reducido */
-    margin-bottom: 0.5rem;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
     border-top: 1px solid rgba(255,255,255,0.05);
-    padding-top: 0.5rem;
+    padding-top: 0.75rem;
     flex: 1;
-    min-height: 160px; /* Incrementado para 6 filas */
+}
+
+@media (max-width: 500px) {
+    .ally-details {
+        grid-template-columns: 1fr; /* Una sola columna en móvil para evitar texto cortado */
+        gap: 0.4rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -591,16 +597,38 @@ body {
 
 .ally-actions {
     display: flex;
+    flex-wrap: wrap; /* Permitir que los botones bajen si no caben */
     gap: 0.5rem;
-    margin-top: 0.4rem; /* Reducido */
-    padding-top: 0.4rem; /* Reducido */
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
     border-top: 1px solid rgba(255,255,255,0.05);
 }
 
+.action-btn {
+    flex: 1;
+    min-width: 45%; /* Asegura máximo 2 por fila en móvil si wrap ocurre */
+    padding: 0.5rem 0.25rem;
+    border-radius: 10px;
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
 .action-btn.archive {
-    background: rgba(239, 68, 68, 0.1);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.action-btn.archive:hover {
+    background: #ef4444;
+    color: white;
 }
 
 /* Status Badges for Modal Docs */
@@ -1304,13 +1332,13 @@ select[id^="edit_municipio_tienda_"] option {
     .modal-content {
         max-width: 100%;
         margin: 0;
-        border-radius: 16px 16px 0 0;
-        max-height: 95vh;
+        border-radius: 20px 20px 0 0;
+        max-height: 96vh;
     }
     
     .form-row {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 0.75rem;
+        grid-template-columns: 1fr !important; /* Una sola columna en móvil para formularios */
+        gap: 0.5rem;
     }
     
     .form-row .form-group {

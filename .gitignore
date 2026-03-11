@@ -11,3 +11,6 @@ temp/
 # Si usas dependencias (ej: composer o npm)
 vendor/
 node_modules/
+# Directorios de archivos generados por la app
+app/archivador/
+*.zip
