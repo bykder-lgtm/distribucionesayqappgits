@@ -164,6 +164,22 @@ $nombre_empresa = $datos_empresa['nombre'];
         .leaflet-tooltip-top.marker-tooltip::before { border-top-color: var(--theme-color); }
         .tooltip-name { font-weight: 700; color: var(--theme-color); display: block; margin-bottom: 2px; }
         .tooltip-address { font-size: 0.65rem; opacity: 0.9; }
+
+        /* Selector de Capas */
+        .layer-control {
+            position: absolute; top: 80px; right: 10px;
+            display: flex; flex-direction: column; gap: 8px; z-index: 1000;
+        }
+        .layer-btn {
+            width: 38px; height: 38px; background: rgba(26, 31, 46, 0.9);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+            color: white; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; transition: all 0.3s; backdrop-filter: blur(5px);
+            font-size: 1rem;
+        }
+        .layer-btn.active { background: var(--theme-color); border-color: white; box-shadow: 0 0 10px var(--theme-color); }
+        .layer-btn:hover { transform: scale(1.1); background: rgba(255,255,255,0.1); }
+        .layer-btn.active:hover { background: var(--theme-color); }
     </style>
 </head>
 <body>
@@ -188,6 +204,12 @@ $nombre_empresa = $datos_empresa['nombre'];
 
     <div id="map"></div>
 
+    <div class="layer-control">
+        <button onclick="changeLayer('dark')" class="layer-btn active" id="btn-dark" title="Modo Oscuro"><i class="fa-solid fa-moon"></i></button>
+        <button onclick="changeLayer('light')" class="layer-btn" id="btn-light" title="Modo Claro"><i class="fa-solid fa-sun"></i></button>
+        <button onclick="changeLayer('sat')" class="layer-btn" id="btn-sat" title="Satélite"><i class="fa-solid fa-satellite"></i></button>
+    </div>
+
     <div class="map-stats">
         <div class="stat-item"><span class="stat-value" id="count-total">0</span><span class="stat-label">Tiendas</span></div>
         <div class="stat-item"><span class="stat-value" id="count-gps">0</span><span class="stat-label">Con GPS</span></div>
@@ -201,6 +223,13 @@ $nombre_empresa = $datos_empresa['nombre'];
         var markers = [];
         var themeColor = '<?php echo $theme_color; ?>';
 
+        var baseLayers = {
+            'dark': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }),
+            'light': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }),
+            'sat': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Esri' })
+        };
+        var currentLayer = 'dark';
+
         $(document).ready(function() {
             initMap();
             loadStores();
@@ -208,8 +237,16 @@ $nombre_empresa = $datos_empresa['nombre'];
 
         function initMap() {
             map = L.map('map', { zoomControl: false, attributionControl: false }).setView([5.0689, -75.5174], 13);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
-            L.control.zoom({ position: 'topright' }).addTo(map);
+            baseLayers[currentLayer].addTo(map);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+        }
+
+        function changeLayer(type) {
+            map.removeLayer(baseLayers[currentLayer]);
+            baseLayers[type].addTo(map);
+            $('.layer-btn').removeClass('active');
+            $('#btn-' + type).addClass('active');
+            currentLayer = type;
         }
 
         function loadStores() {
