@@ -41,15 +41,16 @@ try {
             // Procesar Cédula
             $cedula_field = isset($_FILES['cedula_file']) && $_FILES['cedula_file']['error'] == 0 ? 'cedula_file' : '';
             if (!empty($cedula_field)) {
-                $archivo                                                      = $_FILES[$cedula_field];
-                $extension                                                    = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-                if (!in_array($extension, $permitidos)) { throw new Exception('Formato de archivo Cédula no permitido'); }
-                if ($archivo['size'] > 5 * 1024 * 1024) { throw new Exception('El archivo Cédula excede el tamaño máximo de 5MB'); }
-                $nombre_archivo                                               = 'cedula_' . time() . '_' . uniqid() . '.' . $extension;
-                $url_documentacion_cedula_aliado                              = $upload_dir . $nombre_archivo;
-                if (move_uploaded_file($archivo['tmp_name'], $url_documentacion_cedula_aliado)) {
-                    $updates[]                                                = "url_documentacion_cedula_aliado = '" . mysqli_real_escape_string($conectar, $url_documentacion_cedula_aliado) . "'";
-                    $mensajes[]                                               = 'Cédula';
+                $fUpl = $_FILES[$cedula_field];
+                $fExt = strtolower(pathinfo($fUpl['name'], PATHINFO_EXTENSION));
+                if (!in_array($fExt, $permitidos)) { throw new Exception('Formato de archivo Cédula no permitido'); }
+                if ($fUpl['size'] > 5 * 1024 * 1024) { throw new Exception('El archivo Cédula excede el tamaño máximo de 5MB'); }
+                $fPathName = 'cedula_' . time() . '_' . uniqid() . '.' . $fExt;
+                $fDestUrl = $upload_dir . $fPathName;
+                $fTmpSrc = $fUpl['tmp_name'];
+                if (move_uploaded_file($fTmpSrc, $fDestUrl)) {
+                    $updates[] = "url_documentacion_cedula_aliado = '" . mysqli_real_escape_string($conectar, $fDestUrl) . "'";
+                    $mensajes[] = 'Cédula';
                 } else {
                     throw new Exception('Error al subir el archivo Cédula');
                 }
@@ -57,15 +58,16 @@ try {
             // Procesar RUT
             $rut_field = isset($_FILES['rut_file']) && $_FILES['rut_file']['error'] == 0 ? 'rut_file' : '';
             if (!empty($rut_field)) {
-                $archivo                                                      = $_FILES[$rut_field];
-                $extension                                                    = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-                if (!in_array($extension, $permitidos)) { throw new Exception('Formato de archivo RUT no permitido'); }
-                if ($archivo['size'] > 5 * 1024 * 1024) { throw new Exception('El archivo RUT excede el tamaño máximo de 5MB'); }
-                $nombre_archivo                                               = 'rut_' . time() . '_' . uniqid() . '.' . $extension;
-                $url_documentacion_cedula_aliado                              = $upload_dir . $nombre_archivo;
-                if (move_uploaded_file($archivo['tmp_name'], $url_documentacion_cedula_aliado)) {
-                    $updates[]                                                = "url_documentacion_rut_aliado = '" . mysqli_real_escape_string($conectar, $url_documentacion_cedula_aliado) . "'";
-                    $mensajes[]                                               = 'RUT';
+                $fUpl = $_FILES[$rut_field];
+                $fExt = strtolower(pathinfo($fUpl['name'], PATHINFO_EXTENSION));
+                if (!in_array($fExt, $permitidos)) { throw new Exception('Formato de archivo RUT no permitido'); }
+                if ($fUpl['size'] > 5 * 1024 * 1024) { throw new Exception('El archivo RUT excede el tamaño máximo de 5MB'); }
+                $fPathName = 'rut_' . time() . '_' . uniqid() . '.' . $fExt;
+                $fDestUrl = $upload_dir . $fPathName;
+                $fTmpSrc = $fUpl['tmp_name'];
+                if (move_uploaded_file($fTmpSrc, $fDestUrl)) {
+                    $updates[] = "url_documentacion_rut_aliado = '" . mysqli_real_escape_string($conectar, $fDestUrl) . "'";
+                    $mensajes[] = 'RUT';
                 } else {
                     throw new Exception('Error al subir el archivo RUT');
                 }
@@ -73,15 +75,16 @@ try {
             // Procesar Cámara de Comercio
             $camara_field = isset($_FILES['camara_file']) && $_FILES['camara_file']['error'] == 0 ? 'camara_file' : '';
             if (!empty($camara_field)) {
-                $archivo                                                      = $_FILES[$camara_field];
-                $extension                                                    = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-                if (!in_array($extension, $permitidos)) { throw new Exception('Formato de archivo Cámara de Comercio no permitido'); }
-                if ($archivo['size'] > 10 * 1024 * 1024) { throw new Exception('El archivo Cámara de Comercio excede el tamaño máximo de 5MB'); }
-                $nombre_archivo                                               = 'camara_comercio_' . time() . '_' . uniqid() . '.' . $extension;
-                $url_documentacion_cedula_aliado                              = $upload_dir . $nombre_archivo;
-                if (move_uploaded_file($archivo['tmp_name'], $url_documentacion_cedula_aliado)) {
-                    $updates[]                                                = "url_documentacion_camaracomercio_aliado = '" . mysqli_real_escape_string($conectar, $url_documentacion_cedula_aliado) . "'";
-                    $mensajes[]                                               = 'Cámara de Comercio';
+                $fUpl = $_FILES[$camara_field];
+                $fExt = strtolower(pathinfo($fUpl['name'], PATHINFO_EXTENSION));
+                if (!in_array($fExt, $permitidos)) { throw new Exception('Formato de archivo Cámara de Comercio no permitido'); }
+                if ($fUpl['size'] > 10 * 1024 * 1024) { throw new Exception('El archivo Cámara de Comercio excede el tamaño máximo de 5MB'); }
+                $fPathName = 'camara_comercio_' . time() . '_' . uniqid() . '.' . $fExt;
+                $fDestUrl = $upload_dir . $fPathName;
+                $fTmpSrc = $fUpl['tmp_name'];
+                if (move_uploaded_file($fTmpSrc, $fDestUrl)) {
+                    $updates[] = "url_documentacion_camaracomercio_aliado = '" . mysqli_real_escape_string($conectar, $fDestUrl) . "'";
+                    $mensajes[] = 'Cámara de Comercio';
                 } else {
                     throw new Exception('Error al subir el archivo Cámara de Comercio');
                 }
@@ -138,13 +141,14 @@ try {
             $url_certificado_banco = '';
             $certificado_field = isset($_FILES['certificado_banco']) && $_FILES['certificado_banco']['error'] == 0 ? 'certificado_banco' : '';
             if (!empty($certificado_field)) {
-                $archivo = $_FILES[$certificado_field];
-                $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-                if (!in_array($extension, $permitidos)) { throw new Exception('Formato de certificado bancario no permitido'); }
-                if ($archivo['size'] > 5 * 1024 * 1024) { throw new Exception('El certificado bancario excede el tamaño máximo de 5MB'); }
-                $nombre_archivo                                           = 'certificado_banco_' . time() . '_' . uniqid() . '.' . $extension;
-                $url_documentacion_cedula_aliado                                            = $upload_dir . $nombre_archivo;
-                if (move_uploaded_file($archivo['tmp_name'], $url_documentacion_cedula_aliado)) { $url_certificado_banco = $url_documentacion_cedula_aliado; } else { throw new Exception('Error al subir el certificado bancario'); }
+                $fUpl = $_FILES[$certificado_field];
+                $fExt = strtolower(pathinfo($fUpl['name'], PATHINFO_EXTENSION));
+                if (!in_array($fExt, $permitidos)) { throw new Exception('Formato de certificado bancario no permitido'); }
+                if ($fUpl['size'] > 5 * 1024 * 1024) { throw new Exception('El certificado bancario excede el tamaño máximo de 5MB'); }
+                $fPathName = 'certificado_banco_' . time() . '_' . uniqid() . '.' . $fExt;
+                $fDestUrl = $upload_dir . $fPathName;
+                $fTmpSrc = $fUpl['tmp_name'];
+                if (move_uploaded_file($fTmpSrc, $fDestUrl)) { $url_certificado_banco = $fDestUrl; } else { throw new Exception('Error al subir el certificado bancario'); }
             }
             // Solo procesar cuenta si se llenaron los campos requeridos
             if (!empty($nombre_banco_cuenta) && !empty($numero_banco_cuenta) && $cod_tipo_cuenta_banco > 0) {
@@ -175,16 +179,16 @@ try {
             // Procesar RUT - soporta ambos nombres de campo
             $rut_field                                             = isset($_FILES['url_documentacion_rut_aliado']) ? 'url_documentacion_rut_aliado' : (isset($_FILES['rut_file']) ? 'rut_file' : '');
             if (!empty($rut_field) && $_FILES[$rut_field]['error'] == 0) {
-                $archivo                                           = $_FILES[$rut_field];
-                $extension                                         = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+                $fUp = $_FILES[$rut_field];
+                $fEx = strtolower(pathinfo($fUp['name'], PATHINFO_EXTENSION));
                 
-                if (!in_array($extension, $permitidos)) { throw new Exception('Formato de archivo RUT no permitido'); }
-                if ($archivo['size'] > 5 * 1024 * 1024) { throw new Exception('El archivo RUT excede el tamaño máximo de 5MB'); }
-                $nombre_archivo                                       = 'rut_' . time() . '_' . uniqid() . '.' . $extension;
-                $url_documentacion_cedula_aliado                                        = $upload_dir . $nombre_archivo;
-                if (move_uploaded_file($archivo['tmp_name'], $url_documentacion_cedula_aliado)) {
-                    $url_rut                                          = $url_documentacion_cedula_aliado;
-                    $updates[]                                        = "url_documentacion_rut_aliado = '" . mysqli_real_escape_string($conectar, $url_rut) . "'";
+                if (!in_array($fEx, $permitidos)) { throw new Exception('Formato de archivo RUT no permitido'); }
+                if ($fUp['size'] > 5 * 1024 * 1024) { throw new Exception('El archivo RUT excede el tamaño máximo de 5MB'); }
+                $fFn = 'rut_' . time() . '_' . uniqid() . '.' . $fEx;
+                $fPath = $upload_dir . $fFn;
+                $fTmp = $fUp['tmp_name'];
+                if (move_uploaded_file($fTmp, $fPath)) {
+                    $updates[] = "url_documentacion_rut_aliado = '" . mysqli_real_escape_string($conectar, $fPath) . "'";
                 } else {
                     throw new Exception('Error al subir el archivo RUT');
                 }
@@ -192,16 +196,16 @@ try {
             // Procesar Cámara de Comercio - soporta ambos nombres de campo
             $camara_field = isset($_FILES['url_documentacion_camaracomercio_aliado']) ? 'url_documentacion_camaracomercio_aliado' : (isset($_FILES['camara_file']) ? 'camara_file' : '');
             if (!empty($camara_field) && $_FILES[$camara_field]['error'] == 0) {
-                $archivo                                            = $_FILES[$camara_field];
-                $extension                                          = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+                $fUp = $_FILES[$camara_field];
+                $fEx = strtolower(pathinfo($fUp['name'], PATHINFO_EXTENSION));
                 
-                if (!in_array($extension, $permitidos)) { throw new Exception('Formato de archivo Cámara de Comercio no permitido'); }
-                if ($archivo['size'] > 10 * 1024 * 1024) { throw new Exception('El archivo Cámara de Comercio excede el tamaño máximo de 5MB'); }
-                $nombre_archivo                                       = 'camara_comercio_' . time() . '_' . uniqid() . '.' . $extension;
-                $url_documentacion_cedula_aliado                                        = $upload_dir . $nombre_archivo;
-                if (move_uploaded_file($archivo['tmp_name'], $url_documentacion_cedula_aliado)) {
-                    $url_camara                                       = $url_documentacion_cedula_aliado;
-                    $updates[]                                        = "url_documentacion_camaracomercio_aliado = '" . mysqli_real_escape_string($conectar, $url_camara) . "'";
+                if (!in_array($fEx, $permitidos)) { throw new Exception('Formato de archivo Cámara de Comercio no permitido'); }
+                if ($fUp['size'] > 10 * 1024 * 1024) { throw new Exception('El archivo Cámara de Comercio excede el tamaño máximo de 5MB'); }
+                $fFn = 'camara_comercio_' . time() . '_' . uniqid() . '.' . $fEx;
+                $fPath = $upload_dir . $fFn;
+                $fTmp = $fUp['tmp_name'];
+                if (move_uploaded_file($fTmp, $fPath)) {
+                    $updates[] = "url_documentacion_camaracomercio_aliado = '" . mysqli_real_escape_string($conectar, $fPath) . "'";
                 } else {
                     throw new Exception('Error al subir el archivo Cámara de Comercio');
                 }
@@ -209,15 +213,15 @@ try {
             // Procesar Cédula - soporta ambos nombres de campo
             $cedula_field = isset($_FILES['url_documentacion_cedula_aliado']) ? 'url_documentacion_cedula_aliado' : (isset($_FILES['cedula_file']) ? 'cedula_file' : '');
             if (!empty($cedula_field) && $_FILES[$cedula_field]['error'] == 0) {
-                $archivo                                           = $_FILES[$cedula_field];
-                $extension                                         = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-                if (!in_array($extension, $permitidos)) { throw new Exception('Formato de archivo Cédula no permitido'); }
-                if ($archivo['size'] > 5 * 1024 * 1024) { throw new Exception('El archivo Cédula excede el tamaño máximo de 5MB'); }
-                $nombre_archivo                                    = 'cedula_' . time() . '_' . uniqid() . '.' . $extension;
-                $url_documentacion_cedula_aliado                   = $upload_dir . $nombre_archivo;
-                if (move_uploaded_file($archivo['tmp_name'], $url_documentacion_cedula_aliado)) {
-                    $url_cedula                                       = $url_documentacion_cedula_aliado;
-                    $updates[]                                        = "url_documentacion_cedula_aliado = '" . mysqli_real_escape_string($conectar, $url_cedula) . "'";
+                $fUp = $_FILES[$cedula_field];
+                $fEx = strtolower(pathinfo($fUp['name'], PATHINFO_EXTENSION));
+                if (!in_array($fEx, $permitidos)) { throw new Exception('Formato de archivo Cédula no permitido'); }
+                if ($fUp['size'] > 5 * 1024 * 1024) { throw new Exception('El archivo Cédula excede el tamaño máximo de 5MB'); }
+                $fFn = 'cedula_' . time() . '_' . uniqid() . '.' . $fEx;
+                $fPath = $upload_dir . $fFn;
+                $fTmp = $fUp['tmp_name'];
+                if (move_uploaded_file($fTmp, $fPath)) {
+                    $updates[] = "url_documentacion_cedula_aliado = '" . mysqli_real_escape_string($conectar, $fPath) . "'";
                 } else {
                     throw new Exception('Error al subir el archivo Cédula');
                 }
@@ -279,14 +283,15 @@ try {
             // Procesar certificado bancario si existe
             $url_certificado = '';
             if (isset($_FILES['certificado_banco']) && $_FILES['certificado_banco']['error'] == 0) {
-                $archivo                                      = $_FILES['certificado_banco'];
-                $extension                                    = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-                $permitidos                                   = ['pdf'];
-                if (!in_array($extension, $permitidos)) { throw new Exception('Formato de certificado no permitido'); }
-                if ($archivo['size'] > 5 * 1024 * 1024) { throw new Exception('El certificado excede el tamaño máximo de 5MB'); }
-                $nombre_archivo                               = 'certificado_banco_' . time() . '_' . uniqid() . '.' . $extension;
-                $url_documentacion_cedula_aliado                                = $upload_dir . $nombre_archivo;
-                if (move_uploaded_file($archivo['tmp_name'], $url_documentacion_cedula_aliado)) { $url_certificado = $url_documentacion_cedula_aliado; } else { throw new Exception('Error al subir el certificado bancario'); }
+                $fUp = $_FILES['certificado_banco'];
+                $fEx = strtolower(pathinfo($fUp['name'], PATHINFO_EXTENSION));
+                $permitidos = ['pdf'];
+                if (!in_array($fEx, $permitidos)) { throw new Exception('Formato de certificado no permitido'); }
+                if ($fUp['size'] > 5 * 1024 * 1024) { throw new Exception('El certificado excede el tamaño máximo de 5MB'); }
+                $fFn = 'certificado_banco_' . time() . '_' . uniqid() . '.' . $fEx;
+                $fPath = $upload_dir . $fFn;
+                $fTm = $fUp['tmp_name'];
+                if (move_uploaded_file($fTm, $fPath)) { $url_certificado = $fPath; } else { throw new Exception('Error al subir el certificado bancario'); }
             }
             // Insertar cuenta bancaria
             $sql_insert = "INSERT INTO tbl15_banco_cuenta (cod_administrador, cod_banco, nombre_banco_cuenta, numero_banco_cuenta, cod_tipo_cuenta_banco, 

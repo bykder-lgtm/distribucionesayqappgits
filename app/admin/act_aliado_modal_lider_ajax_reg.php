@@ -89,22 +89,25 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
             
             foreach ($campos_documentos as $campo) {
                 if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == 0) {
-                    $archivo = $_FILES[$campo];
-                    $nombre_original = $archivo['name'];
-                    $extension = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
-                    $extensiones_permitidas = array('pdf');
+                    $uObj = $_FILES[$campo];
+                    $uNm = $uObj['name'];
+                    $uPts = pathinfo($uNm);
+                    $uEx = isset($uPts['extension']) ? $uPts['extension'] : '';
+                    $uEx = strtolower($uEx);
+                    $uAlw = array('pdf');
                     
-                    if (in_array($extension, $extensiones_permitidas)) {
-                        $directorio = '../archivador/documentacion_aliado/';
-                        if (!is_dir($directorio)) { mkdir($directorio, 0755, true); }
+                    if (in_array($uEx, $uAlw)) {
+                        $uDr = '../archivador/documentacion_aliado/';
+                        if (!is_dir($uDr)) { mkdir($uDr, 0755, true); }
                         
-                        $nombre_archivo = $campo . '_' . $cod_administrador . '_' . time() . '.' . $extension;
-                        $ruta_destino = $directorio . $nombre_archivo;
+                        $uFile = $campo . '_' . $cod_administrador . '_' . time() . '.' . $uEx;
+                        $uTarget = $uDr . $uFile;
+                        $uTmp = $uObj['tmp_name'];
                         
-                        if (move_uploaded_file($archivo['tmp_name'], $ruta_destino)) {
+                        if (move_uploaded_file($uTmp, $uTarget)) {
                             // Si es el primer campo a actualizar, no lleva coma, si no, lleva coma antes
                             if ($docs_para_actualizar) { $sql_update_docs .= ", "; }
-                            $sql_update_docs .= "$campo = '$ruta_destino'";
+                            $sql_update_docs .= "$campo = '$uTarget'";
                             $docs_para_actualizar = true;
                         }
                     }

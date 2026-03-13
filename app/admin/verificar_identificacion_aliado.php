@@ -4,7 +4,7 @@ include_once('../admin/class_php/funcion_cryptor_descryptor_class.php');
 include_once('../evitar_mensaje_error/error.php');
 date_default_timezone_set("America/Bogota");
 include ("../session/funciones_admin.php");
-if (verificar_usuario()){ } else { header("Location:../index.php"); }
+if (verificar_usuario()){ } else { header("Location:../index.php"); exit; }
 
 if(isset($_POST['identificacion']) && !empty($_POST['identificacion'])) {
     $identificacion = mysqli_real_escape_string($conectar, $_POST['identificacion']);

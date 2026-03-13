@@ -15,78 +15,80 @@ $codigoHTML_menu                                                    = '';
 $codigoHTML_menu_total_reg                                          = '';
 $respuesta_ajax                                                     = array();
 // ========== FUNCIÓN PARA PROCESAR ARCHIVOS ==========
-function procesarArchivo($file_key, $directorio, $prefijo = '', $permitidos = null) {
-    if (!isset($_FILES[$file_key]) || $_FILES[$file_key]['error'] != 0) { return ''; }
+function procesarArchivo($fKey, $fDir, $fPrefix = '', $fAllow = null) {
+    if (!isset($_FILES[$fKey]) || $_FILES[$fKey]['error'] != 0) { return ''; }
+    
+    $fData = $_FILES[$fKey];
+    $fName = $fData['name'];
     
     // Validar extensión si se especifican permitidos
-    if ($permitidos !== null) {
-        $extension = strtolower(pathinfo($_FILES[$file_key]['name'], PATHINFO_EXTENSION));
-        if (!in_array($extension, $permitidos)) { return ''; }
+    if ($fAllow !== null) {
+        $fInf = pathinfo($fName);
+        $fExt = isset($fInf['extension']) ? $fInf['extension'] : '';
+        $fExt = strtolower($fExt);
+        if (!in_array($fExt, $fAllow)) { return ''; }
     }
 
-    if (!file_exists($directorio)) { mkdir($directorio, 0777, true); }
-    $nombre_archivo = $prefijo . time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES[$file_key]['name']);
-    $ruta_archivo = $directorio . $nombre_archivo;
-    if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $ruta_archivo)) { return $ruta_archivo; }
+    if (!file_exists($fDir)) { mkdir($fDir, 0777, true); }
+    $fSanitized = preg_replace('/[^a-zA-Z0-9\._-]/', '', $fName);
+    $fStoreName = $fPrefix . time() . '_' . $fSanitized;
+    $fTarget = $fDir . $fStoreName;
+    $fTmpSrc = $fData['tmp_name'];
+    
+    if (move_uploaded_file($fTmpSrc, $fTarget)) { return $fTarget; }
     return '';
 }
 // ========== FUNCIÓN PARA PROCESAR IMÁGENES CON MINIATURA ==========
-function procesarImagen($file_key, $directorio_orig, $directorio_min = null, $ancho_min = 200) {
-    if (!isset($_FILES[$file_key]) || $_FILES[$file_key]['error'] != 0) { return array('orig' => '', 'min' => ''); }
-    if (!file_exists($directorio_orig)) { mkdir($directorio_orig, 0777, true); }
-    if ($directorio_min && !file_exists($directorio_min)) { mkdir($directorio_min, 0777, true); }
+function procesarImagen($imgKey, $origD, $minD = null, $minW = 200) {
+    if (!isset($_FILES[$imgKey]) || $_FILES[$imgKey]['error'] != 0) { return array('orig' => '', 'min' => ''); }
+    $imgData = $_FILES[$imgKey];
     
-    $nombre_archivo                                                 = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES[$file_key]['name']);
-    $ruta_orig                                                      = $directorio_orig . $nombre_archivo;
-    if (!move_uploaded_file($_FILES[$file_key]['tmp_name'], $ruta_orig)) { return array('orig' => '', 'min' => ''); }
-    $ruta_min                                                       = '';
-    if ($directorio_min) {
-        $ruta_min                                                   = $directorio_min . $nombre_archivo;
-        $tipo_imagen                                                = $_FILES[$file_key]['type'];
-        $dimensiones                                                = getimagesize($ruta_orig);
-        if ($dimensiones) {
-            $ancho_orig                                             = $dimensiones[0];
-            $alto_orig                                              = $dimensiones[1];
-            $alto_nuevo                                             = ($alto_orig / $ancho_orig) * $ancho_min;
-            $imagen_nueva                                           = imagecreatetruecolor($ancho_min, $alto_nuevo);
+    if (!file_exists($origD)) { mkdir($origD, 0777, true); }
+    if ($minD && !file_exists($minD)) { mkdir($minD, 0777, true); }
+    
+    $fRawName = $imgData['name'];
+    $fClean = preg_replace('/[^a-zA-Z0-9\._-]/', '', $fRawName);
+    $fSave = time() . '_' . $fClean;
+    $oPath = $origD . $fSave;
+    $tSource = $imgData['tmp_name'];
+    
+    if (!move_uploaded_file($tSource, $oPath)) { return array('orig' => '', 'min' => ''); }
+    
+    $mPath = '';
+    if ($minD) {
+        $mPath = $minD . $fSave;
+        $iType = $imgData['type'];
+        $iSize = getimagesize($oPath);
+        if ($iSize) {
+            $wOrig = $iSize[0];
+            $hOrig = $iSize[1];
+            $hNew  = ($hOrig / $wOrig) * $minW;
+            $canvas = imagecreatetruecolor($minW, $hNew);
             
-            switch ($tipo_imagen) {
-                case 'image/jpeg':
-                    $imagen_orig                                    = imagecreatefromjpeg($ruta_orig);
-                    break;
+            switch ($iType) {
+                case 'image/jpeg': $imgRes = imagecreatefromjpeg($oPath); break;
                 case 'image/png':
-                    $imagen_orig                                    = imagecreatefrompng($ruta_orig);
-                    imagealphablending($imagen_nueva, false);
-                    imagesavealpha($imagen_nueva, true);
+                    $imgRes = imagecreatefrompng($oPath);
+                    imagealphablending($canvas, false);
+                    imagesavealpha($canvas, true);
                     break;
-                case 'image/gif':
-                    $imagen_orig = imagecreatefromgif($ruta_orig);
-                    break;
-                case 'image/webp':
-                    $imagen_orig                                    = imagecreatefromwebp($ruta_orig);
-                    break;
-                default:
-                    $imagen_orig                                    = @imagecreatefromjpeg($ruta_orig);
+                case 'image/gif': $imgRes = imagecreatefromgif($oPath); break;
+                case 'image/webp': $imgRes = imagecreatefromwebp($oPath); break;
+                default: $imgRes = @imagecreatefromjpeg($oPath);
             }
-            if ($imagen_orig) {
-                imagecopyresampled($imagen_nueva, $imagen_orig, 0, 0, 0, 0, $ancho_min, $alto_nuevo, $ancho_orig, $alto_orig);
-                
-                switch ($tipo_imagen) {
-                    case 'image/png':
-                        imagepng($imagen_nueva, $ruta_min);
-                        break;
-                    case 'image/gif':
-                        imagegif($imagen_nueva, $ruta_min);
-                        break;
-                    default:
-                        imagejpeg($imagen_nueva, $ruta_min, 85);
+            if ($imgRes) {
+                imagecopyresampled($canvas, $imgRes, 0, 0, 0, 0, $minW, $hNew, $wOrig, $hOrig);
+                switch ($iType) {
+                    case 'image/png': imagepng($canvas, $mPath); break;
+                    case 'image/gif': imagegif($canvas, $mPath); break;
+                    default: imagejpeg($canvas, $mPath, 85);
                 }
-                imagedestroy($imagen_orig);
-                imagedestroy($imagen_nueva);
+                imagedestroy($imgRes);
+                imagedestroy($canvas);
             }
         }
     }
-    return array('orig' => $ruta_orig, 'min' => $ruta_min);
+    return array('orig' => $oPath, 'min' => $mPath);
 }
 //---------------------------------------------------------------------------------------------------------------------------------//
 // Cambiar validación para requerir solo nombre de tienda y cod_aliado

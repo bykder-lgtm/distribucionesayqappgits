@@ -142,17 +142,20 @@ if (isset($_POST['identificacion_tercero'])) {
                     $url_certificado_banco_cuenta                                   = '';
                     // Procesar certificado bancario si se envió
                     if(isset($_FILES[$certificado_field]) && $_FILES[$certificado_field]['error'] == 0) {
-                        $archivo                                                        = $_FILES[$certificado_field];
-                        $nombre_original                                                = $archivo['name'];
-                        $extension                                                      = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
-                        $extensiones_permitidas                                         = array('pdf');
+                        $fHndl = $_FILES[$certificado_field];
+                        $fName = $fHndl['name'];
+                        $fPrt  = pathinfo($fName);
+                        $fExt  = isset($fPrt['extension']) ? $fPrt['extension'] : '';
+                        $fExt  = strtolower($fExt);
+                        $fAllowed = array('pdf');
 
-                        if(in_array($extension, $extensiones_permitidas)) {
-                            $directorio                                                     = '../archivador/documentacion_tienda/';
-                            if(!is_dir($directorio)) { mkdir($directorio, 0755, true); }
-                            $nombre_archivo                                                 = 'cert_' . $cod_administrador . '_' . $cod_banco . '_' . time() . '.' . $extension;
-                            $ruta_destino                                                   = $directorio . $nombre_archivo;
-                            if(move_uploaded_file($archivo['tmp_name'], $ruta_destino)) { $url_certificado_banco_cuenta = $directorio . $nombre_archivo; }
+                        if(in_array($fExt, $fAllowed)) {
+                            $targetFolder = '../archivador/documentacion_tienda/';
+                            if(!is_dir($targetFolder)) { mkdir($targetFolder, 0755, true); }
+                            $fFinal = 'cert_' . $cod_administrador . '_' . $cod_banco . '_' . time() . '.' . $fExt;
+                            $fDest = $targetFolder . $fFinal;
+                            $tmpFile = $fHndl['tmp_name'];
+                            if(move_uploaded_file($tmpFile, $fDest)) { $url_certificado_banco_cuenta = $fDest; }
                         }
                     }
                     // Obtener nombre del banco
@@ -176,22 +179,25 @@ if (isset($_POST['identificacion_tercero'])) {
             
             foreach ($campos_documentos as $campo) {
                 if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == 0) {
-                    $archivo = $_FILES[$campo];
-                    $nombre_original = $archivo['name'];
-                    $extension = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
-                    $extensiones_permitidas = array('pdf');
+                    $uHandle = $_FILES[$campo];
+                    $uOrig = $uHandle['name'];
+                    $uInf = pathinfo($uOrig);
+                    $uEx = isset($uInf['extension']) ? $uInf['extension'] : '';
+                    $uEx = strtolower($uEx);
+                    $uAll = array('pdf');
                     
-                    if (in_array($extension, $extensiones_permitidas)) {
-                        $directorio = '../archivador/documentacion_aliado/';
-                        if (!is_dir($directorio)) { mkdir($directorio, 0755, true); }
+                    if (in_array($uEx, $uAll)) {
+                        $uFolder = '../archivador/documentacion_aliado/';
+                        if (!is_dir($uFolder)) { mkdir($uFolder, 0755, true); }
                         
-                        $nombre_archivo = $campo . '_' . $cod_administrador . '_' . time() . '.' . $extension;
-                        $ruta_destino = $directorio . $nombre_archivo;
+                        $uName = $campo . '_' . $cod_administrador . '_' . time() . '.' . $uEx;
+                        $uTgt = $uFolder . $uName;
+                        $uTmpLoc = $uHandle['tmp_name'];
                         
-                        if (move_uploaded_file($archivo['tmp_name'], $ruta_destino)) {
+                        if (move_uploaded_file($uTmpLoc, $uTgt)) {
                             // Si es el primer campo a actualizar, no lleva coma, si no, lleva coma antes
                             if ($docs_para_actualizar) { $sql_update_docs .= ", "; }
-                            $sql_update_docs .= "$campo = '$ruta_destino'";
+                            $sql_update_docs .= "$campo = '$uTgt'";
                             $docs_para_actualizar = true;
                         }
                     }

@@ -36,28 +36,41 @@ $cod_municipio = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']
 $cod_tipo_tienda = ($cod_aliado_estrategico == '0' || empty($cod_aliado_estrategico)) ? 1 : 0;
 
 // Funciones para procesar archivos e imágenes
-function procesarArchivo($file_key, $directorio, $permitidos = null) {
+function procesarArchivo($fKey, $fDir, $fAllow = null) {
     global $conectar;
-    if (!isset($_FILES[$file_key]) || $_FILES[$file_key]['error'] != 0) { return null; }
+    if (!isset($_FILES[$fKey]) || $_FILES[$fKey]['error'] != 0) { return null; }
+    
+    $fData = $_FILES[$fKey];
+    $fName = $fData['name'];
 
     // Validar extensión si se especifican permitidos
-    if ($permitidos !== null) {
-        $extension = strtolower(pathinfo($_FILES[$file_key]['name'], PATHINFO_EXTENSION));
-        if (!in_array($extension, $permitidos)) { return null; }
+    if ($fAllow !== null) {
+        $pInf = pathinfo($fName);
+        $fExt = isset($pInf['extension']) ? $pInf['extension'] : '';
+        $fExt = strtolower($fExt);
+        if (!in_array($fExt, $fAllow)) { return null; }
     }
 
-    if (!file_exists($directorio)) { mkdir($directorio, 0777, true); }
-    $nombre_archivo = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES[$file_key]['name']);
-    $ruta_archivo = $directorio . $nombre_archivo;
-    if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $ruta_archivo)) { return $ruta_archivo; }
+    if (!file_exists($fDir)) { mkdir($fDir, 0777, true); }
+    $fSanit = preg_replace('/[^a-zA-Z0-9\._-]/', '', $fName);
+    $fFinal = time() . '_' . $fSanit;
+    $fDest = $fDir . $fFinal;
+    $fTmp = $fData['tmp_name'];
+    
+    if (move_uploaded_file($fTmp, $fDest)) { return $fDest; }
     return null;
 }
-function procesarImagen($file_key, $directorio_orig) {
-    if (!isset($_FILES[$file_key]) || $_FILES[$file_key]['error'] != 0) { return array('orig' => null, 'min' => null); }
-    if (!file_exists($directorio_orig)) { mkdir($directorio_orig, 0777, true); }
-    $nombre_archivo = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES[$file_key]['name']);
-    $ruta_orig = $directorio_orig . $nombre_archivo;
-    if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $ruta_orig)) { return array('orig' => $ruta_orig, 'min' => $ruta_orig); }
+function procesarImagen($imgKey, $origPath) {
+    if (!isset($_FILES[$imgKey]) || $_FILES[$imgKey]['error'] != 0) { return array('orig' => null, 'min' => null); }
+    $imgObj = $_FILES[$imgKey];
+    
+    if (!file_exists($origPath)) { mkdir($origPath, 0777, true); }
+    $iNm = preg_replace('/[^a-zA-Z0-9\._-]/', '', $imgObj['name']);
+    $iSave = time() . '_' . $iNm;
+    $iRuta = $origPath . $iSave;
+    $iTmp = $imgObj['tmp_name'];
+    
+    if (move_uploaded_file($iTmp, $iRuta)) { return array('orig' => $iRuta, 'min' => $iRuta); }
     return array('orig' => null, 'min' => null);
 }
 // Construir SQL UPDATE dinámicamente

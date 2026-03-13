@@ -779,51 +779,56 @@ Chart.defaults.color = 'rgba(255, 255, 255, 0.7)';
 Chart.defaults.borderColor = 'rgba(16, 185, 129, 0.2)';
 
 // Gráfico de tendencia
-const trendCtx = document.getElementById('trendChart').getContext('2d');
-const gradient = trendCtx.createLinearGradient(0, 0, 0, 250);
-gradient.addColorStop(0, 'rgba(16, 185, 129, 0.5)');
-gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+const trendChartEl = document.getElementById('trendChart');
+if (trendChartEl) {
+    const trendCtx = trendChartEl.getContext('2d');
+    const gradient = trendCtx.createLinearGradient(0, 0, 0, 250);
+    gradient.addColorStop(0, 'rgba(16, 185, 129, 0.5)');
+    gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
 
-new Chart(trendCtx, {
-    type: 'line',
-    data: {
-        labels: <?php echo json_encode($tendencia_labels); ?>,
-        datasets: [{
-            label: 'Créditos',
-            data: <?php echo json_encode($tendencia_valores); ?>,
-            borderColor: '#10b981',
-            backgroundColor: gradient,
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: '#10b981',
-            pointBorderColor: '#fff',
-            pointBorderWidth: 2,
-            pointRadius: 5,
-            pointHoverRadius: 7
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false
-            }
+    new Chart(trendCtx, {
+        type: 'line',
+        data: {
+            labels: <?php echo json_encode($tendencia_labels); ?>,
+            datasets: [{
+                label: 'Créditos',
+                data: <?php echo json_encode($tendencia_valores); ?>,
+                borderColor: '#10b981',
+                backgroundColor: gradient,
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                grid: {
-                    color: 'rgba(16, 185, 129, 0.1)'
-                }
-            },
-            x: {
-                grid: {
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
                     display: false
                 }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(16, 185, 129, 0.1)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
             }
-});
+        }
+    });
+}
 </script>
 
 <!-- ====================== SISTEMA DE NOTIFICACIONES ====================== -->

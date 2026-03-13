@@ -83,19 +83,22 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
             
             foreach ($campos_documentos as $campo) {
                 if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] == 0) {
-                    $archivo = $_FILES[$campo];
-                    $nombre_original = $archivo['name'];
-                    $extension = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
-                    $extensiones_permitidas = array('pdf');
+                    $uData = $_FILES[$campo];
+                    $uName = $uData['name'];
+                    $uParts = pathinfo($uName);
+                    $uExt = isset($uParts['extension']) ? $uParts['extension'] : '';
+                    $uExt = strtolower($uExt);
+                    $uAllow = array('pdf');
                     
-                    if (in_array($extension, $extensiones_permitidas)) {
-                        $directorio = '../archivador/documentacion_aliado/';
-                        if (!is_dir($directorio)) { mkdir($directorio, 0755, true); }
-                        $nombre_archivo = $campo . '_' . $cod_administrador . '_' . time() . '.' . $extension;
-                        $ruta_destino = $directorio . $nombre_archivo;
-                        if (move_uploaded_file($archivo['tmp_name'], $ruta_destino)) {
+                    if (in_array($uExt, $uAllow)) {
+                        $uDir = '../archivador/documentacion_aliado/';
+                        if (!is_dir($uDir)) { mkdir($uDir, 0755, true); }
+                        $uFile = $campo . '_' . $cod_administrador . '_' . time() . '.' . $uExt;
+                        $uTarget = $uDir . $uFile;
+                        $uTmp = $uData['tmp_name'];
+                        if (move_uploaded_file($uTmp, $uTarget)) {
                             if ($docs_para_actualizar) { $sql_update_docs .= ", "; }
-                            $sql_update_docs .= "$campo = '$ruta_destino'";
+                            $sql_update_docs .= "$campo = '$uTarget'";
                             $docs_para_actualizar = true;
                         }
                     }

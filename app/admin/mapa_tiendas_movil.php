@@ -53,6 +53,8 @@ $nombre_empresa = $datos_empresa['nombre'];
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     
     <style>
         :root {
@@ -309,7 +311,32 @@ $nombre_empresa = $datos_empresa['nombre'];
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Estilos Tooltip Permanente */
+    .leaflet-tooltip.marker-tooltip {
+        background: rgba(15, 20, 25, 0.85);
+        border: 1px solid var(--theme-color);
+        border-radius: 8px;
+        color: white;
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        backdrop-filter: blur(4px);
+        font-family: 'Inter', sans-serif;
+        text-align: center;
+    }
+    .leaflet-tooltip-top.marker-tooltip::before { border-top-color: var(--theme-color); }
+    .tooltip-name { font-weight: 700; color: var(--theme-color); display: block; margin-bottom: 2px; }
+    .tooltip-address { font-size: 0.65rem; opacity: 0.9; }
+
+    /* Clustering Custom Styles */
+    .marker-cluster-small { background-color: rgba(var(--theme-color-rgb, 139, 92, 246), 0.4) !important; }
+    .marker-cluster-small div { background-color: var(--theme-color) !important; color: white !important; font-weight: 700; }
+    .marker-cluster-medium { background-color: rgba(var(--theme-color-rgb, 124, 58, 237), 0.6) !important; }
+    .marker-cluster-medium div { background-color: var(--theme-color) !important; color: white !important; font-weight: 700; }
+    .marker-cluster-large { background-color: rgba(var(--theme-color-rgb, 109, 40, 217), 0.8) !important; }
+    .marker-cluster-large div { background-color: var(--theme-color) !important; color: white !important; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -330,7 +357,7 @@ $nombre_empresa = $datos_empresa['nombre'];
         </a>
         <div class="header-title">
             <h1>Mapa de Tiendas</h1>
-            <p><?php echo $rol_name; ?> - OpenStreetMap</p>
+            <p><?php echo $rol_name; ?></p>
         </div>
         <div class="header-actions">
             <button onclick="getUserLocation()" class="back-btn">
@@ -355,10 +382,11 @@ $nombre_empresa = $datos_empresa['nombre'];
     <!-- JS -->
     <script src="../js/jquery-3.2.1.min_visitante.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
     <script>
         var map, userMarker;
-        var markers = [];
+        var markerClusterGroup;
         var themeColor = '<?php echo $theme_color; ?>';
 
         $(document).ready(function() {
@@ -382,6 +410,15 @@ $nombre_empresa = $datos_empresa['nombre'];
             L.control.zoom({
                 position: 'topright'
             }).addTo(map);
+
+            // Inicializar el grupo de clusters
+            markerClusterGroup = L.markerClusterGroup({
+                spiderfyOnMaxZoom: true,
+                showCoverageOnHover: false,
+                zoomToBoundsOnClick: true,
+                maxClusterRadius: 80
+            });
+            map.addLayer(markerClusterGroup);
         }
 
         function loadStores() {
@@ -403,45 +440,32 @@ $nombre_empresa = $datos_empresa['nombre'];
         }
 
         function renderMarkers(tiendas) {
-            // Limpiar marcadores previos
-            markers.forEach(function(m) { map.removeLayer(m); });
-            markers = [];
-
+            markerClusterGroup.clearLayers();
             var latLngs = [];
+            var tooltipDirections = ['top', 'bottom', 'right', 'left'];
 
-            tiendas.forEach(function(tienda) {
+            tiendas.forEach(function(tienda, index) {
                 var lat = parseFloat(tienda.lat);
                 var lng = parseFloat(tienda.lng);
                 
                 if (!isNaN(lat) && !isNaN(lng)) {
-                    var icon = L.divIcon({
-                        className: 'custom-marker',
-                        html: '<div class="marker-pin"></div>',
-                        iconSize: [30, 30],
-                        iconAnchor: [15, 30]
+                    var icon = L.divIcon({ 
+                        className: 'custom-marker', 
+                        html: '<div class="marker-pin"></div>', 
+                        iconSize: [30, 30], 
+                        iconAnchor: [15, 30] 
                     });
 
+                    // Escapar comillas simples para el JS inline si fuera necesario
+                    var nombreEscapado = tienda.nombre.replace(/'/g, "\\'");
+
                     var popupContent = `
-                        <div class="popup-header">
-                            <h3>${tienda.nombre}</h3>
-                        </div>
+                        <div class="popup-header"><h3>${tienda.nombre}</h3></div>
                         <div class="popup-body">
-                            <div class="popup-info">
-                                <i class="fa-solid fa-user"></i>
-                                <span><b>Dueño:</b> ${tienda.dueno}</span>
-                            </div>
-                            <div class="popup-info">
-                                <i class="fa-solid fa-handshake"></i>
-                                <span><b>Aliado:</b> ${tienda.aliado}</span>
-                            </div>
-                            <div class="popup-info">
-                                <i class="fa-solid fa-location-dot"></i>
-                                <span>${tienda.direccion}</span>
-                            </div>
-                            <div class="popup-info">
-                                <i class="fa-solid fa-phone"></i>
-                                <span>${tienda.telefono}</span>
-                            </div>
+                            <div class="popup-info"><i class="fa-solid fa-user"></i><span><b>Dueño:</b> ${tienda.dueno}</span></div>
+                            <div class="popup-info"><i class="fa-solid fa-handshake"></i><span><b>Aliado:</b> ${tienda.aliado}</span></div>
+                            <div class="popup-info"><i class="fa-solid fa-location-dot"></i><span>${tienda.direccion}</span></div>
+                            <div class="popup-info"><i class="fa-solid fa-phone"></i><span>${tienda.telefono}</span></div>
                             <div class="popup-actions">
                                 <a href="tel:${tienda.telefono}" class="btn-action btn-outline">Llamar</a>
                                 <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="btn-action btn-primary">Ruta</a>
@@ -449,11 +473,23 @@ $nombre_empresa = $datos_empresa['nombre'];
                         </div>
                     `;
 
-                    var marker = L.marker([lat, lng], { icon: icon })
-                        .bindPopup(popupContent);
+                    var marker = L.marker([lat, lng], { icon: icon }).bindPopup(popupContent);
                     
-                    marker.addTo(map);
-                    markers.push(marker);
+                    var chosenDir = tooltipDirections[index % 4];
+                    var offset = [0, 0];
+                    if (chosenDir === 'top') offset = [0, -32];
+                    else if (chosenDir === 'bottom') offset = [0, 5];
+                    else if (chosenDir === 'right') offset = [15, -15];
+                    else if (chosenDir === 'left') offset = [-15, -15];
+
+                    marker.bindTooltip(`<span class="tooltip-name">${tienda.nombre}</span><span class="tooltip-address">${tienda.direccion}</span>`, {
+                        permanent: true,
+                        direction: chosenDir,
+                        offset: offset,
+                        className: 'marker-tooltip'
+                    });
+
+                    markerClusterGroup.addLayer(marker);
                     latLngs.push([lat, lng]);
                 }
             });
@@ -463,6 +499,7 @@ $nombre_empresa = $datos_empresa['nombre'];
                 map.fitBounds(bounds, { padding: [50, 50] });
             }
         }
+
 
         function getUserLocation() {
             if (navigator.geolocation) {

@@ -4760,7 +4760,7 @@ $(document).on('blur', '#identificacion_tercero', function() {
             }
         },
         error: function() {
-            mensajeDiv.text('Error al verificar la identificación').show();
+            mensajeDiv.text('Error al hacer la peticion verificaion de la identificación, posibles problemas con su conexion de internet, revise y vuelva a intertarlo').show();
             identificacionValida = false;
             btnGuardar.prop('disabled', true);
             btnGuardar.css('opacity', '0.5');
@@ -4768,7 +4768,6 @@ $(document).on('blur', '#identificacion_tercero', function() {
         }
     });
 });
-
 // Guardar Aliado (Nuevo)
 $('#formRegistro').on('submit', function(e) {
     e.preventDefault();
@@ -4896,11 +4895,7 @@ $('#formEditar').on('submit', function(e) {
     });
 });
 // Cerrar modales al hacer clic fuera
-$('.modal-overlay').on('click', function(e) {
-    if (e.target === this) {
-        $(this).removeClass('show');
-    }
-});
+$('.modal-overlay').on('click', function(e) { if (e.target === this) { $(this).removeClass('show'); } });
 // ====================== SISTEMA DE COMPARTIR DOCUMENTACIÓN ======================
 var datosZipActual = null;
 
