@@ -21,8 +21,11 @@ $cod_base_caja          = "1";
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="../js/jquery-3.2.1.min_visitante.js"></script>
-<link rel="stylesheet" href="../estilo_css/sweetalert2.min_adm_tick.css" type="text/css" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Leaflet GPS Maps -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <!-- Select2 CDN -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -98,6 +101,26 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0d1117 100%);
     min-height: 100vh;
+}
+
+/* Estilos para el mapa GPS en el modal */
+.gps-map-container {
+    height: 300px;
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 1rem;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    overflow: hidden;
+    position: relative;
+    z-index: 999;
+    display: none;
+}
+.gps-map-instructions {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.6);
+    margin-top: 0.5rem;
+    display: none;
+    font-style: italic;
 }
 
 /* SweetAlert z-index fix */
@@ -1464,6 +1487,11 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                 <div class="form-group">
                     <label class="form-label">Coordenadas</label>
                     <input type="text" class="form-input" name="ubicacion_gps_tienda" id="ubicacion_gps_tienda" readonly placeholder="Latitud, Longitud">
+                    
+                    <div id="gps_map_registro" class="gps-map-container"></div>
+                    <div id="gps_map_instructions_registro" class="gps-map-instructions">
+                        <i class="fa-solid fa-info-circle"></i> Puedes arrastrar el marcador para ajustar la ubicación exacta.
+                    </div>
                 </div>
                 
                 <!-- Sección: Jerarquía de Gestión -->
@@ -1707,6 +1735,11 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                 <div class="form-group">
                     <label class="form-label">Coordenadas</label>
                     <input type="text" class="form-input" name="ubicacion_gps_tienda" id="edit_ubicacion_gps_tienda" readonly placeholder="Latitud, Longitud">
+                    
+                    <div id="gps_map_editar" class="gps-map-container"></div>
+                    <div id="gps_map_instructions_editar" class="gps-map-instructions">
+                        <i class="fa-solid fa-info-circle"></i> Puedes arrastrar el marcador para ajustar la ubicación exacta.
+                    </div>
                 </div>
                 
                 <!-- Sección: Jerarquía de Gestión -->
@@ -2046,8 +2079,12 @@ function abrirModalRegistro(tipo) {
         document.querySelector('.submit-btn').style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
     }
 
-    // Limpiar previsualizaciones
+    // Limpiar previsualizaciones y GPS
     document.querySelectorAll('.image-preview').forEach(el => { el.src = ''; el.style.display = 'none'; });
+    document.getElementById('gps_map_registro').style.display = 'none';
+    document.getElementById('gps_map_instructions_registro').style.display = 'none';
+    document.getElementById('gpsStatus').style.display = 'none';
+    if (mapRegistro) { mapRegistro.remove(); mapRegistro = null; markerRegistro = null; }
     
     // Cargar departamentos
     cargarDepartamentosRegistro();
@@ -2078,8 +2115,15 @@ function cargarMunicipiosEditar() {
 }
 
 
-function cerrarModal() { document.getElementById('modalRegistro').classList.remove('show'); }
-function cerrarModalEditar() { document.getElementById('modalEditar').classList.remove('show'); }
+function cerrarModal() { 
+    document.getElementById('modalRegistro').classList.remove('show'); 
+    // Limpiar mapa al cerrar si se desea liberar memoria
+    if (mapRegistro) { mapRegistro.remove(); mapRegistro = null; markerRegistro = null; }
+}
+function cerrarModalEditar() { 
+    document.getElementById('modalEditar').classList.remove('show'); 
+    if (mapEditar) { mapEditar.remove(); mapEditar = null; markerEditar = null; }
+}
 
 // Cargar bancos al seleccionar aliado
 function actualizarBancosYComision(select, prefix = '', shoudPrellenar = true) {
@@ -2170,31 +2214,108 @@ function prellenarDatosAliado(codAliado, prefix = '') {
 }
 
 
+// Variables globales para los mapas
+var mapRegistro, markerRegistro;
+var mapEditar, markerEditar;
+
+function initLeafletMap(containerId, inputId, lat = 5.0689, lng = -75.5174, isEdit = false) {
+    var mapVar = isEdit ? mapEditar : mapRegistro;
+    var markerVar = isEdit ? markerEditar : markerRegistro;
+    
+    // Si ya existe el mapa, solo actualizar posición
+    if (mapVar) {
+        mapVar.setView([lat, lng], 16);
+        if (markerVar) {
+            markerVar.setLatLng([lat, lng]);
+        } else {
+            markerVar = L.marker([lat, lng], { draggable: true }).addTo(mapVar);
+            if (isEdit) markerEditar = markerVar; else markerRegistro = markerVar;
+        }
+        actualizarInputGPS(markerVar.getLatLng(), inputId);
+        
+        // Listener para arrastrar el marcador
+        markerVar.on('dragend', function(event) {
+            actualizarInputGPS(event.target.getLatLng(), inputId);
+        });
+        return;
+    }
+
+    // Inicializar mapa
+    mapVar = L.map(containerId).setView([lat, lng], 16);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19
+    }).addTo(mapVar);
+
+    markerVar = L.marker([lat, lng], { draggable: true }).addTo(mapVar);
+    
+    if (isEdit) {
+        mapEditar = mapVar;
+        markerEditar = markerVar;
+    } else {
+        mapRegistro = mapVar;
+        markerRegistro = markerVar;
+    }
+
+    actualizarInputGPS(markerVar.getLatLng(), inputId);
+
+    // Listener para arrastrar el marcador
+    markerVar.on('dragend', function(event) {
+        actualizarInputGPS(event.target.getLatLng(), inputId);
+    });
+    
+    // Asegurar que Leaflet se renderice bien después de mostrar el contenedor
+    setTimeout(function() {
+        mapVar.invalidateSize();
+    }, 200);
+}
+
+function actualizarInputGPS(latlng, inputId) {
+    var lat = latlng.lat.toFixed(6);
+    var lng = latlng.lng.toFixed(6);
+    document.getElementById(inputId).value = lat + ',' + lng;
+}
+
 // Obtener ubicación GPS
 function obtenerUbicacion() {
     var status = document.getElementById('gpsStatus');
-    var input = document.getElementById('ubicacion_gps_tienda');
+    var mapContainer = document.getElementById('gps_map_registro');
+    var instructions = document.getElementById('gps_map_instructions_registro');
     
     status.style.display = 'block';
     status.style.background = 'rgba(0, 212, 255, 0.2)';
     status.style.color = '#00d4ff';
-    status.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Obteniendo ubicación...';
+    status.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Solicitando acceso al GPS...';
     
-    if (!navigator.geolocation) { status.style.background = 'rgba(239, 68, 68, 0.2)'; status.style.color = '#ef4444'; status.innerHTML = 'Tu navegador no soporta geolocalización'; return; }
+    if (!navigator.geolocation) { 
+        status.style.background = 'rgba(239, 68, 68, 0.2)'; 
+        status.style.color = '#ef4444'; 
+        status.innerHTML = 'Tu navegador no soporta geolocalización'; 
+        return; 
+    }
+
     navigator.geolocation.getCurrentPosition(
         function(position) {
-            var lat = position.coords.latitude.toFixed(6);
-            var lng = position.coords.longitude.toFixed(6);
-            input.value = lat + ',' + lng;
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            
+            mapContainer.style.display = 'block';
+            instructions.style.display = 'block';
+            
+            initLeafletMap('gps_map_registro', 'ubicacion_gps_tienda', lat, lng, false);
             
             status.style.background = 'rgba(139, 92, 246, 0.2)';
             status.style.color = '#8b5cf6';
-            status.innerHTML = '<i class="fa fa-check"></i> Ubicación obtenida: ' + lat + ', ' + lng;
+            status.innerHTML = '<i class="fa fa-check"></i> Ubicación obtenida correctamente.';
         },
         function(error) {
             status.style.background = 'rgba(239, 68, 68, 0.2)';
             status.style.color = '#ef4444';
-            status.innerHTML = 'Error al obtener ubicación. Asegúrate de tener el GPS activado.';
+            status.innerHTML = 'Error al obtener ubicación. Asegúrate de dar permisos de GPS.';
+            
+            // Si falla el GPS, igual mostramos el mapa en una ubicación por defecto para que el usuario pueda elegir
+            mapContainer.style.display = 'block';
+            instructions.style.display = 'block';
+            initLeafletMap('gps_map_registro', 'ubicacion_gps_tienda', 5.0689, -75.5174, false);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
@@ -2203,25 +2324,51 @@ function obtenerUbicacion() {
 // Obtener ubicación GPS para edición
 function obtenerUbicacionEditar() {
     var status = document.getElementById('edit_gpsStatus');
-    var input = document.getElementById('edit_ubicacion_gps_tienda');
+    var mapContainer = document.getElementById('gps_map_editar');
+    var instructions = document.getElementById('gps_map_instructions_editar');
+    
     status.style.display = 'block';
     status.style.background = 'rgba(0, 212, 255, 0.2)';
     status.style.color = '#00d4ff';
-    status.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Obteniendo ubicación...';
-    if (!navigator.geolocation) { status.style.background = 'rgba(239, 68, 68, 0.2)'; status.style.color = '#ef4444'; status.innerHTML = 'Tu navegador no soporta geolocalización'; return; }
+    status.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Solicitando acceso al GPS...';
+    
+    if (!navigator.geolocation) { 
+        status.style.background = 'rgba(239, 68, 68, 0.2)'; 
+        status.style.color = '#ef4444'; 
+        status.innerHTML = 'Tu navegador no soporta geolocalización'; 
+        return; 
+    }
+
     navigator.geolocation.getCurrentPosition(
         function(position) {
-            var lat = position.coords.latitude.toFixed(6);
-            var lng = position.coords.longitude.toFixed(6);
-            input.value = lat + ',' + lng;
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            
+            mapContainer.style.display = 'block';
+            instructions.style.display = 'block';
+            
+            initLeafletMap('gps_map_editar', 'edit_ubicacion_gps_tienda', lat, lng, true);
+            
             status.style.background = 'rgba(139, 92, 246, 0.2)';
             status.style.color = '#8b5cf6';
-            status.innerHTML = '<i class="fa fa-check"></i> Ubicación obtenida: ' + lat + ', ' + lng;
+            status.innerHTML = '<i class="fa fa-check"></i> Ubicación obtenida correctamente.';
         },
         function(error) {
             status.style.background = 'rgba(239, 68, 68, 0.2)';
             status.style.color = '#ef4444';
-            status.innerHTML = 'Error al obtener ubicación. Asegúrate de tener el GPS activado.';
+            status.innerHTML = 'Error al obtener ubicación. Puedes ajustar el marcador manualmente.';
+            
+            mapContainer.style.display = 'block';
+            instructions.style.display = 'block';
+            
+            // Intentar usar las coordenadas actuales si existen
+            var coordsStr = document.getElementById('edit_ubicacion_gps_tienda').value;
+            var lat = 5.0689; var lng = -75.5174;
+            if (coordsStr && coordsStr.includes(',')) {
+                var c = coordsStr.split(',');
+                lat = parseFloat(c[0]); lng = parseFloat(c[1]);
+            }
+            initLeafletMap('gps_map_editar', 'edit_ubicacion_gps_tienda', lat, lng, true);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
@@ -2310,6 +2457,28 @@ function editarTienda(codTienda) {
                 if (document.getElementById('edit_nombre_sistema_contable')) document.getElementById('edit_nombre_sistema_contable').value = t.nombre_sistema_contable || '';
                 
                 document.getElementById('edit_ubicacion_gps_tienda').value = t.ubicacion_gps_tienda || '';
+                
+                // Si la tienda ya tiene GPS, mostrar el mapa automáticamente al editar
+                if (t.ubicacion_gps_tienda && t.ubicacion_gps_tienda.includes(',')) {
+                    var c = t.ubicacion_gps_tienda.split(',');
+                    var lat = parseFloat(c[0]);
+                    var lng = parseFloat(c[1]);
+                    
+                    document.getElementById('gps_map_editar').style.display = 'block';
+                    document.getElementById('gps_map_instructions_editar').style.display = 'block';
+                    
+                    setTimeout(function() {
+                        initLeafletMap('gps_map_editar', 'edit_ubicacion_gps_tienda', lat, lng, true);
+                    }, 500);
+                } else {
+                    document.getElementById('gps_map_editar').style.display = 'none';
+                    document.getElementById('gps_map_instructions_editar').style.display = 'none';
+                    if (mapEditar) {
+                        mapEditar.remove();
+                        mapEditar = null;
+                        markerEditar = null;
+                    }
+                }
 
                 // Cargar departamentos para el modal de edición
                 $.ajax({

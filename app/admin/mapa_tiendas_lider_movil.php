@@ -147,6 +147,23 @@ $nombre_empresa = $datos_empresa['nombre'];
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Estilos Tooltip Permanente */
+        .leaflet-tooltip.marker-tooltip {
+            background: rgba(15, 20, 25, 0.85);
+            border: 1px solid var(--theme-color);
+            border-radius: 8px;
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.75rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+        }
+        .leaflet-tooltip-top.marker-tooltip::before { border-top-color: var(--theme-color); }
+        .tooltip-name { font-weight: 700; color: var(--theme-color); display: block; margin-bottom: 2px; }
+        .tooltip-address { font-size: 0.65rem; opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -239,6 +256,18 @@ $nombre_empresa = $datos_empresa['nombre'];
                         </div>
                     `;
                     var marker = L.marker([lat, lng], { icon: icon }).bindPopup(popupContent);
+                    
+                    // Agregar Tooltip con nombre y dirección
+                    marker.bindTooltip(`
+                        <span class="tooltip-name">${tienda.nombre}</span>
+                        <span class="tooltip-address">${tienda.direccion}</span>
+                    `, {
+                        permanent: true,
+                        direction: 'top',
+                        offset: [0, -32],
+                        className: 'marker-tooltip'
+                    });
+
                     marker.addTo(map);
                     markers.push(marker);
                     latLngs.push([lat, lng]);
