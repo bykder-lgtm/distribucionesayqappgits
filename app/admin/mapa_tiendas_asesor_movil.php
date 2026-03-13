@@ -284,6 +284,44 @@ $nombre_empresa = $datos_empresa['nombre'];
         .marker-cluster-medium div { background-color: rgba(5, 150, 105, 0.8) !important; color: white !important; font-weight: 700; }
         .marker-cluster-large { background-color: rgba(4, 120, 87, 0.4) !important; }
         .marker-cluster-large div { background-color: rgba(4, 120, 87, 0.8) !important; color: white !important; font-weight: 700; }
+
+        /* Filter Panel Styles */
+        .filter-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            z-index: 10000; display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        .filter-drawer {
+            position: fixed; top: 0; right: -320px; width: 320px; height: 100%;
+            background: #1a1f2e; z-index: 10001; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+        .filter-drawer.open { right: 0; }
+        .filter-overlay.active { display: block; opacity: 1; }
+
+        .filter-header {
+            padding: 1.5rem; background: var(--bg-gradient);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .filter-header h2 { font-size: 1.1rem; font-weight: 700; margin: 0; }
+        .close-filter { color: white; opacity: 0.8; font-size: 1.5rem; cursor: pointer; }
+
+        .filter-content { padding: 1.5rem; flex: 1; overflow-y: auto; }
+        .filter-group { margin-bottom: 1.5rem; }
+        .filter-group label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; margin-bottom: 8px; font-weight: 600; }
+        .filter-input {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 12px 15px; color: white; font-family: inherit; font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .filter-input:focus { outline: none; border-color: var(--theme-color); background: rgba(16, 185, 129, 0.1); box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
+        .filter-input option { background: #1a1f2e; color: white; }
+
+        .filter-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; }
+        .btn-apply { background: var(--theme-color); color: white; border: none; flex: 2; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+        .btn-reset { background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); flex: 1; padding: 12px; border-radius: 12px; cursor: pointer; }
+        .btn-apply:hover { transform: scale(1.02); filter: brightness(1.1); box-shadow: 0 5px 15px var(--shadow-color); }
     </style>
 </head>
 <body>
@@ -302,9 +340,40 @@ $nombre_empresa = $datos_empresa['nombre'];
             <p>Asesor</p>
         </div>
         <div class="header-actions">
+            <button onclick="toggleFilter()" class="back-btn"><i class="fa-solid fa-filter"></i></button>
             <button onclick="getUserLocation()" class="back-btn"><i class="fa-solid fa-location-crosshairs"></i></button>
         </div>
     </header>
+
+    <div class="filter-overlay" onclick="toggleFilter()"></div>
+    <div class="filter-drawer" id="filterDrawer">
+        <div class="filter-header">
+            <h2>Filtros de Mapa</h2>
+            <span class="close-filter" onclick="toggleFilter()">&times;</span>
+        </div>
+        <div class="filter-content">
+            <div class="filter-group">
+                <label>Departamento</label>
+                <select id="filter-dept" class="filter-input" onchange="loadMunicipios()">
+                    <option value="">Seleccione Departamento</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Municipio</label>
+                <select id="filter-muni" class="filter-input">
+                    <option value="">Seleccione Municipio</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Barrio</label>
+                <input type="text" id="filter-barrio" class="filter-input" placeholder="Nombre del barrio...">
+            </div>
+        </div>
+        <div class="filter-footer">
+            <button class="btn-reset" onclick="resetFilters()">Limpiar</button>
+            <button class="btn-apply" onclick="applyFilters()">Aplicar Filtros</button>
+        </div>
+    </div>
 
     <div id="map"></div>
 
@@ -340,6 +409,7 @@ $nombre_empresa = $datos_empresa['nombre'];
         $(document).ready(function() {
             initMap();
             loadStores();
+            loadDepartments();
             // Intentar obtener ubicación inicial
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
@@ -348,6 +418,58 @@ $nombre_empresa = $datos_empresa['nombre'];
                 });
             }
         });
+
+        function toggleFilter() {
+            $('.filter-overlay').toggleClass('active');
+            $('#filterDrawer').toggleClass('open');
+        }
+
+        function loadDepartments() {
+            $.get('obtener_departamentos_ajax.php', function(res) {
+                if(res.success) {
+                    var html = '<option value="">Todos los Departamentos</option>';
+                    res.departamentos.forEach(d => {
+                        html += `<option value="${d.cod_departamento}">${d.nombre_departamento}</option>`;
+                    });
+                    $('#filter-dept').html(html);
+                }
+            });
+        }
+
+        function loadMunicipios() {
+            var cod_depto = $('#filter-dept').val();
+            if(!cod_depto) {
+                $('#filter-muni').html('<option value="">Seleccione Municipio</option>');
+                return;
+            }
+            $.get('obtener_municipios_ajax.php', { cod_departamento: cod_depto }, function(res) {
+                if(res.success) {
+                    var html = '<option value="">Todos los Municipios</option>';
+                    res.municipios.forEach(m => {
+                        html += `<option value="${m.cod_municipio}">${m.nombre_municipio}</option>`;
+                    });
+                    $('#filter-muni').html(html);
+                }
+            });
+        }
+
+        function applyFilters() {
+            var params = {
+                cod_departamento: $('#filter-dept').val(),
+                cod_municipio: $('#filter-muni').val(),
+                barrio: $('#filter-barrio').val()
+            };
+            loadStores(params);
+            toggleFilter();
+        }
+
+        function resetFilters() {
+            $('#filter-dept').val('');
+            $('#filter-muni').html('<option value="">Seleccione Municipio</option>');
+            $('#filter-barrio').val('');
+            loadStores();
+            toggleFilter();
+        }
 
         function initMap() {
             map = L.map('map', { zoomControl: false, attributionControl: false }).setView([5.0689, -75.5174], 13);
@@ -372,18 +494,28 @@ $nombre_empresa = $datos_empresa['nombre'];
             currentLayer = type;
         }
 
-        function loadStores() {
+        function loadStores(filters = {}) {
+            $('#loader').fadeIn();
             $.ajax({
-                url: 'obtener_tiendas_gps_asesor_ajax.php', type: 'GET', dataType: 'json',
+                url: 'obtener_tiendas_gps_asesor_ajax.php', 
+                type: 'GET', 
+                dataType: 'json',
+                data: filters,
                 success: function(response) {
                     $('#loader').fadeOut();
                     if (response.success) {
                         $('#count-total').text(response.total);
                         $('#count-gps').text(response.data.length);
                         renderMarkers(response.data);
+                    } else {
+                        alert('Error: ' + response.message);
                     }
                 },
-                error: function() { $('#loader').fadeOut(); alert('Error al cargar datos'); }
+                error: function(xhr, status, error) { 
+                    $('#loader').fadeOut(); 
+                    console.error(xhr.responseText);
+                    alert('Error crítico al cargar datos. Ver consola.'); 
+                }
             });
         }
 

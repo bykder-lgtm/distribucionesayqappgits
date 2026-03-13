@@ -13,10 +13,27 @@ $res_total = mysqli_query($conectar, $sql_total);
 if (!$res_total) { echo json_encode(['success' => false, 'message' => 'Error consulta total: ' . mysqli_error($conectar)]); exit; }
 $row_total = mysqli_fetch_assoc($res_total);
 $total_tiendas = (int)$row_total['total'];
+
+// Tiendas con GPS - Dinámico con filtros
 $sql_gps = "SELECT t.cod_tienda, t.nombre_tienda, t.nombre1_tercero as dueno, t.direccion_tercero, t.telefono1_tercero, t.ubicacion_gps_tienda, a.nombres_apellidos_tercero as nombre_aliado
 FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador
 WHERE t.cod_aliado_estrategico IN ($subquery_aliados) AND t.ubicacion_gps_tienda IS NOT NULL 
 AND t.ubicacion_gps_tienda != '' AND t.cod_estado != '0'";
+
+// Filtros
+if (isset($_GET['cod_departamento']) && !empty($_GET['cod_departamento'])) {
+    $cod_depto = intval($_GET['cod_departamento']);
+    $sql_gps .= " AND t.cod_departamento = '$cod_depto'";
+}
+if (isset($_GET['cod_municipio']) && !empty($_GET['cod_municipio'])) {
+    $cod_muni = intval($_GET['cod_municipio']);
+    $sql_gps .= " AND t.cod_municipio = '$cod_muni'";
+}
+if (isset($_GET['barrio']) && !empty($_GET['barrio'])) {
+    $barrio = mysqli_real_escape_string($conectar, trim($_GET['barrio']));
+    $sql_gps .= " AND t.barrio_tercero LIKE '%$barrio%'";
+}
+
 $res_gps = mysqli_query($conectar, $sql_gps);
 if (!$res_gps) { echo json_encode(['success' => false, 'message' => 'Error consulta GPS: ' . mysqli_error($conectar)]); exit; }
 $tiendas = [];
