@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 header('Content-Type: application/json; charset=UTF-8');
 include_once('../conexiones/conexione.php'); 
 include_once('../admin/class_php/funcion_cryptor_descryptor_class.php');
@@ -28,9 +28,7 @@ $correo_representante = isset($_POST['correo_representante']) ? mysqli_real_esca
 $cod_departamento = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
 $cod_municipio = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']) : 0;
 $barrio_tercero = isset($_POST['barrio_tercero']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['barrio_tercero']))) : '';
-$cod_lider = isset($_POST['cod_lider']) ? intval($_POST['cod_lider']) : 0;
-$cod_coordinador = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
-$cod_asesor = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
+// La jerarquía se deriva del aliado estratégico en la tabla administrador, no se guarda en tienda
 
 // Nuevos campos de información del negocio
 $cod_tipo_sector = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
@@ -55,9 +53,6 @@ ubicacion_gps_tienda = '$ubicacion_gps_tienda',
 nombre_representante = UPPER('$nombre_representante'), 
 documento_representante = '$documento_representante', 
 correo_representante = '$correo_representante',
-cod_lider = '$cod_lider', 
-cod_coordinador = '$cod_coordinador', 
-cod_asesor = '$cod_asesor',
 cod_departamento = '$cod_departamento', 
 cod_municipio = '$cod_municipio', 
 barrio_tercero = UPPER('$barrio_tercero'),

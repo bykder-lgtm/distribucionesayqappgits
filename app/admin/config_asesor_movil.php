@@ -356,6 +356,17 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>
 
+            <a href="mapa_tiendas_asesor_movil.php" class="menu-item">
+                <div class="menu-item-icon green">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Mapa de Tiendas</div>
+                    <div class="menu-item-desc">Ver ubicación GPS de tiendas</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
             <a href="lista_archivados_asesor_movil.php" class="menu-item">
                 <div class="menu-item-icon purple">
                     <i class="fa-solid fa-box-archive"></i>

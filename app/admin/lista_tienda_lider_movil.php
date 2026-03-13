@@ -1470,60 +1470,19 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                 <div class="form-section-title" id="sectionJerarquia"><i class="fa-solid fa-users"></i> Jerarquía de Gestión</div>
                 
                 <div id="containerJerarquia">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Líder / Director *</label>
-                            <select class="form-select select2-simple" name="cod_lider" id="cod_lider" required>
-                                <option value="">Seleccione Líder</option>
-                                <?php 
-                                if ($resultado_lideres) {
-                                    mysqli_data_seek($resultado_lideres, 0);
-                                    while ($lider = mysqli_fetch_assoc($resultado_lideres)): ?>
-                                    <option value="<?php echo $lider['cod_administrador']; ?>"><?php echo ucwords(strtolower($lider['nombres_apellidos_tercero'])); ?></option>
-                                <?php endwhile; } ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Coordinador *</label>
-                            <select class="form-select select2-simple" name="cod_coordinador" id="cod_coordinador" required>
-                                <option value="">Seleccione Coordinador</option>
-                                <?php 
-                                if ($resultado_coordinadores) {
-                                    mysqli_data_seek($resultado_coordinadores, 0);
-                                    while ($coord = mysqli_fetch_assoc($resultado_coordinadores)): ?>
-                                    <option value="<?php echo $coord['cod_administrador']; ?>"><?php echo ucwords(strtolower($coord['nombres_apellidos_tercero'])); ?></option>
-                                <?php endwhile; } ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Asesor *</label>
-                            <select class="form-select select2-simple" name="cod_asesor" id="cod_asesor" required>
-                                <option value="">Seleccione Asesor</option>
-                                <?php 
-                                if ($resultado_asesores) {
-                                    mysqli_data_seek($resultado_asesores, 0);
-                                    while ($asesor = mysqli_fetch_assoc($resultado_asesores)): ?>
-                                    <option value="<?php echo $asesor['cod_administrador']; ?>"><?php echo ucwords(strtolower($asesor['nombres_apellidos_tercero'])); ?></option>
-                                <?php endwhile; } ?>
-                            </select>
-                        </div>
-                        <div class="form-group" id="containerAliado">
-                            <label class="form-label">Aliado Estratégico *</label>
-                            <select class="form-select select2-simple" name="cod_aliado_estrategico" id="cod_aliado_estrategico" onchange="actualizarBancosYComision(this)" required>
-                                <option value="">Seleccione Aliado</option>
-                                <?php 
-                                if ($resultado_aliados) {
-                                    mysqli_data_seek($resultado_aliados, 0);
-                                    while ($aliado = mysqli_fetch_assoc($resultado_aliados)): ?>
-                                    <option value="<?php echo $aliado['cod_administrador']; ?>" data-comision="<?php echo $aliado['comision_ptj']; ?>">
-                                        <?php echo $aliado['nombres_apellidos_tercero'].' ('.$aliado['cedula'].')'; ?>
-                                    </option>
-                                <?php endwhile; } ?>
-                            </select>
-                        </div>
+                    <div class="form-group" id="containerAliado">
+                        <label class="form-label">Aliado Estratégico *</label>
+                        <select class="form-select select2-simple" name="cod_aliado_estrategico" id="cod_aliado_estrategico" onchange="actualizarBancosYComision(this, '', true)" required>
+                            <option value="">Seleccione Aliado</option>
+                            <?php 
+                            if ($resultado_aliados) {
+                                mysqli_data_seek($resultado_aliados, 0);
+                                while ($aliado = mysqli_fetch_assoc($resultado_aliados)): ?>
+                                <option value="<?php echo $aliado['cod_administrador']; ?>" data-comision="<?php echo $aliado['comision_ptj']; ?>">
+                                    <?php echo $aliado['nombres_apellidos_tercero'].' ('.$aliado['cedula'].')'; ?>
+                                </option>
+                            <?php endwhile; } ?>
+                        </select>
                     </div>
                 </div>
                 <!-- Sección 5: Documentación Legal -->
@@ -1598,6 +1557,250 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
         </div>
     </div>
 </div>
+
+<!-- Modal Editar Tienda -->
+<div class="modal-overlay" id="modalEditar" style="align-items: center; padding: 20px;">
+    <div class="modal-content">
+        <div class="modal-header"><h2><i class="fa-solid fa-edit"></i> <span>Editar Tienda</span></h2><button class="modal-close" onclick="cerrarModalEditar()"><i class="fa-solid fa-times"></i></button></div>
+        
+        <div class="modal-body">
+            <form id="formEditarTienda" method="POST" enctype="multipart/form-data" onsubmit="return false;">
+                <input type="hidden" id="edit_accion" name="accion" value="editar">
+                <input type="hidden" id="edit_cod_tienda_edit" name="cod_tienda_edit" value="">
+                <input type="hidden" id="edit_tipo_tienda_actual" name="tipo_tienda" value="normal">
+
+                <!-- Sección: Información Básica -->
+                <div class="form-section-title"><i class="fa-solid fa-info-circle"></i> Información Básica</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre de la Tienda *</label>
+                        <input type="text" class="form-input" name="nombre1_tercero" id="edit_nombre1_tercero" placeholder="Ej: Tienda El Éxito" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-input" name="correo_tercero" id="edit_correo_tercero" placeholder="Ej: tienda@ejemplo.com">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">NIT / Documento *</label>
+                        <input type="number" class="form-input" name="identificacion_tercero" id="edit_identificacion_tercero" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono *</label>
+                        <input type="tel" class="form-input" name="telefono1_tercero" id="edit_telefono1_tercero" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Departamento *</label>
+                        <select class="form-select" name="cod_departamento" id="edit_cod_departamento" onchange="cargarMunicipiosEditar()" required>
+                            <option value="">Seleccione un departamento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio *</label>
+                        <select class="form-select" name="cod_municipio" id="edit_cod_municipio" required>
+                            <option value="">Seleccione primero un departamento</option>
+                        </select>
+                    </div>
+                </div>
+                
+                 <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Dirección *</label>
+                        <input type="text" class="form-input" name="direccion_tercero" id="edit_direccion_tercero" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Barrio</label>
+                        <input type="text" class="form-input" name="barrio_tercero" id="edit_barrio_tercero" placeholder="Ej: Centro, Santa Isabel...">
+                    </div>
+                </div>
+
+                <!-- Sección 2: Representante Legal -->
+                <div class="form-section-title"><i class="fa-solid fa-user-tie"></i> Representante Legal</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-input" name="nombre_representante" id="edit_nombre_representante">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">NIT / Documento</label>
+                        <input type="number" class="form-input" name="documento_representante" id="edit_documento_representante">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Correo</label>
+                        <input type="email" class="form-input" name="correo_representante" id="edit_correo_representante">
+                    </div>
+                </div>
+
+                <!-- Sección: Información del Negocio -->
+                <div class="form-section-title"><i class="fa-solid fa-briefcase"></i> Información del Negocio</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Sector</label>
+                        <select class="form-select" name="cod_tipo_sector" id="edit_cod_tipo_sector">
+                            <option value="">-- Seleccione --</option>
+                            <?php 
+                            if (isset($res_tipo_sector)) { mysqli_data_seek($res_tipo_sector, 0); }
+                            while ($tipo_sector = mysqli_fetch_assoc($res_tipo_sector)): ?>
+                            <option value="<?php echo $tipo_sector['cod_tipo_sector']; ?>" title="<?php echo htmlspecialchars($tipo_sector['descripcion_tipo_sector']); ?>"><?php echo $tipo_sector['nombre_tipo_sector']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">¿Existe en RUES?</label>
+                        <select class="form-select" name="existe_rues" id="edit_existe_rues">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">¿Venta Presencial?</label>
+                        <select class="form-select" name="venta_presencial" id="edit_venta_presencial">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">¿Venta Online?</label>
+                        <select class="form-select" name="venta_online" id="edit_venta_online">
+                            <option value="">-- Seleccione --</option>
+                            <option value="SI">Sí</option>
+                            <option value="NO">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Plataforma E-commerce</label>
+                        <input type="text" class="form-input" name="nombre_plataforma_ecommerce" id="edit_nombre_plataforma_ecommerce" placeholder="Ej: Shopify, WooCommerce...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Sistema Contable</label>
+                        <input type="text" class="form-input" name="nombre_sistema_contable" id="edit_nombre_sistema_contable" placeholder="Ej: Siigo, World Office, Alegra...">
+                    </div>
+                </div>
+
+                <!-- Sección 4: Ubicación GPS -->
+                <div class="form-section-title"><i class="fa-solid fa-map-marker-alt"></i> Ubicación GPS</div>
+                
+                <div class="form-group">
+                    <button type="button" class="gps-btn" onclick="obtenerUbicacionEditar()">
+                        <i class="fa-solid fa-location-crosshairs"></i> Obtener Ubicación Actual
+                    </button>
+                    <div id="edit_gpsStatus" class="gps-status"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Coordenadas</label>
+                    <input type="text" class="form-input" name="ubicacion_gps_tienda" id="edit_ubicacion_gps_tienda" readonly placeholder="Latitud, Longitud">
+                </div>
+                
+                <!-- Sección: Jerarquía de Gestión -->
+                <div class="form-section-title"><i class="fa-solid fa-users"></i> Jerarquía de Gestión</div>
+                
+                <div>
+                    <div class="form-group">
+                        <label class="form-label">Aliado Estratégico *</label>
+                        <select class="form-select select2-simple" name="cod_aliado_estrategico" id="edit_cod_aliado_estrategico" onchange="actualizarBancosYComision(this, 'edit_', true)" required>
+                            <option value="">Seleccione Aliado</option>
+                            <?php 
+                            if ($resultado_aliados) {
+                                mysqli_data_seek($resultado_aliados, 0);
+                                while ($aliado = mysqli_fetch_assoc($resultado_aliados)): ?>
+                                <option value="<?php echo $aliado['cod_administrador']; ?>" data-comision="<?php echo $aliado['comision_ptj']; ?>">
+                                    <?php echo $aliado['nombres_apellidos_tercero'].' ('.$aliado['cedula'].')'; ?>
+                                </option>
+                            <?php endwhile; } ?>
+                        </select>
+                    </div>
+                </div>
+                <!-- Sección 5: Documentación Legal -->
+                <div class="form-section-title"><i class="fa-solid fa-file-contract"></i> Documentación Legal</div>
+                
+                <div class="form-group">
+                    <label class="form-label">RUT (PDF/Imagen)</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="url_rut_tienda" id="edit_url_rut_tienda" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(this)">
+                        <div class="file-input-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="file-input-text">Seleccionar archivo</div>
+                    </div>
+                    <div id="edit_preview_rut" class="document-preview" style="display: none;"></div>
+                </div>
+
+                 <div class="form-group">
+                    <label class="form-label">Cámara de Comercio (PDF/Imagen)</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="url_camara_comercio_tienda" id="edit_url_camara_comercio_tienda" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(this)">
+                        <div class="file-input-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        <div class="file-input-text">Seleccionar archivo</div>
+                    </div>
+                    <div id="edit_preview_camara" class="document-preview" style="display: none;"></div>
+                </div>
+
+                <!-- Sección 6: Imágenes del Establecimiento -->
+                <div class="form-section-title"><i class="fa-solid fa-camera"></i> Imágenes del Establecimiento</div>
+
+                 <div class="form-group">
+                    <label class="form-label">Logo de la Tienda</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="imagen_tienda" id="edit_imagen_tienda" accept="image/*" onchange="previewImage(this, 'edit_preview_logo')">
+                        <div class="file-input-icon"><i class="fa-solid fa-image"></i></div>
+                        <div class="file-input-text">Seleccionar imagen</div>
+                    </div>
+                    <img id="edit_preview_logo" class="image-preview" alt="Vista previa logo">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Fachada</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" name="url_img_fachada_tienda" id="edit_url_img_fachada_tienda" accept="image/*" onchange="previewImage(this, 'edit_preview_fachada')">
+                            <div class="file-input-icon"><i class="fa-solid fa-store"></i></div>
+                        </div>
+                         <img id="edit_preview_fachada" class="image-preview" alt="Vista previa">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Interna</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" name="url_img_interna_tienda" id="edit_url_img_interna_tienda" accept="image/*" onchange="previewImage(this, 'edit_preview_interna')">
+                            <div class="file-input-icon"><i class="fa-solid fa-person-shelter"></i></div>
+                        </div>
+                        <img id="edit_preview_interna" class="image-preview" alt="Vista previa">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Selfie con Admin</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" name="url_img_selfieadmin_tienda" id="edit_url_img_selfieadmin_tienda" accept="image/*" onchange="previewImage(this, 'edit_preview_selfie')">
+                        <div class="file-input-icon"><i class="fa-solid fa-camera-retro"></i></div>
+                        <div class="file-input-text">Seleccionar selfie</div>
+                    </div>
+                    <img id="edit_preview_selfie" class="image-preview" alt="Vista previa selfie">
+                </div>
+
+                <button type="button" class="submit-btn" onclick="ejecutarEdicionTienda()">
+                    <i class="fa-solid fa-save"></i> Guardar Cambios
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal Firma Electrónica -->
 <div class="modal-overlay" id="modalFirmaElectronica">
@@ -1706,6 +1909,8 @@ function cargarMunicipiosRegistro() {
     });
 }
 // Cargar municipios con preselección
+
+
 function cargarMunicipiosRegistroConPreseleccion(codDepartamento, selectedMuni) {
     var selectMuni = $('#cod_municipio');
     selectMuni.empty();
@@ -1723,6 +1928,26 @@ function cargarMunicipiosRegistroConPreseleccion(codDepartamento, selectedMuni) 
         }
     });
 }
+
+function cargarMunicipiosEditarConPreseleccion(codDepartamento, selectedMuni) {
+    var selectMuni = $('#edit_cod_municipio');
+    selectMuni.empty();
+    selectMuni.append('<option value="">Seleccione un municipio *</option>');
+    if (!codDepartamento) return;
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                $.each(response.municipios, function(index, muni) {
+                    var isSelected = (selectedMuni && muni.cod_municipio == selectedMuni) ? ' selected' : '';
+                    selectMuni.append('<option value="' + muni.cod_municipio + '"' + isSelected + '>' + muni.nombre_municipio + '</option>');
+                });
+            }
+        }
+    });
+}
+
+
 // ====================== REGISTRO DE VENDEDORES (GEOLOCALIZACION) ======================
 function cargarDepartamentosVendedor(prefix) {
     $.ajax({
@@ -1829,20 +2054,40 @@ function abrirModalRegistro(tipo) {
     document.getElementById('modalRegistro').classList.add('show');
     
     // Inicializar Select2
-    $('.select2-simple').select2({
+    $('#modalRegistro .select2-simple').select2({
         dropdownParent: $('#modalRegistro'),
         width: '100%'
     });
 }
 
+
+function cargarMunicipiosEditar() {
+    var codDepartamento = $('#edit_cod_departamento').val();
+    var selectMuni = $('#edit_cod_municipio');
+    selectMuni.empty();
+    selectMuni.append('<option value="">Seleccione un municipio *</option>');
+    if (!codDepartamento) return;
+    $.ajax({
+        url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: codDepartamento }, dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                $.each(response.municipios, function(index, muni) { selectMuni.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>'); });
+            }
+        }
+    });
+}
+
+
 function cerrarModal() { document.getElementById('modalRegistro').classList.remove('show'); }
+function cerrarModalEditar() { document.getElementById('modalEditar').classList.remove('show'); }
+
 // Cargar bancos al seleccionar aliado
-function actualizarBancosYComision(select) {
+function actualizarBancosYComision(select, prefix = '', shoudPrellenar = true) {
     if (!select) return;
     var codAliado = select.value;
     // Cargar bancos
-    var bancoSelect = document.getElementById('cod_banco_cuenta');
-    var loading = document.getElementById('loading_bancos');
+    var bancoSelect = document.getElementById(prefix + 'cod_banco_cuenta');
+    var loading = document.getElementById(prefix + 'loading_bancos');
     
     // Si no existen los elementos en el DOM, no hacemos nada (evita errores)
     if (!bancoSelect || !loading) return;
@@ -1851,8 +2096,10 @@ function actualizarBancosYComision(select) {
         bancoSelect.disabled = true;
         loading.style.display = 'block';
         
-        // Pre-llenar datos del aliado
-        prellenarDatosAliado(codAliado);
+        // Pre-llenar datos del aliado solo si se solicita (ej: en registro nuevo)
+        if (shoudPrellenar) {
+            prellenarDatosAliado(codAliado, prefix);
+        }
         
         $.ajax({
             url: 'obtener_bancos_cuenta_por_aliado_ajax.php', type: 'POST', data: { cod_aliado_estrategico: codAliado }, dataType: 'json',
@@ -1871,7 +2118,7 @@ function actualizarBancosYComision(select) {
                 }
                 // Actualizar comisión desde respuesta si existe
                 if (response.comision_ptj) { 
-                    var comisionInput = document.getElementById('comision_ptj');
+                    var comisionInput = document.getElementById(prefix + 'comision_ptj');
                     if (comisionInput) comisionInput.value = response.comision_ptj; 
                 }
                 bancoSelect.disabled = false;
@@ -1890,8 +2137,9 @@ function actualizarBancosYComision(select) {
     }
 }
 
+
 // Pre-llenar campos del formulario con datos del aliado seleccionado
-function prellenarDatosAliado(codAliado) {
+function prellenarDatosAliado(codAliado, prefix = '') {
     if (!codAliado) return;
     $.ajax({
         url: 'obtener_datos_aliado_ajax.php', type: 'POST', data: { cod_aliado: codAliado }, dataType: 'json',
@@ -1899,20 +2147,28 @@ function prellenarDatosAliado(codAliado) {
             if (response.success && response.aliado) {
                 var a = response.aliado;
                 var setVal = function(id, val) { var el = document.getElementById(id); if (el && val) el.value = val; };
-                setVal('identificacion_tercero', a.identificacion_tercero);
-                setVal('telefono1_tercero', a.telefono1_tercero);
-                setVal('correo_tercero', a.correo_tercero);
-                setVal('direccion_tercero', a.direccion_tercero);
-                setVal('barrio_tercero', a.barrio_tercero);
-                setVal('cod_tipo_sector', a.cod_tipo_sector);
+                setVal(prefix + 'identificacion_tercero', a.identificacion_tercero);
+                setVal(prefix + 'telefono1_tercero', a.telefono1_tercero);
+                setVal(prefix + 'correo_tercero', a.correo_tercero);
+                setVal(prefix + 'direccion_tercero', a.direccion_tercero);
+                setVal(prefix + 'barrio_tercero', a.barrio_tercero);
+                setVal(prefix + 'cod_tipo_sector', a.cod_tipo_sector);
+
                 if (a.cod_departamento) {
-                    $('#cod_departamento').val(a.cod_departamento).trigger('change');
-                    setTimeout(function() { cargarMunicipiosRegistroConPreseleccion(a.cod_departamento, a.cod_municipio); }, 500);
+                    $('#' + prefix + 'cod_departamento').val(a.cod_departamento).trigger('change');
+                    setTimeout(function() { 
+                        if (prefix === 'edit_') {
+                             cargarMunicipiosEditarConPreseleccion(a.cod_departamento, a.cod_municipio);
+                        } else {
+                             cargarMunicipiosRegistroConPreseleccion(a.cod_departamento, a.cod_municipio);
+                        }
+                    }, 500);
                 }
             }
         }
     });
 }
+
 
 // Obtener ubicación GPS
 function obtenerUbicacion() {
@@ -1943,6 +2199,34 @@ function obtenerUbicacion() {
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
 }
+
+// Obtener ubicación GPS para edición
+function obtenerUbicacionEditar() {
+    var status = document.getElementById('edit_gpsStatus');
+    var input = document.getElementById('edit_ubicacion_gps_tienda');
+    status.style.display = 'block';
+    status.style.background = 'rgba(0, 212, 255, 0.2)';
+    status.style.color = '#00d4ff';
+    status.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Obteniendo ubicación...';
+    if (!navigator.geolocation) { status.style.background = 'rgba(239, 68, 68, 0.2)'; status.style.color = '#ef4444'; status.innerHTML = 'Tu navegador no soporta geolocalización'; return; }
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            var lat = position.coords.latitude.toFixed(6);
+            var lng = position.coords.longitude.toFixed(6);
+            input.value = lat + ',' + lng;
+            status.style.background = 'rgba(139, 92, 246, 0.2)';
+            status.style.color = '#8b5cf6';
+            status.innerHTML = '<i class="fa fa-check"></i> Ubicación obtenida: ' + lat + ', ' + lng;
+        },
+        function(error) {
+            status.style.background = 'rgba(239, 68, 68, 0.2)';
+            status.style.color = '#ef4444';
+            status.innerHTML = 'Error al obtener ubicación. Asegúrate de tener el GPS activado.';
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+}
+
 
 // Previsualizar imagen
 function previewImage(input, previewId) {
@@ -1984,66 +2268,86 @@ function filtrarTiendas(busqueda) {
 
 function editarTienda(codTienda) {
     Swal.fire({ title: 'Cargando...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
-    
+
     $.ajax({
         url: 'get_tienda_modal_lider_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             Swal.close();
             if(response.success) {
                 const t = response.tienda;
-                const form = document.getElementById('formRegistroTienda');
+                const form = document.getElementById('formEditarTienda');
                 form.reset();
                 Array.from(form.elements).forEach(ele => ele.disabled = false);
-                document.querySelector('.submit-btn').style.display = 'block';
-                document.getElementById('accion').value = 'editar';
-                document.getElementById('cod_tienda_edit').value = t.cod_tienda;
-                // nombre_tienda va al campo nombre1_tercero del form
-                document.getElementById('nombre1_tercero').value = t.nombre_tienda || t.nombre1_tercero || '';
-                document.getElementById('identificacion_tercero').value = t.identificacion_tercero || '';
-                document.getElementById('nombre_representante').value = t.nombre_representante || t.nombre1_tercero || '';
-                document.getElementById('documento_representante').value = t.documento_representante || '';
-                document.getElementById('telefono1_tercero').value = t.telefono1_tercero;
-                document.getElementById('direccion_tercero').value = t.direccion_tercero;
-                document.getElementById('barrio_tercero').value = t.barrio_tercero || '';
-                document.getElementById('correo_tercero').value = t.correo_tercero;
-                document.getElementById('cod_aliado_estrategico').value = t.cod_aliado_estrategico || '';
-                document.getElementById('cod_lider').value = t.cod_lider || '';
-                document.getElementById('cod_coordinador').value = t.cod_coordinador || '';
-                document.getElementById('cod_asesor').value = t.cod_asesor || '';
                 
-                // Nuevos campos de información del negocio
-                if (document.getElementById('cod_tipo_sector')) document.getElementById('cod_tipo_sector').value = t.cod_tipo_sector || '';
-                if (document.getElementById('existe_rues')) document.getElementById('existe_rues').value = t.existe_rues || '';
-                if (document.getElementById('venta_presencial')) document.getElementById('venta_presencial').value = t.venta_presencial || '';
-                if (document.getElementById('venta_online')) document.getElementById('venta_online').value = t.venta_online || '';
-                if (document.getElementById('nombre_plataforma_ecommerce')) document.getElementById('nombre_plataforma_ecommerce').value = t.nombre_plataforma_ecommerce || '';
-                if (document.getElementById('nombre_sistema_contable')) document.getElementById('nombre_sistema_contable').value = t.nombre_sistema_contable || '';
+                // Inicializar Select2 antes de asignar valores para que se reflejen correctamente
+                $('#modalEditar .select2-simple').select2({
+                    dropdownParent: $('#modalEditar'),
+                    width: '100%'
+                });
+
+                document.getElementById('edit_accion').value = 'editar';
+                document.getElementById('edit_cod_tienda_edit').value = t.cod_tienda;
+                document.getElementById('edit_nombre1_tercero').value = t.nombre_tienda || t.nombre1_tercero || '';
+                document.getElementById('edit_identificacion_tercero').value = t.identificacion_tercero || '';
+                document.getElementById('edit_nombre_representante').value = t.nombre_representante || t.nombre1_tercero || '';
+                document.getElementById('edit_documento_representante').value = t.documento_representante || '';
+                document.getElementById('edit_telefono1_tercero').value = t.telefono1_tercero;
+                document.getElementById('edit_direccion_tercero').value = t.direccion_tercero;
+                document.getElementById('edit_barrio_tercero').value = t.barrio_tercero || '';
+                document.getElementById('edit_correo_tercero').value = t.correo_tercero;
                 
-                // Actualizar Select2 para mostrar los valores seleccionados
-                $('.select2-simple').trigger('change');
+                $('#edit_cod_aliado_estrategico').val(t.cod_aliado_estrategico || '');
+                // Llamamos manualmente a actualizar bancos sin prellenar para no sobreescribir datos de la tienda
+                actualizarBancosYComision(document.getElementById('edit_cod_aliado_estrategico'), 'edit_', false);
                 
-                document.getElementById('ubicacion_gps_tienda').value = t.ubicacion_gps_tienda;
+                $('#edit_cod_aliado_estrategico').trigger('change.select2'); // Actualizar visualmente Select2 sin disparar onchange completo si es posible
+
+                if (document.getElementById('edit_cod_tipo_sector')) $('#edit_cod_tipo_sector').val(t.cod_tipo_sector || '').trigger('change');
+                if (document.getElementById('edit_existe_rues')) $('#edit_existe_rues').val(t.existe_rues || '').trigger('change');
+                if (document.getElementById('edit_venta_presencial')) $('#edit_venta_presencial').val(t.venta_presencial || '').trigger('change');
+                if (document.getElementById('edit_venta_online')) $('#edit_venta_online').val(t.venta_online || '').trigger('change');
+                if (document.getElementById('edit_nombre_plataforma_ecommerce')) document.getElementById('edit_nombre_plataforma_ecommerce').value = t.nombre_plataforma_ecommerce || '';
+                if (document.getElementById('edit_nombre_sistema_contable')) document.getElementById('edit_nombre_sistema_contable').value = t.nombre_sistema_contable || '';
                 
-                // Cargar departamentos y luego municipios con valores guardados
-                cargarDepartamentosRegistro();
-                setTimeout(() => {
-                    if (t.cod_departamento) {
-                        $('#cod_departamento').val(t.cod_departamento);
-                        cargarMunicipiosRegistro();
-                        setTimeout(() => { if (t.cod_municipio) { $('#cod_municipio').val(t.cod_municipio); } }, 500);
+                document.getElementById('edit_ubicacion_gps_tienda').value = t.ubicacion_gps_tienda || '';
+
+                // Cargar departamentos para el modal de edición
+                $.ajax({
+                    url: '../admin/obtener_departamentos_ajax.php', type: 'GET', dataType: 'json',
+                    success: function(deptResponse) {
+                        if (deptResponse.success) {
+                            var select = $('#edit_cod_departamento');
+                            select.empty().append('<option value="">Seleccione un departamento *</option>');
+                            $.each(deptResponse.departamentos, function(index, dept) {
+                                select.append('<option value="' + dept.cod_departamento + '">' + dept.nombre_departamento + '</option>');
+                            });
+                            
+                            if (t.cod_departamento) {
+                                select.val(t.cod_departamento).trigger('change');
+                                // Cargar municipios
+                                $.ajax({
+                                    url: '../admin/obtener_municipios_ajax.php', type: 'GET', data: { cod_departamento: t.cod_departamento }, dataType: 'json',
+                                    success: function(muniResponse) {
+                                        if (muniResponse.success) {
+                                            var selectMuni = $('#edit_cod_municipio');
+                                            selectMuni.empty().append('<option value="">Seleccione un municipio *</option>');
+                                            $.each(muniResponse.municipios, function(index, muni) {
+                                                selectMuni.append('<option value="' + muni.cod_municipio + '">' + muni.nombre_municipio + '</option>');
+                                            });
+                                            if (t.cod_municipio) { selectMuni.val(t.cod_municipio).trigger('change'); }
+                                        }
+                                    }
+                                });
+                            }
+                        }
                     }
-                }, 500);
-                // Cargar bancos (simulado manualmente ya que es dependiente)
-                actualizarBancosYComision(document.getElementById('cod_aliado_estrategico'));
-                setTimeout(() => { if(document.getElementById('cod_banco_cuenta')) { document.getElementById('cod_banco_cuenta').value = t.cod_banco_cuenta; } }, 1000);
+                });
+
+                // ========== MOSTRAR DOCUMENTOS E IMÁGENES EXISTENTES (con prefijo edit_) ==========
+                mostrarDocumentosCargados(t, 'edit_');
+                mostrarImagenesCargadas(t, 'edit_');
                 
-                // ========== MOSTRAR DOCUMENTOS E IMÁGENES EXISTENTES ==========
-                mostrarDocumentosCargados(t);
-                mostrarImagenesCargadas(t);
-                
-                document.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-edit"></i> Editar Tienda';
-                document.querySelector('.submit-btn').innerHTML = '<i class="fa-solid fa-save"></i> Guardar Cambios';
-                document.getElementById('modalRegistro').classList.add('show');
+                document.getElementById('modalEditar').classList.add('show');
             } else {
                 Swal.fire({ icon:'error', title:'Error', text:response.message, background:'#1a1f2e', color:'white' });
             }
@@ -2054,39 +2358,42 @@ function editarTienda(codTienda) {
     });
 }
 
+
+
 function verDetalles(codTienda) {
     // Redirigir a la página de detalles de tienda
     window.location.href = 'ver_detalle_tienda_movil.php?cod_tienda=' + codTienda;
 }
 
 // Función para mostrar documentos cargados
-function mostrarDocumentosCargados(tienda) {
+function mostrarDocumentosCargados(tienda, prefix = '') {
     // Limpiar textos previos de documentos y previsualizaciones
-    document.querySelectorAll('.file-input-text').forEach(el => el.textContent = 'Seleccionar archivo');
-    document.querySelectorAll('.document-preview').forEach(el => { el.innerHTML = ''; el.style.display = 'none'; });
+    document.querySelectorAll('#' + (prefix === 'edit_' ? 'modalEditar' : 'modalRegistro') + ' .file-input-text').forEach(el => el.textContent = 'Seleccionar archivo');
+    document.querySelectorAll('#' + (prefix === 'edit_' ? 'modalEditar' : 'modalRegistro') + ' .document-preview').forEach(el => { el.innerHTML = ''; el.style.display = 'none'; });
     
     // RUT
     if (tienda.url_documentacion_rut_tienda && tienda.url_documentacion_rut_tienda.trim() !== '') {
-        const rutWrapper = document.querySelector('#url_rut_tienda').closest('.file-input-wrapper');
+        const rutWrapper = document.querySelector('#' + prefix + 'url_rut_tienda').closest('.file-input-wrapper');
         const rutText = rutWrapper.querySelector('.file-input-text');
         rutText.innerHTML = '<i class="fa-solid fa-check-circle" style="color: #8b5cf6;"></i> Documento cargado';
         
         // Mostrar previsualización
-        const previewRut = document.getElementById('preview_rut');
+        const previewRut = document.getElementById(prefix + 'preview_rut');
         mostrarPreviewDocumento(tienda.url_documentacion_rut_tienda, previewRut, 'RUT');
     }
     
     // Cámara de Comercio
     if (tienda.url_documentacion_camaracomercio_tienda && tienda.url_documentacion_camaracomercio_tienda.trim() !== '') {
-        const camaraWrapper = document.querySelector('#url_camara_comercio_tienda').closest('.file-input-wrapper');
+        const camaraWrapper = document.querySelector('#' + prefix + 'url_camara_comercio_tienda').closest('.file-input-wrapper');
         const camaraText = camaraWrapper.querySelector('.file-input-text');
         camaraText.innerHTML = '<i class="fa-solid fa-check-circle" style="color: #8b5cf6;"></i> Documento cargado';
         
         // Mostrar previsualización
-        const previewCamara = document.getElementById('preview_camara');
+        const previewCamara = document.getElementById(prefix + 'preview_camara');
         mostrarPreviewDocumento(tienda.url_documentacion_camaracomercio_tienda, previewCamara, 'Cámara de Comercio');
     }
 }
+
 
 // Función para mostrar previsualización de documentos (PDF o imagen)
 function mostrarPreviewDocumento(url, contenedor, titulo) {
@@ -2194,13 +2501,13 @@ function descargarArchivo(url, nombre) {
 }
 
 // Función para mostrar imágenes cargadas
-function mostrarImagenesCargadas(tienda) {
+function mostrarImagenesCargadas(tienda, prefix = '') {
     // Limpiar previsualizaciones
-    document.querySelectorAll('.image-preview').forEach(el => { el.src = ''; el.style.display = 'none'; });
+    document.querySelectorAll('#' + (prefix === 'edit_' ? 'modalEditar' : 'modalRegistro') + ' .image-preview').forEach(el => { el.src = ''; el.style.display = 'none'; });
     
     // Logo de la tienda
     if (tienda.url_img_orig_tienda && tienda.url_img_orig_tienda.trim() !== '') {
-        const previewLogo = document.getElementById('preview_logo');
+        const previewLogo = document.getElementById(prefix + 'preview_logo');
         previewLogo.src = tienda.url_img_orig_tienda;
         previewLogo.style.display = 'block';
         previewLogo.style.cursor = 'pointer';
@@ -2208,7 +2515,7 @@ function mostrarImagenesCargadas(tienda) {
     }
     // Fachada
     if (tienda.url_img_fachada_tienda && tienda.url_img_fachada_tienda.trim() !== '') {
-        const previewFachada = document.getElementById('preview_fachada');
+        const previewFachada = document.getElementById(prefix + 'preview_fachada');
         previewFachada.src = tienda.url_img_fachada_tienda;
         previewFachada.style.display = 'block';
         previewFachada.style.cursor = 'pointer';
@@ -2216,7 +2523,7 @@ function mostrarImagenesCargadas(tienda) {
     }
     // Interna
     if (tienda.url_img_interna_tienda && tienda.url_img_interna_tienda.trim() !== '') {
-        const previewInterna = document.getElementById('preview_interna');
+        const previewInterna = document.getElementById(prefix + 'preview_interna');
         previewInterna.src = tienda.url_img_interna_tienda;
         previewInterna.style.display = 'block';
         previewInterna.style.cursor = 'pointer';
@@ -2224,13 +2531,14 @@ function mostrarImagenesCargadas(tienda) {
     }
     // Selfie con Admin
     if (tienda.url_img_selfieadmin_tienda && tienda.url_img_selfieadmin_tienda.trim() !== '') {
-        const previewSelfie = document.getElementById('preview_selfie');
+        const previewSelfie = document.getElementById(prefix + 'preview_selfie');
         previewSelfie.src = tienda.url_img_selfieadmin_tienda;
         previewSelfie.style.display = 'block';
         previewSelfie.style.cursor = 'pointer';
         previewSelfie.onclick = function() { window.open(tienda.url_img_selfieadmin_tienda, '_blank'); };
     }
 }
+
 
 // Funciones auxiliares para apertura directa desde tarjetas
 function abrirRegistroVendedorDirecto(codTienda, nombreTienda) {
@@ -2361,7 +2669,10 @@ function formatearPrecio(input) {
 }
 // Cerrar modal al hacer clic fuera
 document.getElementById('modalRegistro').addEventListener('click', function(e) { if (e.target === this) { cerrarModal(); } });
+document.getElementById('modalEditar').addEventListener('click', function(e) { if (e.target === this) { cerrarModalEditar(); } });
+
 // Función para ejecutar el registro o edición de tienda
+// Función para ejecutar el registro de tienda
 function ejecutarRegistroTienda() {
     console.log("Iniciando ejecutarRegistroTienda()");
     const form = document.getElementById('formRegistroTienda');
@@ -2369,21 +2680,12 @@ function ejecutarRegistroTienda() {
         form.reportValidity();
         return;
     }
-    
     var formData = new FormData(form);
     formData.append('cod_administrador', '<?php echo $cod_administrador; ?>');
-    
-    var accion = document.getElementById('accion').value;
-    var url = accion === 'editar' ? 'edit_tienda_modal_lider_movil_ajax_reg.php' : '../admin/reg_tienda_modal_lider_movil_ajax_reg.php';
-    var titulo = accion === 'editar' ? 'Actualizando...' : 'Registrando...';
-    var successTitle = accion === 'editar' ? '¡Tienda Actualizada!' : '¡Tienda Registrada!';
-
-    Swal.fire({   title: titulo, text: 'Procesando información', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
-    
+    Swal.fire({ title: 'Registrando...', text: 'Procesando información', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
     $.ajax({
-        url: url, type: 'POST', data: formData, processData: false, contentType: false,
+        url: '../admin/reg_tienda_modal_lider_movil_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false,
         success: function(responseText) {
-            //console.log("Respuesta recibida:", responseText);
             let response;
             try {
                 let cleanJson = responseText;
@@ -2398,16 +2700,11 @@ function ejecutarRegistroTienda() {
                 Swal.fire({ icon: 'error', title: 'Error de respuesta', text: 'El servidor devolvió un formato inválido.', background: '#1a1f2e', color: 'white' });
                 return;
             }
-
             Swal.close();
             if (response.success) {
                 cerrarModal(); 
-                if (accion === 'registrar') {
-                    window._tiendaRegistrada = { cod_tienda: response.cod_tienda, cod_tienda_codifcryp: response.cod_tienda_codifcryp, nombre_tienda: response.nombre_tienda, correo_tercero: response.correo_tercero, telefono1_tercero: response.telefono1_tercero };
-                    setTimeout(function() { abrirModalConfirmacion(response.nombre_tienda); }, 400);
-                } else {
-                    Swal.fire({ icon: 'success', title: successTitle, text: 'Tienda actualizada correctamente.', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', timer: 2000 }).then(() => { location.reload(); });
-                }
+                window._tiendaRegistrada = { cod_tienda: response.cod_tienda, cod_tienda_codifcryp: response.cod_tienda_codifcryp, nombre_tienda: response.nombre_tienda, correo_tercero: response.correo_tercero, telefono1_tercero: response.telefono1_tercero };
+                setTimeout(function() { abrirModalConfirmacion(response.nombre_tienda); }, 400);
             } else {
                 Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo procesar', background: '#1a1f2e', color: 'white' });
             }
@@ -2419,6 +2716,43 @@ function ejecutarRegistroTienda() {
         }
     });
 }
+
+// Función para ejecutar la edición de tienda
+function ejecutarEdicionTienda() {
+    console.log("Iniciando ejecutarEdicionTienda()");
+    const form = document.getElementById('formEditarTienda');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    var formData = new FormData(form);
+    formData.append('cod_administrador', '<?php echo $cod_administrador; ?>');
+    Swal.fire({ title: 'Actualizando...', text: 'Procesando información', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
+    $.ajax({
+        url: 'edit_tienda_modal_lider_movil_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false,
+        success: function(responseText) {
+            let response;
+            try {
+                let cleanJson = responseText;
+                if (typeof responseText === 'string') {
+                    const firstBrace = responseText.indexOf('{');
+                    const lastBrace = responseText.lastIndexOf('}');
+                    if (firstBrace !== -1 && lastBrace !== -1) { cleanJson = responseText.substring(firstBrace, lastBrace + 1); }
+                }
+                response = typeof cleanJson === 'object' ? cleanJson : JSON.parse(cleanJson);
+            } catch (e) { console.error("Error parseando respuesta:", e, responseText); Swal.fire({ icon: 'error', title: 'Error de respuesta', text: 'El servidor devolvió un formato inválido.', background: '#1a1f2e', color: 'white' }); return; }
+            Swal.close();
+            if (response.success) {
+                cerrarModalEditar(); 
+                Swal.fire({ icon: 'success', title: '¡Tienda Actualizada!', text: 'Tienda actualizada correctamente.', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', timer: 2000 }).then(() => { location.reload(); });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'No se pudo procesar', background: '#1a1f2e', color: 'white' });
+            }
+        },
+        error: function(xhr, status, error) { Swal.close(); console.error("Error AJAX:", status, error, xhr.responseText); Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'Problema al comunicarse con el servidor.', background: '#1a1f2e', color: 'white' }); }
+    });
+}
+
 // =====================================================
 // FUNCIONES PARA FLUJO POST-REGISTRO
 // =====================================================

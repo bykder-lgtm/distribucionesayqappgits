@@ -13,10 +13,10 @@ if(isset($_POST['identificacion']) && !empty($_POST['identificacion'])) {
     // Consulta para verificar si existe la identificación (solo aliados estratégicos)
     if($cod_aliado_excluir) {
         // Si es edición, excluir el aliado actual
-        $sql = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion' AND cod_tipo_tercero = '13' AND cod_administrador != '$cod_aliado_excluir'";
+        $sql = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion' AND cod_administrador != '$cod_aliado_excluir'";
     } else {
         // Si es nuevo registro
-        $sql = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion' AND cod_tipo_tercero = '13'"; 
+        $sql = "SELECT COUNT(*) as total FROM tbl15_administrador WHERE identificacion_tercero = '$identificacion'"; 
     }
     $resultado = mysqli_query($conectar, $sql);
     if($resultado) {

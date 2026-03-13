@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 $nombre_pagina          = "Configuración";
 $cod_seguridad_pag      = "1";
 $pagina_local           = $_SERVER['PHP_SELF'];
@@ -353,6 +353,17 @@ $total_notificaciones                                           = isset($datos_n
                 <div class="menu-item-content">
                     <div class="menu-item-title">Mis Tiendas</div>
                     <div class="menu-item-desc">Gestionar tiendas afiliadas</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+            <a href="mapa_tiendas_coordinador_movil.php" class="menu-item">
+                <div class="menu-item-icon blue">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Mapa de Tiendas</div>
+                    <div class="menu-item-desc">Ver ubicación GPS de tiendas</div>
                 </div>
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>

@@ -119,37 +119,37 @@ if ($total_registros > 0):
             
             <div class="ally-details">
                 <div class="ally-detail">
-                    <i class="fa-solid fa-phone"></i>
+                    <i class="fa-solid fa-phone" style="color: #8b5cf6;"></i>
                     <span><?php echo !empty($row['telefono']) ? $row['telefono'] : '---'; ?></span>
                 </div>
                 
                 <div class="ally-detail">
-                    <i class="fa-solid fa-user-tie" style="color: #a78bfa;"></i>
+                    <i class="fa-solid fa-user-tie" style="color: #8b5cf6;"></i>
                     <span title="Asesor">Asesor: <?php echo !empty($row['nombre_asesor']) ? ucwords(strtolower($row['nombre_asesor'])) : '---'; ?></span>
                 </div>
 
-                <div class="ally-detail">
-                    <i class="fa-solid fa-envelope"></i>
-                    <span><?php echo !empty($row['correo']) ? strtolower($row['correo']) : '---'; ?></span>
-                </div>
-                
                 <div class="ally-detail">
                     <i class="fa-solid fa-location-dot" style="color: #ef4444;"></i>
                     <span><?php echo !empty($row['nombre_municipio']) ? ucwords(strtolower($row['nombre_municipio'])) . (!empty($row['nombre_departamento']) ? ', ' . ucwords(strtolower($row['nombre_departamento'])) : '') : '---'; ?></span>
                 </div>
                 
                 <div class="ally-detail">
-                    <i class="fa-solid fa-map-pin" style="color: #3b82f6;"></i>
+                    <i class="fa-solid fa-envelope" style="color: #8b5cf6;"></i>
+                    <span><?php echo !empty($row['correo']) ? strtolower($row['correo']) : '---'; ?></span>
+                </div>
+                
+                <div class="ally-detail">
+                    <i class="fa-solid fa-key" style="color: #3b82f6;"></i>
                     <span>Barrio: <?php echo !empty($row['barrio_tercero']) ? ucwords(strtolower($row['barrio_tercero'])) : '---'; ?></span>
                 </div>
 
                 <div class="ally-detail">
-                    <i class="fa-solid fa-user-gear"></i>
+                    <i class="fa-solid fa-user-gear" style="color: #8b5cf6;"></i>
                     <span>User: <?php echo !empty($row['cuenta']) ? $row['cuenta'] : '---'; ?></span>
                 </div>
 
                 <div class="ally-detail">
-                    <i class="fa-solid fa-calendar-day" style="color: #f59e0b;"></i>
+                    <i class="fa-solid fa-calendar-days" style="color: #f59e0b;"></i>
                     <span title="Fecha Registro">Reg: <?php echo !empty($row['fecha']) ? date('d/m/Y', strtotime($row['fecha'])) : '---'; ?></span>
                 </div>
 
@@ -163,12 +163,12 @@ if ($total_registros > 0):
                 $documentos_completos = ($tiene_rut && $tiene_camara && $tiene_cedula);
                 ?>
                 <div class="ally-detail">
-                    <i class="fa-solid fa-signature" style="color: <?php echo $tiene_firma ? '#10b981' : '#ef4444'; ?>;"></i>
+                    <i class="fa-solid fa-signature" style="color: #ef4444;"></i>
                     <span>Firma: <?php echo $tiene_firma ? 'Cargada' : 'Pendiente'; ?></span>
                 </div>
 
                 <div class="ally-detail">
-                    <i class="fa-solid fa-file-circle-check" style="color: <?php echo $documentos_completos ? '#10b981' : '#f59e0b'; ?>;"></i>
+                    <i class="fa-solid fa-folder-open" style="color: #f59e0b;"></i>
                     <span>Docs: <?php echo $documentos_completos ? 'Completos' : ($total_docs > 0 ? 'Parcial ('.$total_docs.'/3)' : 'Pendiente'); ?></span>
                 </div>
             </div>
