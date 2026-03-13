@@ -4291,9 +4291,9 @@ $('#formRegistro').on('submit', function(e) {
         success: function(response) {
             if(response.existe) {
                 Swal.close();
-                Swal.fire({ icon: 'error', title: 'Identificación duplicada', text: 'Esta identificación ya está registrada en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                Swal.fire({ icon: 'error', title: 'Identificación duplicada', text: 'La identificación ' + identificacion + ' ya está registrada en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                 $('#identificacion_tercero').css('border-color', '#ef4444');
-                $('#mensaje_identificacion').text('⚠️ Esta identificación ya está registrada').show();
+                $('#mensaje_identificacion').text('⚠️ La identificación ' + identificacion + ' ya está registrada').show();
             } else {
                 $('#identificacion_tercero').css('border-color', '#10b981');
                 $('#mensaje_identificacion').hide();
