@@ -1421,24 +1421,24 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-id-card"></i> Cédula
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-building"></i> Cámara de Comercio
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <!--
@@ -1763,8 +1763,8 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_cedula_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -1777,8 +1777,8 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_rut_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -1791,8 +1791,8 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_camara_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -3014,19 +3014,19 @@ function abrirModalEditar(data) {
     if (data.url_documentacion_rut_aliado && data.url_documentacion_rut_aliado.trim() !== '') {
         editRutActual.style.display = 'block';
         editRutActual.querySelector('a').href = data.url_documentacion_rut_aliado;
-        editRutInput.style.display = 'none'; // Ocultar input si ya existe documento
+        editRutInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
     } else {
         editRutActual.style.display = 'none';
-        editRutInput.style.display = 'block'; // Mostrar input si no existe documento
+        editRutInput.style.display = 'block'; // Mostrar si no existe
     }
     // Manejar Cámara de Comercio
     if (data.url_documentacion_camaracomercio_aliado && data.url_documentacion_camaracomercio_aliado.trim() !== '') {
         editCamaraActual.style.display = 'block';
         editCamaraActual.querySelector('a').href = data.url_documentacion_camaracomercio_aliado;
-        editCamaraInput.style.display = 'none'; // Ocultar input si ya existe documento
+        editCamaraInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
     } else {
         editCamaraActual.style.display = 'none';
-        editCamaraInput.style.display = 'block'; // Mostrar input si no existe documento
+        editCamaraInput.style.display = 'block'; // Mostrar si no existe
     }
     // Manejar Cédula
     var editCedulaActual = document.getElementById('edit_cedula_actual');
@@ -3035,10 +3035,10 @@ function abrirModalEditar(data) {
         if (data.url_documentacion_cedula_aliado && data.url_documentacion_cedula_aliado.trim() !== '') {
             editCedulaActual.style.display = 'block';
             editCedulaActual.querySelector('a').href = data.url_documentacion_cedula_aliado;
-            editCedulaInput.style.display = 'none'; // Ocultar input si ya existe documento
+            editCedulaInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
         } else {
             editCedulaActual.style.display = 'none';
-            editCedulaInput.style.display = 'block'; // Mostrar input si no existe documento
+            editCedulaInput.style.display = 'block'; // Mostrar si no existe
         }
     }
     // Limpiar el contenedor de entidades y mostrar loading
@@ -4901,7 +4901,6 @@ $('.modal-overlay').on('click', function(e) {
         $(this).removeClass('show');
     }
 });
-
 // ====================== SISTEMA DE COMPARTIR DOCUMENTACIÓN ======================
 var datosZipActual = null;
 
@@ -4979,14 +4978,7 @@ function ocultarFormularioEmail() {
 
 function enviarEmail() {
     if (!datosZipActual) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No hay un archivo ZIP generado',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No hay un archivo ZIP generado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
@@ -5032,13 +5024,7 @@ function enviarEmail() {
 
 function descargarZip() {
     if (!datosZipActual) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No hay un archivo ZIP generado',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' } });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No hay un archivo ZIP generado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
@@ -5050,28 +5036,12 @@ function descargarZip() {
     link.click();
     document.body.removeChild(link);
     
-    Swal.fire({
-        icon: 'success',
-        title: 'Descargando...',
-        text: 'El archivo se está descargando',
-        timer: 2000,
-        showConfirmButton: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ icon: 'success', title: 'Descargando...', text: 'El archivo se está descargando', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 }
 
 function generarEnlace() {
     if (!datosZipActual) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No hay un archivo ZIP generado',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No hay un archivo ZIP generado', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
@@ -5090,25 +5060,9 @@ function copiarEnlace() {
     
     try {
         document.execCommand('copy');
-        Swal.fire({
-            icon: 'success',
-            title: '¡Copiado!',
-            text: 'El enlace se ha copiado al portapapeles',
-            timer: 2000,
-            showConfirmButton: false,
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'success', title: '¡Copiado!', text: 'El enlace se ha copiado al portapapeles', timer: 2000, showConfirmButton: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     } catch (err) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No se pudo copiar el enlace',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo copiar el enlace', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     }
 }
 
@@ -5461,9 +5415,7 @@ function cargarProductosTiendaAliado(codTienda) {
         success: function(response) {
             list.innerHTML = '';
             if (response.success && response.productos && response.productos.length > 0) {
-                response.productos.forEach(function(p) {
-                    agregarProductoAListaAliado(p.nombre, p.codigo, p.precio, true);
-                });
+                response.productos.forEach(function(p) { agregarProductoAListaAliado(p.nombre, p.codigo, p.precio, true); });
             } else {
                 list.innerHTML = '<div style="text-align:center; padding:0.75rem; opacity:0.4; font-size:0.78rem;">No hay productos registrados aún</div>';
             }
@@ -5577,18 +5529,13 @@ function crearDocumento(codAliado) {
     selectTienda.innerHTML = '<option value="0">Cargando tiendas...</option>';
     
     $.ajax({
-        url: 'obtener_tiendas_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_aliado: codAliado },
-        dataType: 'json',
+        url: 'obtener_tiendas_aliado_ajax.php', type: 'POST', data: { cod_aliado: codAliado }, dataType: 'json',
         success: function(res) {
             if (res.success) {
                 //var html = '<option value="0">-- Seleccione una tienda --</option>';
                 var html = '';
                 if (res.tiendas.length > 0) {
-                    res.tiendas.forEach(function(t) {
-                        html += '<option value="'+t.cod_tienda+'">'+escapeHtmlMovil(t.nombre_tienda)+'</option>';
-                    });
+                    res.tiendas.forEach(function(t) { html += '<option value="'+t.cod_tienda+'">'+escapeHtmlMovil(t.nombre_tienda)+'</option>'; });
                 } else {
                     html = '<option value="0">El aliado no tiene tiendas registradas</option>';
                 }
@@ -5615,15 +5562,7 @@ function procesarCreacionDocumento() {
     var codTienda = document.getElementById('firma_tienda_cod').value;
 
     if (codTienda == "0" || !codTienda) {
-        return Swal.fire({
-            icon: 'warning',
-            title: 'Tienda requerida',
-            text: 'Debe seleccionar una tienda para continuar.',
-            confirmButtonColor: '#8b5cf6',
-            background: '#1a1f2e',
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        return Swal.fire({ icon: 'warning', title: 'Tienda requerida', text: 'Debe seleccionar una tienda para continuar.', confirmButtonColor: '#8b5cf6', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     }
 
     Swal.fire({ title: 'Generando documento...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
@@ -5686,9 +5625,7 @@ function enviarSignaturePorEmail() {
             Swal.fire({ title: 'Enviando correo...', text: 'Procesando envío por PHPMailer', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
             $.ajax({
-                url: 'enviar_enlace_firma_aliado_email_ajax.php', type: 'POST',
-                data: { correo: emailFinal, nombre_aliado: nombre, enlace_firma: enlace },
-                dataType: 'json',
+                url: 'enviar_enlace_firma_aliado_email_ajax.php', type: 'POST', data: { correo: emailFinal, nombre_aliado: nombre, enlace_firma: enlace }, dataType: 'json',
                 success: function(response) {
                     Swal.close();
                     if (response.success) {
@@ -5725,10 +5662,7 @@ function abrirModalVerTiendas(codAliado, nombreAliado) {
     $('#modalVerTiendas').fadeIn().css('display', 'flex');
 
     $.ajax({
-        url: 'obtener_tiendas_por_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_aliado_estrategico: codAliado },
-        dataType: 'json',
+        url: 'obtener_tiendas_por_aliado_ajax.php', type: 'POST', data: { cod_aliado_estrategico: codAliado }, dataType: 'json',
         success: function(response) {
             if (response.success && response.tiendas.length > 0) {
                 let html = '<div class="view-list">';
@@ -5762,10 +5696,7 @@ function abrirModalVerCuentas(codAliado, nombreAliado) {
     $('#modalVerCuentas').fadeIn().css('display', 'flex');
 
     $.ajax({
-        url: 'obtener_bancos_cuenta_por_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_aliado_estrategico: codAliado },
-        dataType: 'json',
+        url: 'obtener_bancos_cuenta_por_aliado_ajax.php', type: 'POST', data: { cod_aliado_estrategico: codAliado }, dataType: 'json',
         success: function(response) {
             if (response.success && response.bancos.length > 0) {
                 let html = '<div class="view-list">';
@@ -6011,35 +5942,16 @@ $(document).ready(function() {
         });
 
         $.ajax({
-            url: 'reg_aliado_rapido_ajax_reg.php',
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
+            url: 'reg_aliado_rapido_ajax_reg.php', type: 'POST', data: formData, dataType: 'json',
             success: function(response) {
                 if (response.afectado === "SI") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Aliado Creado!',
-                        text: response.mensaje,
-                        confirmButtonText: 'Perfecto'
-                    }).then(() => {
-                        cerrarModalRapido();
-                        location.reload();
-                    });
+                    Swal.fire({ icon: 'success', title: '¡Aliado Creado!', text: response.mensaje, confirmButtonText: 'Perfecto' }).then(() => { cerrarModalRapido(); location.reload(); });
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.mensaje
-                    });
+                    Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje });
                 }
             },
             error: function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error de Red',
-                    text: 'No se pudo conectar con el servidor'
-                });
+                Swal.fire({ icon: 'error', title: 'Error de Red', text: 'No se pudo conectar con el servidor' });
             }
         });
     });
@@ -6047,27 +5959,13 @@ $(document).ready(function() {
 
 function habilitarAliado(cod_administrador, nombre_aliado) {
     Swal.fire({
-        title: '¿Habilitar Aliado?',
-        text: "El aliado " + nombre_aliado + " pasará a ser un aliado normal sin límite de créditos.",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sí, habilitar',
-        cancelButtonText: 'Cancelar'
+        title: '¿Habilitar Aliado?', text: "El aliado " + nombre_aliado + " pasará a ser un aliado normal sin límite de créditos.", icon: 'question', showCancelButton: true, confirmButtonColor: '#10b981', cancelButtonColor: '#3085d6', confirmButtonText: 'Sí, habilitar', cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Procesando...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
+            Swal.fire({ title: 'Procesando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
             $.ajax({
-                url: 'habilitar_aliado_prueba_ajax.php',
-                type: 'POST',
-                data: { cod_administrador: cod_administrador },
-                dataType: 'json',
+                url: 'habilitar_aliado_prueba_ajax.php', type: 'POST', data: { cod_administrador: cod_administrador }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
                         Swal.fire('¡Habilitado!', response.message, 'success')

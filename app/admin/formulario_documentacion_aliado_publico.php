@@ -445,8 +445,8 @@ $res_cuentas = mysqli_query($conectar, $sql_cuentas);
                     <div class="file-upload" onclick="document.getElementById('input_rut').click()">
                         <i class="fa-solid fa-cloud-upload-alt"></i>
                         <p id="label_rut">Clic para seleccionar archivo</p>
-                        <small>Formatos: JPG, PNG, PDF (máx. 5MB)</small>
-                        <input type="file" id="input_rut" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" onchange="mostrarNombreArchivo(this, 'label_rut')">
+                        <small>Formato: PDF (máx. 5MB)</small>
+                        <input type="file" id="input_rut" name="url_documentacion_rut_aliado" accept=".pdf" onchange="mostrarNombreArchivo(this, 'label_rut')">
                     </div>
                 </div>
                 
@@ -474,8 +474,8 @@ $res_cuentas = mysqli_query($conectar, $sql_cuentas);
                     <div class="file-upload" onclick="document.getElementById('input_camara').click()">
                         <i class="fa-solid fa-cloud-upload-alt"></i>
                         <p id="label_camara">Clic para seleccionar archivo</p>
-                        <small>Formatos: JPG, PNG, PDF (máx. 5MB)</small>
-                        <input type="file" id="input_camara" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" onchange="mostrarNombreArchivo(this, 'label_camara')">
+                        <small>Formato: PDF (máx. 5MB)</small>
+                        <input type="file" id="input_camara" name="url_documentacion_camaracomercio_aliado" accept=".pdf" onchange="mostrarNombreArchivo(this, 'label_camara')">
                     </div>
                 </div>
                 
@@ -597,8 +597,8 @@ $res_cuentas = mysqli_query($conectar, $sql_cuentas);
                         <div class="file-upload" onclick="document.getElementById('input_certificado').click()">
                             <i class="fa-solid fa-cloud-upload-alt"></i>
                             <p id="label_certificado">Clic para seleccionar archivo</p>
-                            <small>Imagen o documento (JPG, PNG, PDF, DOC)</small>
-                            <input type="file" id="input_certificado" name="certificado_banco" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" onchange="mostrarNombreArchivo(this, 'label_certificado')">
+                            <small>Documento PDF</small>
+                            <input type="file" id="input_certificado" name="certificado_banco" accept=".pdf" onchange="mostrarNombreArchivo(this, 'label_certificado')">
                         </div>
                     </div>
                     

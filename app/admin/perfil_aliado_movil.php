@@ -695,16 +695,16 @@ if (isset($cod_administrador) && !empty($cod_administrador)) {
                     <input type="hidden" name="seccion" value="documentacion">
                     
                     <div class="form-group-perfil">
-                        <label for="doc_cedula"><i class="fa fa-id-card"></i> Cédula (Imagen o PDF)</label>
-                        <input type="file" id="doc_cedula" name="url_documentacion_cedula_aliado" accept="image/*,.pdf">
+                        <label for="doc_cedula"><i class="fa fa-id-card"></i> Cédula (Solo PDF)</label>
+                        <input type="file" id="doc_cedula" name="url_documentacion_cedula_aliado" accept=".pdf">
                     </div>
                     <div class="form-group-perfil">
-                        <label for="doc_rut"><i class="fa fa-file-pdf"></i> RUT</label>
-                        <input type="file" id="doc_rut" name="url_documentacion_rut_aliado" accept="image/*,.pdf">
+                        <label for="doc_rut"><i class="fa fa-file-pdf"></i> RUT (Solo PDF)</label>
+                        <input type="file" id="doc_rut" name="url_documentacion_rut_aliado" accept=".pdf">
                     </div>
                     <div class="form-group-perfil">
-                        <label for="doc_camara"><i class="fa fa-building"></i> Cámara de Comercio</label>
-                        <input type="file" id="doc_camara" name="url_documentacion_camaracomercio_aliado" accept="image/*,.pdf">
+                        <label for="doc_camara"><i class="fa fa-building"></i> Cámara de Comercio (Solo PDF)</label>
+                        <input type="file" id="doc_camara" name="url_documentacion_camaracomercio_aliado" accept=".pdf">
                     </div>
                     
                     <div class="btn-group-perfil">

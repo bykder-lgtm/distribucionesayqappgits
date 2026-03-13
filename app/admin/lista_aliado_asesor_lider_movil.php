@@ -1467,7 +1467,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <div id="cert_container_<?php echo $banco['cod_banco']; ?>" style="display: none; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;"><i class="fa-solid fa-file-certificate"></i> Certificado:</label>
-                                    <input type="file" class="banco-input" name="certificado_banco_<?php echo $banco['cod_banco']; ?>" id="certificado_banco_<?php echo $banco['cod_banco']; ?>" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="flex: 1; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.3rem; border-radius: 6px; font-size: 0.7rem;" disabled>
+                                    <input type="file" class="banco-input" name="certificado_banco_<?php echo $banco['cod_banco']; ?>" id="certificado_banco_<?php echo $banco['cod_banco']; ?>" accept=".pdf" style="flex: 1; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.3rem; border-radius: 6px; font-size: 0.7rem;" disabled>
                                 </div>
                             </div>
                         </div>
@@ -1479,7 +1479,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
                             <i class="fa-solid fa-info-circle" style="color: #8b5cf6; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Selecciona los bancos e ingresa el número de cuenta y tipo de cuenta para este aliado.
+                            <strong>Nota:</strong> Selecciona los bancos e ingresa el número de cuenta y tipo de cuenta para este aliado. Certificado solo en PDF.
                         </div>
                     </div>
                 </div>
@@ -1495,24 +1495,24 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-id-card"></i> Cédula
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-building"></i> Cámara de Comercio
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <!--
@@ -1788,8 +1788,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_cedula_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -1802,8 +1802,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_rut_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -1816,8 +1816,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_camara_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -2032,11 +2032,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="form-group">
                     <label class="form-label"><i class="fa-solid fa-file-certificate"></i> Certificado Bancario</label>
                     <div style="background: rgba(139, 92, 246, 0.05); border: 2px dashed rgba(139, 92, 246, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('agregar_certificado_banco').click()" onmouseover="this.style.borderColor='rgba(139, 92, 246, 0.6)'" onmouseout="this.style.borderColor='rgba(139, 92, 246, 0.3)'">
-                        <input type="file" id="agregar_certificado_banco" name="certificado_banco" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="display: none;" onchange="mostrarNombreArchivoCertificado(this, 'preview_certificado_agregar')">
+                        <input type="file" id="agregar_certificado_banco" name="certificado_banco" accept=".pdf" style="display: none;" onchange="mostrarNombreArchivoCertificado(this, 'preview_certificado_agregar')">
                         <div id="preview_certificado_agregar">
                             <i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(139, 92, 246, 0.6); margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p>
-                            <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Imagen o documento (JPG, PNG, PDF, DOC)</p>
+                            <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Documento (PDF)</p>
                         </div>
                     </div>
                 </div>
@@ -2448,7 +2448,6 @@ $(document).ready(function() {
     });
 });
 */
-
 // Función para cambiar tipo de cliente (Registro)
 function cambiarTipoCliente() {
     var select = document.getElementById('nombre_tipo_cliente');
@@ -2610,20 +2609,20 @@ function abrirModalEditar(data) {
     if (data.url_documentacion_rut_aliado && data.url_documentacion_rut_aliado.trim() !== '') {
         editRutActual.style.display = 'block';
         editRutActual.querySelector('a').href = data.url_documentacion_rut_aliado;
-        editRutInput.style.display = 'none'; // Ocultar input si ya existe documento
+        editRutInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
     } else {
         editRutActual.style.display = 'none';
-        editRutInput.style.display = 'block'; // Mostrar input si no existe documento
+        editRutInput.style.display = 'block'; // Mostrar si no existe
     }
     
     // Manejar Cámara de Comercio
     if (data.url_documentacion_camaracomercio_aliado && data.url_documentacion_camaracomercio_aliado.trim() !== '') {
         editCamaraActual.style.display = 'block';
         editCamaraActual.querySelector('a').href = data.url_documentacion_camaracomercio_aliado;
-        editCamaraInput.style.display = 'none'; // Ocultar input si ya existe documento
+        editCamaraInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
     } else {
         editCamaraActual.style.display = 'none';
-        editCamaraInput.style.display = 'block'; // Mostrar input si no existe documento
+        editCamaraInput.style.display = 'block'; // Mostrar si no existe
     }
     
     // Manejar Cédula
@@ -2633,10 +2632,10 @@ function abrirModalEditar(data) {
         if (data.url_documentacion_cedula_aliado && data.url_documentacion_cedula_aliado.trim() !== '') {
             editCedulaActual.style.display = 'block';
             editCedulaActual.querySelector('a').href = data.url_documentacion_cedula_aliado;
-            editCedulaInput.style.display = 'none'; // Ocultar input si ya existe documento
+            editCedulaInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
         } else {
             editCedulaActual.style.display = 'none';
-            editCedulaInput.style.display = 'block'; // Mostrar input si no existe documento
+            editCedulaInput.style.display = 'block'; // Mostrar si no existe
         }
     }
     
@@ -2645,10 +2644,7 @@ function abrirModalEditar(data) {
     
     // Cargar entidades crediticias asignadas al aliado
     $.ajax({
-        url: '../admin/obtener_entidades_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_administrador: data.cod_administrador },
-        dataType: 'json',
+        url: '../admin/obtener_entidades_aliado_ajax.php', type: 'POST', data: { cod_administrador: data.cod_administrador }, dataType: 'json',
         success: function(response) {
             //console.log('Respuesta obtener_entidades_aliado_ajax:', response);
             if (response.success && response.entidades && response.entidades.length > 0) {
@@ -2739,10 +2735,7 @@ function cargarBancosAliado(codAdministrador) {
     $('#contenedor_bancos_editar').html('<div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0; font-size: 0.85rem;">Cargando bancos...</p></div>');
     
     $.ajax({
-        url: '../admin/obtener_bancos_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_administrador: codAdministrador },
-        dataType: 'json',
+        url: '../admin/obtener_bancos_aliado_ajax.php', type: 'POST', data: { cod_administrador: codAdministrador }, dataType: 'json',
         success: function(response) {
             if (response.success && response.bancos && response.bancos.length > 0) {
                 var html = '';
@@ -2852,25 +2845,11 @@ function guardarBancoEditado(codBancoCuenta) {
     var certificadoFile = document.getElementById('edit_certificado_' + codBancoCuenta).files[0];
     
     if (numeroCuenta === '') {
-        Swal.fire({ 
-            icon: 'warning', 
-            title: 'Campo requerido', 
-            text: 'El número de cuenta no puede estar vacío', 
-            background: '#1a1f2e', 
-            color: 'white',
-            customClass: { container: 'swal-high-zindex' }
-        });
+        Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'El número de cuenta no puede estar vacío', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return;
     }
     
-    Swal.fire({
-        title: 'Guardando...',
-        didOpen: () => { Swal.showLoading() },
-        allowOutsideClick: false,
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     
     var formData = new FormData();
     formData.append('cod_banco_cuenta', codBancoCuenta);
@@ -2887,46 +2866,18 @@ function guardarBancoEditado(codBancoCuenta) {
     }
     
     $.ajax({
-        url: '../admin/actualizar_banco_aliado_ajax.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: '../admin/actualizar_banco_aliado_ajax.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(response) {
             Swal.close();
             if (response.success) {
-                Swal.fire({ 
-                    icon: 'success', 
-                    title: '¡Actualizado!', 
-                    text: 'Cuenta bancaria actualizada correctamente', 
-                    background: '#1a1f2e', 
-                    color: 'white', 
-                    timer: 2000,
-                    timerProgressBar: true,
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualizado!', text: 'Cuenta bancaria actualizada correctamente', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } });
             } else {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Error', 
-                    text: response.mensaje || 'No se pudo actualizar la cuenta', 
-                    background: '#1a1f2e', 
-                    color: 'white',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo actualizar la cuenta', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
             Swal.close();
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: 'Error de conexión. Intenta nuevamente.', 
-                background: '#1a1f2e', 
-                color: 'white',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -2936,50 +2887,19 @@ function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
     Swal.fire({
         title: '¿Eliminar cuenta bancaria?',
         html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la cuenta de:</p><strong style="color: #8b5cf6;">' + nombreBanco + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar',
-        cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar',
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: {
-            container: 'swal-high-zindex'
-        }
+        icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6b7280', confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar',
+        cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../admin/eliminar_banco_aliado_ajax.php',
-                type: 'POST',
-                data: { cod_banco_cuenta: codBancoCuenta },
-                dataType: 'json',
+                url: '../admin/eliminar_banco_aliado_ajax.php',type: 'POST', data: { cod_banco_cuenta: codBancoCuenta }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        Swal.fire({ 
-                            icon: 'success', 
-                            title: '¡Eliminado!', 
-                            text: 'Cuenta bancaria eliminada correctamente', 
-                            background: '#1a1f2e', 
-                            color: 'white', 
-                            timer: 2000,
-                            customClass: {
-                                container: 'swal-high-zindex'
-                            }
-                        });
+                        Swal.fire({ icon: 'success', title: '¡Eliminado!', text: 'Cuenta bancaria eliminada correctamente', background: '#1a1f2e', color: 'white', timer: 2000, customClass: { container: 'swal-high-zindex' } });
                         var codAdmin = $('#edit_cod_administrador').val();
                         cargarBancosAliado(codAdmin);
                     } else {
-                        Swal.fire({ 
-                            icon: 'error', 
-                            title: 'Error', 
-                            text: response.mensaje || 'No se pudo eliminar la cuenta', 
-                            background: '#1a1f2e', 
-                            color: 'white',
-                            customClass: {
-                                container: 'swal-high-zindex'
-                            }
-                        });
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo eliminar la cuenta', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     }
                 }
             });

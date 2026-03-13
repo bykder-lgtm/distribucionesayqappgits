@@ -26,7 +26,7 @@ if(isset($_POST['cod_banco_cuenta']) && isset($_POST['numero_banco_cuenta']) && 
         $archivo = $_FILES['certificado_banco'];
         $nombre_original = $archivo['name'];
         $extension = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
-        $extensiones_permitidas = array('jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx');
+        $extensiones_permitidas = array('pdf');
         
         if(in_array($extension, $extensiones_permitidas)) {
             // Crear directorio si no existe

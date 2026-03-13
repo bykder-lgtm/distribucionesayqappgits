@@ -36,9 +36,16 @@ $cod_municipio = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']
 $cod_tipo_tienda = ($cod_aliado_estrategico == '0' || empty($cod_aliado_estrategico)) ? 1 : 0;
 
 // Funciones para procesar archivos e imágenes
-function procesarArchivo($file_key, $directorio) {
+function procesarArchivo($file_key, $directorio, $permitidos = null) {
     global $conectar;
     if (!isset($_FILES[$file_key]) || $_FILES[$file_key]['error'] != 0) { return null; }
+
+    // Validar extensión si se especifican permitidos
+    if ($permitidos !== null) {
+        $extension = strtolower(pathinfo($_FILES[$file_key]['name'], PATHINFO_EXTENSION));
+        if (!in_array($extension, $permitidos)) { return null; }
+    }
+
     if (!file_exists($directorio)) { mkdir($directorio, 0777, true); }
     $nombre_archivo = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES[$file_key]['name']);
     $ruta_archivo = $directorio . $nombre_archivo;
@@ -89,6 +96,15 @@ if ($imgs_interna['orig']) { $sql_update .= ", url_img_interna_tienda = '{$imgs_
 // Procesar selfie con admin
 $imgs_selfie = procesarImagen('url_img_selfieadmin_tienda', '../archivador/img_establecimiento/');
 if ($imgs_selfie['orig']) { $sql_update .= ", url_img_selfieadmin_tienda = '{$imgs_selfie['orig']}'"; }
+
+// ========== PROCESAR DOCUMENTACIÓN LEGAL (Solo PDF) ==========
+$directorio_docs = '../archivador/documentacion_tienda/';
+$permitidos_pdf = array('pdf');
+$url_rut = procesarArchivo('url_rut_tienda', $directorio_docs, $permitidos_pdf);
+if ($url_rut) { $sql_update .= ", url_documentacion_rut_tienda = '$url_rut'"; }
+
+$url_camara = procesarArchivo('url_camara_comercio_tienda', $directorio_docs, $permitidos_pdf);
+if ($url_camara) { $sql_update .= ", url_documentacion_camaracomercio_tienda = '$url_camara'"; }
 $sql_update .= " WHERE cod_tienda = $cod_tienda";
 if (mysqli_query($conectar, $sql_update)) { echo json_encode(['success' => true, 'message' => 'Tienda actualizada correctamente', 'nombre_tienda' => $nombre_tienda]); } else { echo json_encode(['success' => false, 'message' => 'Error al actualizar: ' . mysqli_error($conectar)]); }
 ?>

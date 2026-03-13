@@ -609,7 +609,7 @@ $informacion_completa                             = $documentos_completos && $ti
                     <span style="color: rgba(255,255,255,0.8);">Pendiente de cargar</span>
                 </div>
                 <div class="file-upload">
-                    <input type="file" name="cedula_file" id="cedula_file" accept=".pdf,.jpg,.jpeg,.png">
+                    <input type="file" name="cedula_file" id="cedula_file" accept=".pdf">
                     <div class="file-upload-icon"><i class="fa-solid fa-cloud-upload-alt"></i></div>
                     <div class="file-upload-text">Haz clic o arrastra el archivo aquí</div>
                     <div class="file-upload-name" id="cedula_file_name"></div>
@@ -631,7 +631,7 @@ $informacion_completa                             = $documentos_completos && $ti
                     <span style="color: rgba(255,255,255,0.8);">Pendiente de cargar</span>
                 </div>
                 <div class="file-upload">
-                    <input type="file" name="rut_file" id="rut_file" accept=".pdf,.jpg,.jpeg,.png">
+                    <input type="file" name="rut_file" id="rut_file" accept=".pdf">
                     <div class="file-upload-icon"><i class="fa-solid fa-cloud-upload-alt"></i></div>
                     <div class="file-upload-text">Haz clic o arrastra el archivo aquí</div>
                     <div class="file-upload-name" id="rut_file_name"></div>
@@ -654,7 +654,7 @@ $informacion_completa                             = $documentos_completos && $ti
                     <span style="color: rgba(255,255,255,0.8);">Pendiente de cargar</span>
                 </div>
                 <div class="file-upload">
-                    <input type="file" name="camara_file" id="camara_file" accept=".pdf,.jpg,.jpeg,.png">
+                    <input type="file" name="camara_file" id="camara_file" accept=".pdf">
                     <div class="file-upload-icon"><i class="fa-solid fa-cloud-upload-alt"></i></div>
                     <div class="file-upload-text">Haz clic o arrastra el archivo aquí</div>
                     <div class="file-upload-name" id="camara_file_name"></div>
@@ -740,7 +740,7 @@ $informacion_completa                             = $documentos_completos && $ti
             <div class="form-group">
                 <label class="form-label">Certificado Bancario (PDF/Imagen)</label>
                 <div class="file-upload">
-                    <input type="file" name="certificado_banco" id="certificado_banco" accept=".pdf,.jpg,.jpeg,.png">
+                    <input type="file" name="certificado_banco" id="certificado_banco" accept=".pdf">
                     <div class="file-upload-icon"><i class="fa-solid fa-file-invoice"></i></div>
                     <div class="file-upload-text">Haz clic o arrastra el certificado bancario aquí</div>
                     <div class="file-upload-name" id="certificado_banco_name"></div>

@@ -35,7 +35,7 @@ try {
         case 'guardar_todo':
             // Acción unificada: guarda documentos Y cuenta bancaria en una sola petición
             $updates                                                          = array();
-            $permitidos                                                       = array('jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx');
+            $permitidos                                                       = array('pdf');
             $mensajes                                                         = array();
             // ===== PROCESAR DOCUMENTOS =====
             // Procesar Cédula
@@ -171,7 +171,7 @@ try {
             
         case 'guardar_documentos':
             $updates                                               = array();
-            $permitidos                                            = array('jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx');
+            $permitidos                                            = array('pdf');
             // Procesar RUT - soporta ambos nombres de campo
             $rut_field                                             = isset($_FILES['url_documentacion_rut_aliado']) ? 'url_documentacion_rut_aliado' : (isset($_FILES['rut_file']) ? 'rut_file' : '');
             if (!empty($rut_field) && $_FILES[$rut_field]['error'] == 0) {
@@ -281,7 +281,7 @@ try {
             if (isset($_FILES['certificado_banco']) && $_FILES['certificado_banco']['error'] == 0) {
                 $archivo                                      = $_FILES['certificado_banco'];
                 $extension                                    = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-                $permitidos                                   = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx'];
+                $permitidos                                   = ['pdf'];
                 if (!in_array($extension, $permitidos)) { throw new Exception('Formato de certificado no permitido'); }
                 if ($archivo['size'] > 5 * 1024 * 1024) { throw new Exception('El certificado excede el tamaño máximo de 5MB'); }
                 $nombre_archivo                               = 'certificado_banco_' . time() . '_' . uniqid() . '.' . $extension;

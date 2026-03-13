@@ -146,7 +146,7 @@ if (isset($_POST['identificacion_tercero'])) {
                         $archivo                                                        = $_FILES[$certificado_field];
                         $nombre_original                                                = $archivo['name'];
                         $extension                                                      = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
-                        $extensiones_permitidas                                         = array('jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx');
+                        $extensiones_permitidas                                         = array('pdf');
 
                         if(in_array($extension, $extensiones_permitidas)) {
                             $directorio                                                     = '../archivador/documentacion_tienda/';
@@ -180,7 +180,7 @@ if (isset($_POST['identificacion_tercero'])) {
                     $archivo = $_FILES[$campo];
                     $nombre_original = $archivo['name'];
                     $extension = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
-                    $extensiones_permitidas = array('jpg', 'jpeg', 'png', 'pdf');
+                    $extensiones_permitidas = array('pdf');
                     
                     if (in_array($extension, $extensiones_permitidas)) {
                         $directorio = '../archivador/documentacion_aliado/';

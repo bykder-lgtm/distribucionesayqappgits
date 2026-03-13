@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 $nombre_pagina          = "Mis Aliados";
 $cod_seguridad_pag      = "1";
 $pagina_local           = $_SERVER['PHP_SELF'];
@@ -1411,7 +1411,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <div id="cert_container_<?php echo $banco['cod_banco']; ?>" style="display: none; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;"><i class="fa-solid fa-file-certificate"></i> Certificado:</label>
-                                    <input type="file" class="banco-input" name="certificado_banco_<?php echo $banco['cod_banco']; ?>" id="certificado_banco_<?php echo $banco['cod_banco']; ?>" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="flex: 1; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.3rem; border-radius: 6px; font-size: 0.7rem;" disabled>
+                                    <input type="file" class="banco-input" name="certificado_banco_<?php echo $banco['cod_banco']; ?>" id="certificado_banco_<?php echo $banco['cod_banco']; ?>" accept=".pdf" style="flex: 1; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.3rem; border-radius: 6px; font-size: 0.7rem;" disabled>
                                 </div>
                             </div>
                         </div>
@@ -1423,7 +1423,7 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
                             <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
-                            <strong>Nota:</strong> Selecciona los bancos e ingresa el número de cuenta y tipo de cuenta para este aliado.
+                            <strong>Nota:</strong> Selecciona los bancos e ingresa el número de cuenta y tipo de cuenta para este aliado. Certificado solo en PDF.
                         </div>
                     </div>
                 </div>
@@ -1439,24 +1439,24 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-id-card"></i> Cédula
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-building"></i> Cámara de Comercio
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
                         <!--
@@ -1732,8 +1732,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_cedula_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -1746,8 +1746,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_rut_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -1760,8 +1760,8 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_camara_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
-                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
+                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
 
@@ -1976,11 +1976,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <div class="form-group">
                     <label class="form-label"><i class="fa-solid fa-file-certificate"></i> Certificado Bancario</label>
                     <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('agregar_certificado_banco').click()" onmouseover="this.style.borderColor='rgba(99, 102, 241, 0.6)'" onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.3)'">
-                        <input type="file" id="agregar_certificado_banco" name="certificado_banco" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="display: none;" onchange="mostrarNombreArchivoCertificado(this, 'preview_certificado_agregar')">
+                        <input type="file" id="agregar_certificado_banco" name="certificado_banco" accept=".pdf" style="display: none;" onchange="mostrarNombreArchivoCertificado(this, 'preview_certificado_agregar')">
                         <div id="preview_certificado_agregar">
                             <i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(99, 102, 241, 0.6); margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p>
-                            <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Imagen o documento (JPG, PNG, PDF, DOC)</p>
+                            <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Documento (PDF)</p>
                         </div>
                     </div>
                 </div>
@@ -2554,20 +2554,20 @@ function abrirModalEditar(data) {
     if (data.url_documentacion_rut_aliado && data.url_documentacion_rut_aliado.trim() !== '') {
         editRutActual.style.display = 'block';
         editRutActual.querySelector('a').href = data.url_documentacion_rut_aliado;
-        editRutInput.style.display = 'none'; // Ocultar input si ya existe documento
+        editRutInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
     } else {
         editRutActual.style.display = 'none';
-        editRutInput.style.display = 'block'; // Mostrar input si no existe documento
+        editRutInput.style.display = 'block'; // Mostrar si no existe
     }
     
     // Manejar Cámara de Comercio
     if (data.url_documentacion_camaracomercio_aliado && data.url_documentacion_camaracomercio_aliado.trim() !== '') {
         editCamaraActual.style.display = 'block';
         editCamaraActual.querySelector('a').href = data.url_documentacion_camaracomercio_aliado;
-        editCamaraInput.style.display = 'none'; // Ocultar input si ya existe documento
+        editCamaraInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
     } else {
         editCamaraActual.style.display = 'none';
-        editCamaraInput.style.display = 'block'; // Mostrar input si no existe documento
+        editCamaraInput.style.display = 'block'; // Mostrar si no existe
     }
     
     // Manejar Cédula
@@ -2577,10 +2577,10 @@ function abrirModalEditar(data) {
         if (data.url_documentacion_cedula_aliado && data.url_documentacion_cedula_aliado.trim() !== '') {
             editCedulaActual.style.display = 'block';
             editCedulaActual.querySelector('a').href = data.url_documentacion_cedula_aliado;
-            editCedulaInput.style.display = 'none'; // Ocultar input si ya existe documento
+            editCedulaInput.style.display = 'block'; // Mostrar siempre para permitir cambiar
         } else {
             editCedulaActual.style.display = 'none';
-            editCedulaInput.style.display = 'block'; // Mostrar input si no existe documento
+            editCedulaInput.style.display = 'block'; // Mostrar si no existe
         }
     }
     

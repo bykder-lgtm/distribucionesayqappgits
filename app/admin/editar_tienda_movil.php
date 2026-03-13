@@ -336,9 +336,9 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">RUT (PDF/Imagen)</label>
+                    <label class="form-label">RUT (Solo PDF)</label>
                     <div class="file-input-wrapper">
-                        <input type="file" name="url_rut_tienda" id="url_rut_tienda" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(this)">
+                        <input type="file" name="url_rut_tienda" id="url_rut_tienda" accept=".pdf" onchange="updateFileName(this)">
                         <div class="file-input-icon"><i class="fa-solid fa-file-pdf"></i></div>
                         <div class="file-input-text">Seleccionar nuevo archivo o mantener actual</div>
                     </div>
@@ -352,9 +352,9 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Cámara de Comercio (PDF/Imagen)</label>
+                    <label class="form-label">Cámara de Comercio (Solo PDF)</label>
                     <div class="file-input-wrapper">
-                        <input type="file" name="url_camara_comercio_tienda" id="url_camara_comercio_tienda" accept=".pdf,.jpg,.jpeg,.png" onchange="updateFileName(this)">
+                        <input type="file" name="url_camara_comercio_tienda" id="url_camara_comercio_tienda" accept=".pdf" onchange="updateFileName(this)">
                         <div class="file-input-icon"><i class="fa-solid fa-file-pdf"></i></div>
                         <div class="file-input-text">Seleccionar nuevo archivo o mantener actual</div>
                     </div>

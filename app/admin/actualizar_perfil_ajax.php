@@ -55,7 +55,7 @@ switch ($seccion) {
     case 'documentacion':
         $upload_dir = '../archivador/documentacion_aliados/' . $cod_administrador . '/';
         if (!file_exists($upload_dir)) { mkdir($upload_dir, 0777, true); }
-        $permitidos = array('jpg', 'jpeg', 'png', 'pdf');
+        $permitidos = array('pdf');
         
         $files_to_process = ['url_documentacion_cedula_aliado' => 'cedula', 'url_documentacion_rut_aliado' => 'rut', 'url_documentacion_camaracomercio_aliado' => 'camara_comercio'];
 

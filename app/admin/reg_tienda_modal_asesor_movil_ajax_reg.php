@@ -15,8 +15,15 @@ $codigoHTML_menu                                                    = '';
 $codigoHTML_menu_total_reg                                          = '';
 $respuesta_ajax                                                     = array();
 // ========== FUNCIÓN PARA PROCESAR ARCHIVOS ==========
-function procesarArchivo($file_key, $directorio, $prefijo = '') {
+function procesarArchivo($file_key, $directorio, $prefijo = '', $permitidos = null) {
     if (!isset($_FILES[$file_key]) || $_FILES[$file_key]['error'] != 0) { return ''; }
+    
+    // Validar extensión si se especifican permitidos
+    if ($permitidos !== null) {
+        $extension = strtolower(pathinfo($_FILES[$file_key]['name'], PATHINFO_EXTENSION));
+        if (!in_array($extension, $permitidos)) { return ''; }
+    }
+
     if (!file_exists($directorio)) { mkdir($directorio, 0777, true); }
     $nombre_archivo = $prefijo . time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES[$file_key]['name']);
     $ruta_archivo = $directorio . $nombre_archivo;
@@ -136,12 +143,13 @@ if (isset($_POST['nombre1_tercero']) && !empty($_POST['nombre1_tercero']) && iss
     $img_logo                                                       = procesarImagen('imagen_tienda', '../archivador/img_tienda/orig/', '../archivador/img_tienda/min/');
     $url_img_orig_tienda                                            = $img_logo['orig'];
     $url_img_min_tienda                                             = $img_logo['min'];
-    // ========== PROCESAR DOCUMENTACIÓN ==========
+    // ========== PROCESAR DOCUMENTACIÓN LEGAL (Solo PDF) ==========
     $directorio_docs                                                = '../archivador/documentacion_tienda/';
-    $url_documentacion_rut_tienda                                   = procesarArchivo('url_documentacion_rut_tienda', $directorio_docs, 'rut_');
-    $url_documentacion_camaracomercio_tienda                        = procesarArchivo('url_documentacion_camaracomercio_tienda', $directorio_docs, 'camara_');
-    $url_documentacion_contratofirma_tienda                         = procesarArchivo('url_documentacion_contratofirma_tienda', $directorio_docs, 'contrato_');
-    $url_documentacion_extra1_tienda                                = procesarArchivo('url_documentacion_extra1_tienda', $directorio_docs, 'extra_');
+    $permitidos_pdf                                                 = array('pdf');
+    $url_documentacion_rut_tienda                                   = procesarArchivo('url_documentacion_rut_tienda', $directorio_docs, 'rut_', $permitidos_pdf);
+    $url_documentacion_camaracomercio_tienda                        = procesarArchivo('url_documentacion_camaracomercio_tienda', $directorio_docs, 'camara_', $permitidos_pdf);
+    $url_documentacion_contratofirma_tienda                         = procesarArchivo('url_documentacion_contratofirma_tienda', $directorio_docs, 'contrato_', $permitidos_pdf);
+    $url_documentacion_extra1_tienda                                = procesarArchivo('url_documentacion_extra1_tienda', $directorio_docs, 'extra_', $permitidos_pdf);
     // ========== PROCESAR IMÁGENES DEL ESTABLECIMIENTO ==========
     $directorio_imgs                                                = '../archivador/img_establecimiento/';
     $url_img_fachada_tienda                                         = procesarArchivo('url_img_fachada_tienda', $directorio_imgs, 'fachada_');

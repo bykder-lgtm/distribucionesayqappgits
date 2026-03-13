@@ -86,7 +86,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
                     $archivo = $_FILES[$campo];
                     $nombre_original = $archivo['name'];
                     $extension = strtolower(pathinfo($nombre_original, PATHINFO_EXTENSION));
-                    $extensiones_permitidas = array('jpg', 'jpeg', 'png', 'pdf');
+                    $extensiones_permitidas = array('pdf');
                     
                     if (in_array($extension, $extensiones_permitidas)) {
                         $directorio = '../archivador/documentacion_aliado/';
