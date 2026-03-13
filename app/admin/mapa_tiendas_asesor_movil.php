@@ -197,9 +197,7 @@ $nombre_empresa = $datos_empresa['nombre'];
 
         function loadStores() {
             $.ajax({
-                url: 'obtener_tiendas_gps_asesor_ajax.php',
-                type: 'GET',
-                dataType: 'json',
+                url: 'obtener_tiendas_gps_asesor_ajax.php', type: 'GET', dataType: 'json',
                 success: function(response) {
                     $('#loader').fadeOut();
                     if (response.success) {

@@ -3,10 +3,7 @@ session_start();
 include_once("../conexiones/conexione.php");
 
 // Proteccion de ruta
-if (!isset($_SESSION['cod_administrador'])) {
-    header("Location: ../admin/entrar.php");
-    exit();
-}
+if (!isset($_SESSION['cod_administrador'])) { header("Location: ../admin/entrar.php"); exit(); }
 
 $cod_administrador = $_SESSION['cod_administrador'];
 
@@ -197,9 +194,7 @@ $nombre_empresa = $datos_empresa['nombre'];
 
         function loadStores() {
             $.ajax({
-                url: 'obtener_tiendas_gps_coordinador_ajax.php',
-                type: 'GET',
-                dataType: 'json',
+                url: 'obtener_tiendas_gps_coordinador_ajax.php', type: 'GET', dataType: 'json',
                 success: function(response) {
                     $('#loader').fadeOut();
                     if (response.success) {

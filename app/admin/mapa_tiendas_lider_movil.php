@@ -197,18 +197,22 @@ $nombre_empresa = $datos_empresa['nombre'];
 
         function loadStores() {
             $.ajax({
-                url: 'obtener_tiendas_gps_lider_ajax.php',
-                type: 'GET',
-                dataType: 'json',
+                url: 'obtener_tiendas_gps_lider_ajax.php', type: 'GET', dataType: 'json',
                 success: function(response) {
                     $('#loader').fadeOut();
                     if (response.success) {
                         $('#count-total').text(response.total);
                         $('#count-gps').text(response.data.length);
                         renderMarkers(response.data);
+                    } else {
+                        alert('Error: ' + response.message);
                     }
                 },
-                error: function() { $('#loader').fadeOut(); alert('Error al cargar datos'); }
+                error: function(xhr, status, error) { 
+                    $('#loader').fadeOut(); 
+                    console.error(xhr.responseText);
+                    alert('Error crítico al cargar datos. Ver consola.'); 
+                }
             });
         }
 
@@ -220,12 +224,7 @@ $nombre_empresa = $datos_empresa['nombre'];
                 var lat = parseFloat(tienda.lat);
                 var lng = parseFloat(tienda.lng);
                 if (!isNaN(lat) && !isNaN(lng)) {
-                    var icon = L.divIcon({
-                        className: 'custom-marker',
-                        html: '<div class="marker-pin"></div>',
-                        iconSize: [30, 30],
-                        iconAnchor: [15, 30]
-                    });
+                    var icon = L.divIcon({ className: 'custom-marker', html: '<div class="marker-pin"></div>', iconSize: [30, 30], iconAnchor: [15, 30] });
                     var popupContent = `
                         <div class="popup-header"><h3>${tienda.nombre}</h3></div>
                         <div class="popup-body">

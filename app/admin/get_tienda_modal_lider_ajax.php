@@ -10,10 +10,7 @@ if ($cod_tienda <= 0) { echo json_encode(['success' => false, 'message' => 'ID d
 // Asegurar codificación UTF-8
 mysqli_set_charset($conectar, "utf8mb4");
 // Consultar datos de la tienda y su jerarquía desde el aliado
-$sql = "SELECT t.*, a.cod_lider, a.cod_coordinador, a.cod_asesor 
-        FROM tbl15_tienda t 
-        LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador 
-        WHERE t.cod_tienda = ?";
+$sql = "SELECT t.*, a.cod_lider, a.cod_coordinador, a.cod_asesor FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_tienda = ?";
 $stmt = mysqli_prepare($conectar, $sql);
 mysqli_stmt_bind_param($stmt, "i", $cod_tienda);
 mysqli_stmt_execute($stmt);
