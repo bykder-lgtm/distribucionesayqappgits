@@ -1627,8 +1627,10 @@ $total_registros = ($res_conteo) ? mysqli_fetch_assoc($res_conteo)['total'] : 0;
 $total_paginas = ceil($total_registros / $registros_por_pagina);
 
 // Main query for stores
-$sql_tiendas_select = "SELECT t.*, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos ";
+$sql_tiendas_select = "SELECT t.*, d.nombre_departamento, m.nombre_municipio, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos ";
 $sql_tiendas_from = "FROM tbl15_tienda t ";
+$sql_tiendas_from .= "LEFT JOIN tbl15_departamento d ON t.cod_departamento = d.cod_departamento ";
+$sql_tiendas_from .= "LEFT JOIN tbl15_municipio m ON t.cod_municipio = m.cod_municipio AND t.cod_departamento = m.cod_departamento ";
 $sql_tiendas_where = $sql_conteo_where; // Reuse the WHERE clause from the count query
 
 if ($view == 'rapida') {
@@ -1848,14 +1850,22 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                         <?php endif; ?>
                     </div>
                 </div>
-                
                 <div class="store-details">
                     <div class="store-detail"><i class="fa-solid fa-handshake"></i><span>Aliado: <?php echo !empty($tienda['nombre_aliado']) ? ucwords(strtolower($tienda['nombre_aliado'])) : 'Sin asignar'; ?></span></div>
                     <div class="store-detail"><i class="fa-solid fa-user"></i><span><?php echo ucwords(strtolower($tienda['nombre1_tercero'])); ?></span></div>
                     <div class="store-detail"><i class="fa-solid fa-phone"></i><span><?php echo $tienda['telefono1_tercero']; ?></span></div>
-                    <div class="store-detail"><i class="fa-solid fa-envelope"></i><span><?php echo strtolower($tienda['correo_tercero']); ?></span></div>
+                    <div class="store-detail"><i class="fa-solid fa-map-location-dot"></i><span><?php echo ucwords(strtolower($tienda['nombre_departamento'])); ?> - <?php echo ucwords(strtolower($tienda['nombre_municipio'])); ?></span></div>
+                    <div class="store-detail"><i class="fa-solid fa-tree-city"></i><span>Barrio: <?php echo !empty($tienda['barrio_tercero']) ? ucwords(strtolower($tienda['barrio_tercero'])) : 'N/A'; ?></span></div>
+                    <div class="store-detail"><i class="fa-solid fa-location-dot"></i><span><?php echo ucwords(strtolower($tienda['direccion_tercero'])); ?></span></div>
+                    <div class="store-detail">
+                        <i class="fa-solid fa-file-signature"></i>
+                        <span>Firma: <i class="fa-solid <?php echo $tiene_firma ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'; ?>" style="font-size: 0.9rem; color: <?php echo $tiene_firma ? '#10b981' : '#ef4444'; ?>;"></i></span>
+                    </div>
+                    <div class="store-detail">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                        <span>GPS: <i class="fa-solid <?php echo $tiene_gps ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'; ?>" style="font-size: 0.9rem; color: <?php echo $tiene_gps ? '#10b981' : '#ef4444'; ?>;"></i></span>
+                    </div>
                     <div class="store-detail"><i class="fa-solid fa-credit-card"></i><span><?php echo $tienda['creditos_activos']; ?> créditos activos</span></div>
-                    <?php if(!empty($tienda['fecha_creacion'])): ?><div class="store-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($tienda['fecha_creacion'])); ?></span></div><?php endif; ?>
                 </div>
 
                 <!-- Estadísticas y Botones de Acción Rápida -->
