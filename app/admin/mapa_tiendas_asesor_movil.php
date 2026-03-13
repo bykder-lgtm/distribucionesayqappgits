@@ -184,22 +184,96 @@ $nombre_empresa = $datos_empresa['nombre'];
 
         /* Routing Control Style Fix */
         .leaflet-routing-container {
-            background: rgba(26, 31, 46, 0.9) !important;
+            background: rgba(26, 31, 46, 0.95) !important;
             color: white !important;
             border: 1px solid var(--theme-color) !important;
             border-radius: 12px !important;
-            backdrop-filter: blur(10px) !important;
+            backdrop-filter: blur(15px) !important;
             font-family: 'Inter', sans-serif !important;
-            max-height: 200px !important;
+            max-height: 70vh !important;
+            width: 300px !important;
             overflow-y: auto !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
         }
-        .leaflet-routing-alt { color: white !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; }
-        .leaflet-routing-alt h2 { font-size: 0.9rem !important; color: var(--theme-color) !important; }
+        
+        .leaflet-routing-container::-webkit-scrollbar { width: 6px; }
+        .leaflet-routing-container::-webkit-scrollbar-track { background: transparent; }
+        .leaflet-routing-container::-webkit-scrollbar-thumb { background: var(--theme-color); border-radius: 10px; }
+        
+        .leaflet-routing-alt { color: white !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; padding: 15px !important; }
+        .leaflet-routing-alt h2 { font-size: 1rem !important; color: var(--theme-color) !important; margin-bottom: 10px !important; }
+        .leaflet-routing-alt h3 { font-size: 0.8rem !important; opacity: 0.8 !important; }
         .leaflet-routing-alt table tr:hover { background: rgba(255,255,255,0.05) !important; }
         .leaflet-routing-icon { filter: invert(1) !important; }
         
         /* Ocultar panel de instrucciones si se prefiere una vista limpia */
         .leaflet-routing-container-hide { display: none !important; }
+
+        /* Estilo para el botón de acordeón (Colapsar/Expandir) */
+        .leaflet-routing-collapse-btn {
+            position: absolute;
+            top: 5px; right: 5px;
+            width: 30px !important;
+            height: 30px !important;
+            background: var(--theme-color) !important;
+            color: white !important;
+            border-radius: 50% !important;
+            border: 2px solid white !important;
+            display: flex !important;
+            align-items: center; justify-content: center;
+            z-index: 100;
+            cursor: pointer !important;
+            font-weight: 900 !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        /* Ícono de cerrar (X) cuando está EXPANDIDO */
+        .leaflet-routing-collapse-btn::after {
+            content: '×';
+            font-size: 24px;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+        
+        /* Ajuste cuando está COLAPSADO - Estilo Píldora */
+        .leaflet-routing-container.leaflet-routing-collapsed {
+            padding: 0 !important;
+            margin: 10px !important;
+            min-width: 160px !important;
+            height: 45px !important;
+            overflow: hidden !important;
+            background: var(--theme-color) !important;
+            border: 2px solid white !important;
+            border-radius: 30px !important;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 1000 !important;
+        }
+
+        /* Cuando está colapsado, el botón de colapso cubre TODO para actuar como disparador */
+        .leaflet-routing-container.leaflet-routing-collapsed .leaflet-routing-collapse-btn {
+            top: 0; right: 0;
+            width: 100% !important;
+            height: 100% !important;
+            opacity: 0 !important;
+            border-radius: 30px !important;
+        }
+
+        .leaflet-routing-container.leaflet-routing-collapsed .leaflet-routing-alt { display: none !important; }
+
+        /* Texto del botón colapsado */
+        .leaflet-routing-container.leaflet-routing-collapsed::after {
+            content: '📍 VER INDICACIONES';
+            display: block;
+            color: white !important;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body>
@@ -386,8 +460,16 @@ $nombre_empresa = $datos_empresa['nombre'];
                 addWaypoints: false,
                 draggableWaypoints: false,
                 language: 'es',
-                show: true
+                collapsible: true,
+                show: true,
+                position: 'topleft'
             }).addTo(map);
+
+            setTimeout(function() {
+                if (routingControl && typeof routingControl.collapse === 'function') {
+                    routingControl.collapse();
+                }
+            }, 200);
 
             map.closePopup();
         }
