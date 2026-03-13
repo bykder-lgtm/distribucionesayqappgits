@@ -38,6 +38,7 @@ $nombre_empresa = $datos_empresa['nombre'];
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     
     <style>
         :root {
@@ -180,6 +181,25 @@ $nombre_empresa = $datos_empresa['nombre'];
         .layer-btn.active { background: var(--theme-color); border-color: white; box-shadow: 0 0 10px var(--theme-color); }
         .layer-btn:hover { transform: scale(1.1); background: rgba(255,255,255,0.1); }
         .layer-btn.active:hover { background: var(--theme-color); }
+
+        /* Routing Control Style Fix */
+        .leaflet-routing-container {
+            background: rgba(26, 31, 46, 0.9) !important;
+            color: white !important;
+            border: 1px solid var(--theme-color) !important;
+            border-radius: 12px !important;
+            backdrop-filter: blur(10px) !important;
+            font-family: 'Inter', sans-serif !important;
+            max-height: 200px !important;
+            overflow-y: auto !important;
+        }
+        .leaflet-routing-alt { color: white !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; }
+        .leaflet-routing-alt h2 { font-size: 0.9rem !important; color: var(--theme-color) !important; }
+        .leaflet-routing-alt table tr:hover { background: rgba(255,255,255,0.05) !important; }
+        .leaflet-routing-icon { filter: invert(1) !important; }
+        
+        /* Ocultar panel de instrucciones si se prefiere una vista limpia */
+        .leaflet-routing-container-hide { display: none !important; }
     </style>
 </head>
 <body>
@@ -217,10 +237,12 @@ $nombre_empresa = $datos_empresa['nombre'];
 
     <script src="../js/jquery-3.2.1.min_visitante.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     
     <script>
-        var map, userMarker;
+        var map, userMarker, userCoords;
         var markers = [];
+        var routingControl = null;
         var themeColor = '<?php echo $theme_color; ?>';
 
         var baseLayers = {
@@ -233,6 +255,13 @@ $nombre_empresa = $datos_empresa['nombre'];
         $(document).ready(function() {
             initMap();
             loadStores();
+            // Intentar obtener ubicación inicial
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+                    actualizarMarcadorUsuario(userCoords.lat, userCoords.lng);
+                });
+            }
         });
 
         function initMap() {
@@ -286,9 +315,10 @@ $nombre_empresa = $datos_empresa['nombre'];
                             <div class="popup-info"><i class="fa-solid fa-handshake"></i><span><b>Aliado:</b> ${tienda.aliado}</span></div>
                             <div class="popup-info"><i class="fa-solid fa-location-dot"></i><span>${tienda.direccion}</span></div>
                             <div class="popup-info"><i class="fa-solid fa-phone"></i><span>${tienda.telefono}</span></div>
-                            <div class="popup-actions">
-                                <a href="tel:${tienda.telefono}" class="btn-action btn-outline">Llamar</a>
-                                <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="btn-action btn-primary">Ruta</a>
+                            <div class="popup-actions" style="flex-wrap: wrap;">
+                                <a href="tel:${tienda.telefono}" class="btn-action btn-outline" style="min-width: 45%;">Llamar</a>
+                                <button onclick="trazarRuta(${lat}, ${lng}, '${tienda.nombre.replace(/'/g, "\\'")}')" class="btn-action btn-primary" style="min-width: 45%;">Trazar Ruta</button>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" class="btn-action btn-outline" style="min-width: 100%; margin-top: 5px; font-size: 0.7rem;">Abrir en Google Maps</a>
                             </div>
                         </div>
                     `;
@@ -316,16 +346,54 @@ $nombre_empresa = $datos_empresa['nombre'];
             }
         }
 
+        function actualizarMarcadorUsuario(lat, lng) {
+            if (userMarker) map.removeLayer(userMarker);
+            var userIcon = L.divIcon({ className: 'user-marker', html: '<div class="user-marker-pin"></div>', iconSize: [20, 20], iconAnchor: [10, 10] });
+            userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
+            userCoords = { lat: lat, lng: lng };
+        }
+
         function getUserLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                    var lat = position.coords.latitude, lng = position.coords.longitude;
-                    if (userMarker) map.removeLayer(userMarker);
-                    var userIcon = L.divIcon({ className: 'user-marker', html: '<div class="user-marker-pin"></div>', iconSize: [20, 20], iconAnchor: [10, 10] });
-                    userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map);
-                    map.setView([lat, lng], 16);
-                }, () => alert("Ubicación no disponible"));
+                    actualizarMarcadorUsuario(position.coords.latitude, position.coords.longitude);
+                    map.setView([position.coords.latitude, position.coords.longitude], 16);
+                }, () => alert("Ubicación no disponible. Por favor, activa el GPS."));
             }
+        }
+
+        function trazarRuta(destLat, destLng, nombreTienda) {
+            if (!userCoords) {
+                alert("Primero necesitamos tu ubicación actual. Por favor, presiona el botón de GPS.");
+                getUserLocation();
+                return;
+            }
+
+            // Si ya hay una ruta, quitarla
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(userCoords.lat, userCoords.lng),
+                    L.latLng(destLat, destLng)
+                ],
+                routeWhileDragging: false,
+                lineOptions: {
+                    styles: [{ color: themeColor, opacity: 0.8, weight: 6 }]
+                },
+                createMarker: function() { return null; }, // No crear marcadores extra
+                addWaypoints: false,
+                draggableWaypoints: false,
+                language: 'es',
+                show: true // Mostrar panel de instrucciones
+            }).addTo(map);
+
+            map.closePopup();
+            
+            // Cerrar el panel automáticamente después de 5 segundos si tapa mucho (opcional)
+            // setTimeout(() => { $('.leaflet-routing-container').addClass('leaflet-routing-container-hide'); }, 5000);
         }
     </script>
 </body>
