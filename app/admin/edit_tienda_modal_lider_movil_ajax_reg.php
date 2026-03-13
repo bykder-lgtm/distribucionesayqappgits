@@ -11,7 +11,66 @@ $cod_administrador = ($_SESSION['cod_administrador']);
 // Leer cod_tienda desde 'cod_tienda_edit' que es el nombre del campo en el formulario
 $cod_tienda = isset($_POST['cod_tienda_edit']) ? intval($_POST['cod_tienda_edit']) : (isset($_POST['cod_tienda']) ? intval($_POST['cod_tienda']) : 0);
 if ($cod_tienda <= 0) { echo json_encode(['success' => false, 'message' => 'ID de tienda inválido']); exit; }
-
+// ========== FUNCIÓN PARA PROCESAR ARCHIVOS ==========
+if (!function_exists('procesarArchivo')) {
+    function procesarArchivo($file_key, $directorio, $prefijo = '') {
+        if (!isset($_FILES[$file_key]) || $_FILES[$file_key]['error'] != 0) { return ''; }
+        if (!file_exists($directorio)) { mkdir($directorio, 0777, true); }
+        $nombre_archivo = $prefijo . time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES[$file_key]['name']);
+        $ruta_archivo = $directorio . $nombre_archivo;
+        if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $ruta_archivo)) { return $ruta_archivo; }
+        return '';
+    }
+}
+// ========== FUNCIÓN PARA PROCESAR IMÁGENES CON MINIATURA ==========
+if (!function_exists('procesarImagen')) {
+    function procesarImagen($file_key, $directorio_orig, $directorio_min = null, $ancho_min = 200) {
+        if (!isset($_FILES[$file_key]) || $_FILES[$file_key]['error'] != 0) { return array('orig' => '', 'min' => ''); }
+        if (!file_exists($directorio_orig)) { mkdir($directorio_orig, 0777, true); }
+        if ($directorio_min && !file_exists($directorio_min)) { mkdir($directorio_min, 0777, true); }
+        
+        $nombre_archivo = time() . '_' . preg_replace('/[^a-zA-Z0-9\._-]/', '', $_FILES[$file_key]['name']);
+        $ruta_orig = $directorio_orig . $nombre_archivo;
+        if (!move_uploaded_file($_FILES[$file_key]['tmp_name'], $ruta_orig)) { return array('orig' => '', 'min' => ''); }
+        
+        $ruta_min = '';
+        if ($directorio_min) {
+            $ruta_min = $directorio_min . $nombre_archivo;
+            $tipo_imagen = $_FILES[$file_key]['type'];
+            $dimensiones = getimagesize($ruta_orig);
+            if ($dimensiones) {
+                $ancho_orig = $dimensiones[0];
+                $alto_orig = $dimensiones[1];
+                $alto_nuevo = ($alto_orig / $ancho_orig) * $ancho_min;
+                $imagen_nueva = imagecreatetruecolor($ancho_min, $alto_nuevo);
+                
+                switch ($tipo_imagen) {
+                    case 'image/jpeg': $imagen_orig = imagecreatefromjpeg($ruta_orig); break;
+                    case 'image/png': 
+                        $imagen_orig = imagecreatefrompng($ruta_orig); 
+                        imagealphablending($imagen_nueva, false);
+                        imagesavealpha($imagen_nueva, true);
+                        break;
+                    case 'image/gif': $imagen_orig = imagecreatefromgif($ruta_orig); break;
+                    case 'image/webp': $imagen_orig = imagecreatefromwebp($ruta_orig); break;
+                    default: $imagen_orig = @imagecreatefromjpeg($ruta_orig);
+                }
+                
+                if ($imagen_orig) {
+                    imagecopyresampled($imagen_nueva, $imagen_orig, 0, 0, 0, 0, $ancho_min, $alto_nuevo, $ancho_orig, $alto_orig);
+                    switch ($tipo_imagen) {
+                        case 'image/png': imagepng($imagen_nueva, $ruta_min); break;
+                        case 'image/gif': imagegif($imagen_nueva, $ruta_min); break;
+                        default: imagejpeg($imagen_nueva, $ruta_min, 85);
+                    }
+                    imagedestroy($imagen_orig);
+                    imagedestroy($imagen_nueva);
+                }
+            }
+        }
+        return array('orig' => $ruta_orig, 'min' => $ruta_min);
+    }
+}
 // Variables POST - Mapeadas según estructura de tbl15_tienda
 $nombre_tienda = isset($_POST['nombre1_tercero']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['nombre1_tercero']))) : '';
 $identificacion_tercero = isset($_POST['identificacion_tercero']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['identificacion_tercero']))) : '';
