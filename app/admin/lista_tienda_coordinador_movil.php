@@ -1,4 +1,4 @@
-﻿<?php 
+<?php 
 $nombre_pagina          = "Mis Tiendas";
 $cod_seguridad_pag      = "1";
 $pagina_local           = $_SERVER['PHP_SELF'];
@@ -20,8 +20,114 @@ $cod_base_caja          = "1";
 <link href="../imagenes/favicon.png" type="image/x-icon" rel="shortcut icon" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="../js/jquery-3.2.1.min_visitante.js"></script>
-<link rel="stylesheet" href="../estilo_css/sweetalert2.min_adm_tick.css" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Select2 CDN -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+:root {
+    --theme-color: #6366f1;
+    --theme-color-rgb: 99, 102, 241;
+    --bg-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+    --shadow-color: rgba(99, 102, 241, 0.4);
+}
+
+/* Ajustes para Select2 en modo oscuro con estética Premium */
+.select2-container--default .select2-selection--single {
+    background: rgba(var(--theme-color-rgb), 0.1) !important;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.3) !important;
+    border-radius: 12px !important;
+    height: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.3s ease !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: white !important;
+    padding-left: 1.25rem !important;
+    font-size: 0.95rem !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 48px !important;
+    right: 10px !important;
+}
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: var(--theme-color) !important;
+    box-shadow: 0 0 0 3px rgba(var(--theme-color-rgb), 0.2) !important;
+}
+.select2-dropdown {
+    background: #1a1f2e !important;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.4) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+    color: white !important;
+    overflow: hidden !important;
+    z-index: 9999 !important;
+}
+.select2-results__option {
+    padding: 10px 15px !important;
+    font-size: 0.9rem !important;
+    transition: all 0.2s ease !important;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: var(--bg-gradient) !important;
+}
+.select2-search--dropdown {
+    padding: 10px !important;
+    background: #0d1117 !important;
+}
+.select2-search--dropdown .select2-search__field {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.3) !important;
+    color: white !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    outline: none !important;
+}
+/* Asegurar que Select2 este encima del modal */
+.select2-container {
+    z-index: 10000 !important;
+}
+
+/* Filter Panel Styles */
+.filter-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
+    z-index: 9000; display: none; opacity: 0; transition: opacity 0.3s;
+}
+.filter-drawer {
+    position: fixed; top: 0; right: -320px; width: 320px; height: 100%;
+    background: #1a1f2e; z-index: 9001; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    border-left: 1px solid rgba(255,255,255,0.1);
+}
+.filter-drawer.open { right: 0; }
+.filter-overlay.active { display: block; opacity: 1; }
+
+.filter-header {
+    padding: 1.5rem; background: var(--bg-gradient);
+    display: flex; align-items: center; justify-content: space-between;
+}
+.filter-header h2 { font-size: 1.1rem; font-weight: 700; margin: 0; color: white; }
+.close-filter { color: white; opacity: 0.8; font-size: 1.5rem; cursor: pointer; }
+
+.filter-content { padding: 1.5rem; flex: 1; overflow-y: auto; }
+.filter-group { margin-bottom: 1.5rem; }
+.filter-group label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; margin-bottom: 8px; font-weight: 600; color: white; }
+.filter-input {
+    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 12px 15px; color: white; font-family: inherit; font-size: 0.9rem;
+    transition: all 0.3s;
+}
+.filter-input:focus { outline: none; border-color: var(--theme-color); background: rgba(255,255,255,0.05); box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.2); }
+.filter-input option { background: #1a1f2e; color: white; }
+
+.filter-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 10px; }
+.btn-apply-filters { background: var(--theme-color); color: white; border: none; flex: 2; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+.btn-reset-filters { background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); flex: 1; padding: 12px; border-radius: 12px; cursor: pointer; }
+.btn-apply-filters:hover { transform: scale(1.02); filter: brightness(1.1); box-shadow: 0 5px 15px var(--shadow-color); }
+</style>
 
 <style>
 /* ============================================ */
@@ -45,13 +151,13 @@ body {
 
 /* Header */
 .page-header {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+    background: var(--bg-gradient);
     border-radius: 20px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 10px 40px var(--shadow-color);
 }
 
 .page-header::before {
@@ -139,7 +245,7 @@ body {
 }
 
 .search-bar i {
-    color: #10b981;
+    color: var(--theme-color);
     font-size: 1.1rem;
 }
 
@@ -281,7 +387,7 @@ body {
 }
 
 .action-btn.primary:hover {
-    background: #10b981;
+    background: var(--theme-color);
     color: white;
 }
 
@@ -325,7 +431,7 @@ body {
 .store-stat-number {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #6366f1;
+    color: var(--theme-color);
     display: block;
 }
 
@@ -880,6 +986,11 @@ body {
 <?php
 // Obtener tiendas del coordinador
 $busqueda = isset($_GET['busqueda']) ? mysqli_real_escape_string($conectar, $_GET['busqueda']) : '';
+$busqueda = isset($_GET['busqueda']) ? trim(mysqli_real_escape_string($conectar, $_GET['busqueda'])) : '';
+$cod_departamento_filtro = isset($_GET['cod_departamento']) ? (int)$_GET['cod_departamento'] : 0;
+$cod_municipio_filtro = isset($_GET['cod_municipio']) ? (int)$_GET['cod_municipio'] : 0;
+$barrio_filtro = isset($_GET['barrio']) ? trim(mysqli_real_escape_string($conectar, $_GET['barrio'])) : '';
+$has_gps_filtro = isset($_GET['has_gps']) ? $_GET['has_gps'] : '';
 
 // --- CONFIGURACIǸN DE PAGINACIǸN ---
 $registros_por_pagina = 12;
@@ -888,17 +999,28 @@ if ($pagina_actual < 1) $pagina_actual = 1;
 $offset = ($pagina_actual - 1) * $registros_por_pagina;
 
 // Subquery para obtener los cod_administrador de los aliados que pertenecen a este coordinador
-$subquery_aliados_coord = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_coordinador = '$cod_administrador' AND cod_estado != '0'";
+$subquery_aliados_coordinador = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_coordinador = '$cod_administrador' AND cod_estado != '0' AND cod_estado_activacion_usuario != '3'";
 
-// Contador para paginacin
-$sql_count = "SELECT COUNT(*) as total FROM tbl15_tienda t WHERE t.cod_aliado_estrategico IN ($subquery_aliados_coord) AND t.cod_estado != '0'";
-if (!empty($busqueda)) { $sql_count .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
-$res_count = mysqli_query($conectar, $sql_count);
-$total_tiendas_filtradas = ($res_count) ? mysqli_fetch_assoc($res_count)['total'] : 0;
+// Consulta para contar el total de tiendas (para la paginación)
+$sql_conteo = "SELECT COUNT(*) as total FROM tbl15_tienda t WHERE t.cod_aliado_estrategico IN ($subquery_aliados_coordinador) AND t.cod_estado != '0'";
+if (!empty($busqueda)) { $sql_conteo .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%' OR t.cod_tienda LIKE '$busqueda')"; }
+if ($cod_departamento_filtro > 0) { $sql_conteo .= " AND t.cod_departamento = '$cod_departamento_filtro'"; }
+if ($cod_municipio_filtro > 0) { $sql_conteo .= " AND t.cod_municipio = '$cod_municipio_filtro'"; }
+if (!empty($barrio_filtro)) { $sql_conteo .= " AND t.barrio_tercero LIKE '%$barrio_filtro%'"; }
+if ($has_gps_filtro === 'si') { $sql_conteo .= " AND t.ubicacion_gps_tienda IS NOT NULL AND t.ubicacion_gps_tienda != ''"; }
+else if ($has_gps_filtro === 'no') { $sql_conteo .= " AND (t.ubicacion_gps_tienda IS NULL OR t.ubicacion_gps_tienda = '')"; }
+
+$res_conteo = mysqli_query($conectar, $sql_conteo);
+$total_tiendas_filtradas = ($res_conteo) ? mysqli_fetch_assoc($res_conteo)['total'] : 0;
 $total_paginas = ceil($total_tiendas_filtradas / $registros_por_pagina);
 
-$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_coord) AND t.cod_estado != '0'";
-if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%')"; }
+$sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_aliado_estrategico IN ($subquery_aliados_coordinador) AND t.cod_estado != '0'";
+if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%' OR t.cod_tienda LIKE '$busqueda')"; }
+if ($cod_departamento_filtro > 0) { $sql_tiendas .= " AND t.cod_departamento = '$cod_departamento_filtro'"; }
+if ($cod_municipio_filtro > 0) { $sql_tiendas .= " AND t.cod_municipio = '$cod_municipio_filtro'"; }
+if (!empty($barrio_filtro)) { $sql_tiendas .= " AND t.barrio_tercero LIKE '%$barrio_filtro%'"; }
+if ($has_gps_filtro === 'si') { $sql_tiendas .= " AND t.ubicacion_gps_tienda IS NOT NULL AND t.ubicacion_gps_tienda != ''"; }
+else if ($has_gps_filtro === 'no') { $sql_tiendas .= " AND (t.ubicacion_gps_tienda IS NULL OR t.ubicacion_gps_tienda = '')"; }
 
 $sql_tiendas .= " ORDER BY t.fecha_creacion DESC LIMIT $registros_por_pagina OFFSET $offset";
 $resultado_tiendas = mysqli_query($conectar, $sql_tiendas);
@@ -910,12 +1032,12 @@ $res_total_base = mysqli_query($conectar, $sql_total_base);
 $total_tiendas_header = ($res_total_base) ? mysqli_fetch_assoc($res_total_base)['total'] : 0;
 
 // Contar tiendas con firma
-$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_coord) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != '' AND cod_estado != '0'";
+$sql_con_firma = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_coordinador) AND url_firma_electronica IS NOT NULL AND url_firma_electronica != '' AND cod_estado != '0'";
 $resultado_con_firma = mysqli_query($conectar, $sql_con_firma);
 $tiendas_con_firma = 0;
 if ($resultado_con_firma) { $datos_con_firma = mysqli_fetch_assoc($resultado_con_firma); $tiendas_con_firma = isset($datos_con_firma['total']) ? intval($datos_con_firma['total']) : 0; }
 // Contar tiendas con GPS
-$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_coord) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != '' AND cod_estado != '0'";
+$sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estrategico IN ($subquery_aliados_coordinador) AND ubicacion_gps_tienda IS NOT NULL AND ubicacion_gps_tienda != '' AND cod_estado != '0'";
 $resultado_con_gps = mysqli_query($conectar, $sql_con_gps);
 $tiendas_con_gps = 0;
 if ($resultado_con_gps) { $datos_con_gps = mysqli_fetch_assoc($resultado_con_gps); $tiendas_con_gps = isset($datos_con_gps['total']) ? intval($datos_con_gps['total']) : 0; }
@@ -951,6 +1073,46 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
     <div class="search-bar animate-in delay-1">
         <i class="fa-solid fa-search"></i>
         <input type="text" id="searchInput" placeholder="Buscar tienda..." value="<?php echo htmlspecialchars($busqueda); ?>" onkeyup="filtrarTiendas(this.value)">
+        <button onclick="toggleFilterDrawer()" class="action-btn" style="width: auto; padding: 0.5rem 0.8rem; background: rgba(var(--theme-color-rgb), 0.2); border: 1px solid rgba(var(--theme-color-rgb), 0.4);"><i class="fa-solid fa-filter"></i></button>
+    </div>
+
+    <!-- Filter Drawer -->
+    <div class="filter-overlay" onclick="toggleFilterDrawer()"></div>
+    <div class="filter-drawer" id="filterDrawer">
+        <div class="filter-header">
+            <h2>Filtros Avanzados</h2>
+            <span class="close-filter" onclick="toggleFilterDrawer()">&times;</span>
+        </div>
+        <div class="filter-content">
+            <div class="filter-group">
+                <label>Departamento</label>
+                <select id="filter-dept" class="filter-input" onchange="loadMunicipiosFiltro()">
+                    <option value="">Seleccione Departamento</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Municipio</label>
+                <select id="filter-muni" class="filter-input">
+                    <option value="">Seleccione Municipio</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Barrio</label>
+                <input type="text" id="filter-barrio" class="filter-input" placeholder="Nombre del barrio..." value="<?php echo htmlspecialchars($barrio_filtro); ?>">
+            </div>
+            <div class="filter-group">
+                <label>Ubicación GPS</label>
+                <select id="filter-gps" class="filter-input">
+                    <option value="" <?php echo $has_gps_filtro === '' ? 'selected' : ''; ?>>Todas</option>
+                    <option value="si" <?php echo $has_gps_filtro === 'si' ? 'selected' : ''; ?>>Con Ubicación GPS</option>
+                    <option value="no" <?php echo $has_gps_filtro === 'no' ? 'selected' : ''; ?>>Sin Ubicación GPS</option>
+                </select>
+            </div>
+        </div>
+        <div class="filter-footer">
+            <button class="btn-reset-filters" onclick="resetAllFilters()">Limpiar</button>
+            <button class="btn-apply-filters" onclick="applyAdvancedFilters()">Aplicar Filtros</button>
+        </div>
     </div>
     <!-- Add Button -->
     <button class="add-button animate-in delay-1" onclick="abrirModalRegistro()"><i class="fa-solid fa-plus"></i>Registrar Nueva Tienda</button>
@@ -1064,13 +1226,19 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
 
     <!-- Pagination -->
     <?php if ($total_paginas > 1): ?>
-    <div class="pagination-container animate-in delay-3">
-        <a href="?pagina=1<?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : ''); ?>" 
+    <?php 
+        $query_params = $_GET; 
+        unset($query_params['pagina']);
+        $base_url_params = http_build_query($query_params);
+        if (!empty($base_url_params)) $base_url_params = '&' . $base_url_params;
+    ?>
+    <div class="pagination-container animate-in delay-2">
+        <a href="?pagina=1<?php echo $base_url_params; ?>" 
            class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>" title="Primera página">
             <i class="fa-solid fa-angles-left"></i>
         </a>
         
-        <a href="?pagina=<?php echo $pagina_actual - 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : ''); ?>" 
+        <a href="?pagina=<?php echo $pagina_actual - 1; ?><?php echo $base_url_params; ?>" 
            class="pagination-btn <?php echo ($pagina_actual <= 1) ? 'disabled' : ''; ?>" title="Página anterior">
             <i class="fa-solid fa-chevron-left"></i>
         </a>
@@ -1079,12 +1247,12 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
             Pág. <span><?php echo $pagina_actual; ?></span> de <span><?php echo $total_paginas; ?></span>
         </div>
         
-        <a href="?pagina=<?php echo $pagina_actual + 1; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : ''); ?>" 
+        <a href="?pagina=<?php echo $pagina_actual + 1; ?><?php echo $base_url_params; ?>" 
            class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>" title="Siguiente página">
             <i class="fa-solid fa-chevron-right"></i>
         </a>
         
-        <a href="?pagina=<?php echo $total_paginas; ?><?php echo (!empty($busqueda) ? '&busqueda='.urlencode($busqueda) : ''); ?>" 
+        <a href="?pagina=<?php echo $total_paginas; ?><?php echo $base_url_params; ?>" 
            class="pagination-btn <?php echo ($pagina_actual >= $total_paginas) ? 'disabled' : ''; ?>" title="Última página">
             <i class="fa-solid fa-angles-right"></i>
         </a>
@@ -1635,7 +1803,87 @@ function updateFileName(input) {
         }
     }
 }
-function filtrarTiendas(busqueda) { clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(function() { window.location.href = 'lista_tienda_coordinador_movil.php?busqueda=' + encodeURIComponent(busqueda); }, 500); }
+
+function toggleFilterDrawer() {
+    $('.filter-overlay').toggleClass('active');
+    $('#filterDrawer').toggleClass('open');
+}
+
+function loadDepartmentsFiltro() {
+    $.get('../admin/obtener_departamentos_ajax.php', function(res) {
+        if(res.success) {
+            var currentDept = '<?php echo $cod_departamento_filtro; ?>';
+            var html = '<option value="">Todos los Departamentos</option>';
+            res.departamentos.forEach(d => {
+                var selected = (d.cod_departamento == currentDept) ? 'selected' : '';
+                html += `<option value="${d.cod_departamento}" ${selected}>${d.nombre_departamento}</option>`;
+            });
+            $('#filter-dept').html(html);
+            if(currentDept) loadMunicipiosFiltro('<?php echo $cod_municipio_filtro; ?>');
+        }
+    });
+}
+
+function loadMunicipiosFiltro(preselectedMuni = '') {
+    var cod_depto = $('#filter-dept').val();
+    if(!cod_depto) {
+        $('#filter-muni').html('<option value="">Seleccione Municipio</option>');
+        return;
+    }
+    $.get('../admin/obtener_municipios_ajax.php', { cod_departamento: cod_depto }, function(res) {
+        if(res.success) {
+            var html = '<option value="">Todos los Municipios</option>';
+            res.municipios.forEach(m => {
+                var selected = (m.cod_municipio == preselectedMuni) ? 'selected' : '';
+                html += `<option value="${m.cod_municipio}" ${selected}>${m.nombre_municipio}</option>`;
+            });
+            $('#filter-muni').html(html);
+        }
+    });
+}
+
+function applyAdvancedFilters() {
+    const busqueda = $('#searchInput').val();
+    const dept = $('#filter-dept').val();
+    const muni = $('#filter-muni').val();
+    const barrio = $('#filter-barrio').val();
+    const gps = $('#filter-gps').val();
+    
+    let url = 'lista_tienda_coordinador_movil.php?busqueda=' + encodeURIComponent(busqueda);
+    if(dept) url += '&cod_departamento=' + encodeURIComponent(dept);
+    if(muni) url += '&cod_municipio=' + encodeURIComponent(muni);
+    if(barrio) url += '&barrio=' + encodeURIComponent(barrio);
+    if(gps) url += '&has_gps=' + encodeURIComponent(gps);
+    
+    window.location.href = url;
+}
+
+function resetAllFilters() {
+    window.location.href = 'lista_tienda_coordinador_movil.php';
+}
+
+function filtrarTiendas(busqueda) { 
+    clearTimeout(window.searchTimeout); 
+    window.searchTimeout = setTimeout(function() { 
+        const urlParams = new URLSearchParams(window.location.search);
+        const dept = urlParams.get('cod_departamento') || '';
+        const muni = urlParams.get('cod_municipio') || '';
+        const barrio = urlParams.get('barrio') || '';
+        const gps = urlParams.get('has_gps') || '';
+
+        let url = 'lista_tienda_coordinador_movil.php?busqueda=' + encodeURIComponent(busqueda);
+        if(dept) url += '&cod_departamento=' + encodeURIComponent(dept);
+        if(muni) url += '&cod_municipio=' + encodeURIComponent(muni);
+        if(barrio) url += '&barrio=' + encodeURIComponent(barrio);
+        if(gps) url += '&has_gps=' + encodeURIComponent(gps);
+        
+        window.location.href = url;
+    }, 500); 
+}
+
+$(document).ready(function() {
+    loadDepartmentsFiltro();
+});
 
 function editarTienda(codTienda) {
     Swal.fire({ title: 'Cargando...', didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
