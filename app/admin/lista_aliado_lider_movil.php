@@ -3280,12 +3280,17 @@ function initSelect2Registro() {
 // JS Modals
 function abrirModal() { 
     document.getElementById('modalRegistro').classList.add('show'); 
-    // Marcar todas las entidades crediticias por defecto
-    setTimeout(function() {
-        $('input[name="entidades[]"]').prop('checked', true);
-    }, 100);
-    // Cargar departamentos en el select del modal de registro
-    cargarDepartamentosRegistro();
+    // Solo inicializar si es un formulario nuevo
+    if ($('#identificacion_tercero').val().trim() === '') {
+        // Marcar todas las entidades crediticias por defecto
+        setTimeout(function() {
+            $('input[name="entidades[]"]').prop('checked', true);
+        }, 100);
+    }
+    // Cargar departamentos en el select del modal de registro solo si no se han cargado
+    if ($('#cod_departamento option').length <= 1) {
+        cargarDepartamentosRegistro();
+    }
     
     // Inicializar Select2
     initSelect2Registro();
