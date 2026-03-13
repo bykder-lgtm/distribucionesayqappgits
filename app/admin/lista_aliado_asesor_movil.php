@@ -2880,8 +2880,7 @@ function cerrarModal() {
     $('#mensaje_identificacion').hide();
     // Habilitar botón de guardar
     $('#btnGuardar').prop('disabled', false).css({'opacity': '1', 'cursor': 'pointer'});
-    // Limpiar formulario
-    $('#formRegistro')[0].reset();
+    // No reseteamos el formulario aquí para evitar pérdida de datos si se cierra por error
 }
 // Función para habilitar/deshabilitar campos de banco
 function toggleBancoInputs(codBanco) {
@@ -4756,6 +4755,7 @@ $('#formRegistro').on('submit', function(e) {
                         
                         if(resp.afectado === 'SI' || resp.afectado === 'EXISTE') {
                             cerrarModal();
+                            $('#formRegistro')[0].reset(); // Limpiar solo si fue exitoso
                             // Guardar datos en el modal de confirmación
                             document.getElementById('confirm_cod_aliado').value = resp.cod_administrador || '';
                             document.getElementById('confirm_cod_aliado_cryp').value = resp.cod_aliado_cryp || '';
