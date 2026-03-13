@@ -4720,153 +4720,102 @@ function filtrar() {
     }, 500); 
 }
 
-// Variable para controlar si la identificación es válida
-var identificacionValida = false;
-
-// Verificar identificación en tiempo real
-$(document).on('blur', '#identificacion_tercero', function() {
-    var identificacion = $(this).val().trim();
-    var inputField = $(this);
-    var mensajeDiv = $('#mensaje_identificacion');
-    var btnGuardar = $('#btnGuardar');
-    
-    if(identificacion === '') {
-        inputField.css('border-color', '');
-        mensajeDiv.hide();
-        identificacionValida = false;
-        btnGuardar.prop('disabled', false);
-        btnGuardar.css('opacity', '1');
-        btnGuardar.css('cursor', 'pointer');
-        return;
-    }
-    
-    $.ajax({
-        url: '../admin/verificar_identificacion_aliado.php', type: 'POST', data: { identificacion: identificacion }, dataType: 'json',
-        success: function(response) {
-            if(response.existe) {
-                inputField.css('border-color', '#ef4444');
-                mensajeDiv.text('⚠️ Esta identificación ya está registrada a nombre de un aliado estratégico').show();
-                identificacionValida = false;
-                btnGuardar.prop('disabled', true);
-                btnGuardar.css('opacity', '0.5');
-                btnGuardar.css('cursor', 'not-allowed');
-            } else {
-                inputField.css('border-color', '#10b981');
-                mensajeDiv.hide();
-                identificacionValida = true;
-                btnGuardar.prop('disabled', false);
-                btnGuardar.css('opacity', '1');
-                btnGuardar.css('cursor', 'pointer');
-            }
-        },
-        error: function() {
-            mensajeDiv.text('Error al hacer la peticion verificaion de la identificación, posibles problemas con su conexion de internet, revise y vuelva a intertarlo').show();
-            identificacionValida = false;
-            btnGuardar.prop('disabled', true);
-            btnGuardar.css('opacity', '0.5');
-            btnGuardar.css('cursor', 'not-allowed');
-        }
-    });
-});
 // Guardar Aliado (Nuevo)
 $('#formRegistro').on('submit', function(e) {
     e.preventDefault();
+    var formObj = this;
+
     // Verificar si la identificación es válida
     var identificacion = $('#identificacion_tercero').val().trim();
     if(identificacion === '') {
         Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Debe ingresar una identificación', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         return false;
     }
-    // Si la identificación no ha sido validada, verificarla primero
-    if(!identificacionValida) {
-        Swal.fire({ title: 'Verificando identificación...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-        
-        $.ajax({
-            url: '../ajax/verificar_identificacion_aliado.php', type: 'POST', data: { identificacion: identificacion }, dataType: 'json',
-            success: function(response) {
-                Swal.close();
-                if(response.existe) {
-                    Swal.fire({ icon: 'error', title: 'Identificación duplicada', text: 'Esta identificación ya está registrada en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-                    $('#identificacion_tercero').css('border-color', '#ef4444');
-                    $('#mensaje_identificacion').text('⚠️ Esta identificación ya está registrada').show();
-                    $('#btnGuardar').prop('disabled', true).css({'opacity': '0.5', 'cursor': 'not-allowed'});
-                } else {
-                    identificacionValida = true;
-                    $('#btnGuardar').prop('disabled', false).css({'opacity': '1', 'cursor': 'pointer'});
-                    $('#formRegistro').trigger('submit');
-                }
-            },
-            error: function() {
-                Swal.close();
-                Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo verificar la identificación. Intente nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-            }
-        });
-        return false;
-    }
     
-    var formData = new FormData(this);
-    Swal.fire({ title: 'Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+    // Verificar identificación primero
+    Swal.fire({ title: 'Verificando y Guardando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+    
     $.ajax({
-        url: '../admin/reg_aliado_modal_asesor_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
-        success: function(resp) {
-            Swal.close();
-            //console.log('Respuesta del servidor:', resp); // Debug
-            
-            if(resp.afectado === 'SI' || resp.afectado === 'EXISTE') {
-                cerrarModal();
-                // Guardar datos en el modal de confirmación
-                document.getElementById('confirm_cod_aliado').value = resp.cod_administrador || '';
-                document.getElementById('confirm_cod_aliado_cryp').value = resp.cod_aliado_cryp || '';
-                document.getElementById('confirm_nombre_aliado').value = resp.nombre_completo || '';
-                document.getElementById('confirm_telefono_aliado').value = resp.telefono || '';
-                document.getElementById('confirm_nombre_display').textContent = resp.nombre_completo || '';
-                
-                // Cambiar título si ya existe
-                if(resp.afectado === 'EXISTE') {
-                    $('#modalConfirmacionRegistro h2').html('<i class="fa-solid fa-circle-exclamation"></i> Aliado ya registrado');
-                    $('#modalConfirmacionRegistro p').first().text('Este aliado ya se encontraba en el sistema.');
-                    $('#modalConfirmacionRegistro .modal-header').css('background', 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)');
-                } else {
-                    $('#modalConfirmacionRegistro h2').html('<i class="fa-solid fa-circle-check"></i> ¡Aliado Registrado!');
-                    $('#modalConfirmacionRegistro p').first().text('El aliado ha sido registrado exitosamente.');
-                    $('#modalConfirmacionRegistro .modal-header').css('background', 'linear-gradient(135deg, #10b981 0%, #059669 100%)');
-                }
-
-                // Manejar sección de tienda (nueva o existente)
-                if(resp.tienda_creada || resp.tienda_ya_existia) {
-                    document.getElementById('section_confirm_tienda').style.display = 'block';
-                    document.getElementById('confirm_cod_tienda_actual').value = resp.cod_tienda;
-                    
-                    if(resp.tienda_ya_existia) {
-                        $('#section_confirm_tienda h4').text('Tienda ya registrada');
-                        $('#section_confirm_tienda p').text('Este aliado ya tiene un establecimiento asociado.');
-                        $('#section_confirm_tienda').css('background', 'rgba(59, 130, 246, 0.1)').css('border-color', 'rgba(59, 130, 246, 0.3)');
-                        $('#section_confirm_tienda i.fa-store').css('color', '#3b82f6');
-                        $('#section_confirm_tienda button').css('background', '#3b82f6');
-                    } else {
-                        $('#section_confirm_tienda h4').text('Tienda también registrada');
-                        $('#section_confirm_tienda p').text('Se ha creado el establecimiento para el aliado.');
-                        $('#section_confirm_tienda').css('background', 'rgba(16, 185, 129, 0.1)').css('border-color', 'rgba(16, 185, 129, 0.3)');
-                        $('#section_confirm_tienda i.fa-store').css('color', '#10b981');
-                        $('#section_confirm_tienda button').css('background', '#10b981');
-                    }
-                } else {
-                    document.getElementById('section_confirm_tienda').style.display = 'none';
-                }
-                // Abrir modal de confirmación
-                document.getElementById('modalConfirmacionRegistro').classList.add('show');
+        url: '../admin/verificar_identificacion_aliado.php', type: 'POST', data: { identificacion: identificacion }, dataType: 'json',
+        success: function(response) {
+            if(response.existe) {
+                Swal.close();
+                Swal.fire({ icon: 'error', title: 'Identificación duplicada', text: 'Esta identificación ya está registrada en el sistema', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                $('#identificacion_tercero').css('border-color', '#ef4444');
+                $('#mensaje_identificacion').text('⚠️ Esta identificación ya está registrada').show();
             } else {
-                var errorMsg = resp.mensaje || 'Error al registrar el aliado';
-                if(resp.error) {
-                    errorMsg += '\n\nDetalle: ' + resp.error;
-                }
-                Swal.fire({ icon: 'error', title: 'Error', text: errorMsg, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                $('#identificacion_tercero').css('border-color', '#10b981');
+                $('#mensaje_identificacion').hide();
+                
+                // Proceder con el guardado
+                var formData = new FormData(formObj);
+                $.ajax({
+                    url: '../admin/reg_aliado_modal_asesor_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
+                    success: function(resp) {
+                        Swal.close();
+                        
+                        if(resp.afectado === 'SI' || resp.afectado === 'EXISTE') {
+                            cerrarModal();
+                            // Guardar datos en el modal de confirmación
+                            document.getElementById('confirm_cod_aliado').value = resp.cod_administrador || '';
+                            document.getElementById('confirm_cod_aliado_cryp').value = resp.cod_aliado_cryp || '';
+                            document.getElementById('confirm_nombre_aliado').value = resp.nombre_completo || '';
+                            document.getElementById('confirm_telefono_aliado').value = resp.telefono || '';
+                            document.getElementById('confirm_nombre_display').textContent = resp.nombre_completo || '';
+                            
+                            // Cambiar título si ya existe
+                            if(resp.afectado === 'EXISTE') {
+                                $('#modalConfirmacionRegistro h2').html('<i class="fa-solid fa-circle-exclamation"></i> Aliado ya registrado');
+                                $('#modalConfirmacionRegistro p').first().text('Este aliado ya se encontraba en el sistema.');
+                                $('#modalConfirmacionRegistro .modal-header').css('background', 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)');
+                            } else {
+                                $('#modalConfirmacionRegistro h2').html('<i class="fa-solid fa-circle-check"></i> ¡Aliado Registrado!');
+                                $('#modalConfirmacionRegistro p').first().text('El aliado ha sido registrado exitosamente.');
+                                $('#modalConfirmacionRegistro .modal-header').css('background', 'linear-gradient(135deg, #10b981 0%, #059669 100%)');
+                            }
+
+                            // Manejar sección de tienda (nueva o existente)
+                            if(resp.tienda_creada || resp.tienda_ya_existia) {
+                                document.getElementById('section_confirm_tienda').style.display = 'block';
+                                document.getElementById('confirm_cod_tienda_actual').value = resp.cod_tienda;
+                                
+                                if(resp.tienda_ya_existia) {
+                                    $('#section_confirm_tienda h4').text('Tienda ya registrada');
+                                    $('#section_confirm_tienda p').text('Este aliado ya tiene un establecimiento asociado.');
+                                    $('#section_confirm_tienda').css('background', 'rgba(59, 130, 246, 0.1)').css('border-color', 'rgba(59, 130, 246, 0.3)');
+                                    $('#section_confirm_tienda i.fa-store').css('color', '#3b82f6');
+                                    $('#section_confirm_tienda button').css('background', '#3b82f6');
+                                } else {
+                                    $('#section_confirm_tienda h4').text('Tienda también registrada');
+                                    $('#section_confirm_tienda p').text('Se ha creado el establecimiento para el aliado.');
+                                    $('#section_confirm_tienda').css('background', 'rgba(16, 185, 129, 0.1)').css('border-color', 'rgba(16, 185, 129, 0.3)');
+                                    $('#section_confirm_tienda i.fa-store').css('color', '#10b981');
+                                    $('#section_confirm_tienda button').css('background', '#10b981');
+                                }
+                            } else {
+                                document.getElementById('section_confirm_tienda').style.display = 'none';
+                            }
+                            // Abrir modal de confirmación
+                            document.getElementById('modalConfirmacionRegistro').classList.add('show');
+                        } else {
+                            var errorMsg = resp.mensaje || 'Error al registrar el aliado';
+                            if(resp.error) {
+                                errorMsg += '\n\nDetalle: ' + resp.error;
+                            }
+                            Swal.fire({ icon: 'error', title: 'Error', text: errorMsg, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.close();
+                        console.log('Error AJAX:', xhr.responseText); // Debug
+                        Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                    }
+                });
             }
         },
-        error: function(xhr, status, error) {
+        error: function() {
             Swal.close();
-            console.log('Error AJAX:', xhr.responseText); // Debug
-            Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión. Intenta nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo verificar la identificación. Intente nuevamente.', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
         }
     });
 });
