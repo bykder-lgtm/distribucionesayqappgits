@@ -365,6 +365,22 @@ $nombre_empresa = $datos_empresa['nombre'];
                 <label>Barrio</label>
                 <input type="text" id="filter-barrio" class="filter-input" placeholder="Nombre del barrio...">
             </div>
+            <div class="filter-group">
+                <label>Líder</label>
+                <input type="text" id="filter-lider" class="filter-input" placeholder="Nombre del líder...">
+            </div>
+            <div class="filter-group">
+                <label>Coordinador</label>
+                <input type="text" id="filter-coordinador" class="filter-input" placeholder="Nombre del coordinador...">
+            </div>
+            <div class="filter-group">
+                <label>Asesor</label>
+                <input type="text" id="filter-asesor" class="filter-input" placeholder="Nombre del asesor...">
+            </div>
+            <div class="filter-group">
+                <label>Aliado</label>
+                <input type="text" id="filter-aliado" class="filter-input" placeholder="Nombre del aliado...">
+            </div>
         </div>
         <div class="filter-footer">
             <button class="btn-reset" onclick="resetFilters()">Limpiar</button>
@@ -454,7 +470,11 @@ $nombre_empresa = $datos_empresa['nombre'];
             var params = {
                 cod_departamento: $('#filter-dept').val(),
                 cod_municipio: $('#filter-muni').val(),
-                barrio: $('#filter-barrio').val()
+                barrio: $('#filter-barrio').val(),
+                lider: $('#filter-lider').val(),
+                coordinador: $('#filter-coordinador').val(),
+                asesor: $('#filter-asesor').val(),
+                aliado: $('#filter-aliado').val()
             };
             loadStores(params);
             toggleFilter();
@@ -464,6 +484,10 @@ $nombre_empresa = $datos_empresa['nombre'];
             $('#filter-dept').val('');
             $('#filter-muni').html('<option value="">Seleccione Municipio</option>');
             $('#filter-barrio').val('');
+            $('#filter-lider').val('');
+            $('#filter-coordinador').val('');
+            $('#filter-asesor').val('');
+            $('#filter-aliado').val('');
             loadStores();
             toggleFilter();
         }
