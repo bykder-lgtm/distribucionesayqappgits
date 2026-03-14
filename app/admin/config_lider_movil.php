@@ -427,6 +427,80 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
         </div>
     </div>
 
+    <!-- Menu Asignaciones -->
+    <div class="menu-section animate-in delay-3">
+        <div class="menu-section-title">Módulo de Asignaciones</div>
+        <div class="menu-list">
+            
+            <a href="lista_asignar_tiendas_a_aliado_dragdrop_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon green">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Asignar Tiendas a Aliado</div>
+                    <div class="menu-item-desc">Gestionar tiendas por aliado</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+            <a href="lista_asignar_bancos_a_aliado_dragdrop_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon blue">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Asignar Cuentas a Aliado</div>
+                    <div class="menu-item-desc">Vincular cuentas bancarias</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+            <a href="lista_asignar_vendedores_a_tienda_dragdrop_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon orange">
+                    <i class="fa-solid fa-users-viewfinder"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Asignar Vendedores a Tienda</div>
+                    <div class="menu-item-desc">Vincular vendedores a tiendas</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+            
+            <a href="lista_asignar_creditos_a_revisor_dragdrop_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon purple">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Asignar Créditos a Revisor</div>
+                    <div class="menu-item-desc">Distribuir facturas de venta</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+            <a href="lista_asignar_aliados_a_asesor_dragdrop_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon red">
+                    <i class="fa-solid fa-people-arrows"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Asignar Aliados a Asesor</div>
+                    <div class="menu-item-desc">Gestionar equipo de asesoría</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+            <a href="lista_asignar_asesores_a_coordinador_dragdrop_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon green">
+                    <i class="fa-solid fa-user-group"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Asignar Asesores a Coord</div>
+                    <div class="menu-item-desc">Estructurar equipo base</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+
+        </div>
+    </div>
+
     <!-- Menu Cuenta -->
     <div class="menu-section animate-in delay-3">
         <div class="menu-section-title">Mi Cuenta</div>
