@@ -272,7 +272,7 @@ while($vendedor = mysqli_fetch_assoc($res_vendedores)) {
     }
 }
 // Consulta de Tiendas activas (Dropzones) que pertenecen al líder (vía sus aliados)
-$sql_tiendas_lista = "SELECT cod_tienda, nombre_tienda FROM tbl15_tienda WHERE cod_estado != '0' AND cod_aliado_estrategico IN ($subquery_aliados) ORDER BY nombre_tienda ASC";
+$sql_tiendas_lista = "SELECT t.cod_tienda, t.nombre_tienda, a.nombres_apellidos_tercero as nombre_aliado FROM tbl15_tienda t LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador WHERE t.cod_estado != '0' AND t.cod_aliado_estrategico IN ($subquery_aliados) ORDER BY t.nombre_tienda ASC";
 $res_tiendas_lista = mysqli_query($conectar, $sql_tiendas_lista);
 ?>
 
@@ -326,6 +326,7 @@ $res_tiendas_lista = mysqli_query($conectar, $sql_tiendas_lista);
             <div class="card-header-lista header-asesor">
                 <div>
                     <i class="fa-solid fa-store"></i> <?php echo utf8_encode($tienda['nombre_tienda']); ?>
+                    <?php if(!empty($tienda['nombre_aliado'])) { echo "<span style='font-size: 0.85rem; opacity: 0.8; margin-left: 0.5rem;'>(".utf8_encode($tienda['nombre_aliado']).")</span>"; } ?>
                     <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">(ID: <?php echo $td_id; ?>)</span>
                 </div>
                 <!-- El ID count-$td_id es usado en JS para actualizar el número -->
