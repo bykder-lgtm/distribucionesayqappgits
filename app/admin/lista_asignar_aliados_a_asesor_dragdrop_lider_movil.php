@@ -187,6 +187,14 @@ body {
     border-color: #8b5cf6;
 }
 
+.item-movido {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%) !important;
+    border-color: #f59e0b !important;
+}
+.item-movido .item-avatar {
+    background: #f59e0b !important;
+}
+
 .item-avatar {
     width: 36px;
     height: 36px;
@@ -422,6 +430,7 @@ $res_asesores = mysqli_query($conectar, $sql_asesores);
                             url: 'procesar_asignar_aliados_a_asesor_dragdrop_lider_ajax.php', type: 'POST', data: { accion: 'asignar_aliado_asesor', id_aliado: id_asesor, id_asesor_nuevo: id_coordinador_nuevo }, dataType: 'json',
                             success: function(response) {
                                 if(response.status == 'success') {
+                                    itemEl.classList.add('item-movido'); // Resalta visualmente los elementos que fueron movidos
                                     Swal.fire({ title: '¡Asignación Exitosa!', text: response.message, icon: 'success', timer: 1500, showConfirmButton: false, toast: true, position: 'top-end' });
                                 } else {
                                     Swal.fire('Error', response.message, 'error');
