@@ -308,6 +308,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
             <div class="card-header-lista header-coordinator">
                 <div>
                     <i class="fa-solid fa-user-tie"></i> <?php echo $coord['nombres_apellidos_tercero']; ?>
+                    <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">(ID: <?php echo $coord['cod_administrador']; ?>)</span>
                 </div>
                 <!-- El ID count-$c_id es usado en JS para actualizar el número -->
                 <span class="badge-count" id="count-<?php echo $c_id; ?>" style="background: rgba(16, 185, 129, 0.2); color: #10b981; font-weight: bold;"><?php echo count($asesores_esta_lista); ?></span>
@@ -321,7 +322,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                     <div class="item-avatar"><?php echo $as['iniciales']; ?></div>
                     <div class="item-info">
                         <span class="item-name"><?php echo $as['nombres_apellidos_tercero']; ?></span>
-                        <span class="item-role">Asesor</span>
+                        <span class="item-role">ID: <?php echo $as['cod_administrador']; ?></span>
                     </div>
                     <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>
                 </div>
@@ -331,6 +332,9 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
         <?php endwhile; ?>
     </div>
 </main>
+
+<!-- Bottom Navigation -->
+<?php include_once("../menu/05_modulo_menu_lider_movil.php"); ?>
 
 <!-- SortableJS -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -360,9 +364,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
         
         zonasDrop.forEach(zona => {
             new Sortable(zona, {
-                group: 'shared', 
-                animation: 150,
-                ghostClass: 'sortable-ghost',
+                group: 'shared', animation: 150, ghostClass: 'sortable-ghost',
                 onEnd: function (evt) {
                     var itemEl = evt.item;  // El elemento que se acaba de arrastrar
                     
@@ -380,11 +382,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                         // Además limpiar o mostrar msj de vacio si es la lista 0
                         let msgEmpty = document.querySelector('.empty-msg');
                         if (msgEmpty) {
-                            if (document.getElementById('lista-0').querySelectorAll('.item-dragg').length == 0) {
-                                msgEmpty.style.display = 'block';
-                            } else {
-                                msgEmpty.style.display = 'none';
-                            }
+                            if (document.getElementById('lista-0').querySelectorAll('.item-dragg').length == 0) { msgEmpty.style.display = 'block'; } else { msgEmpty.style.display = 'none'; }
                         }
                         // Petición AJAX (SweetAlert estilo loading)
                         /* Swal.fire({ title: 'Actualizando asignación...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } }); */
