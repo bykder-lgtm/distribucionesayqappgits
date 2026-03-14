@@ -133,7 +133,7 @@ body {
     border-bottom: 1px solid rgba(139, 92, 246, 0.2);
 }
 
-.header-coordinator {
+.header-lider {
     background: rgba(16, 185, 129, 0.1);
     color: #10b981;
     border-bottom-color: rgba(16, 185, 129, 0.2);
@@ -237,92 +237,91 @@ body {
 <?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
 
 <?php
-// Consulta de Asesores activos
-// cod_seguridad = 22 (Asesor)
-$sql_asesores = "SELECT cod_administrador, nombres, apellidos, nombres_apellidos_tercero, cod_coordinador FROM tbl15_administrador WHERE cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
-$res_asesores = mysqli_query($conectar, $sql_asesores);
+// Consulta de Coordinadores activos
+// cod_seguridad = 21 (Coordinador)
+$sql_coordinadores = "SELECT cod_administrador, nombres, apellidos, nombres_apellidos_tercero, cod_lider FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY nombres_apellidos_tercero ASC";
+$res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
 
-$asesores_por_coordinador = [];
-$asesores_no_asignados = [];
+$coordinadores_por_lider = [];
+$coordinadores_no_asignados = [];
 
-while($asesor = mysqli_fetch_assoc($res_asesores)) {
+while($coordinador = mysqli_fetch_assoc($res_coordinadores)) {
     $iniciales = '';
-    if (!empty($asesor['nombres'])) { $iniciales = strtoupper(substr($asesor['nombres'], 0, 1)); }
-    if (!empty($asesor['apellidos'])) { $iniciales .= strtoupper(substr($asesor['apellidos'], 0, 1)); }
-    if (empty($iniciales)) { $iniciales = 'AS'; }
-    $asesor['iniciales'] = $iniciales;
+    if (!empty($coordinador['nombres'])) { $iniciales = strtoupper(substr($coordinador['nombres'], 0, 1)); }
+    if (!empty($coordinador['apellidos'])) { $iniciales .= strtoupper(substr($coordinador['apellidos'], 0, 1)); }
+    if (empty($iniciales)) { $iniciales = 'CO'; }
+    $coordinador['iniciales'] = $iniciales;
 
-    $coord_id = $asesor['cod_coordinador'];
-    if(empty($coord_id) || $coord_id == 0 || $coord_id == '') {
-        $asesores_no_asignados[] = $asesor;
+    $lider_id = $coordinador['cod_lider'];
+    if(empty($lider_id) || $lider_id == 0 || $lider_id == '') {
+        $coordinadores_no_asignados[] = $coordinador;
     } else {
-        if(!isset($asesores_por_coordinador[$coord_id])) { $asesores_por_coordinador[$coord_id] = []; }
-        $asesores_por_coordinador[$coord_id][] = $asesor;
+        if(!isset($coordinadores_por_lider[$lider_id])) { $coordinadores_por_lider[$lider_id] = []; }
+        $coordinadores_por_lider[$lider_id][] = $coordinador;
     }
 }
-// Consulta de Coordinadores activos (cod_seguridad = 21)
-// Si el sistema requiere filtrar por el líder logueado, se agregaría a la consulta. Asumo que el Lider ve a los Coordinadores activos.
-$sql_coordinadores = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY nombres_apellidos_tercero ASC";
-$res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
+// Consulta de Líderes activos (cod_seguridad = 20)
+$sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
+$res_lideres = mysqli_query($conectar, $sql_lideres);
 ?>
 
 <main class="page-container">
     <div class="page-header animate-in">
-        <h1><i class="fa-solid fa-arrows-up-down-left-right"></i> Asignación Interactiva</h1>
-        <p>Arrastra y suelta a los asesores para asignarlos a un coordinador.</p>
+        <h1><i class="fa-solid fa-arrows-up-down-left-right"></i> Asignación Interactiva de Coordinadores</h1>
+        <p>Arrastra y suelta a los coordinadores para asignarlos a un líder.</p>
     </div>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;" class="animate-in">
-        <h3 style="color: #ef4444; font-size: 1.3rem; margin: 0;"><i class="fa-solid fa-user-xmark"></i> Asesores Sin Coordinador Asignado</h3>
-        <span class="badge-count" id="count-0" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-weight: bold; font-size: 1rem; padding: 0.3rem 1rem;"><?php echo count($asesores_no_asignados); ?></span>
+        <h3 style="color: #ef4444; font-size: 1.3rem; margin: 0;"><i class="fa-solid fa-user-xmark"></i> Coordinadores Sin Líder Asignado</h3>
+        <span class="badge-count" id="count-0" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; font-weight: bold; font-size: 1rem; padding: 0.3rem 1rem;"><?php echo count($coordinadores_no_asignados); ?></span>
     </div>
     
     <div class="franja-sin-asignar animate-in">
         <div class="zona-drop zona-drop-horizontal" data-id="0" id="lista-0">
-            <?php foreach($asesores_no_asignados as $as): ?>
-            <div class="item-dragg" data-user="<?php echo $as['cod_administrador']; ?>">
-                <div class="item-avatar" style="background: #ef4444;"><?php echo $as['iniciales']; ?></div>
+            <?php foreach($coordinadores_no_asignados as $co): ?>
+            <div class="item-dragg" data-user="<?php echo $co['cod_administrador']; ?>">
+                <div class="item-avatar" style="background: #ef4444;"><?php echo $co['iniciales']; ?></div>
                 <div class="item-info">
-                    <span class="item-name"><?php echo $as['nombres_apellidos_tercero']; ?></span>
-                    <span class="item-role">ID: <?php echo $as['cod_administrador']; ?></span>
+                    <span class="item-name"><?php echo $co['nombres_apellidos_tercero']; ?></span>
+                    <span class="item-role">ID: <?php echo $co['cod_administrador']; ?></span>
                 </div>
                 <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>
             </div>
             <?php endforeach; ?>
             
-            <div class="empty-msg" style="width: 100%; text-align: center; color: rgba(255,255,255,0.4); font-style: italic; padding: 1rem; <?php echo (count($asesores_no_asignados) > 0) ? 'display:none;' : ''; ?>">Todos los asesores están asignados. Arrastra aquí para quitar asignación.</div>
+            <div class="empty-msg" style="width: 100%; text-align: center; color: rgba(255,255,255,0.4); font-style: italic; padding: 1rem; <?php echo (count($coordinadores_no_asignados) > 0) ? 'display:none;' : ''; ?>">Todos los coordinadores están asignados. Arrastra aquí para quitar asignación.</div>
         </div>
     </div>
 
     <div style="margin-bottom: 1.5rem;" class="animate-in delay-1">
-        <h3 style="color: #10b981; font-size: 1.3rem; margin: 0;"><i class="fa-solid fa-users-gear"></i> Coordinadores</h3>
-        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">Arrastra aquí a los asesores para asignarlos al equipo del coordinador.</p>
+        <h3 style="color: #10b981; font-size: 1.3rem; margin: 0;"><i class="fa-solid fa-user-tie"></i> Líderes</h3>
+        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">Arrastra aquí a los coordinadores para asignarlos al equipo del líder.</p>
     </div>
 
     <div class="franja-coordinadores animate-in delay-1">
-        <?php while($coord = mysqli_fetch_assoc($res_coordinadores)): 
-            $c_id = $coord['cod_administrador'];
-            $asesores_esta_lista = isset($asesores_por_coordinador[$c_id]) ? $asesores_por_coordinador[$c_id] : [];
+        <?php while($lider = mysqli_fetch_assoc($res_lideres)): 
+            $L_id = $lider['cod_administrador'];
+            $coordinadores_esta_lista = isset($coordinadores_por_lider[$L_id]) ? $coordinadores_por_lider[$L_id] : [];
         ?>
         <div class="card-lista">
-            <div class="card-header-lista header-coordinator">
+            <div class="card-header-lista header-lider">
                 <div>
-                    <i class="fa-solid fa-user-tie"></i> <?php echo $coord['nombres_apellidos_tercero']; ?>
-                    <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">(ID: <?php echo $coord['cod_administrador']; ?>)</span>
+                    <i class="fa-solid fa-user-tie"></i> <?php echo $lider['nombres_apellidos_tercero']; ?>
+                    <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">(ID: <?php echo $lider['cod_administrador']; ?>)</span>
                 </div>
-                <!-- El ID count-$c_id es usado en JS para actualizar el número -->
-                <span class="badge-count" id="count-<?php echo $c_id; ?>" style="background: rgba(16, 185, 129, 0.2); color: #10b981; font-weight: bold;"><?php echo count($asesores_esta_lista); ?></span>
+                <!-- El ID count-$L_id es usado en JS para actualizar el número -->
+                <span class="badge-count" id="count-<?php echo $L_id; ?>" style="background: rgba(16, 185, 129, 0.2); color: #10b981; font-weight: bold;"><?php echo count($coordinadores_esta_lista); ?></span>
             </div>
             <div style="padding: 0.5rem 1rem; border-bottom: 1px solid rgba(139, 92, 246, 0.2); background: rgba(0,0,0,0.1);">
-                <input type="text" class="buscador-asesor" data-target="lista-<?php echo $c_id; ?>" placeholder="Buscar asesor en equipo..." style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.3); background: rgba(255,255,255,0.05); color: white; outline: none; font-size: 0.85rem;">
+                <input type="text" class="buscador-asesor" data-target="lista-<?php echo $L_id; ?>" placeholder="Buscar coordinador en equipo..." style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.3); background: rgba(255,255,255,0.05); color: white; outline: none; font-size: 0.85rem;">
             </div>
-            <div class="zona-drop" data-id="<?php echo $c_id; ?>" id="lista-<?php echo $c_id; ?>">
-                <?php foreach($asesores_esta_lista as $as): ?>
-                <div class="item-dragg" data-user="<?php echo $as['cod_administrador']; ?>">
-                    <div class="item-avatar"><?php echo $as['iniciales']; ?></div>
+            <div class="zona-drop" data-id="<?php echo $L_id; ?>" id="lista-<?php echo $L_id; ?>">
+                <?php foreach($coordinadores_esta_lista as $co): ?>
+                <div class="item-dragg" data-user="<?php echo $co['cod_administrador']; ?>">
+                    <div class="item-avatar"><?php echo $co['iniciales']; ?></div>
                     <div class="item-info">
-                        <span class="item-name"><?php echo $as['nombres_apellidos_tercero']; ?></span>
-                        <span class="item-role">ID: <?php echo $as['cod_administrador']; ?></span>
+                        <span class="item-name"><?php echo $co['nombres_apellidos_tercero']; ?></span>
+                        <span class="item-role">ID: <?php echo $co['cod_administrador']; ?></span>
                     </div>
                     <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>
                 </div>
@@ -387,7 +386,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                         // Petición AJAX (SweetAlert estilo loading)
                         /* Swal.fire({ title: 'Actualizando asignación...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } }); */
                         $.ajax({
-                            url: 'procesar_asignacion_drag_drop_ajax.php', type: 'POST', data: { accion: 'asignar_asesor_coordinador', id_asesor: id_asesor, id_coordinador: id_coordinador_nuevo }, dataType: 'json',
+                            url: 'procesar_asignar_coordinadores_a_lider_dragdrop_super_ajax.php', type: 'POST', data: { accion: 'asignar_coordinador_lider', id_coordinador: id_asesor, id_lider: id_coordinador_nuevo }, dataType: 'json',
                             success: function(response) {
                                 if(response.status == 'success') {
                                     Swal.fire({ title: '¡Asignación Exitosa!', text: response.message, icon: 'success', timer: 1500, showConfirmButton: false, toast: true, position: 'top-end' });
