@@ -290,7 +290,7 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
             <div class="item-dragg" data-user="<?php echo $co['cod_administrador']; ?>">
                 <div class="item-avatar" style="background: #ef4444;"><?php echo $co['iniciales']; ?></div>
                 <div class="item-info">
-                    <span class="item-name"><?php echo $co['nombres_apellidos_tercero']; ?></span>
+                    <span class="item-name"><?php echo utf8_encode($co['nombres_apellidos_tercero']); ?></span>
                     <span class="item-role">ID: <?php echo $co['cod_administrador']; ?></span>
                 </div>
                 <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>
@@ -314,7 +314,7 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
         <div class="card-lista">
             <div class="card-header-lista header-lider">
                 <div>
-                    <i class="fa-solid fa-user-tie"></i> <?php echo $lider['nombres_apellidos_tercero']; ?>
+                    <i class="fa-solid fa-user-tie"></i> <?php echo utf8_encode($lider['nombres_apellidos_tercero']); ?>
                     <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">(ID: <?php echo $lider['cod_administrador']; ?>)</span>
                 </div>
                 <!-- El ID count-$L_id es usado en JS para actualizar el número -->
@@ -328,7 +328,7 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
                 <div class="item-dragg" data-user="<?php echo $co['cod_administrador']; ?>">
                     <div class="item-avatar"><?php echo $co['iniciales']; ?></div>
                     <div class="item-info">
-                        <span class="item-name"><?php echo $co['nombres_apellidos_tercero']; ?></span>
+                        <span class="item-name"><?php echo utf8_encode($co['nombres_apellidos_tercero']); ?></span>
                         <span class="item-role">ID: <?php echo $co['cod_administrador']; ?></span>
                     </div>
                     <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>

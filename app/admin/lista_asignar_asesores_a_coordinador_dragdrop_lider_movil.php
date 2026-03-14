@@ -291,7 +291,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
             <div class="item-dragg" data-user="<?php echo $as['cod_administrador']; ?>">
                 <div class="item-avatar" style="background: #ef4444;"><?php echo $as['iniciales']; ?></div>
                 <div class="item-info">
-                    <span class="item-name"><?php echo $as['nombres_apellidos_tercero']; ?></span>
+                    <span class="item-name"><?php echo utf8_encode($as['nombres_apellidos_tercero']); ?></span>
                     <span class="item-role">ID: <?php echo $as['cod_administrador']; ?></span>
                 </div>
                 <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>
@@ -315,7 +315,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
         <div class="card-lista">
             <div class="card-header-lista header-coordinator">
                 <div>
-                    <i class="fa-solid fa-user-tie"></i> <?php echo $coord['nombres_apellidos_tercero']; ?>
+                    <i class="fa-solid fa-user-tie"></i> <?php echo utf8_encode($coord['nombres_apellidos_tercero']); ?>
                     <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">(ID: <?php echo $coord['cod_administrador']; ?>)</span>
                 </div>
                 <!-- El ID count-$c_id es usado en JS para actualizar el número -->
@@ -329,7 +329,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                 <div class="item-dragg" data-user="<?php echo $as['cod_administrador']; ?>">
                     <div class="item-avatar"><?php echo $as['iniciales']; ?></div>
                     <div class="item-info">
-                        <span class="item-name"><?php echo $as['nombres_apellidos_tercero']; ?></span>
+                        <span class="item-name"><?php echo utf8_encode($as['nombres_apellidos_tercero']); ?></span>
                         <span class="item-role">ID: <?php echo $as['cod_administrador']; ?></span>
                     </div>
                     <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>
