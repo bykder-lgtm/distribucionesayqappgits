@@ -95,10 +95,22 @@ body {
 }
 
 .franja-coordinadores {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     align-items: flex-start;
+}
+
+@media (max-width: 1200px) {
+    .franja-coordinadores {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .franja-coordinadores {
+        grid-template-columns: 1fr;
+    }
 }
 
 .card-lista {
@@ -108,9 +120,7 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    min-width: 320px;
-    flex: 1 1 320px;
-    max-width: 450px;
+    width: 100%;
 }
 
 .card-header-lista {
@@ -131,12 +141,14 @@ body {
 
 .zona-drop {
     padding: 1rem;
-    min-height: 150px;
+    min-height: 120px;
     background: rgba(0, 0, 0, 0.2);
     flex-grow: 1;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 1rem;
 }
 
 .zona-drop-horizontal {
@@ -227,10 +239,7 @@ body {
 <?php
 // Consulta de Asesores activos
 // cod_seguridad = 22 (Asesor)
-$sql_asesores = "SELECT cod_administrador, nombres, apellidos, nombres_apellidos_tercero, cod_coordinador 
-                 FROM tbl15_administrador 
-                 WHERE cod_seguridad = '22' 
-                 ORDER BY nombres_apellidos_tercero ASC";
+$sql_asesores = "SELECT cod_administrador, nombres, apellidos, nombres_apellidos_tercero, cod_coordinador FROM tbl15_administrador WHERE cod_seguridad = '22' ORDER BY nombres_apellidos_tercero ASC";
 $res_asesores = mysqli_query($conectar, $sql_asesores);
 
 $asesores_por_coordinador = [];
@@ -251,7 +260,6 @@ while($asesor = mysqli_fetch_assoc($res_asesores)) {
         $asesores_por_coordinador[$coord_id][] = $asesor;
     }
 }
-
 // Consulta de Coordinadores activos (cod_seguridad = 21)
 // Si el sistema requiere filtrar por el líder logueado, se agregaría a la consulta. Asumo que el Lider ve a los Coordinadores activos.
 $sql_coordinadores = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '21' ORDER BY nombres_apellidos_tercero ASC";
@@ -304,6 +312,9 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                 <!-- El ID count-$c_id es usado en JS para actualizar el número -->
                 <span class="badge-count" id="count-<?php echo $c_id; ?>" style="background: rgba(16, 185, 129, 0.2); color: #10b981; font-weight: bold;"><?php echo count($asesores_esta_lista); ?></span>
             </div>
+            <div style="padding: 0.5rem 1rem; border-bottom: 1px solid rgba(139, 92, 246, 0.2); background: rgba(0,0,0,0.1);">
+                <input type="text" class="buscador-asesor" data-target="lista-<?php echo $c_id; ?>" placeholder="Buscar asesor en equipo..." style="width: 100%; padding: 0.5rem; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.3); background: rgba(255,255,255,0.05); color: white; outline: none; font-size: 0.85rem;">
+            </div>
             <div class="zona-drop" data-id="<?php echo $c_id; ?>" id="lista-<?php echo $c_id; ?>">
                 <?php foreach($asesores_esta_lista as $as): ?>
                 <div class="item-dragg" data-user="<?php echo $as['cod_administrador']; ?>">
@@ -325,6 +336,26 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Lógica del buscador de asesores por coordinador
+        document.querySelectorAll('.buscador-asesor').forEach(input => {
+            input.addEventListener('input', function(e) {
+                let term = e.target.value.toLowerCase();
+                let targetId = e.target.getAttribute('data-target');
+                let targetZone = document.getElementById(targetId);
+                let items = targetZone.querySelectorAll('.item-dragg');
+                
+                items.forEach(item => {
+                    let name = item.querySelector('.item-name').innerText.toLowerCase();
+                    if(name.indexOf(term) > -1) {
+                        // Importante usar flex para que no se rompa la tarjeta
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
         const zonasDrop = document.querySelectorAll('.zona-drop');
         
         zonasDrop.forEach(zona => {
@@ -355,16 +386,8 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                                 msgEmpty.style.display = 'none';
                             }
                         }
-
                         // Petición AJAX (SweetAlert estilo loading)
-                        /*
-                        Swal.fire({
-                            title: 'Actualizando asignación...',
-                            allowOutsideClick: false,
-                            didOpen: () => { Swal.showLoading(); }
-                        });
-                        */
-
+                        /* Swal.fire({ title: 'Actualizando asignación...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } }); */
                         $.ajax({
                             url: 'procesar_asignacion_drag_drop_ajax.php', type: 'POST', data: { accion: 'asignar_asesor_coordinador', id_asesor: id_asesor, id_coordinador: id_coordinador_nuevo }, dataType: 'json',
                             success: function(response) {
