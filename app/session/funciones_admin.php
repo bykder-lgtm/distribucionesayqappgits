@@ -144,7 +144,7 @@ function verificar_usuario() {
 	//session_name("usuario"); 
 	session_set_cookie_params(60*60*24*2); //la sesion dura 2 dias
 	session_start();
-	if ($_SESSION['usuario_cryp']) {
+	if (isset($_SESSION['usuario_cryp']) && $_SESSION['usuario_cryp']) {
 		return true;		
 	}
 }

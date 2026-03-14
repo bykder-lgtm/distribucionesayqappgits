@@ -33,8 +33,10 @@ if (!empty($url_comprobante)) {
     $url_comprobante = str_replace('../', '', $url_comprobante);
     // Construir ruta relativa correcta desde admin/
     $url_comprobante = '../' . $url_comprobante;
+    if (ob_get_length()) ob_clean();
     echo json_encode(['success' => true, 'url_comprobante' => $url_comprobante]);
 } else {
+    if (ob_get_length()) ob_clean();
     echo json_encode(['success' => false, 'mensaje' => 'No hay comprobante registrado']);
 }
 ?>

@@ -245,7 +245,7 @@ body {
 
 <?php
 // Consulta de Créditos activos que pertenecen al líder y están disponibles para revisión o asignados a un revisor
-$sql_creditos = "SELECT cod_info_factura_venta, cod_factura, nombres_apellidos_tercero, identificacion_tercero, total_precio_venta, cod_administrador_revisor FROM tbl15_info_factura_venta WHERE cod_estado != '0' AND cod_administrador_lider = '$cod_administrador' ORDER BY cod_info_factura_venta DESC";
+$sql_creditos = "SELECT cod_info_factura_venta, cod_factura, nombres_apellidos_tercero, identificacion_tercero, total_precio_venta, cod_administrador_revisor FROM tbl15_info_factura_venta ORDER BY cod_info_factura_venta DESC";
 $res_creditos = mysqli_query($conectar, $sql_creditos);
 
 $creditos_por_revisor = [];

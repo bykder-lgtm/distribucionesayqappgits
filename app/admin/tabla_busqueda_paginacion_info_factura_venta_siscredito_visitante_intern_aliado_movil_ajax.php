@@ -435,8 +435,8 @@ include_once('../admin/paginacion_ajax_buscador_sistecredito.php'); //include pa
         if ($existe_banco_cuenta > 0) { $separador_texto = ' | '; } else { $separador_texto = ''; }
 
         $nombre_banco_cuenta                                          = $datos_banco_cuenta['nombre_banco_cuenta'].$separador_texto.$datos_banco_cuenta['numero_banco_cuenta'] ?: "No especificado";
-        /* ----------------------------------------------------------------------------------------------------------/ */
-        $sql_vendedor = "SELECT * FROM tbl15_vendedor WHERE (cod_vendedor = '$cod_vendedor') AND cod_estado != '0'";
+        
+        $sql_vendedor = "SELECT * FROM tbl15_vendedor WHERE (cod_vendedor = '$cod_vendedor')";
         $consulta_vendedor = mysqli_query($conectar, $sql_vendedor) or die(mysqli_error($conectar));
         $datos_vendedor = mysqli_fetch_assoc($consulta_vendedor);
         $existe_vendedor = mysqli_num_rows($consulta_vendedor);
