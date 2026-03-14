@@ -42,9 +42,9 @@ if (isset($_GET['aliado']) && !empty($_GET['aliado'])) {
 
 // Join necesario para los filtros de jerarquía
 $joins = "LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador
-          LEFT JOIN tbl15_administrador lider ON a.cod_lider = lider.cod_administrador
-          LEFT JOIN tbl15_administrador coord ON a.cod_coordinador = coord.cod_administrador
-          LEFT JOIN tbl15_administrador ase ON a.cod_asesor = ase.cod_administrador";
+LEFT JOIN tbl15_administrador lider ON a.cod_lider = lider.cod_administrador
+LEFT JOIN tbl15_administrador coord ON a.cod_coordinador = coord.cod_administrador
+LEFT JOIN tbl15_administrador ase ON a.cod_asesor = ase.cod_administrador";
 
 $sql_total = "SELECT COUNT(*) as total FROM tbl15_tienda t $joins WHERE t.cod_aliado_estrategico IN ($subquery_aliados) AND t.cod_estado != '0' $condiciones";
 $res_total = mysqli_query($conectar, $sql_total);

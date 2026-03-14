@@ -5817,9 +5817,49 @@ $(document).ready(function() {
     
     const modalCuentas = document.getElementById('modalVerCuentas');
     if (modalCuentas) modalCuentas.addEventListener('click', function(e) { if (e.target === this) { cerrarModalVerCuentas(); } });
+    
+    const modalRegistrarTienda = document.getElementById('modalRegistrarTiendaRapida');
+    if (modalRegistrarTienda) modalRegistrarTienda.addEventListener('click', function(e) { if (e.target === this) { cerrarModalRegistrarTienda(); } });
 });
 
 // Funciones para ver tiendas
+function abrirModalRegistrarTienda(codAliado, nombreAliado) {
+    document.getElementById('reg_tienda_nombre_aliado').textContent = '(' + nombreAliado + ')';
+    document.getElementById('reg_tienda_cod_aliado').value = codAliado;
+    document.getElementById('formRegistrarTiendaRapida').reset();
+    $('#modalRegistrarTiendaRapida').fadeIn().css('display', 'flex');
+}
+function cerrarModalRegistrarTienda() { $('#modalRegistrarTiendaRapida').fadeOut(); }
+
+$(document).ready(function() {
+    $('#formRegistrarTiendaRapida').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        Swal.fire({ title: 'Registrando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+        
+        $.ajax({
+            url: '../admin/reg_tienda_modal_lider_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
+            success: function(resp) {
+                Swal.close();
+                if(resp.afectado === 'SI' || resp.success === true || resp.cod_tienda) {
+                    cerrarModalRegistrarTienda(); 
+                    Swal.fire({ icon: 'success', title: '¡Tienda Registrada!', text: resp.mensaje || 'La tienda se creó correctamente', confirmButtonColor: '#8b5cf6', background: '#1a1f2e', color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' } }).then(() => { 
+                        location.reload(); 
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Error', text: resp.mensaje || 'No se pudo registrar la tienda', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                }
+            },
+            error: function(xhr) {
+                Swal.close();
+                let errMsg = 'Error de conexión. Intenta nuevamente.';
+                try { let j = JSON.parse(xhr.responseText); if(j.mensaje) errMsg = j.mensaje; } catch(e) {}
+                Swal.fire({ icon: 'error', title: 'Error', text: errMsg, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+            }
+        });
+    });
+});
+
 function abrirModalVerTiendas(codAliado, nombreAliado) {
     document.getElementById('v_nombre_aliado_t').textContent = nombreAliado;
     const container = document.getElementById('lista_tiendas_aliadas_v');
@@ -6275,6 +6315,60 @@ function escapeHtmlMovil(text) {
                 <button type="submit" class="submit-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
                     <i class="fa-solid fa-box-open"></i> Registrar Producto
                 </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registro Tienda Rapida -->
+<div class="modal-overlay" id="modalRegistrarTiendaRapida" style="z-index: 5000; align-items: center; justify-content: center; padding: 20px;">
+    <div class="modal-content" style="max-width: 650px;">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-store" style="color: #8b5cf6;"></i> Nueva Tienda</h2>
+            <button class="modal-close" onclick="cerrarModalRegistrarTienda()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
+                <strong style="color: #8b5cf6;">Aliado Estratégico:</strong> <span id="reg_tienda_nombre_aliado" style="color: white; font-weight: bold;"></span>
+            </div>
+            <form id="formRegistrarTiendaRapida">
+                <input type="hidden" id="reg_tienda_cod_aliado" name="cod_aliado_estrategico">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre de la Tienda *</label>
+                        <input type="text" class="form-input" id="reg_tienda_nombre" name="nombre1_tercero" placeholder="Ej: Tienda El Éxito" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">NIT / Documento *</label>
+                        <input type="number" class="form-input" id="reg_tienda_identificacion" name="identificacion_tercero" placeholder="Ej: 12345678" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Teléfono *</label>
+                        <input type="tel" class="form-input" id="reg_tienda_telefono" name="telefono1_tercero" placeholder="Ej: 3001234567" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Dirección *</label>
+                        <input type="text" class="form-input" id="reg_tienda_direccion" name="direccion_tercero" placeholder="Ej: Calle 123 #45-67" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Correo Electrónico (Opcional)</label>
+                    <input type="email" class="form-input" id="reg_tienda_correo" name="correo_tercero" placeholder="tienda@ejemplo.com">
+                </div>
+
+                <div class="form-row" style="gap: 0.5rem; margin-top: 1.5rem;">
+                    <button type="button" onclick="cerrarModalRegistrarTienda()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fa-solid fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="submit-btn" style="flex: 2; margin-top: 0; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                        <i class="fa-solid fa-save"></i> Registrar Tienda
+                    </button>
+                </div>
             </form>
         </div>
     </div>

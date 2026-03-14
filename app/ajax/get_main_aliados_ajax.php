@@ -185,7 +185,7 @@ if ($total_registros > 0):
             </div>
 
             <div class="ally-quick-actions">
-                <button class="btn-quick-action btn-tienda" onclick="window.location.href='lista_tienda_lider_movil.php?registrar_tienda=1&cod_aliado=<?php echo $row['cod_administrador']; ?>'">
+                <button class="btn-quick-action btn-tienda" onclick="abrirModalRegistrarTienda(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
                     <i class="fa-solid fa-store"></i> +Tienda
                 </button>
                 <button class="btn-quick-action btn-banco" onclick="abrirModalAgregarBanco(<?php echo $row['cod_administrador']; ?>)">
