@@ -296,9 +296,15 @@ $res_asesores = mysqli_query($conectar, $sql_asesores);
         </div>
     </div>
 
-    <div style="margin-bottom: 1.5rem;" class="animate-in delay-1">
-        <h3 style="color: #10b981; font-size: 1.3rem; margin: 0;"><i class="fa-solid fa-user-tie"></i> Asesores</h3>
-        <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem;">Arrastra aquí a los aliados para asignarlos a la cartera de un asesor.</p>
+    <div style="margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;" class="animate-in delay-1">
+        <div>
+            <h3 style="color: #10b981; font-size: 1.3rem; margin: 0;"><i class="fa-solid fa-user-tie"></i> Asesores</h3>
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.9rem; margin-bottom: 0.5rem;">Arrastra aquí a los aliados para asignarlos a la cartera de un asesor.</p>
+        </div>
+        <div style="width: 100%; max-width: 400px; position: relative;">
+            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.4);"></i>
+            <input type="text" id="buscador-principal-asesores" placeholder="Buscar asesor por nombre..." style="width: 100%; padding: 0.8rem 1rem 0.8rem 2.5rem; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(0,0,0,0.2); color: white; outline: none; font-size: 0.95rem;">
+        </div>
     </div>
 
     <div class="franja-coordinadores animate-in delay-1">
@@ -364,6 +370,27 @@ $res_asesores = mysqli_query($conectar, $sql_asesores);
                 });
             });
         });
+
+        // Lógica del buscador principal de asesores (tarjetas)
+        const buscadorAsesores = document.getElementById('buscador-principal-asesores');
+        if (buscadorAsesores) {
+            buscadorAsesores.addEventListener('input', function(e) {
+                let term = e.target.value.toLowerCase();
+                let tarjetas = document.querySelectorAll('.card-lista');
+                
+                tarjetas.forEach(tarjeta => {
+                    let nameEl = tarjeta.querySelector('.header-asesor div');
+                    if (nameEl) {
+                        let name = nameEl.innerText.toLowerCase();
+                        if (name.indexOf(term) > -1) {
+                            tarjeta.style.display = 'flex';
+                        } else {
+                            tarjeta.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        }
 
         const zonasDrop = document.querySelectorAll('.zona-drop');
         
