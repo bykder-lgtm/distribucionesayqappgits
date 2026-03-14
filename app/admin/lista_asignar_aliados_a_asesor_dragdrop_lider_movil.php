@@ -239,7 +239,7 @@ body {
 <?php
 // Consulta de Aliados activos
 // cod_seguridad = 23 (Aliado). Limitamos a aliados que pertenezcan a la jerarquía de este líder.
-$sql_aliados = "SELECT cod_administrador, nombres, apellidos, nombres_apellidos_tercero, cod_asesor FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_estado != '0' AND cod_lider = '$cod_administrador' ORDER BY nombres_apellidos_tercero ASC";
+$sql_aliados = "SELECT cod_administrador, nombres, apellidos, nombres_apellidos_tercero, nombre_razon_social, cod_asesor FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_estado != '0' AND cod_lider = '$cod_administrador' ORDER BY nombres_apellidos_tercero ASC";
 $res_aliados = mysqli_query($conectar, $sql_aliados);
 
 $aliados_por_asesor = [];
@@ -282,7 +282,10 @@ $res_asesores = mysqli_query($conectar, $sql_asesores);
             <div class="item-dragg" data-user="<?php echo $al['cod_administrador']; ?>">
                 <div class="item-avatar" style="background: #ef4444;"><?php echo $al['iniciales']; ?></div>
                 <div class="item-info">
-                    <span class="item-name"><?php echo $al['nombres_apellidos_tercero']; ?></span>
+                    <span class="item-name">
+                        <?php echo $al['nombres_apellidos_tercero']; ?>
+                        <?php if(!empty($al['nombre_razon_social'])) { echo " <span style='opacity:0.8; font-size:0.85em;'>(".$al['nombre_razon_social'].")</span>"; } ?>
+                    </span>
                     <span class="item-role">ID: <?php echo $al['cod_administrador']; ?></span>
                 </div>
                 <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>
@@ -320,7 +323,10 @@ $res_asesores = mysqli_query($conectar, $sql_asesores);
                 <div class="item-dragg" data-user="<?php echo $al['cod_administrador']; ?>">
                     <div class="item-avatar"><?php echo $al['iniciales']; ?></div>
                     <div class="item-info">
-                        <span class="item-name"><?php echo $al['nombres_apellidos_tercero']; ?></span>
+                        <span class="item-name">
+                            <?php echo $al['nombres_apellidos_tercero']; ?>
+                            <?php if(!empty($al['nombre_razon_social'])) { echo " <span style='opacity:0.8; font-size:0.85em;'>(".$al['nombre_razon_social'].")</span>"; } ?>
+                        </span>
                         <span class="item-role">ID: <?php echo $al['cod_administrador']; ?></span>
                     </div>
                     <i class="fa-solid fa-grip-vertical" style="color: rgba(255,255,255,0.3);"></i>
