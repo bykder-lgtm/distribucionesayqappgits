@@ -291,8 +291,8 @@ $res_asesores = mysqli_query($conectar, $sql_asesores);
                 <div class="item-avatar" style="background: #ef4444;"><?php echo $al['iniciales']; ?></div>
                 <div class="item-info">
                     <span class="item-name">
-                        <?php echo $al['nombres_apellidos_tercero']; ?>
-                        <?php if(!empty($al['nombre_razon_social'])) { echo " <span style='opacity:0.8; font-size:0.85em;'>(".$al['nombre_razon_social'].")</span>"; } ?>
+                        <?php echo utf8_encode($al['nombres_apellidos_tercero']); ?>
+                        <?php if(!empty($al['nombre_razon_social'])) { echo " <span style='opacity:0.8; font-size:0.85em;'>(".utf8_encode($al['nombre_razon_social']).")</span>"; } ?>
                     </span>
                     <span class="item-role">ID: <?php echo $al['cod_administrador']; ?></span>
                 </div>
@@ -323,7 +323,7 @@ $res_asesores = mysqli_query($conectar, $sql_asesores);
         <div class="card-lista">
             <div class="card-header-lista header-asesor">
                 <div>
-                    <i class="fa-solid fa-user-tie"></i> <?php echo $asesor['nombres_apellidos_tercero']; ?>
+                    <i class="fa-solid fa-user-tie"></i> <?php echo utf8_encode($asesor['nombres_apellidos_tercero']); ?>
                     <span style="font-size: 0.8rem; opacity: 0.7; margin-left: 0.5rem;">(ID: <?php echo $asesor['cod_administrador']; ?>)</span>
                 </div>
                 <!-- El ID count-$as_id es usado en JS para actualizar el número -->
@@ -338,8 +338,8 @@ $res_asesores = mysqli_query($conectar, $sql_asesores);
                     <div class="item-avatar"><?php echo $al['iniciales']; ?></div>
                     <div class="item-info">
                         <span class="item-name">
-                            <?php echo $al['nombres_apellidos_tercero']; ?>
-                            <?php if(!empty($al['nombre_razon_social'])) { echo " <span style='opacity:0.8; font-size:0.85em;'>(".$al['nombre_razon_social'].")</span>"; } ?>
+                            <?php echo utf8_encode($al['nombres_apellidos_tercero']); ?>
+                            <?php if(!empty($al['nombre_razon_social'])) { echo " <span style='opacity:0.8; font-size:0.85em;'>(".utf8_encode($al['nombre_razon_social']).")</span>"; } ?>
                         </span>
                         <span class="item-role">ID: <?php echo $al['cod_administrador']; ?></span>
                     </div>
