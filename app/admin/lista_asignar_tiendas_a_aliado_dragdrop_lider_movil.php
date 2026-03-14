@@ -238,7 +238,6 @@ body {
 }
 .animate-in { animation: fadeIn 0.4s ease-out; }
 .delay-1 { animation-delay: 0.1s; animation-fill-mode: both; }
-
 </style>
 </head>
 <body>

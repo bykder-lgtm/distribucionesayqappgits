@@ -339,7 +339,6 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
         <?php endwhile; ?>
     </div>
 </main>
-
 <!-- Bottom Navigation -->
 <?php include_once("../menu/05_modulo_menu_lider_movil.php"); ?>
 
