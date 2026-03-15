@@ -189,7 +189,7 @@ while($row = mysqli_fetch_assoc($res_lideres)){
 $opciones_lideres_html = '<option value="" selected disabled>-- Seleccione el nuevo líder --</option>';
 $opciones_lideres_html .= '<option value="0">-- Desasignar Líder (Quitar asignación) --</option>';
 foreach ($lista_lideres as $l) {
-    $opciones_lideres_html .= '<option value="'.$l['cod_administrador'].'">'.utf8_encode($l['nombres_apellidos_tercero']).' (ID: '.$l['cod_administrador'].')</option>';
+    $opciones_lideres_html .= '<option value="'.$l['cod_administrador'].'">'.$l['nombres_apellidos_tercero'].' (ID: '.$l['cod_administrador'].')</option>';
 }
 
 // Consulta de Coordinadores (cod_seguridad = 21)
@@ -261,10 +261,8 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                                 </div>
                                 <div class="fw-bold" style="font-size: 0.95rem;"><?php 
                                     $nombre_completo = trim($co['nombres'] . ' ' . $co['apellidos']);
-                                    if(empty($nombre_completo) && !empty($co['nombres_apellidos_tercero'])){
-                                        $nombre_completo = $co['nombres_apellidos_tercero'];
-                                    }
-                                    echo utf8_encode($nombre_completo); 
+                                    if(empty($nombre_completo) && !empty($co['nombres_apellidos_tercero'])){ $nombre_completo = $co['nombres_apellidos_tercero']; }
+                                    echo $nombre_completo; 
                                 ?></div>
                             </div>
                         </td>
@@ -273,7 +271,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                                 <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1"><i class="fa-solid fa-user-xmark"></i> Sin Asignar</span>
                             <?php else: ?>
                                 <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); font-weight: 500; font-size: 0.85rem; padding: 0.4rem 0.6rem;">
-                                    <i class="fa-solid fa-user-tie"></i> <?php echo utf8_encode($co['nombre_lider_actual']); ?>
+                                    <i class="fa-solid fa-user-tie"></i> <?php echo $co['nombre_lider_actual']; ?>
                                 </span>
                             <?php endif; ?>
                         </td>
