@@ -258,7 +258,13 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                                 <div class="item-avatar" style="<?php echo $sin_lider ? 'background: #ef4444;' : ''; ?>">
                                     <?php echo $iniciales; ?>
                                 </div>
-                                <div class="fw-bold" style="font-size: 0.95rem;"><?php echo utf8_encode($co['nombres_apellidos_tercero']); ?></div>
+                                <div class="fw-bold" style="font-size: 0.95rem;"><?php 
+                                    $nombre_completo = trim($co['nombres'] . ' ' . $co['apellidos']);
+                                    if(empty($nombre_completo) && !empty($co['nombres_apellidos_tercero'])){
+                                        $nombre_completo = $co['nombres_apellidos_tercero'];
+                                    }
+                                    echo utf8_encode($nombre_completo); 
+                                ?></div>
                             </div>
                         </td>
                         <td class="lider-actual">
