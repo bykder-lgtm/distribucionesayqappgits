@@ -98,19 +98,19 @@ body {
 
 .table {
     margin-bottom: 0;
-    color: white;
+    color: #ffffff !important;
 }
 
 .table-dark {
-    background-color: rgba(139, 92, 246, 0.2);
+    background-color: rgba(139, 92, 246, 0.3) !important;
     --bs-table-bg: transparent;
-    --bs-table-color: white;
+    --bs-table-color: #ffffff;
     --bs-table-border-color: rgba(139, 92, 246, 0.2);
 }
 
-.table-hover tbody tr:hover {
-    background-color: rgba(139, 92, 246, 0.1);
-    color: white;
+.table-hover tbody tr:hover td {
+    background-color: rgba(139, 92, 246, 0.2) !important;
+    color: #ffffff !important;
     cursor: pointer;
 }
 
@@ -118,6 +118,7 @@ body {
     border-bottom: 1px solid rgba(139, 92, 246, 0.2);
     padding: 1rem;
     vertical-align: middle;
+    color: #ffffff !important; /* Force white text */
 }
 
 .table tbody td {
@@ -252,7 +253,7 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                         <td class="text-center">
                             <input class="form-check-input chk-item" type="checkbox" value="<?php echo $co['cod_administrador']; ?>">
                         </td>
-                        <td class="text-muted" style="font-size: 0.9rem;">#<?php echo $co['cod_administrador']; ?></td>
+                        <td style="color: rgba(255,255,255,0.7) !important; font-size: 0.9rem;">#<?php echo $co['cod_administrador']; ?></td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="item-avatar" style="<?php echo $sin_lider ? 'background: #ef4444;' : ''; ?>">
