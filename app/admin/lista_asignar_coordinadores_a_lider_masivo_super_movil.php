@@ -217,6 +217,13 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
         </button>
     </div>
 
+    <div class="mb-3 animate-in delay-1">
+        <div class="input-group">
+            <span class="input-group-text" style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); border-right: none; color: #a78bfa;"><i class="fa-solid fa-magnifying-glass"></i></span>
+            <input type="text" id="buscador-coordinadores" class="form-control text-white shadow-none" placeholder="Buscar por nombre o ID del coordinador..." style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.4); border-left: none;">
+        </div>
+    </div>
+
     <div class="card-table animate-in delay-1">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0" id="tabla_coordinadores">
@@ -318,6 +325,21 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
             });
         });
 
+        // Buscador en tiempo real
+        document.getElementById('buscador-coordinadores').addEventListener('input', function() {
+            let term = this.value.toLowerCase();
+            let rows = document.querySelectorAll('#tabla_coordinadores tbody tr');
+            
+            rows.forEach(row => {
+                let textContent = row.innerText.toLowerCase();
+                if(textContent.includes(term)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
         // Al hacer click en la fila se marca el checkbox (excepto si hizo click en el checkbox mismo u otro control)
         document.querySelectorAll('tbody tr').forEach(row => {
             row.addEventListener('click', function(e) {
@@ -339,20 +361,8 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
             
             Swal.fire({
                 title: 'Asignación Masiva',
-                html: `
-                    <p style="color: #666; margin-bottom: 5px;">Vas a asignar <b>${cantidad}</b> coordinador(es).</p>
-                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 15px;">Selecciona el nuevo Líder de la lista:</p>
-                    <select id="nuevo-lider" class="form-select border-primary shadow-none text-center">
-                        <?php echo $opciones_lideres_html; ?>
-                    </select>
-                `,
-                showCancelButton: true,
-                confirmButtonText: '<i class="fa-solid fa-check"></i> Proceder con Asignación',
-                cancelButtonText: 'Cancelar',
-                confirmButtonColor: '#8b5cf6',
-                background: '#fff',
-                color: '#333',
-                preConfirm: () => {
+                html: `<p style="color: #666; margin-bottom: 5px;">Vas a asignar <b>${cantidad}</b> coordinador(es).</p><p style="color: #888; font-size: 0.9rem; margin-bottom: 15px;">Selecciona el nuevo Líder de la lista:</p><select id="nuevo-lider" class="form-select border-primary shadow-none text-center"><?php echo $opciones_lideres_html; ?></select>`,
+                showCancelButton: true, confirmButtonText: '<i class="fa-solid fa-check"></i> Proceder con Asignación', cancelButtonText: 'Cancelar', confirmButtonColor: '#8b5cf6', background: '#fff', color: '#333', preConfirm: () => {
                     let selectList = document.getElementById('nuevo-lider');
                     let val = selectList.value;
                     let txt = selectList.options[selectList.selectedIndex].text;
@@ -366,42 +376,18 @@ $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
                 if (result.isConfirmed) {
                     
                     let data = result.value;
-                    
-                    Swal.fire({
-                        title: 'Procesando...',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
+                    Swal.fire({ title: 'Procesando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
                     $.ajax({
-                        url: 'procesar_asignar_coordinadores_a_lider_masivo_super_ajax.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            accion: 'asignar_coordinadores_lider_masivo',
-                            ids_coordinadores: arrayIds,
-                            id_lider: data.id_lider
-                        },
+                        url: 'procesar_asignar_coordinadores_a_lider_checkbox_lider_ajax.php', type: 'POST', dataType: 'json', data: { accion: 'asignar_coordinadores_lider_masivo', ids_coordinadores: arrayIds, id_lider: data.id_lider },
                         success: function(response) {
                             if(response.status === 'success') {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: '¡Operación Exitosa!',
-                                    text: response.message,
-                                    confirmButtonColor: '#10b981'
-                                }).then(() => {
-                                    // Recargar para actualizar la tabla y conteos
-                                    window.location.reload();
-                                });
+                                Swal.fire({ icon: 'success', title: '¡Operación Exitosa!', text: response.message, confirmButtonColor: '#10b981' }).then(() => { window.location.reload(); });
                             } else {
                                 Swal.fire('Error', response.message, 'error');
                             }
                         },
-                        error: function() {
-                            Swal.fire('Error', 'Problema de conexión con el servidor', 'error');
-                        }
+                        error: function() { Swal.fire('Error', 'Problema de conexión con el servidor', 'error'); }
                     });
                 }
             });
