@@ -1215,10 +1215,12 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                 <div class="header-stat-value"><?php echo $total_registros; ?></div>
                 <div class="header-stat-label">Total</div>
             </div>
+<!--
             <div class="header-stat">
                 <div class="header-stat-value"><?php echo $tiendas_con_firma; ?></div>
                 <div class="header-stat-label">Con Firma</div>
             </div>
+-->
             <div class="header-stat">
                 <div class="header-stat-value"><?php echo $tiendas_con_gps; ?></div>
                 <div class="header-stat-label">Con GPS</div>
@@ -1274,7 +1276,7 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
     <!-- Add Button -->
     <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;" class="animate-in delay-1">
         <button class="add-button" style="margin-bottom: 0; flex: 1;" onclick="abrirModalRegistro('normal')"><i class="fa-solid fa-plus"></i>Tienda Normal</button>
-        <button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);" onclick="abrirModalRegistro('rapida')"><i class="fa-solid fa-bolt"></i>Tienda Rápida</button>
+        <!--<button class="add-button" style="margin-bottom: 0; flex: 1; background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);" onclick="abrirModalRegistro('rapida')"><i class="fa-solid fa-bolt"></i>Tienda Rápida</button>-->
     </div>
     <!-- Store List -->
     <div class="store-list" id="storeList">
@@ -1325,10 +1327,12 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                     <div class="store-detail"><i class="fa-solid fa-map-location-dot"></i><span><?php echo ucwords(strtolower($tienda['nombre_departamento'])); ?> - <?php echo ucwords(strtolower($tienda['nombre_municipio'])); ?></span></div>
                     <div class="store-detail"><i class="fa-solid fa-tree-city"></i><span>Barrio: <?php echo !empty($tienda['barrio_tercero']) ? ucwords(strtolower($tienda['barrio_tercero'])) : 'N/A'; ?></span></div>
                     <div class="store-detail"><i class="fa-solid fa-location-dot"></i><span><?php echo ucwords(strtolower($tienda['direccion_tercero'])); ?></span></div>
+                    <!--
                     <div class="store-detail">
                         <i class="fa-solid fa-file-signature"></i>
                         <span>Firma: <i class="fa-solid <?php echo $tiene_firma ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'; ?>" style="font-size: 0.9rem; color: <?php echo $tiene_firma ? '#10b981' : '#ef4444'; ?>;"></i></span>
                     </div>
+                    -->
                     <div class="store-detail">
                         <i class="fa-solid fa-location-crosshairs"></i>
                         <span>GPS: <i class="fa-solid <?php echo $tiene_gps ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'; ?>" style="font-size: 0.9rem; color: <?php echo $tiene_gps ? '#10b981' : '#ef4444'; ?>;"></i></span>
