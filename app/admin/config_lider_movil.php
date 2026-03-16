@@ -344,6 +344,17 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
                 </div>
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>
+
+            <a href="directorio_global_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon blue">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Directorio de Usuarios</div>
+                    <div class="menu-item-desc">Buscar líderes, asesores, aliados, etc.</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
             
             <a href="lista_tienda_lider_movil.php" class="menu-item">
                 <div class="menu-item-icon blue">

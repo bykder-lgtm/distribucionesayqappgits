@@ -181,27 +181,16 @@ body {
 $sql_lideres = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '20' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_lideres = mysqli_query($conectar, $sql_lideres);
 $lista_lideres = [];
-while($row = mysqli_fetch_assoc($res_lideres)){
-    $lista_lideres[] = $row;
-}
-
+while($row = mysqli_fetch_assoc($res_lideres)){ $lista_lideres[] = $row; }
 // Opciones HTML para el select de SweetAlert
 $opciones_lideres_html = '<option value="" selected disabled>-- Seleccione el nuevo líder --</option>';
 $opciones_lideres_html .= '<option value="0">-- Desasignar Líder (Quitar asignación) --</option>';
-foreach ($lista_lideres as $l) {
-    $opciones_lideres_html .= '<option value="'.$l['cod_administrador'].'">'.$l['nombres_apellidos_tercero'].' (ID: '.$l['cod_administrador'].')</option>';
-}
-
+foreach ($lista_lideres as $l) { $opciones_lideres_html .= '<option value="'.$l['cod_administrador'].'">'.$l['nombres_apellidos_tercero'].' (ID: '.$l['cod_administrador'].')</option>'; }
 // Consulta de Coordinadores (cod_seguridad = 21)
 // Hacemos un JOIN consigo misma para traer nombre del lider, si lo tiene.
 $sql_coordinadores = "
-    SELECT c.cod_administrador, c.nombres, c.apellidos, c.nombres_apellidos_tercero, c.cod_lider,
-           IFNULL(l.nombres_apellidos_tercero, 'Sin Asignar') as nombre_lider_actual
-    FROM tbl15_administrador c
-    LEFT JOIN tbl15_administrador l ON c.cod_lider = l.cod_administrador
-    WHERE c.cod_seguridad = '21' 
-    ORDER BY c.nombres_apellidos_tercero ASC
-";
+SELECT c.cod_administrador, c.nombres, c.apellidos, c.nombres_apellidos_tercero, c.cod_lider, IFNULL(l.nombres_apellidos_tercero, 'Sin Asignar') as nombre_lider_actual
+FROM tbl15_administrador c LEFT JOIN tbl15_administrador l ON c.cod_lider = l.cod_administrador WHERE c.cod_seguridad = '21' ORDER BY c.nombres_apellidos_tercero ASC";
 $res_coordinadores = mysqli_query($conectar, $sql_coordinadores);
 ?>
 
