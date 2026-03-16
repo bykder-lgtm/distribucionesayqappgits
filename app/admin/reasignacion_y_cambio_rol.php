@@ -80,6 +80,30 @@ $cod_base_caja          = "1";
         .swal-custom-select { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 10px; margin-bottom: 15px; }
         .swal-textarea { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 5px; margin-bottom: 15px; min-height: 100px; resize: vertical; }
         
+        /* Mobile Responsive Table (Card View) */
+        @media (max-width: 768px) {
+            .table-responsive { border: none !important; margin: 0; padding: 0; }
+            .table thead { display: none; }
+            .table, .table tbody, .table tr, .table td { display: block; width: 100%; text-align: right; }
+            .table tr { margin-bottom: 1rem; background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 10px; padding: 0.5rem; }
+            .table td { padding: 0.5rem 0.5rem; border-bottom: 1px solid rgba(139, 92, 246, 0.1); position: relative; padding-left: 45%; min-height: 45px; display: flex; justify-content: flex-end; align-items: center;}
+            .table td:last-child { border-bottom: none; }
+            .table td::before { 
+                content: attr(data-label); 
+                position: absolute; 
+                left: 0.5rem; 
+                font-weight: 600; 
+                text-transform: uppercase; 
+                font-size: 0.75rem; 
+                color: #a78bfa; 
+                text-align: left; 
+                width: 40%;
+                white-space: nowrap;
+                display: flex;
+                align-items: center;
+            }
+            .table td > div { text-align: right; width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -275,18 +299,21 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
                                     infoActualHtml = `<span class="badge bg-primary">${nom}</span>`;
                                 }
                                 let tr = document.createElement('tr');
+                                let labelEstado = (accion === '1') ? 'Superior Actual' : 'Rol Actual';
                                 tr.innerHTML = `
-                                    <td class="text-center">
+                                    <td class="text-center" data-label="Seleccionar">
                                         <input class="form-check-input chk-item" type="checkbox" value="${user.cod_administrador}">
                                     </td>
-                                    <td style="color: rgba(255,255,255,0.7);">#${user.cod_administrador}</td>
-                                    <td>
-                                        <div class="fw-bold">${user.nombre_completo}</div>
-                                        <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 2px;">
-                                            <i class="fa-solid fa-id-card"></i> ${user.cedula || 'Sin Cédula Registrada'}
+                                    <td style="color: rgba(255,255,255,0.7);" data-label="ID">#${user.cod_administrador}</td>
+                                    <td data-label="Usuario">
+                                        <div>
+                                            <div class="fw-bold">${user.nombre_completo}</div>
+                                            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 2px;">
+                                                <i class="fa-solid fa-id-card"></i> ${user.cedula || 'Sin Cédula Registrada'}
+                                            </div>
                                         </div>
                                     </td>
-                                    <td>${infoActualHtml}</td>
+                                    <td data-label="${labelEstado}">${infoActualHtml}</td>
                                 `;
                                 tbodyUsuarios.appendChild(tr);
                             });

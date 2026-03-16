@@ -57,7 +57,32 @@ $cod_base_caja          = "1";
         .badge.bg-cambio-rol { background-color: #6366f1 !important; color: white; padding: 0.4rem 0.6em; }
         
         .cambio-box { padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.05); font-size: 0.85rem; line-height: 1.4; border: 1px solid rgba(255,255,255,0.1); margin-top:5px; margin-bottom:5px; }
-        .cambio-box strong { color: #60a5fa; }
+        .cambio-box strong { color: #a78bfa; }
+        
+        /* Mobile Responsive Table (Card View) */
+        @media (max-width: 768px) {
+            .table-responsive { border: none !important; margin: 0; padding: 0; }
+            .table thead { display: none; }
+            .table, .table tbody, .table tr, .table td { display: block; width: 100%; text-align: right; }
+            .table tr { margin-bottom: 1rem; background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 10px; padding: 0.5rem; }
+            .table td { padding: 0.5rem 0.5rem; border-bottom: 1px solid rgba(139, 92, 246, 0.1); position: relative; padding-left: 45%; min-height: 45px; display: flex; justify-content: flex-end; align-items: center;}
+            .table td:last-child { border-bottom: none; }
+            .table td::before { 
+                content: attr(data-label); 
+                position: absolute; 
+                left: 0.5rem; 
+                font-weight: 600; 
+                text-transform: uppercase; 
+                font-size: 0.75rem; 
+                color: #a78bfa; 
+                text-align: left; 
+                width: 40%;
+                display: flex;
+                align-items: center;
+                white-space: pre-wrap;
+            }
+            .table td > div { text-align: right; width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -137,23 +162,23 @@ $cod_base_caja          = "1";
 
                             let tr = document.createElement('tr');
                             tr.innerHTML = `
-                                <td>
+                                <td data-label="ID / Fecha">
                                     <div class="fw-bold text-primary">#${item.id_historial}</div>
                                     <div style="font-size: 0.8rem; color: rgba(255,255,255,0.7);">${item.fecha}</div>
                                 </td>
-                                <td>
+                                <td data-label="Responsable">
                                     <div class="fw-bold">${item.responsable}</div>
                                 </td>
-                                <td>
+                                <td data-label="Usuario Afectado">
                                     <div class="fw-bold text-warning">${item.afectado}</div>
                                     <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">
                                         <i class="fa-solid fa-id-card"></i> ${item.afectado_doc}
                                     </div>
                                 </td>
-                                <td>
+                                <td data-label="Acción Ejecutada">
                                     <span class="badge ${claseBadge} rounded-pill mb-1">${iconBadge} ${item.accion}</span>
                                 </td>
-                                <td>
+                                <td data-label="Detalles">
                                     <div><i class="fa-solid fa-comment-dots text-secondary"></i> <em>${item.motivo}</em></div>
                                     <div style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 5px;">${descVisual}</div>
                                     ${htmlDetalles}
