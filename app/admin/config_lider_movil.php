@@ -431,7 +431,18 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
     <div class="menu-section animate-in delay-3">
         <div class="menu-section-title">Módulo de Asignaciones</div>
         <div class="menu-list">
-            
+
+            <a href="reasignacion_y_cambio_rol.php" class="menu-item">
+                <div class="menu-item-icon green">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Asignación Gerárquica y Cambios de roles</div>
+                    <div class="menu-item-desc">Gestionar asignaciones y cambios de roles</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+<!--
             <a href="lista_asignar_tiendas_a_aliado_dragdrop_lider_movil.php" class="menu-item">
                 <div class="menu-item-icon green">
                     <i class="fa-solid fa-store"></i>
@@ -497,6 +508,7 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
                 </div>
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>
+-->
 
         </div>
     </div>

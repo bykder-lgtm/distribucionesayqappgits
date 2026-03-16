@@ -31,24 +31,31 @@ $cod_base_caja          = "1";
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0d1117 100%); min-height: 100vh; color: white; }
         .page-container { padding: 1.5rem; padding-bottom: 100px; max-width: 1400px; margin: 0 auto; width: 100%; }
         
-        .page-header { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 40px rgba(59, 130, 246, 0.4); }
+        .page-header { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%); border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4); }
         .page-header::before { content: ''; position: absolute; top: -50%; right: -20%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); border-radius: 50%; }
         .page-header h1 { color: white; font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; position: relative; z-index: 1; }
         .page-header p { color: rgba(255,255,255,0.8); font-size: 0.95rem; position: relative; z-index: 1; margin-bottom: 0; }
         
-        .wizard-step { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        .wizard-step h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #60a5fa; }
+        .wizard-step { background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .wizard-step h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: #a78bfa; }
         
-        .form-select, .form-control { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.4); color: white; }
-        .form-select:focus, .form-control:focus { background: rgba(59, 130, 246, 0.1); border-color: #60a5fa; color: white; box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25); }
+        .form-select, .form-control { background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.4); color: white; }
+        .form-select:focus, .form-control:focus { background: rgba(139, 92, 246, 0.1); border-color: #a78bfa; color: white; box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.25); }
         .form-select option { background: #1a1f2e; color: white; }
         
-        .table-container { background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 15px; overflow: hidden; display: none; }
+        .table-container { background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 15px; overflow: hidden; display: none; }
         .table { margin-bottom: 0; color: #ffffff !important; }
-        .table-dark { background-color: rgba(59, 130, 246, 0.3) !important; --bs-table-bg: transparent; --bs-table-color: #ffffff; --bs-table-border-color: rgba(59, 130, 246, 0.2); }
-        .table-hover tbody tr:hover td { background-color: rgba(59, 130, 246, 0.2) !important; color: #ffffff !important; cursor: pointer; }
-        .table td, .table th { border-bottom: 1px solid rgba(59, 130, 246, 0.2); padding: 1rem; vertical-align: middle; color: #ffffff !important; }
+        .table-dark { background-color: rgba(139, 92, 246, 0.3) !important; --bs-table-bg: transparent; --bs-table-color: #ffffff; --bs-table-border-color: rgba(139, 92, 246, 0.2); }
+        .table-hover tbody tr:hover td { background-color: rgba(139, 92, 246, 0.2) !important; color: #ffffff !important; cursor: pointer; }
+        .table td, .table th { border-bottom: 1px solid rgba(139, 92, 246, 0.2); padding: 1rem; vertical-align: middle; color: #ffffff !important; }
         .table tbody td { background: transparent; }
+        
+        /* Sobrescribir Primary al Púrpura del Tema */
+        .text-primary { color: #a78bfa !important; }
+        .bg-primary { background-color: #8b5cf6 !important; }
+        .btn-primary { background-color: #8b5cf6; border-color: #8b5cf6; color: white; }
+        .btn-primary:hover { background-color: #7c3aed; border-color: #7c3aed; box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4); color: white; }
+        .border-primary { border-color: #8b5cf6 !important; }
         
         .btn-siguiente { 
             background: #f59e0b; 
@@ -165,8 +172,8 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
     <!-- Modal Reasignacion / Cambio Rol -->
     <div class="modal fade" id="modalAccion" tabindex="-1" aria-labelledby="modalAccionLabel" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: #1a1f2e; border: 1px solid rgba(59, 130, 246, 0.4); color: white; border-radius: 15px;">
-                <div class="modal-header" style="border-bottom: 1px solid rgba(59, 130, 246, 0.2);">
+            <div class="modal-content" style="background: #1a1f2e; border: 1px solid rgba(139, 92, 246, 0.4); color: white; border-radius: 15px;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(139, 92, 246, 0.2);">
                     <h5 class="modal-title fw-bold" id="modalAccionLabel">Título</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -190,7 +197,7 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid rgba(59, 130, 246, 0.2);">
+                <div class="modal-footer" style="border-top: 1px solid rgba(139, 92, 246, 0.2);">
                     <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="btnConfirmarAccion" style="border-radius: 8px; font-weight: 600;"><i class="fa-solid fa-check"></i> Confirmar</button>
                 </div>
