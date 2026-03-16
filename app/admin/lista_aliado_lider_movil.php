@@ -2380,28 +2380,28 @@ $total_documentos_cargados = ($res_docs_total) ? mysqli_fetch_assoc($res_docs_to
                         <!-- Nombre de Usuario -->
                         <div class="form-group" style="margin-bottom: 1rem;">
                             <label class="form-label">Nombre de Usuario</label>
-                            <input type="text" class="form-input" name="usuario" id="edit_usuario" placeholder="Nombre de usuario" readonly style="background: rgba(0,0,0,0.3); cursor: not-allowed;">
-                            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
+                            <input type="text" class="form-input" name="nuevo_usuario" id="edit_usuario" placeholder="Nombre de usuario">
+                            <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
                                 <div style="color: rgba(255,255,255,0.7); font-size: 0.7rem;">
-                                    <i class="fa-solid fa-lock" style="color: #3b82f6; margin-right: 0.5rem;"></i>
-                                    El nombre de usuario no se puede modificar
+                                    <i class="fa-solid fa-pen" style="color: #8b5cf6; margin-right: 0.5rem;"></i>
+                                    Puedes modificar el nombre de usuario si lo deseas.
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Cambio de Contraseña por Correo -->
+                        <!-- Cambio de Contraseña -->
                         <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                            <label class="form-label" style="color: #f59e0b; font-weight: 700; margin-bottom: 0.75rem; display: block;">
-                                <i class="fa-solid fa-key"></i> Cambiar Contraseña
+                            <label class="form-label" style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer; color: #f59e0b; font-weight: 700; margin-bottom: 0.75rem;">
+                                <input type="checkbox" id="check_cambiar_password" name="cambiar_password" style="accent-color: #f59e0b; width: 18px; height: 18px; cursor: pointer;" onchange="document.getElementById('container_nueva_password').style.display = this.checked ? 'block' : 'none';">
+                                <span><i class="fa-solid fa-key"></i> Definir Nueva Contraseña</span>
                             </label>
-                            <div style="text-align: center;">
-                                <button type="button" onclick="enviarRecuperacionPassword()" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(245, 158, 11, 0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(245, 158, 11, 0.3)'">
-                                    <i class="fa-solid fa-envelope"></i> Enviar Nueva Contraseña por Correo
-                                </button>
+                            
+                            <div id="container_nueva_password" style="display: none;">
+                                <input type="text" class="form-input" name="nueva_password" id="nueva_password" placeholder="Ingresa la nueva contraseña">
                                 <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.75rem;">
                                     <div style="color: rgba(255,255,255,0.8); font-size: 0.75rem; line-height: 1.4;">
                                         <i class="fa-solid fa-lightbulb" style="color: #f59e0b; margin-right: 0.35rem;"></i>
-                                        Se generará una nueva contraseña temporal y se enviará al correo registrado del aliado.
+                                        Marca esta casilla si deseas asignar una nueva contraseña manualmente.
                                     </div>
                                 </div>
                             </div>
@@ -4328,6 +4328,15 @@ function cerrarModalEditar() {
     if (editCamaraInput) editCamaraInput.style.display = 'none';
     if (editCedulaActual) editCedulaActual.style.display = 'none';
     if (editCedulaInput) editCedulaInput.style.display = 'none';
+    
+    // Resetear credenciales
+    document.getElementById('edit_usuario').value = '';
+    var chkPassword = document.getElementById('check_cambiar_password');
+    if(chkPassword) {
+        chkPassword.checked = false;
+        document.getElementById('container_nueva_password').style.display = 'none';
+        document.getElementById('nueva_password').value = '';
+    }
 }
 
 // Función para guardar cambios en entidad crediticia
