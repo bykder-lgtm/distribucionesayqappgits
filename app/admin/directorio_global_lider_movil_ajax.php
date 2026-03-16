@@ -101,9 +101,13 @@ if ($op == 'buscar_directorio') {
 if ($op == 'obtener_detalle') {
     $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
     
-    $sql = "SELECT a.cod_administrador, a.nombres_apellidos_tercero, a.nombres, a.apellidos, a.cedula, a.telefono1_tercero, a.telefono2_tercero, a.correo_tercero, a.cod_estado_activacion_usuario, a.cod_seguridad, s.nombre_seguridad,
-    a.cuenta, a.cod_asesor, a.cod_coordinador, a.cod_lider, a.fecha_creacion, a.cod_tienda, a.direccion_tercero, a.barrio_tercero, a.nombre_tipo_identificacion, a.nombre_sexo, a.fecha_nac_tercero, a.departamento, a.ciudad, a.url_redsocial_facebook, a.url_redsocial_twitter, a.url_redsocial_linkedin, a.url_redsocial_skype
-    FROM tbl15_administrador a LEFT JOIN tbl15_seguridad s ON a.cod_seguridad = s.cod_seguridad WHERE a.cod_administrador = '$id'";
+    $sql = "SELECT a.cod_administrador, a.nombres_apellidos_tercero, a.nombres, a.apellidos, a.cedula, a.telefono1_tercero, a.correo_tercero, a.cod_estado_activacion_usuario, a.cod_seguridad, s.nombre_seguridad,
+    a.cuenta, a.cod_asesor, a.cod_coordinador, a.cod_lider, a.fecha_creacion, a.cod_tienda, a.direccion_tercero, a.barrio_tercero, a.nombre_tipo_identificacion, a.nombre_sexo, a.cod_departamento, a.cod_municipio,
+    d.nombre_departamento as departamento, m.nombre_municipio as ciudad
+    FROM tbl15_administrador a LEFT JOIN tbl15_seguridad s ON a.cod_seguridad = s.cod_seguridad 
+    LEFT JOIN tbl15_departamento d ON a.cod_departamento = d.cod_departamento 
+    LEFT JOIN tbl15_municipio m ON a.cod_municipio = m.cod_municipio 
+    WHERE a.cod_administrador = '$id'";
     $res = mysqli_query($conectar, $sql);
     if($res && mysqli_num_rows($res) > 0) {
         $data = mysqli_fetch_assoc($res);
@@ -145,51 +149,98 @@ if ($op == 'obtener_detalle') {
     exit;
 }
 
+if ($op == 'cargar_municipios') {
+    $cod_dep = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
+    $html = '<option value="">Seleccione Ciudad</option>';
+    if($cod_dep > 0) {
+        $sql_mun = "SELECT cod_municipio, nombre_municipio FROM tbl15_municipio WHERE cod_departamento = '$cod_dep' AND cod_estado = '1' ORDER BY nombre_municipio ASC";
+        $res_mun = mysqli_query($conectar, $sql_mun);
+        while($m = mysqli_fetch_assoc($res_mun)){
+            $html .= '<option value="'.$m['cod_municipio'].'">'.$m['nombre_municipio'].'</option>';
+        }
+    }
+    echo json_encode(['success' => true, 'html' => $html]);
+    exit;
+}
+
 if ($op == 'editar_usuario') {
-    $cod_administrador = isset($_POST['cod_administrador']) ? intval($_POST['cod_administrador']) : 0;
-    if($cod_administrador <= 0) { echo json_encode(['success' => false, 'mensaje' => 'ID no válido']); exit; }
+    $id = isset($_POST['edit_id']) ? intval($_POST['edit_id']) : 0;
+    if($id <= 0) { echo json_encode(['success' => false, 'mensaje' => 'ID no válido']); exit; }
+    
+    // Obtenemos todos los campos del formulario
+    $nombres_apellidos = isset($_POST['edit_nombre_completo']) ? mysqli_real_escape_string($conectar, $_POST['edit_nombre_completo']) : '';
+    $nombres = isset($_POST['edit_nombres']) ? mysqli_real_escape_string($conectar, $_POST['edit_nombres']) : '';
+    $apellidos = isset($_POST['edit_apellidos']) ? mysqli_real_escape_string($conectar, $_POST['edit_apellidos']) : '';
+    
+    $tipo_identificacion = isset($_POST['edit_tipo_identificacion']) ? mysqli_real_escape_string($conectar, $_POST['edit_tipo_identificacion']) : '';
+    $cedula = isset($_POST['edit_cedula']) ? mysqli_real_escape_string($conectar, $_POST['edit_cedula']) : '';
+    
+    $telefono1 = isset($_POST['edit_telefono']) ? mysqli_real_escape_string($conectar, $_POST['edit_telefono']) : '';
+    
+    $correo = isset($_POST['edit_correo']) ? mysqli_real_escape_string($conectar, $_POST['edit_correo']) : '';
+    $direccion = isset($_POST['edit_direccion']) ? mysqli_real_escape_string($conectar, $_POST['edit_direccion']) : '';
+    $barrio = isset($_POST['edit_barrio']) ? mysqli_real_escape_string($conectar, $_POST['edit_barrio']) : '';
+    $cod_departamento = isset($_POST['edit_departamento']) ? intval($_POST['edit_departamento']) : 0;
+    $cod_municipio = isset($_POST['edit_ciudad']) ? intval($_POST['edit_ciudad']) : 0;
+    
+    $nombre_sexo = isset($_POST['edit_nombre_sexo']) ? mysqli_real_escape_string($conectar, $_POST['edit_nombre_sexo']) : '';
+    
+    $cuenta = isset($_POST['edit_cuenta']) ? mysqli_real_escape_string($conectar, $_POST['edit_cuenta']) : '';
+    $contrasena_nueva = isset($_POST['edit_contrasena']) ? mysqli_real_escape_string($conectar, $_POST['edit_contrasena']) : '';
+    
+    $rol = isset($_POST['edit_rol']) ? intval($_POST['edit_rol']) : 0;
+    $estado = isset($_POST['edit_estado']) ? intval($_POST['edit_estado']) : 0;
+    
+    // Nombres en texto de dep y mun
+    $nom_dep = ""; $nom_mun = "";
+    if($cod_departamento > 0) {
+        $rd = mysqli_query($conectar, "SELECT nombre_departamento FROM tbl15_departamento WHERE cod_departamento = '$cod_departamento'");
+        if($f = mysqli_fetch_assoc($rd)) $nom_dep = $f['nombre_departamento'];
+    }
+    if($cod_municipio > 0) {
+        $rm = mysqli_query($conectar, "SELECT nombre_municipio FROM tbl15_municipio WHERE cod_municipio = '$cod_municipio'");
+        if($f = mysqli_fetch_assoc($rm)) $nom_mun = $f['nombre_municipio'];
+    }
 
-    $nombres_apellidos_tercero  = trim(addslashes($_POST['nombres_apellidos_tercero']));
-    $cedula                     = trim(addslashes($_POST['cedula']));
-    $telefono1_tercero          = trim(addslashes($_POST['telefono1_tercero']));
-    $correo_tercero             = trim(addslashes($_POST['correo_tercero']));
-    $cod_seguridad              = intval($_POST['cod_seguridad']);
-    $cod_estado                 = intval($_POST['cod_estado_activacion_usuario']);
+    // Preparar campos de actualización
+    $update_fields = [
+        "nombres_apellidos_tercero = UPPER('$nombres_apellidos')",
+        "nombres = UPPER('$nombres')",
+        "nombre1_tercero = UPPER('$nombres')",
+        "apellidos = UPPER('$apellidos')",
+        "apellido1_tercero = UPPER('$apellidos')",
+        "nombre_tipo_identificacion = '$tipo_identificacion'",
+        "cedula = '$cedula'",
+        "identificacion_tercero = '$cedula'",
+        "telefono1_tercero = '$telefono1'",
+        "telefono = '$telefono1'",
+        "correo_tercero = '$correo'",
+        "correo = '$correo'",
+        "direccion_tercero = UPPER('$direccion')",
+        "barrio_tercero = UPPER('$barrio')",
+        "cod_departamento = '$cod_departamento'",
+        "cod_municipio = '$cod_municipio'",
+        "departamento = UPPER('$nom_dep')",
+        "ciudad = UPPER('$nom_mun')",
+        "nombre_sexo = '$nombre_sexo'",
+        "cuenta = '$cuenta'"
+    ];
+    
+    if ($rol > 0) { $update_fields[] = "cod_seguridad = '$rol'"; }
+    if ($estado > 0) { $update_fields[] = "cod_estado_activacion_usuario = '$estado'"; }
+    
+    if (!empty($contrasena_nueva)) {
+        $contrasena_hash = sha1(strip_tags(stripslashes($contrasena_nueva)));
+        $update_fields[] = "contrasena = '$contrasena_hash'";
+    }
 
-    // Separa primer nombre y primer apellido asumiendo formato básico,
-    // o simplemente actualizamos las columnas básicas comunes.
-    $partes = explode(' ', $nombres_apellidos_tercero);
-    $nombre1 = isset($partes[0]) ? $partes[0] : '';
-    $apellido1 = isset($partes[1]) ? $partes[1] : '';
-
-    $cuenta                     = isset($_POST['cuenta']) ? trim(addslashes($_POST['cuenta'])) : '';
-    $direccion_tercero          = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
-    $barrio_tercero             = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
-    $nombre_tipo_identificacion = isset($_POST['nombre_tipo_identificacion']) ? trim(addslashes($_POST['nombre_tipo_identificacion'])) : '';
-
-    $sql = "UPDATE tbl15_administrador SET 
-    nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'),
-    nombres = UPPER('$nombre1'),
-    nombre1_tercero = UPPER('$nombre1'),
-    apellidos = UPPER('$apellido1'),
-    apellido1_tercero = UPPER('$apellido1'),
-    cedula = '$cedula',
-    identificacion_tercero = '$cedula',
-    telefono = '$telefono1_tercero',
-    telefono1_tercero = '$telefono1_tercero',
-    correo = '$correo_tercero',
-    correo_tercero = '$correo_tercero',
-    cod_seguridad = '$cod_seguridad',
-    cod_estado_activacion_usuario = '$cod_estado',
-    cuenta = '$cuenta',
-    direccion_tercero = UPPER('$direccion_tercero'),
-    barrio_tercero = UPPER('$barrio_tercero'),
-    nombre_tipo_identificacion = UPPER('$nombre_tipo_identificacion')
-    WHERE cod_administrador = '$cod_administrador'";
+    $update_sql = implode(", ", $update_fields);
+    
+    $sql = "UPDATE tbl15_administrador SET $update_sql WHERE cod_administrador = '$id'";
     if(mysqli_query($conectar, $sql)){
         echo json_encode(['success' => true, 'mensaje' => 'Información actualizada correctamente.']);
     } else {
-        echo json_encode(['success' => false, 'mensaje' => 'Error al actualizar base de datos: ' . mysqli_error($conectar)]);
+        echo json_encode(['success' => false, 'mensaje' => 'Error al actualizar: ' . mysqli_error($conectar)]);
     }
     exit;
 }

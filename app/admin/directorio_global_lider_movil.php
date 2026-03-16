@@ -298,23 +298,16 @@ $cod_base_caja          = "1";
                 <span><i class="fa-solid fa-person-half-dress text-muted me-2"></i> Género</span> <span id="vd_sexo" class="fw-semibold text-end">--</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.05); color:white; border-color: rgba(255,255,255,0.05);">
-                <span><i class="fa-solid fa-cake-candles text-muted me-2"></i> Nacimiento</span> <span id="vd_fecha_nac" class="fw-semibold text-end">--</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.05); color:white; border-color: rgba(255,255,255,0.05);">
                 <span><i class="fa-solid fa-envelope text-muted me-2"></i> Correo</span> <span id="vd_correo" class="fw-semibold text-break text-end" style="max-width:60%;">--</span>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.05); color:white; border-color: rgba(255,255,255,0.05);">
-                <span><i class="fa-solid fa-phone text-muted me-2"></i> Teléfonos</span> <span id="vd_telefono" class="fw-semibold text-end">--</span>
+                <span><i class="fa-solid fa-phone text-muted me-2"></i> Teléfono</span> <span id="vd_telefono" class="fw-semibold text-end">--</span>
             </li>
             <li class="list-group-item d-flex flex-column" style="background: rgba(255,255,255,0.05); color:white; border-color: rgba(255,255,255,0.05);">
                 <div><i class="fa-solid fa-map-location-dot text-muted me-2"></i> <span>Ubicación</span></div>
                 <div class="fw-semibold mt-1" id="vd_direccion" style="padding-left: 1.5rem;">--</div>
                 <div class="fw-semibold text-muted small mt-1" id="vd_barrio" style="padding-left: 1.5rem;">--</div>
                 <div class="fw-semibold text-muted small mt-1" id="vd_dep_ciudad" style="padding-left: 1.5rem;">--</div>
-            </li>
-            <li class="list-group-item d-flex flex-column" style="background: rgba(255,255,255,0.05); color:white; border-color: rgba(255,255,255,0.05);">
-                <div><i class="fa-solid fa-globe text-muted me-2"></i> <span>Redes Sociales</span></div>
-                <div class="small mt-1 text-info text-break" id="vd_redes" style="padding-left: 1.5rem;">--</div>
             </li>
             <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center" style="background: rgba(255,255,255,0.05); color:white; border-color: rgba(255,255,255,0.05);">
                 <span class="w-100 mb-1"><i class="fa-solid fa-at text-muted me-2"></i> Nombre de Usuario / Cuenta</span>
@@ -381,31 +374,19 @@ $cod_base_caja          = "1";
                 </div>
             </div>
 
-            <div class="mb-3 d-flex gap-2">
-                <div class="w-50">
-                    <label class="form-label text-light small mb-1">Género / Sexo</label>
-                    <select class="form-select" id="ed_nombre_sexo" name="edit_nombre_sexo">
-                        <option value="">Seleccione</option>
-                        <option value="MASCULINO">MASCULINO</option>
-                        <option value="FEMENINO">FEMENINO</option>
-                        <option value="OTRO">OTRO</option>
-                    </select>
-                </div>
-                <div class="w-50">
-                    <label class="form-label text-light small mb-1">Fecha de Nacimiento</label>
-                    <input type="date" class="form-control" id="ed_fecha_nac" name="edit_fecha_nac_tercero">
-                </div>
+            <div class="mb-3">
+                <label class="form-label text-light small mb-1">Género / Sexo</label>
+                <select class="form-select" id="ed_nombre_sexo" name="edit_nombre_sexo">
+                    <option value="">Seleccione</option>
+                    <option value="MASCULINO">MASCULINO</option>
+                    <option value="FEMENINO">FEMENINO</option>
+                    <option value="OTRO">OTRO</option>
+                </select>
             </div>
 
-            <div class="mb-3 d-flex gap-2">
-                <div class="w-50">
-                    <label class="form-label text-light small mb-1">Teléfono Principal</label>
-                    <input type="text" class="form-control" id="ed_telefono" name="edit_telefono">
-                </div>
-                <div class="w-50">
-                    <label class="form-label text-light small mb-1">Teléfono Alternativo</label>
-                    <input type="text" class="form-control" id="ed_telefono2" name="edit_telefono2">
-                </div>
+            <div class="mb-3">
+                <label class="form-label text-light small mb-1">Teléfono</label>
+                <input type="text" class="form-control" id="ed_telefono" name="edit_telefono">
             </div>
             
             <div class="mb-3">
@@ -427,23 +408,24 @@ $cod_base_caja          = "1";
             <div class="mb-3 d-flex gap-2">
                 <div class="w-50">
                     <label class="form-label text-light small mb-1">Departamento</label>
-                    <input type="text" class="form-control" id="ed_departamento" name="edit_departamento" placeholder="Departamento">
+                    <select class="form-select" id="ed_departamento" name="edit_departamento">
+                        <option value="">Seleccione Departamento</option>
+                        <?php
+                            $sql_depto = "SELECT cod_departamento, nombre_departamento FROM tbl15_departamento WHERE cod_estado = '1' ORDER BY nombre_departamento ASC";
+                            $res_depto = mysqli_query($conectar, $sql_depto);
+                            while($d = mysqli_fetch_assoc($res_depto)){
+                                echo "<option value='".$d['cod_departamento']."'>".$d['nombre_departamento']."</option>";
+                            }
+                        ?>
+                    </select>
                 </div>
                 <div class="w-50">
                     <label class="form-label text-light small mb-1">Ciudad</label>
-                    <input type="text" class="form-control" id="ed_ciudad" name="edit_ciudad" placeholder="Ciudad">
+                    <select class="form-select" id="ed_ciudad" name="edit_ciudad">
+                        <option value="">Seleccione Ciudad</option>
+                    </select>
                 </div>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label text-light small mb-1">Redes Sociales (URLs)</label>
-                <div class="input-group mb-2"><span class="input-group-text bg-dark text-white border-secondary"><i class="fa-brands fa-facebook"></i></span><input type="text" id="ed_facebook" name="edit_facebook" class="form-control" placeholder="URL Facebook"></div>
-                <div class="input-group mb-2"><span class="input-group-text bg-dark text-white border-secondary"><i class="fa-brands fa-twitter"></i></span><input type="text" id="ed_twitter" name="edit_twitter" class="form-control" placeholder="URL Twitter"></div>
-                <div class="input-group mb-2"><span class="input-group-text bg-dark text-white border-secondary"><i class="fa-brands fa-linkedin"></i></span><input type="text" id="ed_linkedin" name="edit_linkedin" class="form-control" placeholder="URL LinkedIn"></div>
-                <div class="input-group"><span class="input-group-text bg-dark text-white border-secondary"><i class="fa-brands fa-skype"></i></span><input type="text" id="ed_skype" name="edit_skype" class="form-control" placeholder="Usuario Skype"></div>
-            </div>
-            
-            <hr class="border-secondary border-opacity-50">
 
             <div class="mb-3 d-flex gap-2">
                 <div class="w-50">
@@ -506,6 +488,27 @@ $cod_base_caja          = "1";
         myModalVer = new bootstrap.Modal(document.getElementById('modalVerUsuario'));
         myModalEditar = new bootstrap.Modal(document.getElementById('modalEditarUsuario'));
 
+        // Cargar municipios al cambiar el departamento
+        document.getElementById('ed_departamento').addEventListener('change', function() {
+            let cod_dep = this.value;
+            let ciudadSelect = document.getElementById('ed_ciudad');
+            if(!cod_dep) {
+                ciudadSelect.innerHTML = '<option value="">Seleccione Ciudad</option>';
+                return;
+            }
+            $.ajax({
+                url: 'directorio_global_lider_movil_ajax.php',
+                type: 'POST',
+                data: { op: 'cargar_municipios', cod_departamento: cod_dep },
+                dataType: 'json',
+                success: function(resp) {
+                    if(resp.success) {
+                        ciudadSelect.innerHTML = resp.html;
+                    }
+                }
+            });
+        });
+
         // Guardar Edición
         document.getElementById('formEditarGlobal').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -562,26 +565,15 @@ $cod_base_caja          = "1";
                     document.getElementById('vd_rol').textContent = d.nombre_seguridad || 'Sin Asignar';
                     document.getElementById('vd_cedula').textContent = (d.nombre_tipo_identificacion ? d.nombre_tipo_identificacion + ' ' : '') + (d.cedula || 'N/A');
                     document.getElementById('vd_sexo').textContent = d.nombre_sexo || 'No Registrado';
-                    document.getElementById('vd_fecha_nac').textContent = d.fecha_nac_tercero && d.fecha_nac_tercero !== '0000-00-00' ? d.fecha_nac_tercero : 'No Registrada';
                     document.getElementById('vd_correo').textContent = d.correo_tercero || 'N/A';
-                    
-                    let tel = d.telefono1_tercero || '';
-                    if (d.telefono2_tercero) { tel += (tel ? ' / ' : '') + d.telefono2_tercero; }
-                    document.getElementById('vd_telefono').textContent = tel || 'N/A';
+                    document.getElementById('vd_telefono').textContent = d.telefono1_tercero || 'N/A';
                     
                     document.getElementById('vd_direccion').textContent = d.direccion_tercero || 'No Registrada';
                     document.getElementById('vd_barrio').textContent = d.barrio_tercero ? 'Barrio: ' + d.barrio_tercero : '';
                     
                     let loc = d.ciudad || '';
                     if (d.departamento) { loc += (loc ? ', ' : '') + d.departamento; }
-                    document.getElementById('vd_dep_ciudad').textContent = loc ? loc : '';
-                    
-                    let redesInfo = '';
-                    if(d.url_redsocial_facebook) redesInfo += `<div class="mb-1"><i class="fa-brands fa-facebook"></i> ${d.url_redsocial_facebook}</div>`;
-                    if(d.url_redsocial_twitter) redesInfo += `<div class="mb-1"><i class="fa-brands fa-twitter"></i> ${d.url_redsocial_twitter}</div>`;
-                    if(d.url_redsocial_linkedin) redesInfo += `<div class="mb-1"><i class="fa-brands fa-linkedin"></i> ${d.url_redsocial_linkedin}</div>`;
-                    if(d.url_redsocial_skype) redesInfo += `<div class="mb-1"><i class="fa-brands fa-skype"></i> ${d.url_redsocial_skype}</div>`;
-                    document.getElementById('vd_redes').innerHTML = redesInfo || 'Ninguna registrada';
+                    document.getElementById('vd_dep_ciudad').textContent = loc ? loc : '--';
                     
                     document.getElementById('vd_cuenta').textContent = d.cuenta || 'Sin Asignar';
                     document.getElementById('vd_superior').textContent = d.superior || 'Sin Asignar';
@@ -628,20 +620,32 @@ $cod_base_caja          = "1";
                     document.getElementById('ed_tipo_identificacion').value = d.nombre_tipo_identificacion || 'C.C';
                     document.getElementById('ed_cedula').value = d.cedula || '';
                     document.getElementById('ed_nombre_sexo').value = d.nombre_sexo || '';
-                    document.getElementById('ed_fecha_nac').value = d.fecha_nac_tercero && d.fecha_nac_tercero !== '0000-00-00' ? d.fecha_nac_tercero : '';
                     document.getElementById('ed_telefono').value = d.telefono1_tercero || '';
-                    document.getElementById('ed_telefono2').value = d.telefono2_tercero || '';
                     document.getElementById('ed_cuenta').value = d.cuenta || '';
                     document.getElementById('ed_correo').value = d.correo_tercero || '';
                     document.getElementById('ed_direccion').value = d.direccion_tercero || '';
                     document.getElementById('ed_barrio').value = d.barrio_tercero || '';
-                    document.getElementById('ed_departamento').value = d.departamento || '';
-                    document.getElementById('ed_ciudad').value = d.ciudad || '';
+                    document.getElementById('ed_departamento').value = d.cod_departamento || '';
                     
-                    document.getElementById('ed_facebook').value = d.url_redsocial_facebook || '';
-                    document.getElementById('ed_twitter').value = d.url_redsocial_twitter || '';
-                    document.getElementById('ed_linkedin').value = d.url_redsocial_linkedin || '';
-                    document.getElementById('ed_skype').value = d.url_redsocial_skype || '';
+                    // Cargar municipios y seleccionar el correcto
+                    let ciudadSelect = document.getElementById('ed_ciudad');
+                    if(d.cod_departamento) {
+                        $.ajax({
+                            url: 'directorio_global_lider_movil_ajax.php',
+                            type: 'POST',
+                            data: { op: 'cargar_municipios', cod_departamento: d.cod_departamento },
+                            dataType: 'json',
+                            success: function(resp) {
+                                if(resp.success) {
+                                    ciudadSelect.innerHTML = resp.html;
+                                    ciudadSelect.value = d.cod_municipio || '';
+                                }
+                            }
+                        });
+                    } else {
+                        ciudadSelect.innerHTML = '<option value="">Seleccione Ciudad</option>';
+                    }
+                    
                     document.getElementById('ed_contrasena').value = ''; // Limpiar el campo siempre
                     
                     document.getElementById('ed_rol').value = d.cod_seguridad;
