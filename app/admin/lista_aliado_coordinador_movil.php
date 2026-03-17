@@ -36,12 +36,12 @@ $cod_base_caja          = "1";
 .ql-toolbar.ql-snow {
     background: #f3f4f6;
     border-radius: 12px 12px 0 0;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(99, 102, 241, 0.3);
 }
 .ql-container.ql-snow {
-    background: rgba(16, 185, 129, 0.05);
+    background: rgba(99, 102, 241, 0.05);
     border-radius: 0 0 12px 12px;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(99, 102, 241, 0.3);
     color: white;
     font-family: 'Inter', sans-serif;
     min-height: 150px;
@@ -96,14 +96,14 @@ body {
 
 /* Header */
 .page-header {
-    background: linear-gradient(135deg, #10b981 0%, #059669 50%, #4338ca 100%);
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     border-radius: 20px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
 }
 
 @media (max-width: 768px) {
@@ -242,7 +242,7 @@ body {
 /* Search Bar */
 .search-bar {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 16px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -280,13 +280,13 @@ body {
 }
 
 .search-bar i {
-    color: #10b981;
+    color: #6366f1;
     font-size: 1.1rem;
 }
 
 /* Add Button */
 .add-button {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
     border: none;
     border-radius: 16px;
@@ -301,7 +301,7 @@ body {
     cursor: pointer;
     margin-bottom: 1.5rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -323,7 +323,7 @@ body {
 
 .add-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(16, 185, 129, 0.5);
+    box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
 }
 
 /* Ally List */
@@ -349,7 +349,7 @@ body {
 
 .ally-card {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 16px;
     padding: 1rem;
     transition: all 0.3s ease;
@@ -370,8 +370,8 @@ body {
 }
 
 .ally-card:hover {
-    border-color: #10b981;
-    box-shadow: 0 5px 20px rgba(16, 185, 129, 0.2);
+    border-color: #6366f1;
+    box-shadow: 0 5px 20px rgba(99, 102, 241, 0.2);
 }
 
 .ally-header {
@@ -407,8 +407,8 @@ body {
     font-size: 0.65rem;
     font-weight: 600;
     text-transform: uppercase;
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    background: rgba(99, 102, 241, 0.2);
+    color: #6366f1;
     white-space: nowrap;
 }
 
@@ -428,7 +428,7 @@ body {
 }
 
 .ally-detail i {
-    color: #10b981;
+    color: #6366f1;
     width: 16px;
     font-size: 0.8rem;
     text-align: center;
@@ -463,8 +463,8 @@ body {
 }
 
 .ally-stat-item:hover {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
     transform: translateY(-2px);
 }
 
@@ -472,7 +472,7 @@ body {
     display: block;
     font-size: 1.1rem;
     font-weight: 800;
-    color: #10b981;
+    color: #6366f1;
     margin-bottom: 0.15rem;
 }
 
@@ -586,7 +586,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
     position: sticky;
     top: 0;
     background: #1a1f2e;
@@ -685,8 +685,8 @@ body {
 
 .form-input, .form-select {
     width: 100%;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 12px;
     padding: 0.85rem 1rem;
     color: white;
@@ -709,8 +709,8 @@ body {
 }
 
 .form-input:focus, .form-select:focus {
-    border-color: #10b981;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 .form-row {
@@ -721,7 +721,7 @@ body {
 
 .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
     border: none;
     padding: 1rem;
@@ -744,7 +744,7 @@ body {
 
 .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.4);
 }
 
 /* Bottom Navigation */
@@ -754,7 +754,7 @@ body {
     left: 0;
     right: 0;
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border-top: 1px solid rgba(16, 185, 129, 0.2);
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
     display: flex;
     justify-content: space-around;
     padding: 0.75rem 0;
@@ -787,12 +787,12 @@ body {
 }
 
 .nav-item:hover, .nav-item.active {
-    color: #10b981;
+    color: #6366f1;
     text-decoration: none;
 }
 
 .nav-item.active {
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(99, 102, 241, 0.1);
 }
 
 .nav-item i {
@@ -833,7 +833,7 @@ body {
 
 .empty-state i {
     font-size: 4rem;
-    color: rgba(16, 185, 129, 0.3);
+    color: rgba(99, 102, 241, 0.3);
     margin-bottom: 1rem;
 }
 
@@ -932,22 +932,22 @@ body {
 }
 
 .action-btn.view {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    background: rgba(99, 102, 241, 0.2);
+    color: #6366f1;
 }
 
 .action-btn.view:hover {
-    background: #10b981;
+    background: #6366f1;
     color: white;
 }
 
 .action-btn.share {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    background: rgba(99, 102, 241, 0.2);
+    color: #6366f1;
 }
 
 .action-btn.share:hover {
-    background: #10b981;
+    background: #6366f1;
     color: white;
     transform: translateY(-2px);
 }
@@ -1007,7 +1007,7 @@ select option {
 select option:hover,
 select option:focus,
 select option:checked {
-    background-color: #10b981 !important;
+    background-color: #6366f1 !important;
     color: #ffffff !important;
 }
 
@@ -1046,14 +1046,14 @@ select[id^="edit_municipio_tienda_"] option {
     width: 56px;
     height: 56px;
     border: 5px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #10b981;
-    border-right-color: #059669;
+    border-top-color: #6366f1;
+    border-right-color: #4f46e5;
     border-radius: 50%;
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 0.8s linear infinite;
     margin-bottom: 24px;
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
 @media (max-width: 480px) {
@@ -1073,7 +1073,7 @@ select[id^="edit_municipio_tienda_"] option {
     letter-spacing: 1.5px;
     text-transform: uppercase;
     animation: pulse 1.5s ease-in-out infinite;
-    text-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
+    text-shadow: 0 2px 10px rgba(99, 102, 241, 0.5);
 }
 
 @media (max-width: 480px) {
@@ -1133,8 +1133,8 @@ select[id^="edit_municipio_tienda_"] option {
     gap: 0.75rem;
     margin-bottom: 0.5rem;
     padding: 0.75rem;
-    background: rgba(16, 185, 129, 0.08);
-    border: 1px solid rgba(16, 185, 129, 0.15);
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.15);
     border-radius: 10px;
 }
 
@@ -1202,9 +1202,9 @@ select[id^="edit_municipio_tienda_"] option {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: #6366f1;
     border-radius: 12px;
     text-decoration: none;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1216,11 +1216,11 @@ select[id^="edit_municipio_tienda_"] option {
 }
 
 .pagination-btn:hover:not(.disabled) {
-    background: #10b981;
+    background: #6366f1;
     color: white !important;
     transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-    border-color: #10b981;
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    border-color: #6366f1;
 }
 
 .pagination-btn.disabled {
@@ -1237,17 +1237,17 @@ select[id^="edit_municipio_tienda_"] option {
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
     padding: 0 1.25rem;
-    background: rgba(16, 185, 129, 0.05);
+    background: rgba(99, 102, 241, 0.05);
     height: 42px;
     display: flex;
     align-items: center;
     border-radius: 12px;
-    border: 1px solid rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.1);
     letter-spacing: 0.5px;
 }
 
 .pagination-info span {
-    color: #10b981;
+    color: #6366f1;
     margin: 0 4px;
 }
 
@@ -1395,13 +1395,13 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 $nombre_completo = !empty($row['nombres_apellidos_tercero']) ? $row['nombres_apellidos_tercero'].' ('.$row['nombres'].' '.$row['apellidos'].')' : trim($row['nombres'].' '.$row['apellidos']);
                 $cod_estado = $row['cod_estado_activacion_usuario'];
                 // Determinar estado y colores
-                if ($cod_estado == '1') { $estado_texto = 'Activo'; $estado_bg = 'rgba(16, 185, 129, 0.2)'; $estado_color = '#10b981'; } elseif ($cod_estado == '2') { $estado_texto = 'En Espera'; $estado_bg = 'rgba(245, 158, 11, 0.2)'; $estado_color = '#f59e0b'; } else { $estado_texto = 'Inactivo'; $estado_bg = 'rgba(239, 68, 68, 0.2)'; $estado_color = '#ef4444'; }
+                if ($cod_estado == '1') { $estado_texto = 'Activo'; $estado_bg = 'rgba(99, 102, 241, 0.2)'; $estado_color = '#6366f1'; } elseif ($cod_estado == '2') { $estado_texto = 'En Espera'; $estado_bg = 'rgba(245, 158, 11, 0.2)'; $estado_color = '#f59e0b'; } else { $estado_texto = 'Inactivo'; $estado_bg = 'rgba(239, 68, 68, 0.2)'; $estado_color = '#ef4444'; }
                 // Obtener tiendas asociadas a este aliado
                 $cod_aliado = $row['cod_administrador'];
                 $sql_tiendas = "SELECT cod_tienda, nombre_tienda FROM tbl15_tienda WHERE cod_aliado_estrategico = '$cod_aliado' AND cod_estado != '0' LIMIT 3";
                 $res_tiendas = mysqli_query($conectar, $sql_tiendas);
                 $tiendas_arr = [];
-                while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_coordinador_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #10b981; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
+                while($t = mysqli_fetch_assoc($res_tiendas)) { $tiendas_arr[] = '<a href="ver_detalle_tienda_coordinador_movil.php?cod_tienda=' . $t['cod_tienda'] . '" style="color: #6366f1; text-decoration: underline; font-weight: 600;">' . htmlspecialchars($t['nombre_tienda']) . '</a>'; }
                 $tiendas_texto = count($tiendas_arr) > 0 ? implode(', ', $tiendas_arr) : 'Sin tiendas';
                 // Obtener líneas de crédito asociadas a este aliado
                 $sql_lineas_credito = "SELECT ec.nombre_entidad_crediticia, peca.interes_ptj 
@@ -1411,7 +1411,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 $lineas_credito_html = '';
                 $count_lineas = 0;
                 while($lc = mysqli_fetch_assoc($res_lineas_credito)) { 
-                    $lineas_credito_html .= '<span style="display: inline-block; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 0.2rem 0.5rem; border-radius: 8px; font-size: 0.7rem; font-weight: 600; margin: 0.15rem;">' . htmlspecialchars($lc['nombre_entidad_crediticia']) . ' <strong>' . number_format($lc['interes_ptj'], 2) . '%</strong></span> ';
+                    $lineas_credito_html .= '<span style="display: inline-block; background: rgba(99, 102, 241, 0.15); color: #6366f1; padding: 0.2rem 0.5rem; border-radius: 8px; font-size: 0.7rem; font-weight: 600; margin: 0.15rem;">' . htmlspecialchars($lc['nombre_entidad_crediticia']) . ' <strong>' . number_format($lc['interes_ptj'], 2) . '%</strong></span> ';
                     $count_lineas++;
                 }
                 $lineas_credito_texto = $count_lineas > 0 ? $lineas_credito_html : '<span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">Sin entidades</span>';
@@ -1451,7 +1451,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <!--
                     <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 0.5rem; padding-top: 0.5rem;">
                         <div style="display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.25rem;">
-                            <i class="fa-solid fa-credit-card" style="color: #10b981; font-size: 0.8rem; margin-top: 0.25rem; flex-shrink: 0;"></i>
+                            <i class="fa-solid fa-credit-card" style="color: #6366f1; font-size: 0.8rem; margin-top: 0.25rem; flex-shrink: 0;"></i>
                             <div style="flex: 1; min-width: 0;">
                                 <div style="color: rgba(255,255,255,0.7); font-size: 0.75rem; font-weight: 600; margin-bottom: 0.35rem;">Líneas de Crédito:</div>
                                 <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; line-height: 1.4;">
@@ -1573,7 +1573,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     </div>
                 </div>
 
-                <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
+                <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Identificación *</label>
@@ -1634,15 +1634,15 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <!-- Parametrización de Lineas de Credito -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
-                    <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
-                    <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
+                    <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
+                    <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
                         <?php 
                         mysqli_data_seek($res_entidades, 0);
                         while ($entidad = mysqli_fetch_assoc($res_entidades)): 
                         ?>
                         <div class="credit-line-item">
                             <div class="credit-line-check">
-                                <input type="checkbox" name="entidades[]" value="<?php echo $entidad['cod_entidad_crediticia']; ?>" id="ent_<?php echo $entidad['cod_entidad_crediticia']; ?>" style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer; margin: 0;">
+                                <input type="checkbox" name="entidades[]" value="<?php echo $entidad['cod_entidad_crediticia']; ?>" id="ent_<?php echo $entidad['cod_entidad_crediticia']; ?>" style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer; margin: 0;">
                                 <label for="ent_<?php echo $entidad['cod_entidad_crediticia']; ?>" style="color: rgba(255,255,255,0.95); font-size: 0.9rem; font-weight: 600; cursor: pointer; margin: 0; word-break: break-word;">
                                     <?php echo $entidad['nombre_entidad_crediticia']; ?>
                                 </label>
@@ -1656,15 +1656,15 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                                 </div>
                                 <div class="input-group-mini">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Portal:</label>
-                                    <input type="checkbox" name="cod_estado_entrar_portal_<?php echo $entidad['cod_entidad_crediticia']; ?>" value="1" style="accent-color: #10b981; width: 16px; height: 16px; cursor: pointer;">
+                                    <input type="checkbox" name="cod_estado_entrar_portal_<?php echo $entidad['cod_entidad_crediticia']; ?>" value="1" style="accent-color: #6366f1; width: 16px; height: 16px; cursor: pointer;">
                                 </div>
                             </div>
                         </div>
                         <?php endwhile; ?>
                     </div>
-                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
                             <strong>Nota:</strong> Selecciona las lineas de credito disponibles para este aliado e ingresa el porcentaje de inters correspondiente.
                         </div>
                     </div>
@@ -1672,18 +1672,18 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <!-- Parametrización de Bancos -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
-                    <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                    <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
                         <i class="fa-solid fa-university"></i> Cuentas Bancarias
                     </label>
-                    <div id="contenedor_bancos" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
+                    <div id="contenedor_bancos" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
                         <?php 
                         if ($res_bancos && mysqli_num_rows($res_bancos) > 0) {
                             mysqli_data_seek($res_bancos, 0);
                             while ($banco = mysqli_fetch_assoc($res_bancos)): 
                         ?>
-                        <div style="margin-bottom: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 10px;">
+                        <div style="margin-bottom: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 10px;">
                             <div style="display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 0.75rem;">
-                                <input type="checkbox" name="bancos[]" value="<?php echo $banco['cod_banco']; ?>" id="banco_<?php echo $banco['cod_banco']; ?>" style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer; margin: 0;" onchange="toggleBancoInputs(<?php echo $banco['cod_banco']; ?>)">
+                                <input type="checkbox" name="bancos[]" value="<?php echo $banco['cod_banco']; ?>" id="banco_<?php echo $banco['cod_banco']; ?>" style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer; margin: 0;" onchange="toggleBancoInputs(<?php echo $banco['cod_banco']; ?>)">
                                 <label for="banco_<?php echo $banco['cod_banco']; ?>" style="color: rgba(255,255,255,0.95); font-size: 0.9rem; font-weight: 600; cursor: pointer; margin: 0;">
                                     <?php echo $banco['nombre_banco']; ?>
                                 </label>
@@ -1693,7 +1693,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Tipo:</label>
-                                    <select class="form-select banco-input" name="tipo_cuenta_<?php echo $banco['cod_banco']; ?>" id="tipo_cuenta_<?php echo $banco['cod_banco']; ?>" style="width: 110px; padding: 0.3rem 0.4rem; font-size: 0.8rem; background-color: rgba(16, 185, 129, 0.1);" disabled>
+                                    <select class="form-select banco-input" name="tipo_cuenta_<?php echo $banco['cod_banco']; ?>" id="tipo_cuenta_<?php echo $banco['cod_banco']; ?>" style="width: 110px; padding: 0.3rem 0.4rem; font-size: 0.8rem; background-color: rgba(99, 102, 241, 0.1);" disabled>
                                         <option value="1">Ahorros</option>
                                         <option value="2">Corriente</option>
                                     </select>
@@ -1714,7 +1714,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <div id="cert_container_<?php echo $banco['cod_banco']; ?>" style="display: none; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
                                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                                     <label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;"><i class="fa-solid fa-file-certificate"></i> Certificado:</label>
-                                    <input type="file" class="banco-input" name="certificado_banco_<?php echo $banco['cod_banco']; ?>" id="certificado_banco_<?php echo $banco['cod_banco']; ?>" accept=".pdf" style="flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.3rem; border-radius: 6px; font-size: 0.7rem;" disabled>
+                                    <input type="file" class="banco-input" name="certificado_banco_<?php echo $banco['cod_banco']; ?>" id="certificado_banco_<?php echo $banco['cod_banco']; ?>" accept=".pdf" style="flex: 1; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.3rem; border-radius: 6px; font-size: 0.7rem;" disabled>
                                 </div>
                             </div>
                         </div>
@@ -1723,9 +1723,9 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         }
                         ?>
                     </div>
-                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
                             <strong>Nota:</strong> Selecciona los bancos e ingresa el número de cuenta y tipo de cuenta para este aliado. Certificado solo en PDF.
                         </div>
                     </div>
@@ -1733,16 +1733,16 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <!-- documentación Legal -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
-                    <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                    <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
                         <i class="fa-solid fa-file-contract"></i> documentación Legal
                     </label>
-                    <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem;">
+                    <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem;">
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-id-card"></i> Cédula
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
@@ -1750,7 +1750,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
@@ -1758,7 +1758,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-building"></i> Cámara de Comercio
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                         </div>
 
@@ -1767,7 +1767,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-signature"></i> Contrato Firmado
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_contratofirma_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_contratofirma_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -1775,7 +1775,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-alt"></i> Documento Extra 1 (Opcional)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_extra1_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_extra1_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -1783,24 +1783,24 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-alt"></i> Documento Extra 2 (Opcional)
                             </label>
-                            <input type="file" class="form-input" name="url_documentacion_extra2_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_extra2_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
                         -->
 
                     </div>
-                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
                             <strong>Nota:</strong> Adjunta la documentación legal requerida para el aliado estratégico.
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
+                <div class="form-group" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: 12px; padding: 0.75rem 1rem;">
                     <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; margin: 0;">
-                        <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #10b981; width: 20px; height: 20px; cursor: pointer;">
-                        <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #10b981; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
+                        <input type="checkbox" id="crear_tienda_al_guardar" name="crear_tienda_al_guardar" value="1" checked style="accent-color: #6366f1; width: 20px; height: 20px; cursor: pointer;">
+                        <span style="color: rgba(255,255,255,0.95); font-size: 0.95rem; font-weight: 600;"><i class="fa-solid fa-store" style="color: #6366f1; margin-right: 0.35rem;"></i> Crear Tienda al guardar</span>
                     </label>
                     <small style="display: block; color: rgba(255,255,255,0.5); font-size: 0.7rem; margin-top: 0.4rem; margin-left: 2.75rem;">Se creará automáticamente una tienda con los datos del aliado</small>
                 </div>
@@ -1863,7 +1863,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <label class="form-label">Razón Social *</label><input type="text" class="form-input" id="edit_nombre_razon_social" name="nombre_razon_social">
                 </div>
 
-                <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
+                <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-building-columns"></i> Datos del Representante Legal</label>
 
                 <div class="form-row">
                     <div class="form-group">
@@ -1935,7 +1935,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <!-- Sección de Credenciales de Acceso -->
                 <div class="form-group">
                     <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 1rem 0; padding-top: 1rem;">
-                        <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-key"></i> Credenciales de Acceso</label>
+                        <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;"><i class="fa-solid fa-key"></i> Credenciales de Acceso</label>
                         
                         <!-- Nombre de Usuario -->
                         <div class="form-group" style="margin-bottom: 1rem;">
@@ -1971,20 +1971,20 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <!-- Parametrización de Lineas de Credito -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
+                        <label class="form-label" style="color: #6366f1; font-weight: 700; margin: 0;"><i class="fa-solid fa-building-columns"></i> Lineas de Credito</label>
                         <button type="button" onclick="abrirModalAgregarEntidad()" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.3s ease; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fa-solid fa-plus-circle"></i> Agregar
                         </button>
                     </div>
-                    <div id="contenedor_entidades_editar" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.5rem; max-height: 300px; overflow-y: auto;">
+                    <div id="contenedor_entidades_editar" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.5rem; max-height: 300px; overflow-y: auto;">
                         <div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);">
                             <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; font-size: 0.85rem;">Cargando entidades...</p>
                         </div>
                     </div>
-                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.5rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.3;">
-                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
                             <strong>Nota:</strong> Aqu se muestran las lineas de credito asignadas a este aliado.
                         </div>
                     </div>
@@ -1993,22 +1993,22 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <!-- Parametrización de Bancos -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;">
+                        <label class="form-label" style="color: #6366f1; font-weight: 700; margin: 0;">
                             <i class="fa-solid fa-university"></i> Cuentas Bancarias
                         </label>
                         <button type="button" onclick="abrirModalAgregarBanco(document.getElementById('edit_cod_administrador').value)" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.3s ease; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fa-solid fa-plus-circle"></i> Agregar
                         </button>
                     </div>
-                    <div id="contenedor_bancos_editar" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
+                    <div id="contenedor_bancos_editar" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
                         <div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);">
                             <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; font-size: 0.85rem;">Cargando bancos...</p>
                         </div>
                     </div>
-                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
                             <strong>Nota:</strong> Aqu se muestran las cuentas bancarias asignadas a este aliado.
                         </div>
                     </div>
@@ -2017,22 +2017,22 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <!-- Parametrización de Tiendas -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <label class="form-label" style="color: #10b981; font-weight: 700; margin: 0;">
+                        <label class="form-label" style="color: #6366f1; font-weight: 700; margin: 0;">
                             <i class="fa-solid fa-store"></i> Tiendas Asociadas
                         </label>
                         <button type="button" onclick="abrirModalAgregarTienda()" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.3s ease; white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                             <i class="fa-solid fa-plus-circle"></i> Agregar
                         </button>
                     </div>
-                    <div id="contenedor_tiendas_editar" style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
+                    <div id="contenedor_tiendas_editar" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem; max-height: 350px; overflow-y: auto;">
                         <div style="text-align: center; padding: 1rem; color: rgba(255,255,255,0.5);">
                             <i class="fa-solid fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; font-size: 0.85rem;">Cargando tiendas...</p>
                         </div>
                     </div>
-                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
                             <strong>Nota:</strong> Aqu se muestran las tiendas asociadas a este aliado.
                         </div>
                     </div>
@@ -2040,21 +2040,21 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <!-- documentación Legal -->
                 <div class="form-group" style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 1rem; padding-top: 0.75rem; margin-bottom: 0.5rem;">
-                    <label class="form-label" style="color: #10b981; font-weight: 700; margin-bottom: 0.75rem; display: block;">
+                    <label class="form-label" style="color: #6366f1; font-weight: 700; margin-bottom: 0.75rem; display: block;">
                         <i class="fa-solid fa-file-contract"></i> documentación Legal
                     </label>
-                    <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 12px; padding: 0.75rem;">
+                    <div style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 0.75rem;">
 
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-id-card"></i> Cdula</label>
                             <!-- Documento existente -->
-                            <div id="edit_cedula_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
-                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+                            <div id="edit_cedula_actual" style="display: none; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; text-align: center;">
+                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
                                     <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver Cédula Cargada</a>
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_cedula_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <input type="file" class="form-input" name="url_documentacion_cedula_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                                 <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
@@ -2062,13 +2062,13 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-file-pdf"></i> RUT (Registro Único Tributario)</label>
                             <!-- Documento existente -->
-                            <div id="edit_rut_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
-                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+                            <div id="edit_rut_actual" style="display: none; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; text-align: center;">
+                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
                                     <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver Documento RUT Cargado</a>
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_rut_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <input type="file" class="form-input" name="url_documentacion_rut_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                                 <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
@@ -2076,13 +2076,13 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                         <div class="form-group">
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);"><i class="fa-solid fa-building"></i> Cámara de Comercio</label>
                             <!-- Documento existente -->
-                            <div id="edit_camara_actual" style="display: none; padding: 0.75rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; text-align: center;">
-                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
+                            <div id="edit_camara_actual" style="display: none; padding: 0.75rem; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; text-align: center;">
+                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600;">
                                     <i class="fa-solid fa-file-check" style="font-size: 1.2rem;"></i>Ver Cámara de Comercio Cargada</a>
                             </div>
                             <!-- Input para cargar nuevo documento -->
                             <div id="edit_camara_input" style="display: none;">
-                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                                <input type="file" class="form-input" name="url_documentacion_camaracomercio_aliado" accept=".pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                                 <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formato permitido: PDF</small>
                             </div>
                         </div>
@@ -2092,12 +2092,12 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-signature"></i> Contrato Firmado
                             </label>
-                            <div id="edit_contrato_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px;">
-                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.75rem;">
+                            <div id="edit_contrato_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(99, 102, 241, 0.1); border-radius: 6px;">
+                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.75rem;">
                                     <i class="fa-solid fa-file-check"></i> Ver documento actual
                                 </a>
                             </div>
-                            <input type="file" class="form-input" name="url_documentacion_contratofirma_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_contratofirma_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -2105,12 +2105,12 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-alt"></i> Documento Extra 1 (Opcional)
                             </label>
-                            <div id="edit_extra1_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px;">
-                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.75rem;">
+                            <div id="edit_extra1_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(99, 102, 241, 0.1); border-radius: 6px;">
+                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.75rem;">
                                     <i class="fa-solid fa-file-check"></i> Ver documento actual
                                 </a>
                             </div>
-                            <input type="file" class="form-input" name="url_documentacion_extra1_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_extra1_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
 
@@ -2118,20 +2118,20 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                             <label class="form-label" style="font-size: 0.85rem; color: rgba(255,255,255,0.9);">
                                 <i class="fa-solid fa-file-alt"></i> Documento Extra 2 (Opcional)
                             </label>
-                            <div id="edit_extra2_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px;">
-                                <a href="#" target="_blank" style="color: #10b981; text-decoration: none; font-size: 0.75rem;">
+                            <div id="edit_extra2_actual" style="display: none; margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(99, 102, 241, 0.1); border-radius: 6px;">
+                                <a href="#" target="_blank" style="color: #6366f1; text-decoration: none; font-size: 0.75rem;">
                                     <i class="fa-solid fa-file-check"></i> Ver documento actual
                                 </a>
                             </div>
-                            <input type="file" class="form-input" name="url_documentacion_extra2_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
+                            <input type="file" class="form-input" name="url_documentacion_extra2_aliado" accept=".jpg,.jpeg,.png,.pdf" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.6rem; border-radius: 8px; font-size: 0.8rem;">
                             <small style="color: rgba(255,255,255,0.6); font-size: 0.7rem;">Formatos permitidos: JPG, PNG, PDF</small>
                         </div>
                         -->
 
                     </div>
-                    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
+                    <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; padding: 0.6rem; margin-top: 0.5rem;">
                         <div style="color: rgba(255,255,255,0.8); font-size: 0.7rem; line-height: 1.4;">
-                            <i class="fa-solid fa-info-circle" style="color: #10b981; margin-right: 0.35rem;"></i>
+                            <i class="fa-solid fa-info-circle" style="color: #6366f1; margin-right: 0.35rem;"></i>
                             <strong>Nota:</strong> Si carga un nuevo documento, reemplazará el actual. Deje vacío para mantener el documento existente.
                         </div>
                     </div>
@@ -2153,8 +2153,8 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
         
         <div class="modal-body">
             <div style="text-align: center; margin-bottom: 2rem;">
-                <div style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
-                    <i class="fa-solid fa-user" style="font-size: 2.5rem; color: #10b981;"></i>
+                <div style="width: 80px; height: 80px; background: rgba(99, 102, 241, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                    <i class="fa-solid fa-user" style="font-size: 2.5rem; color: #6366f1;"></i>
                 </div>
                 <h3 id="detNombre" style="color: white; font-size: 1.5rem; margin-bottom: 0.5rem;"></h3>
                 <span id="detEstado" style="padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600;"></span>
@@ -2222,7 +2222,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-group">
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: rgba(255,255,255,0.9); font-size: 0.9rem;">
-                        <input type="checkbox" id="agregar_cod_estado_entrar_portal" name="cod_estado_entrar_portal" value="1" style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer;">
+                        <input type="checkbox" id="agregar_cod_estado_entrar_portal" name="cod_estado_entrar_portal" value="1" style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer;">
                         <span>Habilitar acceso al portal</span>
                     </label>
                 </div>
@@ -2236,7 +2236,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <button type="button" onclick="cerrarModalAgregarEntidad()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-times"></i> Cancelar
                     </button>
-                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-save"></i> Guardar
                     </button>
                 </div>
@@ -2293,10 +2293,10 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-group">
                     <label class="form-label"><i class="fa-solid fa-file-certificate"></i> Certificado Bancario</label>
-                    <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('agregar_certificado_banco').click()" onmouseover="this.style.borderColor='rgba(16, 185, 129, 0.6)'" onmouseout="this.style.borderColor='rgba(16, 185, 129, 0.3)'">
+                    <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s ease;" onclick="document.getElementById('agregar_certificado_banco').click()" onmouseover="this.style.borderColor='rgba(99, 102, 241, 0.6)'" onmouseout="this.style.borderColor='rgba(99, 102, 241, 0.3)'">
                         <input type="file" id="agregar_certificado_banco" name="certificado_banco" accept=".pdf" style="display: none;" onchange="mostrarNombreArchivoCertificado(this, 'preview_certificado_agregar')">
                         <div id="preview_certificado_agregar">
-                            <i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(16, 185, 129, 0.6); margin-bottom: 0.5rem;"></i>
+                            <i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(99, 102, 241, 0.6); margin-bottom: 0.5rem;"></i>
                             <p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p>
                             <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Documento (PDF)</p>
                         </div>
@@ -2329,9 +2329,9 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <input type="hidden" id="agregar_tienda_cod_aliado" name="cod_aliado_estrategico">
                 
                 <!-- Sección 1: información Básica -->
-                <div style="background: rgba(16, 185, 129, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-info-circle" style="color: #10b981;"></i>
-                    <span style="color: #10b981; font-weight: 600; font-size: 0.85rem;">Información Básica</span>
+                <div style="background: rgba(99, 102, 241, 0.1); padding: 0.5rem 0.75rem; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-info-circle" style="color: #6366f1;"></i>
+                    <span style="color: #6366f1; font-weight: 600; font-size: 0.85rem;">Información Básica</span>
                 </div>
 
                 <div class="form-group">
@@ -2450,10 +2450,10 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-group">
                     <label class="form-label">Logo de la Tienda</label>
-                    <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_logo').click()">
+                    <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_logo').click()">
                         <input type="file" id="tienda_logo" name="imagen_tienda" accept="image/*" style="display: none;" onchange="mostrarImagenPreviewTienda(this, 'preview_logo_tienda')">
                         <div id="preview_logo_tienda">
-                            <i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i>
+                            <i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(99, 102, 241, 0.6);"></i>
                             <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>
                         </div>
                     </div>
@@ -2462,20 +2462,20 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Fachada</label>
-                        <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_fachada').click()">
+                        <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_fachada').click()">
                             <input type="file" id="tienda_fachada" name="url_img_fachada_tienda" accept="image/*" style="display: none;" onchange="mostrarImagenPreviewTienda(this, 'preview_fachada_tienda')">
                             <div id="preview_fachada_tienda">
-                                <i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i>
+                                <i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(99, 102, 241, 0.6);"></i>
                                 <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Fachada</p>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Interna</label>
-                        <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_interna').click()">
+                        <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.5rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_interna').click()">
                             <input type="file" id="tienda_interna" name="url_img_interna_tienda" accept="image/*" style="display: none;" onchange="mostrarImagenPreviewTienda(this, 'preview_interna_tienda')">
                             <div id="preview_interna_tienda">
-                                <i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i>
+                                <i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(99, 102, 241, 0.6);"></i>
                                 <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Interna</p>
                             </div>
                         </div>
@@ -2484,10 +2484,10 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 
                 <div class="form-group">
                     <label class="form-label">Selfie con Admin</label>
-                    <div style="background: rgba(16, 185, 129, 0.05); border: 2px dashed rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_selfie').click()">
+                    <div style="background: rgba(99, 102, 241, 0.05); border: 2px dashed rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 0.75rem; text-align: center; cursor: pointer;" onclick="document.getElementById('tienda_selfie').click()">
                         <input type="file" id="tienda_selfie" name="url_img_selfieadmin_tienda" accept="image/*" style="display: none;" onchange="mostrarImagenPreviewTienda(this, 'preview_selfie_tienda')">
                         <div id="preview_selfie_tienda">
-                            <i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i>
+                            <i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(99, 102, 241, 0.6);"></i>
                             <p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>
                         </div>
                     </div>
@@ -2497,7 +2497,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <button type="button" onclick="cerrarModalAgregarTienda()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-times"></i> Cancelar
                     </button>
-                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                    <button type="submit" style="flex: 1; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.85rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                         <i class="fa-solid fa-save"></i> Registrar Tienda
                     </button>
                 </div>
@@ -2509,7 +2509,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 <!-- Modal Confirmación Registro Exitoso -->
 <div class="modal-overlay" id="modalConfirmacionRegistro" style="z-index: 4000; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
             <h2><i class="fa-solid fa-circle-check"></i> ¡Aliado Registrado!</h2>
             <button class="modal-close" onclick="cerrarModalConfirmacionRegistro()"><i class="fa-solid fa-times"></i></button>
         </div>
@@ -2520,8 +2520,8 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             <input type="hidden" id="confirm_telefono_aliado" value="">
             
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: #10b981;"></i>
+                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(99, 102, 241, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-circle-check" style="font-size: 3rem; color: #6366f1;"></i>
                 </div>
                 <h3 style="color: white; margin-bottom: 0.5rem;" id="confirm_nombre_display"></h3>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">El aliado ha sido registrado exitosamente.</p>
@@ -2545,7 +2545,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     Compartir Enlace de Documentación
                 </button>
                 
-                <button onclick="abrirRegistroTiendaDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                <button onclick="abrirRegistroTiendaDesdeConfirmacion()" style="width: 100%; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
                     <i class="fa-solid fa-store"></i>
                     Registrar Nueva Tienda
                 </button>
@@ -2561,7 +2561,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
 <!-- Modal Confirmación Tienda Registrada -->
 <div class="modal-overlay" id="modalConfirmacionTienda" style="z-index: 4500; align-items: center;">
     <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
             <h2><i class="fa-solid fa-store"></i> ¡Tienda Registrada!</h2>
             <button class="modal-close" onclick="cerrarModalConfirmacionTienda()"><i class="fa-solid fa-times"></i></button>
         </div>
@@ -2571,15 +2571,15 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
             <input type="hidden" id="confirm_tienda_cod_aliado" value="">
             
             <div style="text-align: center; margin-bottom: 1.5rem;">
-                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-store" style="font-size: 3rem; color: #10b981;"></i>
+                <div style="width: 80px; height: 80px; margin: 0 auto 1rem; background: rgba(99, 102, 241, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-store" style="font-size: 3rem; color: #6366f1;"></i>
                 </div>
                 <h3 style="color: white; margin-bottom: 0.5rem;" id="confirm_tienda_nombre_display"></h3>
                 <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">La tienda ha sido registrada exitosamente.</p>
             </div>
             
-            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
-                <h4 style="color: #10b981; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+            <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
+                <h4 style="color: #6366f1; margin: 0 0 0.75rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fa-solid fa-tasks"></i> ¿Qué deseas hacer ahora?
                 </h4>
                 <p style="color: rgba(255,255,255,0.6); font-size: 0.8rem; margin: 0;">Selecciona una de las siguientes opciones:</p>
@@ -2591,7 +2591,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     Registrar Otra Tienda
                 </button>
 
-                <button onclick="irATiendaRegistrada()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
+                <button onclick="irATiendaRegistrada()" style="width: 100%; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 1rem; border-radius: 12px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.3s ease;">
                     <i class="fa-solid fa-users-gear"></i>
                     Registrar Vendedores / Productos
                 </button>
@@ -2632,7 +2632,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                     <button onclick="compartirDocEmail()" style="background: #EA4335; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Compartir por Email">
                         <i class="fa-solid fa-envelope"></i> Email
                     </button>
-                    <button onclick="copiarEnlaceDoc()" style="background: #10b981; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
+                    <button onclick="copiarEnlaceDoc()" style="background: #6366f1; color: white; border: none; padding: 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s ease;" title="Copiar enlace">
                         <i class="fa-solid fa-copy"></i> Copiar
                     </button>
                 </div>
@@ -2657,13 +2657,13 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
         
         <div class="modal-body">
             <div id="loadingCompartir" style="display: none; text-align: center; padding: 40px;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; color: #10b981;"></i>
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 3rem; color: #6366f1;"></i>
                 <p style="margin-top: 20px; color: rgba(255,255,255,0.7);">Generando archivo ZIP...</p>
             </div>
             
             <div id="contenidoCompartir" style="display: none;">
                 <!-- información del aliado -->
-                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+                <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px;">
                     <h3 style="margin: 0 0 10px 0; color: white; font-size: 1rem;">
                         <i class="fa-solid fa-user"></i> <span id="compartir_aliado_nombre"></span>
                     </h3>
@@ -2685,7 +2685,7 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 <!-- Opciones de compartir -->
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     <!-- Enviar por email -->
-                    <button onclick="mostrarFormularioEmail()" style="width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s;">
+                    <button onclick="mostrarFormularioEmail()" style="width: 100%; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform 0.2s;">
                         <i class="fa-solid fa-envelope"></i> Enviar por Email
                     </button>
                     
@@ -2701,36 +2701,36 @@ $res_tipo_identificacion = mysqli_query($conectar, $sql_tipo_identificacion);
                 </div>
                 
                 <!-- Formulario de email (inicialmente oculto) -->
-                <div id="formularioEmail" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(16, 185, 129, 0.3);">
+                <div id="formularioEmail" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(99, 102, 241, 0.3);">
                     <h4 style="color: white; font-size: 0.9rem; margin-bottom: 15px;">
                         <i class="fa-solid fa-paper-plane"></i> Enviar por correo electrónico
                     </h4>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 5px;">Email destino *</label>
-                        <input type="email" id="email_destino" placeholder="ejemplo@correo.com" style="width: 100%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 12px; border-radius: 8px; font-size: 0.9rem;">
+                        <input type="email" id="email_destino" placeholder="ejemplo@correo.com" style="width: 100%; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 12px; border-radius: 8px; font-size: 0.9rem;">
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 5px;">Mensaje adicional (opcional)</label>
-                        <textarea id="mensaje_email" rows="3" placeholder="Escribe un mensaje..." style="width: 100%; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 12px; border-radius: 8px; font-size: 0.9rem; resize: vertical;"></textarea>
+                        <textarea id="mensaje_email" rows="3" placeholder="Escribe un mensaje..." style="width: 100%; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 12px; border-radius: 8px; font-size: 0.9rem; resize: vertical;"></textarea>
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <button onclick="ocultarFormularioEmail()" style="flex: 1; background: rgba(255,255,255,0.1); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                             <i class="fa-solid fa-times"></i> Cancelar
                         </button>
-                        <button onclick="enviarEmail()" style="flex: 1; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                        <button onclick="enviarEmail()" style="flex: 1; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
                             <i class="fa-solid fa-paper-plane"></i> Enviar
                         </button>
                     </div>
                 </div>
                 
                 <!-- Enlace generado (inicialmente oculto) -->
-                <div id="enlaceGenerado" style="display: none; margin-top: 20px; padding: 15px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px;">
+                <div id="enlaceGenerado" style="display: none; margin-top: 20px; padding: 15px; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px;">
                     <h4 style="color: white; font-size: 0.9rem; margin-bottom: 10px;">
                         <i class="fa-solid fa-link"></i> Enlace generado
                     </h4>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="text" id="input_enlace" readonly style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 10px; border-radius: 8px; font-size: 0.85rem;">
-                        <button onclick="copiarEnlace()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                        <input type="text" id="input_enlace" readonly style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 10px; border-radius: 8px; font-size: 0.85rem;">
+                        <button onclick="copiarEnlace()" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap;">
                             <i class="fa-solid fa-copy"></i> Copiar
                         </button>
                     </div>
@@ -2945,8 +2945,8 @@ function abrirModalEditar(data) {
                     var estado = entidad.cod_estado || '1';
                     
                     // Colores según estado
-                    var bgColor = estado == '1' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)';
-                    var borderColor = estado == '1' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+                    var bgColor = estado == '1' ? 'rgba(99, 102, 241, 0.08)' : 'rgba(239, 68, 68, 0.08)';
+                    var borderColor = estado == '1' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(239, 68, 68, 0.15)';
                     
                     html += '<div id="entidad_item_' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" style="display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 0.5rem; padding: 0.75rem; background: ' + bgColor + '; border: 1px solid ' + borderColor + '; border-radius: 10px;">';
                     
@@ -2977,7 +2977,7 @@ function abrirModalEditar(data) {
                     // Portal
                     html += '<div style="background: rgba(0,0,0,0.2); padding: 0.4rem; border-radius: 6px; text-align: center;">';
                     html += '<label style="color: rgba(255,255,255,0.6); font-size: 0.65rem; display: block; margin-bottom: 0.2rem;">Portal</label>';
-                    html += '<input type="checkbox" id="edit_portal_' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" ' + portal_checked + ' style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer;">';
+                    html += '<input type="checkbox" id="edit_portal_' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" ' + portal_checked + ' style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer;">';
                     html += '</div>';
                     
                     // Estado
@@ -2990,7 +2990,7 @@ function abrirModalEditar(data) {
                     html += '</div>';
                     
                     // Botn Guardar
-                    html += '<button type="button" onclick="guardarEntidadEditada(' + entidad.cod_parametrizacion_entidad_crediticia_aliado + ')" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.5rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; height: fit-content; align-self: end;" title="Guardar cambios"><i class="fa-solid fa-save"></i></button>';
+                    html += '<button type="button" onclick="guardarEntidadEditada(' + entidad.cod_parametrizacion_entidad_crediticia_aliado + ')" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.5rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; height: fit-content; align-self: end;" title="Guardar cambios"><i class="fa-solid fa-save"></i></button>';
                     html += '</div>';
                     
                     html += '</div>';
@@ -2998,7 +2998,7 @@ function abrirModalEditar(data) {
                 $('#contenedor_entidades_editar').html(html);
             } else {
                 console.log('No hay entidades o error:', response);
-                $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(16, 185, 129, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay entidades asignadas a este aliado.</p></div>');
+                $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(99, 102, 241, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay entidades asignadas a este aliado.</p></div>');
             }
         },
         error: function(xhr, status, error) {
@@ -3032,9 +3032,9 @@ function cargarBancosAliado(codAdministrador) {
                 response.bancos.forEach(function(banco) {
                     // Colores según estado
                     var isActive = banco.cod_estado == '1';
-                    var statusColor = isActive ? '#10b981' : '#ef4444';
-                    var statusBg = isActive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
-                    var cardBorder = isActive ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+                    var statusColor = isActive ? '#6366f1' : '#ef4444';
+                    var statusBg = isActive ? 'rgba(99, 102, 241, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+                    var cardBorder = isActive ? 'rgba(99, 102, 241, 0.2)' : 'rgba(239, 68, 68, 0.2)';
                     
                     html += '<div id="banco_item_' + banco.cod_banco_cuenta + '" style="background: rgba(255, 255, 255, 0.03); border: 1px solid ' + cardBorder + '; border-radius: 12px; margin-bottom: 1rem; overflow: hidden; position: relative;">';
                     
@@ -3092,7 +3092,7 @@ function cargarBancosAliado(codAdministrador) {
                     html += '<div style="display: flex; gap: 0.5rem;">';
                     html += '<input type="file" id="edit_certificado_' + banco.cod_banco_cuenta + '" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx" style="flex: 1; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); color: white; padding: 0.35rem; border-radius: 6px; font-size: 0.75rem;">';
                     if (banco.url_certificado_banco_cuenta && banco.url_certificado_banco_cuenta !== '') {
-                        html += '<a href="' + banco.url_certificado_banco_cuenta + '" target="_blank" class="btn-check-cert" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0 0.8rem; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Ver certificado actual"><i class="fa-solid fa-eye"></i></a>';
+                        html += '<a href="' + banco.url_certificado_banco_cuenta + '" target="_blank" class="btn-check-cert" style="background: rgba(99, 102, 241, 0.2); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3); padding: 0 0.8rem; border-radius: 6px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Ver certificado actual"><i class="fa-solid fa-eye"></i></a>';
                     }
                     html += '</div>';
                     html += '</div>';
@@ -3118,7 +3118,7 @@ function cargarBancosAliado(codAdministrador) {
                 });
                 $('#contenedor_bancos_editar').html(html);
             } else {
-                $('#contenedor_bancos_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(16, 185, 129, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay cuentas bancarias asignadas.</p></div>');
+                $('#contenedor_bancos_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(99, 102, 241, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay cuentas bancarias asignadas.</p></div>');
             }
         },
         error: function() {
@@ -3175,7 +3175,7 @@ function guardarBancoEditado(codBancoCuenta) {
 function eliminarBancoAliado(codBancoCuenta, nombreBanco) {
     Swal.fire({
         title: '¿Eliminar cuenta bancaria?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la cuenta de:</p><strong style="color: #10b981;">' + nombreBanco + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>',
+        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la cuenta de:</p><strong style="color: #6366f1;">' + nombreBanco + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
@@ -3242,8 +3242,8 @@ function cargarTiendasAliado(codAdministrador) {
                 response.tiendas.forEach(function(tienda) {
                     // Colores según estado
                     var estado = tienda.cod_estado || '1';
-                    var bgColor = estado == '1' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)';
-                    var borderColor = estado == '1' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+                    var bgColor = estado == '1' ? 'rgba(99, 102, 241, 0.08)' : 'rgba(239, 68, 68, 0.08)';
+                    var borderColor = estado == '1' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(239, 68, 68, 0.15)';
                     
                     html += '<div id="tienda_item_' + tienda.cod_tienda + '" style="padding: 0.75rem; background: ' + bgColor + '; border: 1px solid ' + borderColor + '; border-radius: 10px; margin-bottom: 0.5rem;">';
                     
@@ -3253,38 +3253,38 @@ function cargarTiendasAliado(codAdministrador) {
                     
                     // Nombre de la tienda
                     html += '<div style="grid-column: 1 / -1;"><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;"><i class="fa-solid fa-store"></i> Nombre de la Tienda</label>';
-                    html += '<input type="text" id="edit_nombre_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.nombre_tienda) + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    html += '<input type="text" id="edit_nombre_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.nombre_tienda) + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // NIT/CC
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">NIT/CC</label>';
-                    html += '<input type="text" id="edit_nit_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.identificacion_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    html += '<input type="text" id="edit_nit_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.identificacion_tercero || '') + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // Teléfono
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Teléfono</label>';
-                    html += '<input type="text" id="edit_telefono_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.telefono1_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    html += '<input type="text" id="edit_telefono_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.telefono1_tercero || '') + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // Correo
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Correo</label>';
-                    html += '<input type="email" id="edit_correo_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.correo_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    html += '<input type="email" id="edit_correo_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.correo_tercero || '') + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // Dirección
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Dirección</label>';
-                    html += '<input type="text" id="edit_direccion_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.direccion_tercero || '') + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
+                    html += '<input type="text" id="edit_direccion_tienda_' + tienda.cod_tienda + '" value="' + escapeHtmlMovil(tienda.direccion_tercero || '') + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"></div>';
                     
                     // Departamento
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Departamento</label>';
-                    html += '<select id="edit_departamento_tienda_' + tienda.cod_tienda + '" onchange="cargarMunicipiosEditar(' + tienda.cod_tienda + ', this.value)" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"><option value="">Cargando...</option></select></div>';
+                    html += '<select id="edit_departamento_tienda_' + tienda.cod_tienda + '" onchange="cargarMunicipiosEditar(' + tienda.cod_tienda + ', this.value)" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"><option value="">Cargando...</option></select></div>';
                     
                     // Municipio
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Municipio</label>';
-                    html += '<select id="edit_municipio_tienda_' + tienda.cod_tienda + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"><option value="">Cargando...</option></select></div>';
+                    html += '<select id="edit_municipio_tienda_' + tienda.cod_tienda + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;"><option value="">Cargando...</option></select></div>';
                     
                     html += '</div>';
                     
                     // Columna derecha: Estado y botn guardar
                     html += '<div style="display: flex; flex-direction: column; gap: 0.5rem;">';
                     html += '<div><label style="color: rgba(255,255,255,0.6); font-size: 0.7rem; margin-bottom: 0.25rem; display: block;">Estado</label>';
-                    html += '<select id="edit_estado_tienda_' + tienda.cod_tienda + '" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;">';
+                    html += '<select id="edit_estado_tienda_' + tienda.cod_tienda + '" style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); color: white; padding: 0.4rem 0.5rem; border-radius: 6px; font-size: 0.8rem; width: 100%;">';
                     html += '<option value="1" style="background: #1a1f2e; color: white;"' + (estado == '1' ? ' selected' : '') + '>Activo</option>';
                     html += '<option value="0" style="background: #1a1f2e; color: white;"' + (estado == '0' ? ' selected' : '') + '>Inactivo</option>';
                     html += '</select></div>';
@@ -3295,7 +3295,7 @@ function cargarTiendasAliado(codAdministrador) {
                     
                     // Botn ver detalle
                     html += '<div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.1);">';
-                    html += '<a href="../admin/ver_detalle_tienda_coordinador_movil.php?cod_tienda=' + tienda.cod_tienda + '" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: none;"><i class="fa-solid fa-eye"></i> Ver Detalle Completo</a>';
+                    html += '<a href="../admin/ver_detalle_tienda_coordinador_movil.php?cod_tienda=' + tienda.cod_tienda + '" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: none;"><i class="fa-solid fa-eye"></i> Ver Detalle Completo</a>';
                     html += '</div>';
                     
                     html += '</div>';
@@ -3308,7 +3308,7 @@ function cargarTiendasAliado(codAdministrador) {
                     cargarDepartamentosEditar(tienda.cod_tienda, tienda.cod_departamento, tienda.cod_municipio);
                 });
             } else {
-                $('#contenedor_tiendas_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-store" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(16, 185, 129, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay tiendas asociadas a este aliado.</p></div>');
+                $('#contenedor_tiendas_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-store" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(99, 102, 241, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay tiendas asociadas a este aliado.</p></div>');
             }
         },
         error: function() {
@@ -3539,10 +3539,10 @@ function cargarBancosTienda(codAliado) {
 // Función para resetear previews de tienda
 function resetearPreviewsTienda() {
     // Resetear previews de imágenes
-    document.getElementById('preview_logo_tienda').innerHTML = '<i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
-    document.getElementById('preview_fachada_tienda').innerHTML = '<i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Fachada</p>';
-    document.getElementById('preview_interna_tienda').innerHTML = '<i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Interna</p>';
-    document.getElementById('preview_selfie_tienda').innerHTML = '<i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(16, 185, 129, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
+    document.getElementById('preview_logo_tienda').innerHTML = '<i class="fa-solid fa-image" style="font-size: 1.5rem; color: rgba(99, 102, 241, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
+    document.getElementById('preview_fachada_tienda').innerHTML = '<i class="fa-solid fa-store" style="font-size: 1.2rem; color: rgba(99, 102, 241, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Fachada</p>';
+    document.getElementById('preview_interna_tienda').innerHTML = '<i class="fa-solid fa-person-shelter" style="font-size: 1.2rem; color: rgba(99, 102, 241, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.65rem;">Interna</p>';
+    document.getElementById('preview_selfie_tienda').innerHTML = '<i class="fa-solid fa-camera-retro" style="font-size: 1.5rem; color: rgba(99, 102, 241, 0.6);"></i><p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.6); font-size: 0.75rem;">Clic para seleccionar</p>';
 }
 
 // Función para mostrar nombre de archivo
@@ -3553,7 +3553,7 @@ function mostrarNombreArchivoTienda(input, previewId) {
         if (fileName.length > 20) {
             fileName = fileName.substring(0, 17) + '...';
         }
-        preview.innerHTML = '<i class="fa-solid fa-check-circle" style="font-size: 1.5rem; color: #10b981;"></i><p style="margin: 0.25rem 0 0 0; color: #10b981; font-size: 0.75rem;">' + fileName + '</p>';
+        preview.innerHTML = '<i class="fa-solid fa-check-circle" style="font-size: 1.5rem; color: #6366f1;"></i><p style="margin: 0.25rem 0 0 0; color: #6366f1; font-size: 0.75rem;">' + fileName + '</p>';
     }
 }
 
@@ -3657,7 +3657,7 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
         return;
     }
     
-    Swal.fire({ title: '¿Eliminar parametrización?', html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la parametrización de:</p><strong style="color: #10b981;">' + nombre_entidad + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6b7280', confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar', cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar', background: '#1a1f2e', color: 'white', backdrop: 'rgba(0,0,0,0.8)', customClass: { container: 'swal-high-zindex' } }).then((result) => {
+    Swal.fire({ title: '¿Eliminar parametrización?', html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se eliminará la parametrización de:</p><strong style="color: #6366f1;">' + nombre_entidad + '</strong><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">Esta acción no se puede deshacer.</p></div>', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6b7280', confirmButtonText: '<i class="fa-solid fa-trash"></i> Sí, eliminar', cancelButtonText: '<i class="fa-solid fa-times"></i> Cancelar', background: '#1a1f2e', color: 'white', backdrop: 'rgba(0,0,0,0.8)', customClass: { container: 'swal-high-zindex' } }).then((result) => {
         if (result.isConfirmed) {
             // Mostrar loading
             Swal.fire({ title: 'Eliminando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white' });
@@ -3667,7 +3667,7 @@ function eliminarEntidadAliado(cod_entidad_crediticia) {
                 success: function(response) {
                     Swal.close();
                     if (response.success) {
-                        Swal.fire({ icon: "success", title: "¡Eliminado!", text: "La parametrización ha sido eliminada correctamente", confirmButtonColor: "#10b981", background: "#1a1f2e", color: "white", timer: 2000, timerProgressBar: true }).then(() => { var codAdmin = $("#edit_cod_administrador").val(); recargarEntidadesEditar(codAdmin); });
+                        Swal.fire({ icon: "success", title: "¡Eliminado!", text: "La parametrización ha sido eliminada correctamente", confirmButtonColor: "#6366f1", background: "#1a1f2e", color: "white", timer: 2000, timerProgressBar: true }).then(() => { var codAdmin = $("#edit_cod_administrador").val(); recargarEntidadesEditar(codAdmin); });
                     } else {
                         Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo eliminará la parametrización', background: '#1a1f2e', color: 'white' });
                     }
@@ -3764,7 +3764,7 @@ function enviarRecuperacionPassword() {
     
     Swal.fire({
         title: '¿Enviar nueva contraseña?',
-        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se generará una nueva contraseña temporal para:</p><strong style="color: #10b981;">' + nombreAliado + '</strong><p style="margin-top: 0.5rem;">Se enviará al correo: <strong style="color: #f59e0b;">' + correo + '</strong></p><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">La contraseña actual quedará inhabilitada.</p></div>',
+        html: '<div style="text-align: left; padding: 1rem;"><p style="margin-bottom: 0.5rem;">Se generará una nueva contraseña temporal para:</p><strong style="color: #6366f1;">' + nombreAliado + '</strong><p style="margin-top: 0.5rem;">Se enviará al correo: <strong style="color: #f59e0b;">' + correo + '</strong></p><p style="margin-top: 0.5rem; color: #ef4444; font-size: 0.85rem;">La contraseña actual quedará inhabilitada.</p></div>',
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#f59e0b',
@@ -3784,7 +3784,7 @@ function enviarRecuperacionPassword() {
                 success: function(response) {
                     Swal.close();
                     if (response.success) {
-                        Swal.fire({ icon: 'success', title: '¡Enviado!', html: '<p>' + response.mensaje + '</p><p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">Nueva contraseña temporal: <strong style="color: #10b981;">' + response.password_temporal + '</strong></p>', confirmButtonColor: '#10b981', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
+                        Swal.fire({ icon: 'success', title: '¡Enviado!', html: '<p>' + response.mensaje + '</p><p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">Nueva contraseña temporal: <strong style="color: #6366f1;">' + response.password_temporal + '</strong></p>', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     } else {
                         Swal.fire({ icon: 'error', title: 'Error', text: response.mensaje || 'No se pudo enviar la contraseña', background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
                     }
@@ -3813,8 +3813,8 @@ function abrirModalDetalle(data, tiendas) {
     var badge = document.getElementById('detEstado');
     if(data.cod_estado_activacion_usuario == '1') {
         badge.textContent = 'ACTIVO';
-        badge.style.background = 'rgba(16, 185, 129, 0.2)';
-        badge.style.color = '#10b981';
+        badge.style.background = 'rgba(99, 102, 241, 0.2)';
+        badge.style.color = '#6366f1';
     } else if(data.cod_estado_activacion_usuario == '2') {
         badge.textContent = 'EN ESPERA';
         badge.style.background = 'rgba(245, 158, 11, 0.2)';
@@ -3987,7 +3987,7 @@ function compartirDocumentacion(codAliadoCryp, nombreAliado, telefono) {
 
 function abrirModalVerCuentas(codAliado, nombreAliado) {
     Swal.fire({
-        title: 'Cuentas de ' + nombreAliado, html: '<div id="swal_bancos_container" style="text-align: left; padding: 0.5rem;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>', width: '95%', background: '#1a1f2e', color: 'white', showConfirmButton: true, confirmButtonText: 'Cerrar', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' },
+        title: 'Cuentas de ' + nombreAliado, html: '<div id="swal_bancos_container" style="text-align: left; padding: 0.5rem;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>', width: '95%', background: '#1a1f2e', color: 'white', showConfirmButton: true, confirmButtonText: 'Cerrar', confirmButtonColor: '#6366f1', customClass: { container: 'swal-high-zindex' },
         didOpen: () => {
             $.ajax({
                 url: '../admin/obtener_bancos_aliado_ajax.php', type: 'POST', data: { cod_administrador: codAliado }, dataType: 'json',
@@ -3996,7 +3996,7 @@ function abrirModalVerCuentas(codAliado, nombreAliado) {
                         var html = '<div style="display: grid; gap: 0.75rem;">';
                         response.bancos.forEach(function(b) {
                             html += '<div style="background: rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">';
-                            html += '<div style="font-weight: 700; color: #10b981; margin-bottom: 0.25rem;">' + b.nombre_banco_cuenta + '</div>';
+                            html += '<div style="font-weight: 700; color: #6366f1; margin-bottom: 0.25rem;">' + b.nombre_banco_cuenta + '</div>';
                             html += '<div style="font-size: 0.85rem; color: rgba(255,255,255,0.8);">' + (b.cod_tipo_cuenta_banco == 1 ? 'Ahorros' : 'Corriente') + ': ' + b.numero_banco_cuenta + '</div>';
                             if (b.nombre_titular_cuenta) {
                                 html += '<div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 0.25rem;">Titular: ' + b.nombre_titular_cuenta + '</div>';
@@ -4128,11 +4128,11 @@ function mostrarNombreArchivoCertificado(input, previewId) {
     if (input.files && input.files[0]) {
         var fileName = input.files[0].name;
         var fileSize = (input.files[0].size / 1024 / 1024).toFixed(2);
-        preview.innerHTML = '<i class="fa-solid fa-file-check" style="font-size: 2rem; color: #10b981; margin-bottom: 0.5rem;"></i>' +
-            '<p style="margin: 0; color: #10b981; font-size: 0.85rem; font-weight: 600;">' + fileName + '</p>' +
+        preview.innerHTML = '<i class="fa-solid fa-file-check" style="font-size: 2rem; color: #6366f1; margin-bottom: 0.5rem;"></i>' +
+            '<p style="margin: 0; color: #6366f1; font-size: 0.85rem; font-weight: 600;">' + fileName + '</p>' +
             '<p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">' + fileSize + ' MB</p>';
     } else {
-        preview.innerHTML = '<i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(16, 185, 129, 0.6); margin-bottom: 0.5rem;"></i>' +
+        preview.innerHTML = '<i class="fa-solid fa-cloud-upload-alt" style="font-size: 2rem; color: rgba(99, 102, 241, 0.6); margin-bottom: 0.5rem;"></i>' +
             '<p style="margin: 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">Clic para seleccionar archivo</p>' +
             '<p style="margin: 0.25rem 0 0 0; color: rgba(255,255,255,0.5); font-size: 0.7rem;">Imagen o documento (JPG, PNG, PDF, DOC)</p>';
     }
@@ -4198,7 +4198,7 @@ $('#formAgregarEntidad').on('submit', function(e) {
             if (response.success) {
                 cerrarModalAgregarEntidad();
                 Swal.fire({
-                    icon: 'success', title: '¡Éxito!', text: 'Entidad agregada correctamente', confirmButtonColor: '#10b981', background: '#1a1f2e',
+                    icon: 'success', title: '¡Éxito!', text: 'Entidad agregada correctamente', confirmButtonColor: '#6366f1', background: '#1a1f2e',
                     color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
                 }).then(() => {
                     // Recargar las entidades en el modal de edición
@@ -4236,8 +4236,8 @@ function recargarEntidadesEditar(codAdministrador) {
                     var portal_checked = entidad.cod_estado_entrar_portal == '1' ? 'checked' : '';
                     var url = entidad.url_pagina_web_consulta || '';
                     
-                    html += '<div style="display: grid; grid-template-columns: auto 1fr auto auto auto; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.15); border-radius: 10px;">';
-                    html += '<input type="checkbox" name="entidades[]" value="' + entidad.cod_entidad_crediticia + '" id="edit_ent_' + entidad.cod_entidad_crediticia + '" ' + checked + ' style="accent-color: #10b981; width: 18px; height: 18px; cursor: pointer; margin: 0;">';
+                    html += '<div style="display: grid; grid-template-columns: auto 1fr auto auto auto; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; padding: 0.6rem 0.75rem; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 10px;">';
+                    html += '<input type="checkbox" name="entidades[]" value="' + entidad.cod_entidad_crediticia + '" id="edit_ent_' + entidad.cod_entidad_crediticia + '" ' + checked + ' style="accent-color: #6366f1; width: 18px; height: 18px; cursor: pointer; margin: 0;">';
                     html += '<label for="edit_ent_' + entidad.cod_entidad_crediticia + '" style="color: rgba(255,255,255,0.95); font-size: 0.9rem; font-weight: 600; cursor: pointer; margin: 0;">' + escapeHtmlMovil(entidad.nombre_entidad_crediticia) + '</label>';
                     html += '<div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">';
                     html += '<label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">% Adtvo:</label>';
@@ -4245,7 +4245,7 @@ function recargarEntidadesEditar(codAdministrador) {
                     html += '</div>';
                     html += '<div style="display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.4rem 0.6rem; border-radius: 6px;">';
                     html += '<label style="color: rgba(255,255,255,0.7); font-size: 0.75rem; margin: 0; white-space: nowrap;">Portal:</label>';
-                    html += '<input type="checkbox" name="cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" id="edit_cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" value="1" ' + portal_checked + ' style="accent-color: #10b981; width: 16px; height: 16px; cursor: pointer; margin: 0;" title="Acceso al portal">';
+                    html += '<input type="checkbox" name="cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" id="edit_cod_estado_entrar_portal_' + entidad.cod_entidad_crediticia + '" value="1" ' + portal_checked + ' style="accent-color: #6366f1; width: 16px; height: 16px; cursor: pointer; margin: 0;" title="Acceso al portal">';
                     html += '</div>';
                     html += '<button type="button" id="btn_eliminar_' + entidad.cod_entidad_crediticia + '" data-cod-parametrizacion="' + entidad.cod_parametrizacion_entidad_crediticia_aliado + '" data-nombre-entidad="' + escapeHtmlMovil(entidad.nombre_entidad_crediticia) + '" onclick="eliminarEntidadAliado(' + entidad.cod_entidad_crediticia + ')" style="background: #ef4444; color: white; border: none; padding: 0.4rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; display: flex; align-items: center; gap: 0.25rem;" title="Eliminar parametrización">';
                     html += '<i class="fa-solid fa-trash"></i>';
@@ -4254,7 +4254,7 @@ function recargarEntidadesEditar(codAdministrador) {
                 });
                 $('#contenedor_entidades_editar').html(html);
             } else {
-                $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(16, 185, 129, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay entidades asignadas a este aliado.</p></div>');
+                $('#contenedor_entidades_editar').html('<div style="text-align: center; padding: 1.5rem; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-info-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: rgba(99, 102, 241, 0.4);"></i><p style="margin: 0; font-size: 0.85rem;">No hay entidades asignadas a este aliado.</p></div>');
             }
         },
         error: function(xhr, status, error) {
@@ -4299,7 +4299,7 @@ $('#formRegistro').on('submit', function(e) {
                 $('#identificacion_tercero').css('border-color', '#ef4444');
                 $('#mensaje_identificacion').text('⚠️ La identificación ' + identificacion + ' ya está registrada').show();
             } else {
-                $('#identificacion_tercero').css('border-color', '#10b981');
+                $('#identificacion_tercero').css('border-color', '#6366f1');
                 $('#mensaje_identificacion').hide();
                 
                 var formData = new FormData(formObj);
@@ -4373,7 +4373,7 @@ $('#formEditar').on('submit', function(e) {
             if(resp.afectado === 'SI') {
                 cerrarModalEditar(); 
                 Swal.fire({ 
-                    icon: 'success',  title: '¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#10b981',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
+                    icon: 'success',  title: '¡Actualizado!',  text: resp.mensaje || 'Datos del aliado actualizados correctamente',  confirmButtonColor: '#6366f1',  background: '#1a1f2e',  color: 'white', timer: 2000, timerProgressBar: true, customClass: { container: 'swal-high-zindex' }
                 }).then(() => { 
                     location.reload(); 
                 });
@@ -4450,7 +4450,7 @@ function mostrarContenidoCompartir(data) {
     if (data.archivos && data.archivos.length > 0) {
         data.archivos.forEach(function(archivo) {
             var tamanoKB = (archivo.tamano / 1024).toFixed(2);
-            listaHTML += '<div style="padding: 8px; border-bottom: 1px solid rgba(16, 185, 129, 0.2); display: flex; justify-content: space-between; align-items: center;">';
+            listaHTML += '<div style="padding: 8px; border-bottom: 1px solid rgba(99, 102, 241, 0.2); display: flex; justify-content: space-between; align-items: center;">';
             listaHTML += '<div><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 8px;"></i>';
             listaHTML += '<span style="color: white; font-size: 0.85rem;">' + archivo.nombre + '</span></div>';
             listaHTML += '<span style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">' + tamanoKB + ' KB</span>';
@@ -4738,19 +4738,19 @@ function validarEmail(email) {
     right: 20px;
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
     z-index: 9999;
     transition: all 0.3s ease;
     border: none;
 }
 
-.notification-bell-movil:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(16, 185, 129, 0.7); }
+.notification-bell-movil:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(99, 102, 241, 0.7); }
 .notification-bell-movil i { font-size: 22px; color: white; }
 .notification-bell-movil.has-notifications { animation: bellPulseMovil 2s infinite; }
 
@@ -4789,30 +4789,30 @@ function validarEmail(email) {
     z-index: 9998;
     display: none;
     overflow: hidden;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
 .notification-panel-movil.show { display: block; animation: slideUpMovil 0.3s ease; }
 @keyframes slideUpMovil { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-.notification-header-movil { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; }
+.notification-header-movil { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; }
 .notification-header-movil h4 { margin: 0; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .notification-header-actions-movil { display: flex; gap: 8px; }
 .notification-header-actions-movil button { background: rgba(255, 255, 255, 0.2); border: none; color: white; padding: 6px 10px; border-radius: 8px; font-size: 11px; cursor: pointer; }
 .notification-list-movil { max-height: 320px; overflow-y: auto; }
-.notification-item-movil { padding: 14px 18px; border-bottom: 1px solid rgba(16, 185, 129, 0.15); cursor: pointer; transition: background 0.2s ease; display: flex; gap: 12px; align-items: flex-start; }
-.notification-item-movil:hover { background: rgba(16, 185, 129, 0.1); }
+.notification-item-movil { padding: 14px 18px; border-bottom: 1px solid rgba(99, 102, 241, 0.15); cursor: pointer; transition: background 0.2s ease; display: flex; gap: 12px; align-items: flex-start; }
+.notification-item-movil:hover { background: rgba(99, 102, 241, 0.1); }
 .notification-item-movil:last-child { border-bottom: none; }
 .notification-icon-movil { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
-.notification-icon-movil.type-1 { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+.notification-icon-movil.type-1 { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; }
 .notification-icon-movil.type-2 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
 .notification-icon-movil.type-3 { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; }
 .notification-content-movil { flex: 1; min-width: 0; }
 .notification-title-movil { font-size: 13px; font-weight: 600; color: white; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .notification-desc-movil { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.notification-time-movil { font-size: 10px; color: rgba(16, 185, 129, 0.8); margin-top: 5px; }
+.notification-time-movil { font-size: 10px; color: rgba(99, 102, 241, 0.8); margin-top: 5px; }
 .notification-empty-movil { padding: 40px 20px; text-align: center; color: rgba(255,255,255,0.5); }
-.notification-empty-movil i { font-size: 40px; margin-bottom: 12px; display: block; color: rgba(16, 185, 129, 0.4); }
+.notification-empty-movil i { font-size: 40px; margin-bottom: 12px; display: block; color: rgba(99, 102, 241, 0.4); }
 .notification-empty-movil p { margin: 0; font-size: 14px; }
 </style>
 
@@ -4910,7 +4910,7 @@ function marcarTodasLeidasMovil() {
         text: 'Se marcarán todas las notificaciones pendientes como leídas',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#10b981',
+        confirmButtonColor: '#6366f1',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'S, marcar todas',
         cancelButtonText: 'Cancelar',
