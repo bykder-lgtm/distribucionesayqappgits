@@ -681,13 +681,16 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
 
                 <div class="asesor-actions">
                     <button class="action-btn view" onclick="location.href='ver_detalle_aliado_lider_movil.php?cod_administrador=<?php echo $row['cod_administrador']; ?>'">
-                        <i class="fa-solid fa-eye"></i> Ver Detalles
+                        <i class="fa-solid fa-eye"></i> Detalles
                     </button>
                     <button class="action-btn stats" onclick="location.href='lista_aliado_asesor_lider_movil.php?cod_asesor=<?php echo $row['cod_administrador']; ?>'">
-                        <i class="fa-solid fa-users"></i> Ver Aliados
+                        <i class="fa-solid fa-users"></i> Aliados
                     </button>
                     <button class="action-btn edit" onclick='abrirModalEditar(<?php echo json_encode($row); ?>)'>
                         <i class="fa-solid fa-edit"></i> Editar
+                    </button>
+                    <button class="action-btn roles" style="background: rgba(155, 89, 182, 0.2); color: #9b59b6;" onclick="abrirModalMultirol(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>')">
+                        <i class="fa-solid fa-user-gear"></i> Roles
                     </button>
                     <button class="action-btn archive" onclick="archivarEntidad(<?php echo $row['cod_administrador']; ?>, '<?php echo addslashes($row['nombres_apellidos_tercero']); ?>', 'Asesor')">
                         <i class="fa-solid fa-box-archive"></i> Archivar
@@ -1163,6 +1166,99 @@ window.onclick = function(event) {
     if (event.target == modal) {
         cerrarModalRegistro();
     }
+}
+</script>
+
+<script>
+// Funciones JS para Cuentas Multi-Rol (Exclusivo Líder)
+function abrirModalMultirol(cod_administrador, nombre_empleado) {
+    let opcionesRoles = `
+        <select id="swal-multi-rol" class="swal2-input" style="max-width: 100%; font-size: 15px;">
+            <option value="">Seleccione el nuevo rol...</option>
+            <option value="9">Asesor</option>
+            <option value="8">Coordinador</option>
+            <option value="7">Líder</option>
+            <option value="10">Vendedor</option>
+        </select>
+    `;
+
+    Swal.fire({
+        title: 'Roles de ' + nombre_empleado,
+        html: `
+            <div style="text-align: left; font-size: 14px; margin-bottom: 15px;">
+                <p>Aquí puedes crear un nuevo perfil de rol para este usuario conservando sus accesos y cuenta vinculada.</p>
+                <br>
+                <b>Asignar nueva función:</b>
+                ${opcionesRoles}
+            </div>
+            <div id="loading-roles-box" style="margin-top:20px; text-align:center;">
+                <i class="fa fa-spinner fa-spin fa-2x" style="color:#8b5cf6;"></i><br><small>Consultando red...</small>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa fa-plus"></i> Crear Perfil',
+        cancelButtonText: 'Cerrar',
+        confirmButtonColor: '#8b5cf6',
+        didOpen: () => {
+            // Revisar qué roles ya tiene asignados e imprimir una lista en la parte superior
+            $.ajax({
+                url: '../admin/obtener_perfiles_multirol_por_admin_ajax.php',
+                type: 'POST',
+                data: { cod_administrador: cod_administrador },
+                dataType: 'json',
+                success: function(res) {
+                    let box = document.getElementById('loading-roles-box');
+                    if(res.status === 'success') {
+                        let divBotones = `<div style="text-align:left; background:#1e293b; padding:10px; border-radius:10px; margin-top:10px;"><p style="color:#FFF; font-size:12px; margin-top:0;"><b>Perfiles ya asignados:</b></p>`;
+                        if(res.perfiles.length > 0) {
+                            res.perfiles.forEach(p => {
+                                let label = (p.cod_administrador == cod_administrador) ? ' (Actual)' : '';
+                                let color = (p.cod_administrador == cod_administrador) ? '#10b981' : '#3b82f6';
+                                divBotones += `<span style="display:inline-block; background:${color}; color:white; padding:4px 8px; border-radius:20px; font-size:11px; margin:2px;"><i class="fa fa-user"></i> ${p.cargo} ${label}</span>`;
+                            });
+                        }
+                        divBotones += `</div>`;
+                        box.innerHTML = divBotones;
+                    } else {
+                        box.innerHTML = `<span style="color:#ef4444; font-size:12px;">Error cargando historial de roles.</span>`;
+                    }
+                }
+            });
+        },
+        preConfirm: () => {
+            const nuevo_rol = document.getElementById('swal-multi-rol').value;
+            if (!nuevo_rol) {
+                Swal.showValidationMessage('Por favor selecciona un rol a crear.');
+            }
+            return { cod_tipo_tercero: nuevo_rol }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({ title: 'Creando cuenta secundaria...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+            
+            $.ajax({
+                url: '../admin/crear_perfil_multirol_ajax.php',
+                type: 'POST',
+                data: { 
+                    cod_administrador_origen: cod_administrador,
+                    cod_tipo_tercero_nuevo: result.value.cod_tipo_tercero
+                },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.status === 'success') {
+                        Swal.fire('¡Éxito!', res.message, 'success').then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Error', res.message, 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Fallo del Servidor', 'Ocurrió un error en la conexión al intentar clonar el perfil.', 'error');
+                }
+            });
+        }
+    });
 }
 </script>
 

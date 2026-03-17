@@ -25,10 +25,17 @@ if (isset($nombres_usuario)) {
     $es_placeholder = stripos($url_img_foto_prof_min_usuario, 'perfil-avatar') !== false || empty($url_img_foto_prof_min_usuario);
 ?>
 
-<div class="user-pill-floating">
+<div class="user-pill-floating" <?php if(isset($_SESSION['cod_estado_multirol']) && $_SESSION['cod_estado_multirol'] == 1) { echo 'onclick="abrirSelectorMultirol()" style="cursor:pointer;" title="Cambiar de Rol"'; } ?>>
     <div class="user-pill-content">
         <div class="user-pill-avatar" style="background: <?php echo $color_top_header; ?>;"><?php if (!$es_placeholder): ?><img src="<?php echo $url_img_foto_prof_min_usuario; ?>" alt="U"><?php else: ?><span><?php echo $iniciales_top; ?></span><?php endif; ?></div>
-        <div class="user-pill-info"><span class="pill-welcome">Hola,</span><span class="pill-name"><?php echo ucwords(strtolower($primer_nombre)); ?></span></div>
+        <div class="user-pill-info">
+            <span class="pill-welcome">Hola,</span>
+            <span class="pill-name"><?php echo ucwords(strtolower($primer_nombre)); ?>
+            <?php if(isset($_SESSION['cod_estado_multirol']) && $_SESSION['cod_estado_multirol'] == 1): ?>
+                <i class="fa fa-exchange" style="font-size: 0.8rem; margin-left: 4px; color: #f1c40f;"></i>
+            <?php endif; ?>
+            </span>
+        </div>
     </div>
 </div>
 
@@ -39,7 +46,7 @@ if (isset($nombres_usuario)) {
     left: 12px;
     right: auto;
     z-index: 10001; /* Asegurar que esté sobre todo */
-    pointer-events: none; /* Dejar pasar clics si es necesario, pero el contenido los recupera */
+    pointer-events: auto; /* IMPORTANTE: Dejar pasar clics si tiene multirol */
 }
 
 .user-pill-content {
@@ -82,6 +89,8 @@ if (isset($nombres_usuario)) {
     font-weight: 700;
     color: white;
     line-height: 1.2;
+    display: flex;
+    align-items: center;
 }
 
 .user-pill-avatar {
@@ -112,5 +121,84 @@ if (isset($nombres_usuario)) {
         padding-right: 80px; /* Dejar espacio para la burbuja */
     }
 }
+
+/* Estilos extra para el modal Multirol */
+.swal2-multirol-btn { width: 100%; margin: 8px 0; padding: 15px; border-radius: 8px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; background-color: #ecf0f1; color: #2c3e50; text-transform: uppercase; }
+.swal2-multirol-btn:hover { background-color: #bdc3c7; transform: translateY(-2px); }
+.swal2-multirol-btn.actual { border-left: 5px solid #27ae60; background-color:#e8f8f5; }
+.swal2-multirol-btn.otro { border-left: 5px solid #3498db; }
 </style>
+
+<?php if(isset($_SESSION['cod_estado_multirol']) && $_SESSION['cod_estado_multirol'] == 1): ?>
+<!-- Modal/Scripts Multirol Navbar -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function abrirSelectorMultirol() {
+        Swal.fire({
+            title: 'Buscando perfiles...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        $.ajax({
+            url: '../admin/obtener_perfiles_multirol_ajax.php',
+            type: 'POST',
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    let htmlBotones = '<div style="margin-top:20px; text-align:left;">';
+                    
+                    // Su perfil actual
+                    htmlBotones += `<button class="swal2-multirol-btn actual" disabled>` +
+                        `<i class="fa fa-user" style="margin-right:10px;"></i> ${res.perfil_actual.cargo} (ACTUAL)` +
+                        `</button>`;
+                    
+                    // Otros perfiles vinculados a la cuenta raiz
+                    if (res.otros_perfiles && res.otros_perfiles.length > 0) {
+                        res.otros_perfiles.forEach(function(perfil) {
+                            htmlBotones += `<button class="swal2-multirol-btn otro" onclick="cambiarSesionMultirol('${perfil.cod_administrador}')">` +
+                                `<i class="fa fa-exchange" style="margin-right:10px;"></i> Cambiar a ${perfil.cargo}` +
+                                `</button>`;
+                        });
+                    }
+                    htmlBotones += '</div>';
+
+                    Swal.fire({
+                        title: 'Cambio Rápido de Rol',
+                        html: '<p>Selecciona el perfil que quieres utilizar ahora mismo:</p>' + htmlBotones,
+                        showCloseButton: true,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire('Atención', 'No tienes roles adicionales configurados.', 'info');
+                }
+            },
+            error: function() {
+                Swal.fire('Error', 'Fallo de conexión al cargar perfiles.', 'error');
+            }
+        });
+    }
+
+    function cambiarSesionMultirol(cod_administrador_seleccionado) {
+        Swal.fire({ title: 'Cambiando sesión...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+        $.ajax({
+            url: '../admin/procesar_seleccion_multirol_ajax.php',
+            type: 'POST',
+            data: { cod_administrador: cod_administrador_seleccionado },
+            dataType: 'json',
+            success: function(res) {
+                if (res.status === 'success') {
+                    window.location.href = res.redirect_url;
+                } else {
+                    Swal.fire('Error', res.message, 'error');
+                }
+            },
+            error: function() {
+                Swal.fire('Error', 'Fallo de conexión al cambiar de rol.', 'error');
+            }
+        });
+    }
+</script>
+<?php endif; ?>
+
 <?php } ?>

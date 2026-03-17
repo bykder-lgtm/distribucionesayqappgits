@@ -10,7 +10,7 @@ function conexiones($usuario, $clave) {
 
 	$url_pag_redirec_ini_sesion_global  = $datax_info_empresa['url_pag_redirec_ini_sesion_global'];
 
-	$buscar_usuario = "SELECT cod_administrador, cuenta, contrasena, cod_seguridad, cod_tipo_historia_clinica, nombres, apellidos, nombre_sexo, url_pag_redirec_ini_sesion, cod_estado_activacion_usuario 
+	$buscar_usuario = "SELECT cod_administrador, cuenta, contrasena, cod_seguridad, cod_tipo_historia_clinica, nombres, apellidos, nombre_sexo, url_pag_redirec_ini_sesion, cod_estado_activacion_usuario, cod_estado_multirol, cod_administrador_padre_multirol 
 	FROM tbl15_administrador WHERE cuenta = '$usuario' AND contrasena = '$clave'";
 	$ejecutar_sql = mysqli_query($conectar2, $buscar_usuario);
 	$datax = mysqli_fetch_assoc($ejecutar_sql);
@@ -23,6 +23,8 @@ function conexiones($usuario, $clave) {
 	$apellidos_sec                      = $datax['apellidos'];
 	$nombre_sexo_sec                    = $datax['nombre_sexo'];
 	$url_pag_redirec_ini_sesion         = $datax['url_pag_redirec_ini_sesion'];
+	$cod_estado_multirol_sec            = $datax['cod_estado_multirol'];
+	$cod_adm_padre_multirol_sec         = $datax['cod_administrador_padre_multirol'];
 
 	if ($url_pag_redirec_ini_sesion == '') { $url_pag_redirec_ini_sesion = '../admin/facturacion_venta_temporal_producto_manual_pos.php'; } else { $url_pag_redirec_ini_sesion = $url_pag_redirec_ini_sesion; }
 	if ($url_pag_redirec_ini_sesion_global == '') { $url_pag_redirec_ini_sesion_global = '../admin/facturacion_venta_temporal_producto_manual_pos.php'; } else { $url_pag_redirec_ini_sesion_global = $url_pag_redirec_ini_sesion_global; }
@@ -101,6 +103,7 @@ function conexiones($usuario, $clave) {
 		$_SESSION['ca_cryp']                          = $cod_administrador_cryp;
 		$_SESSION['tokn_cryp']                        = $tokn_cryp;
 		$_SESSION['pag_redirec_sesion_cryp']          = $pag_redirec_sesion_cryp;
+		$_SESSION['url_pag_redirec_ini_sesion_real']  = DAXCRYPTOR::encriptardax($url_pag_redirec_ini_sesion); // Lo guardamos por si se elude el redireccionamiento dinamico
 		$_SESSION['cod_tipo_historia_clinica_cryp']   = $cod_tipo_historia_clinica_cryp;
 		$_SESSION['nombres_cryp']                     = $nombres_cryp;
 		$_SESSION['apellidos_cryp']                   = $apellidos_cryp;
@@ -123,12 +126,17 @@ function conexiones($usuario, $clave) {
 		$_SESSION['pagina_salir_visitante']           = '../admin/iniciar_sesion_visitante.php';
 		$_SESSION['requiere_cambio_contrasena']       = $requiere_cambio_contrasena;
 		$_SESSION['cod_estado_activacion_usuario']    = $cod_estado_activacion_usuario_sec;
+		$_SESSION['cod_estado_multirol']              = $cod_estado_multirol_sec;
+		$_SESSION['cod_administrador_padre_multirol'] = $cod_adm_padre_multirol_sec;
 		//$usuario_descryp = DAXCRYPTOR::descriptardax($usuario_cryp);
 		//$cod_seguridad_descryp = DAXCRYPTOR::descriptardax($cod_seguridad_cryp);
 		//$cod_administrador_descryp = DAXCRYPTOR::descriptardax($cod_administrador_cryp);
 		
 		// Devolver estado según activación
 		if ($requiere_cambio_contrasena) { return 'ESPERA_ACTIVACION';	}
+
+		// Validar si el usuario debe pasar primero por el selector de roles antes de enviarlo al url de redirección global
+		if ($cod_estado_multirol_sec == '1') { return 'MULTIROL'; }
 		return true;
 	} else {
 		return false;
