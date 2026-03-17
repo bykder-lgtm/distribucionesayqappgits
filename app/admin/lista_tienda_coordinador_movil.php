@@ -222,7 +222,7 @@ body {
 /* Search Bar */
 .search-bar {
     background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(99, 102, 241, 0.3);
     border-radius: 16px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -251,7 +251,7 @@ body {
 
 /* Add Button */
 .add-button {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
     border: none;
     border-radius: 16px;
@@ -290,8 +290,8 @@ body {
 }
 
 .store-card:hover {
-    border-color: #10b981;
-    box-shadow: 0 5px 20px rgba(16, 185, 129, 0.2);
+    border-color: #6366f1;
+    box-shadow: 0 5px 20px rgba(99, 102, 241, 0.2);
 }
 
 .store-card-header {
@@ -349,7 +349,7 @@ body {
 }
 
 .store-detail i {
-    color: #10b981;
+    color: #6366f1;
     font-size: 0.85rem;
     width: 20px;
 }
@@ -469,7 +469,7 @@ body {
 }
 
 .btn-quick-action.btn-vendedor {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
 }
 
@@ -799,7 +799,7 @@ body {
 }
 
 .document-preview-btn {
-    background: #10b981;
+    background: #6366f1;
     color: white;
     border: none;
     padding: 0.4rem 0.8rem;
@@ -817,7 +817,7 @@ body {
 }
 
 .gps-btn {
-    background: #10b981;
+    background: #6366f1;
     color: white;
     border: none;
     padding: 0.85rem;
@@ -841,7 +841,7 @@ body {
 
 .submit-btn {
     width: 100%;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
     border: none;
     padding: 1rem;
@@ -908,9 +908,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(16, 185, 129, 0.1);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: #6366f1;
     border-radius: 12px;
     text-decoration: none;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -922,11 +922,11 @@ body {
 }
 
 .pagination-btn:hover:not(.disabled) {
-    background: #10b981;
+    background: #6366f1;
     color: white !important;
     transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-    border-color: #10b981;
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    border-color: #6366f1;
 }
 
 .pagination-btn.disabled {
@@ -943,17 +943,17 @@ body {
     font-weight: 600;
     color: rgba(255, 255, 255, 0.7);
     padding: 0 1.25rem;
-    background: rgba(16, 185, 129, 0.05);
+    background: rgba(99, 102, 241, 0.05);
     height: 42px;
     display: flex;
     align-items: center;
     border-radius: 12px;
-    border: 1px solid rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.1);
     letter-spacing: 0.5px;
 }
 
 .pagination-info span {
-    color: #10b981;
+    color: #6366f1;
     margin: 0 4px;
 }
 
@@ -1168,11 +1168,11 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                     <div class="store-detail"><i class="fa-solid fa-location-dot"></i><span><?php echo ucwords(strtolower($tienda['direccion_tercero'])); ?></span></div>
                     <div class="store-detail">
                         <i class="fa-solid fa-file-signature"></i>
-                        <span>Firma: <i class="fa-solid <?php echo $tiene_firma ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'; ?>" style="font-size: 0.9rem; color: <?php echo $tiene_firma ? '#10b981' : '#ef4444'; ?>;"></i></span>
+                        <span>Firma: <i class="fa-solid <?php echo $tiene_firma ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'; ?>" style="font-size: 0.9rem; color: <?php echo $tiene_firma ? '#6366f1' : '#ef4444'; ?>;"></i></span>
                     </div>
                     <div class="store-detail">
                         <i class="fa-solid fa-location-crosshairs"></i>
-                        <span>GPS: <i class="fa-solid <?php echo $tiene_gps ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'; ?>" style="font-size: 0.9rem; color: <?php echo $tiene_gps ? '#10b981' : '#ef4444'; ?>;"></i></span>
+                        <span>GPS: <i class="fa-solid <?php echo $tiene_gps ? 'fa-circle-check text-success' : 'fa-circle-xmark text-danger'; ?>" style="font-size: 0.9rem; color: <?php echo $tiene_gps ? '#6366f1' : '#ef4444'; ?>;"></i></span>
                     </div>
                     <div class="store-detail"><i class="fa-solid fa-credit-card"></i><span><?php echo $tienda['creditos_activos']; ?> créditos activos</span></div>
                     <?php if(!empty($tienda['fecha_creacion'])): ?><div class="store-detail"><i class="fa-solid fa-calendar-plus" style="color: #f59e0b;"></i><span>Registrado: <?php echo date('d/m/Y', strtotime($tienda['fecha_creacion'])); ?></span></div><?php endif; ?>
@@ -2978,7 +2978,7 @@ function gestionarFirma(accion) {
                 text: detalle || mensaje,
                 background: '#1a1f2e',
                 color: 'white',
-                confirmButtonColor: '#10b981'
+                confirmButtonColor: '#6366f1'
             });
             return;
         }
@@ -3274,7 +3274,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
     right: 20px;
     width: 56px;
     height: 56px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -3361,7 +3361,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 }
 
 .notification-header-movil {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
     padding: 15px 18px;
     display: flex;
@@ -3433,7 +3433,7 @@ document.getElementById('modalRevisionGPS').addEventListener('click', function(e
 }
 
 .notification-icon-movil.type-1 {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
     color: white;
 }
 
