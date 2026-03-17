@@ -62,16 +62,15 @@ switch($cod_tipo_nuevo){
 $sql_seg = "SELECT url_pag_redirec_ini_sesion FROM tbl15_seguridad WHERE cod_seguridad = '$cod_seguridad'";
 $q_seg = mysqli_query($conectar, $sql_seg);
 if ($row_seg = mysqli_fetch_assoc($q_seg)) {
-    $url_dashboard = $row_seg['url_pag_redirec_ini_sesion'];
+    $url_pag_redirec_ini_sesion = $row_seg['url_pag_redirec_ini_sesion'];
 }
-if(empty($url_dashboard)){ 
+if(empty($url_pag_redirec_ini_sesion)){ 
     // Fallback de seguridad por si la BD está vacía en esa columna temporalmente
-    if($cod_seguridad == '20') $url_dashboard = '../admin/dashboard_lider_movil.php';
-    if($cod_seguridad == '21') $url_dashboard = '../admin/dashboard_coordinador_movil.php';
-    if($cod_seguridad == '22') $url_dashboard = '../admin/dashboard_asesor_movil.php';
-    if($cod_seguridad == '2') $url_dashboard = '../admin/dashboard_vendedor_movil.php';
+    if($cod_seguridad == '20') $url_pag_redirec_ini_sesion = '../admin/dashboard_lider_movil.php';
+    if($cod_seguridad == '21') $url_pag_redirec_ini_sesion = '../admin/dashboard_coordinador_movil.php';
+    if($cod_seguridad == '22') $url_pag_redirec_ini_sesion = '../admin/dashboard_asesor_movil.php';
+    if($cod_seguridad == '2') $url_pag_redirec_ini_sesion = '../admin/dashboard_vendedor_movil.php';
 }
-
 // Preparar query de clonación - Asumimos la mayoría de los campos son copiados intactos
 $cedula = $row['cedula'];
 $nombres = $row['nombres'];
@@ -85,23 +84,17 @@ $fecha_cre = date("Y-m-d H:i:s");
 $cod_creador = isset($_SESSION['cod_administrador']) ? $_SESSION['cod_administrador'] : 0;
 $estado = '1';
 $estado_act = '1';
-
 // Lider, Coord, Asesor original (Si es vendedor conserva sus ancestros de control)
 $cod_lider = $row['cod_lider'];
 $cod_coord = $row['cod_coordinador'];
 $cod_asesor = $row['cod_asesor'];
-
 // Insertar Nuevo Perfil Enlazado
 $sql_insert = "INSERT INTO tbl15_administrador (cedula, nombres, apellidos, nombres_apellidos_tercero, cuenta, correo, telefono, contrasena, 
 cod_tipo_tercero, nombre_tipo_tercero, url_pag_redirec_ini_sesion, cod_seguridad, 
-cod_estado_multirol, cod_administrador_padre_multirol,
-cod_lider, cod_coordinador, cod_asesor,
-cod_estado, cod_estado_activacion_usuario, fecha_creacion, cod_administrador_creador) 
+cod_estado_multirol, cod_administrador_padre_multirol, cod_lider, cod_coordinador, cod_asesor, cod_estado, cod_estado_activacion_usuario, fecha_creacion, cod_administrador_creador) 
 VALUES ('$cedula', '$nombres', '$apellidos', '$nombres_apellidos', '$cuenta', '$correo', '$telefono', '$contrasena',
-'$cod_tipo_tercero_bd', '$nombre_tipo_tercero_nuevo', '$url_dashboard', '$cod_seguridad',
-'1', '$cod_padre',
-'$cod_lider', '$cod_coord', '$cod_asesor',
-'$estado', '$estado_act', '$fecha_cre', '$cod_creador')";
+'$cod_tipo_tercero_bd', '$nombre_tipo_tercero_nuevo', '$url_pag_redirec_ini_sesion', '$cod_seguridad',
+'1', '$cod_padre', '$cod_lider', '$cod_coord', '$cod_asesor', '$estado', '$estado_act', '$fecha_cre', '$cod_creador')";
 
 if (mysqli_query($conectar, $sql_insert)) {
     // Éxito al insertar. Debemos asegurarnos que el padre y el origen original tengan encendida su bandera Mutirol

@@ -129,8 +129,14 @@ if ($op == 'ejecutar_accion') {
             } else if($cod_tipo_reasignacion_usuario == 2) { // CAMBIO DE ROL
                 $cod_rol_anterior = $cod_rol_actual > 0 ? $cod_rol_actual : 'NULL';
                 $cod_rol_nuevo = $nuevo_valor > 0 ? $nuevo_valor : 'NULL';
+                
+                // Obtener url_pag_redirec_ini_sesion dinamica
+                $sql_url_seg = "SELECT url_pag_redirec_ini_sesion FROM tbl15_seguridad WHERE cod_seguridad = '$nuevo_valor'";
+                $res_url_seg = mysqli_query($conectar, $sql_url_seg);
+                $url_nueva = '';
+                if($res_url_seg && $row_url = mysqli_fetch_assoc($res_url_seg)){ $url_nueva = $row_url['url_pag_redirec_ini_sesion']; }
                 // Realizar el UPDATE
-                mysqli_query($conectar, "UPDATE tbl15_administrador SET cod_seguridad = '$nuevo_valor' WHERE cod_administrador = '$cod_usuario_afectado'");
+                mysqli_query($conectar, "UPDATE tbl15_administrador SET cod_seguridad = '$nuevo_valor', url_pag_redirec_ini_sesion = '$url_nueva' WHERE cod_administrador = '$cod_usuario_afectado'");
             }
             // Insertar en el historial
             $sql_historial = "INSERT INTO tbl15_historial_reasignacion_superior_gerarquico_cambio_rol (
