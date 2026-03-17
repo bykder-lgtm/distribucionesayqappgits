@@ -100,4 +100,17 @@ $pag_redirec_sesion = DAXCRYPTOR::descriptardax($_SESSION['pag_redirec_sesion_cr
 //---------------------------------------------------------------------------------------------------------------------------------//
 //---------------------------------------------------------------------------------------------------------------------------------//
 include_once('../admin/01_modulo_permisos_visitante_intern_movil.php');
+
+// === PROTECCIÓN DE RUTAS POR SEGURIDAD ===
+$script_name = basename($_SERVER['PHP_SELF']);
+
+// Bloquear acceso a modulos de Aliado si no es Aliado o Super Admin
+if (strpos($script_name, '_aliado_') !== false || strpos($script_name, 'aliado_') === 0) {
+    if ($cod_seguridad != '23' && $cod_seguridad != '1') { header("location: ../index.php"); exit(); }
+}
+
+// Bloquear acceso a modulos de Vendedor si no es Vendedor o Super Admin
+if (strpos($script_name, '_vendedor_') !== false || strpos($script_name, 'vendedor_') === 0) {
+    if ($cod_seguridad != '2' && $cod_seguridad != '19' && $cod_seguridad != '1') { header("location: ../index.php"); exit(); }
+}
 ?>

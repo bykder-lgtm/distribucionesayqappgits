@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 include_once('../conexiones/conexione.php');
 include_once('../gestor_administrar_msj_alerta_error/gestor_alerta_error.php');
@@ -20,6 +20,9 @@ if (!isset($_SESSION['cod_administrador']) && $_SESSION['cod_administrador']==nu
 
 	$cuenta_usuario                      = $datos_usuar['cuenta'];
 	$cod_seguridad_usuario               = $datos_usuar['cod_seguridad'];
+
+	if ($cod_seguridad_usuario != '21' && $cod_seguridad_usuario != '1') { header("location: ../index.php"); exit(); }
+
 	$nombres_usuario                     = $datos_usuar['nombres'];
 	$apellidos_usuario                   = $datos_usuar['apellidos'];
 	$nombre_sexo_usuario                 = $datos_usuar['nombre_sexo'];

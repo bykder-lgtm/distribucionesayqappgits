@@ -1,4 +1,4 @@
-﻿<?php $serguridad_pagina = 1; ?>
+<?php $serguridad_pagina = 1; ?>
 <!-- 1******************************************************* MODULO SUPERIOR *********************************************** -->
 <?php include_once('../admin/01_modulo_diseno_superior.php'); ?>
 <!-- 1******************************************************* MODULO SUPERIOR *********************************************** -->
@@ -46,7 +46,14 @@ if ((isset($_POST["ins_edit"])) && ($_POST["ins_edit"] == "formulario_insert_edi
 	$cod_tipo_aplicacion                                  = intval($_POST['cod_tipo_aplicacion']);
 	$cod_origen_produccion_user                           = intval($_POST['cod_origen_produccion_user']);
 	$num_max_caja_mesa_usuario                            = intval($_POST['num_max_caja_mesa_usuario']);
-	$url_pag_redirec_ini_sesion                           = addslashes($_POST['url_pag_redirec_ini_sesion']);
+
+	// Obtener dinámicamente la URL de redirección basada en el rol seleccionado (cod_seguridad)
+	$sql_url_seg = "SELECT url_pag_redirec_ini_sesion FROM tbl15_seguridad WHERE cod_seguridad = '$cod_seguridad'";
+	$res_url_seg = mysqli_query($conectar, $sql_url_seg);
+	$url_pag_redirec_ini_sesion = '';
+	
+	if ($res_url_seg && $row_url = mysqli_fetch_assoc($res_url_seg)) { $url_pag_redirec_ini_sesion = $row_url['url_pag_redirec_ini_sesion']; }
+
 	$limite_max_venta_temp_por_caja_mesa_usuario          = intval($_POST['limite_max_venta_temp_por_caja_mesa_usuario']);
 	$comision_funcionamiento_interes_propio_empresa_ptj   = addslashes($_POST['comision_funcionamiento_interes_propio_empresa_ptj']);
 
