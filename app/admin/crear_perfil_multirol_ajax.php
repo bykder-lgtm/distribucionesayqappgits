@@ -29,32 +29,47 @@ if (mysqli_num_rows($q_existe) > 0) { $res['message'] = 'Este usuario ya posee u
 $nombre_tipo_tercero_nuevo = '';
 $url_dashboard = '';
 $cod_seguridad = '';
+$cod_tipo_tercero_bd = '0'; // La mayoría en distribucionesayq usa 0, excepto vendedor etc.
 
 switch($cod_tipo_nuevo){
     case 7: // Lider
         $nombre_tipo_tercero_nuevo = 'LIDER';
-        $url_dashboard = '../admin/dashboard_lider_movil.php';
         $cod_seguridad = '20';
+        $cod_tipo_tercero_bd = '0';
         break;
     case 8: // Coordinador
         $nombre_tipo_tercero_nuevo = 'COORDINADOR';
-        $url_dashboard = '../admin/dashboard_coordinador_movil.php';
         $cod_seguridad = '21';
+        $cod_tipo_tercero_bd = '0';
         break;
     case 9: // Asesor
         $nombre_tipo_tercero_nuevo = 'ASESOR';
-        $url_dashboard = '../admin/dashboard_asesor_movil.php';
         $cod_seguridad = '22';
+        $cod_tipo_tercero_bd = '0';
         break;
     case 10: // Vendedor
         $nombre_tipo_tercero_nuevo = 'VENDEDOR';
-        $url_dashboard = '../admin/dashboard_vendedor_movil.php';
         $cod_seguridad = '2';
+        $cod_tipo_tercero_bd = '2';
         break;
     default:
         $res['message'] = 'Tipo de rol no gestionado para multi-rol aún.';
         echo json_encode($res);
         exit;
+}
+
+// Obtener 'url_pag_redirec_ini_sesion' de forma dinámica desde tbl15_seguridad según la indicación
+$sql_seg = "SELECT url_pag_redirec_ini_sesion FROM tbl15_seguridad WHERE cod_seguridad = '$cod_seguridad'";
+$q_seg = mysqli_query($conectar, $sql_seg);
+if ($row_seg = mysqli_fetch_assoc($q_seg)) {
+    $url_dashboard = $row_seg['url_pag_redirec_ini_sesion'];
+}
+if(empty($url_dashboard)){ 
+    // Fallback de seguridad por si la BD está vacía en esa columna temporalmente
+    if($cod_seguridad == '20') $url_dashboard = '../admin/dashboard_lider_movil.php';
+    if($cod_seguridad == '21') $url_dashboard = '../admin/dashboard_coordinador_movil.php';
+    if($cod_seguridad == '22') $url_dashboard = '../admin/dashboard_asesor_movil.php';
+    if($cod_seguridad == '2') $url_dashboard = '../admin/dashboard_vendedor_movil.php';
 }
 
 // Preparar query de clonación - Asumimos la mayoría de los campos son copiados intactos
@@ -70,6 +85,7 @@ $fecha_cre = date("Y-m-d H:i:s");
 $cod_creador = isset($_SESSION['cod_administrador']) ? $_SESSION['cod_administrador'] : 0;
 $estado = '1';
 $estado_act = '1';
+
 // Lider, Coord, Asesor original (Si es vendedor conserva sus ancestros de control)
 $cod_lider = $row['cod_lider'];
 $cod_coord = $row['cod_coordinador'];
@@ -82,7 +98,7 @@ cod_estado_multirol, cod_administrador_padre_multirol,
 cod_lider, cod_coordinador, cod_asesor,
 cod_estado, cod_estado_activacion_usuario, fecha_creacion, cod_administrador_creador) 
 VALUES ('$cedula', '$nombres', '$apellidos', '$nombres_apellidos', '$cuenta', '$correo', '$telefono', '$contrasena',
-'$cod_tipo_nuevo', '$nombre_tipo_tercero_nuevo', '$url_dashboard', '$cod_seguridad',
+'$cod_tipo_tercero_bd', '$nombre_tipo_tercero_nuevo', '$url_dashboard', '$cod_seguridad',
 '1', '$cod_padre',
 '$cod_lider', '$cod_coord', '$cod_asesor',
 '$estado', '$estado_act', '$fecha_cre', '$cod_creador')";
