@@ -181,18 +181,18 @@ if ($op == 'ejecutar_accion') {
                 $cod_coord = intval($row_full['cod_coordinador']);
                 $cod_asesor = intval($row_full['cod_asesor']);
 
-                if($nuevo_valor == '20') { 
-                    $cod_lider = 0; $cod_coord = 0; $cod_asesor = 0;
-                } else if($nuevo_valor == '21') { 
-                    $cod_coord = 0; $cod_asesor = 0;
-                } else if($nuevo_valor == '22') { 
-                    $cod_asesor = 0;
-                }
-
                 $sql_autoincremento = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = (SELECT database()) AND TABLE_NAME = 'tbl15_administrador'";
                 $exec_auto = mysqli_query($conectar, $sql_autoincremento);
                 $datos_auto = mysqli_fetch_assoc($exec_auto);
                 $nuevo_cod_admin = $datos_auto['AUTO_INCREMENT'];
+
+                if($nuevo_valor == '20') { 
+                    $cod_lider = $nuevo_cod_admin; $cod_coord = 0; $cod_asesor = 0;
+                } else if($nuevo_valor == '21') { 
+                    $cod_coord = $nuevo_cod_admin; $cod_asesor = 0;
+                } else if($nuevo_valor == '22') { 
+                    $cod_asesor = $nuevo_cod_admin;
+                }
                 $cuenta = $cedula . '-' . $nuevo_cod_admin;
                 $creador_cuenta = $cod_usuario_responsable;
 
