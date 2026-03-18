@@ -473,7 +473,7 @@ function confirmarCerrarSesion() {
         title: '¿Cerrar sesión?', text: '¿Estás seguro de que quieres salir?', icon: 'question', showCancelButton: true, confirmButtonColor: '#ef4444',
         cancelButtonColor: '#6b7280', confirmButtonText: 'Sí, salir', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
-        if (result.isConfirmed) { window.location.href = '../sesion/salir_visitante_intern.php'; }
+        if (result.isConfirmed) { window.location.href = '../session/salir_visitante_intern.php'; }
     });
     return false;
 }
