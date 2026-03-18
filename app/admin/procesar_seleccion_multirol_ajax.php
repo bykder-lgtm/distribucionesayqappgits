@@ -101,6 +101,7 @@ if (mysqli_num_rows($ejecutar_sql) > 0) {
     $_SESSION['cod_estado_activacion_usuario']    = $cod_estado_activacion_usuario_sec;
     $_SESSION['cod_estado_multirol']              = $cod_estado_multirol_sec;
     $_SESSION['cod_administrador_padre_multirol'] = $cod_adm_padre_multirol_sec;
+    $_SESSION['cod_seguridad']                    = $cod_seguridad_sec;
     
     // Devolvemos el EXITO con la URL final de redireccion para que el JS en verificacion.php mueva al usuario allá
     $res['status'] = 'success';
