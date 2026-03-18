@@ -1178,6 +1178,9 @@ $res_entidades = mysqli_query($conectar, $sql_entidades);
 // Consulta de bancos disponibles
 $sql_bancos = "SELECT cod_banco, nombre_banco FROM tbl15_banco WHERE cod_estado = '1' ORDER BY cod_posicion ASC";
 $res_bancos = mysqli_query($conectar, $sql_bancos);
+// Consulta de tipos de aliado
+$sql_tipo_aliado = "SELECT cod_tipo_aliado, nombre_tipo_aliado FROM tbl15_tipo_aliado WHERE cod_estado = '1' ORDER BY cod_tipo_aliado ASC";
+$res_tipo_aliado = mysqli_query($conectar, $sql_tipo_aliado);
 // Consulta de tipos de cliente
 $sql_tipo_cliente = "SELECT nombre_tipo_cliente, nombre_tipo_cliente FROM tbl15_tipo_cliente WHERE cod_estado = '1' ORDER BY nombre_tipo_cliente ASC";
 $res_tipo_cliente = mysqli_query($conectar, $sql_tipo_cliente);
@@ -1570,6 +1573,22 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                 <input type="hidden" name="action" value="editar">
                 <input type="hidden" name="cod_administrador" id="edit_cod_administrador">
                 
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Aliado *</label>
+                        <select class="form-select" id="edit_cod_tipo_aliado" name="cod_tipo_aliado" required>
+                            <option value="">Seleccione...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_aliado, 0);
+                            while ($tipo_aliado = mysqli_fetch_assoc($res_tipo_aliado)): 
+                            ?>
+                            <option value="<?php echo $tipo_aliado['cod_tipo_aliado']; ?>"><?php echo $tipo_aliado['nombre_tipo_aliado']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div style="padding-top: 1.6rem;"><!-- separator --></div>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Tipo de Cliente *</label>
@@ -2575,6 +2594,7 @@ function abrirModalEditar(data) {
     currentCodAdministradorTienda = data.cod_administrador;
     
     document.getElementById('edit_cod_administrador').value = data.cod_administrador;
+    if(document.getElementById('edit_cod_tipo_aliado')) document.getElementById('edit_cod_tipo_aliado').value = data.cod_tipo_aliado || '';
     document.getElementById('edit_nombres_apellidos_tercero').value = data.nombres_apellidos_tercero || '';
     document.getElementById('edit_identificacion').value = data.cedula;
     document.getElementById('edit_nombre').value = data.nombres;

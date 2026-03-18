@@ -27,6 +27,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $cod_asesor                                                         = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
     $cod_lider                                                          = isset($_POST['cod_lider']) ? intval($_POST['cod_lider']) : 0;
     $cod_coordinador                                                    = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
+    $cod_tipo_aliado                                                    = isset($_POST['cod_tipo_aliado']) ? intval($_POST['cod_tipo_aliado']) : 0;
     
     // MISSING FIELDS
     $nombres_apellidos_tercero                                          = isset($_POST['nombres_apellidos_tercero']) ? trim(addslashes($_POST['nombres_apellidos_tercero'])) : ($nombre1_tercero . ' ' . $apellido1_tercero);
@@ -43,7 +44,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         if ($nuevo_usuario_raw !== '') {
             $nuevo_usuario                                              = trim(addslashes($nuevo_usuario_raw));
         // Validar que el nuevo usuario no exista
-        $check_usuario_sql = "SELECT cod_administrador FROM tbl15_administrador WHERE usuario = '$nuevo_usuario' AND cod_administrador != '$cod_administrador'";
+        $check_usuario_sql = "SELECT cod_administrador FROM tbl15_administrador WHERE cuenta = '$nuevo_usuario' AND cod_administrador != '$cod_administrador'";
         $check_usuario_result = mysqli_query($conectar, $check_usuario_sql);
             if (mysqli_num_rows($check_usuario_result) > 0) { header('Content-Type: application/json'); echo json_encode(['afectado' => 'NO', 'mensaje' => 'El nombre de usuario ya está en uso. Por favor elija otro.']); exit; } 
         }
@@ -68,10 +69,10 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', nombre_razon_social = UPPER('$nombre_razon_social'), 
         cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio', direccion_tercero = UPPER('$direccion_tercero'), barrio_tercero = UPPER('$barrio_tercero'),
         nombre_tipo_identificacion = '$nombre_tipo_identificacion',
-        cod_asesor = '$cod_asesor', cod_lider = '$cod_lider', cod_coordinador = '$cod_coordinador'";
+        cod_asesor = '$cod_asesor', cod_lider = '$cod_lider', cod_coordinador = '$cod_coordinador', cod_tipo_aliado = '$cod_tipo_aliado'";
         
         // Si se debe cambiar el usuario, agregarlo a la consulta
-        if (!empty($nuevo_usuario)) { $sql_update .= ", usuario = '$nuevo_usuario'"; }
+        if (!empty($nuevo_usuario)) { $sql_update .= ", cuenta = '$nuevo_usuario'"; }
         // Si se debe cambiar la contraseña, agregarla a la consulta
         if ($cambiar_password && !empty($nueva_password)) { $sql_update .= ", contrasena = '$nueva_password'"; }
         
