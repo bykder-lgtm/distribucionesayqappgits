@@ -173,6 +173,13 @@ if ($op == 'ejecutar_accion') {
                 $url_nueva = '';
                 if($res_url_seg && $row_url = mysqli_fetch_assoc($res_url_seg)){ $url_nueva = $row_url['url_pag_redirec_ini_sesion']; }
 
+                if(empty($url_nueva)) {
+                    if($nuevo_valor == '20') $url_nueva = '../admin/dashboard_lider_movil.php';
+                    if($nuevo_valor == '21') $url_nueva = '../admin/dashboard_coordinador_movil.php';
+                    if($nuevo_valor == '22') $url_nueva = '../admin/dashboard_asesor_movil.php';
+                    if($nuevo_valor == '2') $url_nueva = '../admin/dashboard_vendedor_movil.php';
+                }
+
                 $nombre_tipo_tercero_nuevo = '';
                 $cod_tipo_tercero_bd = '0';
                 if ($nuevo_valor == '20') { $nombre_tipo_tercero_nuevo = 'LIDER'; }
