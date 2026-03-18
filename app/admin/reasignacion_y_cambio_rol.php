@@ -165,7 +165,20 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
         </div>
         
         <div class="p-3">
-            <input type="text" id="buscador-usuarios" class="form-control" placeholder="Buscar por nombre o ID...">
+            <div class="row g-2">
+                <div class="col-12 col-md-3">
+                    <input type="text" id="buscador-usuarios" class="form-control shadow-none" placeholder="Búsqueda general...">
+                </div>
+                <div class="col-12 col-md-3">
+                    <input type="text" id="filtro-ciudad" class="form-control shadow-none" placeholder="Filtro Ciudad">
+                </div>
+                <div class="col-12 col-md-3">
+                    <input type="text" id="filtro-barrio" class="form-control shadow-none" placeholder="Filtro Barrio">
+                </div>
+                <div class="col-12 col-md-3">
+                    <input type="text" id="filtro-superior" class="form-control shadow-none" placeholder="Filtro Superior">
+                </div>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -252,6 +265,9 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
         const btnSiguiente = document.getElementById('btn-siguiente');
         const checkAll = document.getElementById('check-all');
         const buscadorUsuarios = document.getElementById('buscador-usuarios');
+        const filtroCiudad = document.getElementById('filtro-ciudad');
+        const filtroBarrio = document.getElementById('filtro-barrio');
+        const filtroSuperior = document.getElementById('filtro-superior');
         const spanConteo = document.getElementById('span_conteo');
 
         selectAccion.addEventListener('change', function() {
@@ -308,6 +324,9 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
                                 `;
 
                                 let tr = document.createElement('tr');
+                                tr.dataset.ciudad = (user.ciudad || '').toLowerCase();
+                                tr.dataset.barrio = (user.barrio || '').toLowerCase();
+                                tr.dataset.superior = (user.superiores && user.superiores.length > 0) ? user.superiores.map(s => s.nombre + ' ' + s.rol).join(' ').toLowerCase() : '';
                                 tr.innerHTML = `
                                     <td class="text-center" data-label="Seleccionar">
                                         <input class="form-check-input chk-item" type="checkbox" value="${user.cod_administrador}">
@@ -374,13 +393,27 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
             if(totalItems.length > 0) { checkAll.checked = (checkedItems.length === totalItems.length); }
         }
 
-        buscadorUsuarios.addEventListener('input', function() {
-            let term = this.value.toLowerCase();
+        function aplicarFiltros() {
+            let termGen = buscadorUsuarios.value.toLowerCase();
+            let termCiu = filtroCiudad.value.toLowerCase();
+            let termBar = filtroBarrio.value.toLowerCase();
+            let termSup = filtroSuperior.value.toLowerCase();
+
             document.querySelectorAll('#tbody_usuarios tr').forEach(row => {
                 let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(term) ? '' : 'none';
+                let matchGen = termGen === '' || text.includes(termGen);
+                let matchCiu = termCiu === '' || (row.dataset.ciudad && row.dataset.ciudad.includes(termCiu));
+                let matchBar = termBar === '' || (row.dataset.barrio && row.dataset.barrio.includes(termBar));
+                let matchSup = termSup === '' || (row.dataset.superior && row.dataset.superior.includes(termSup));
+
+                row.style.display = (matchGen && matchCiu && matchBar && matchSup) ? '' : 'none';
             });
-        });
+        }
+
+        buscadorUsuarios.addEventListener('input', aplicarFiltros);
+        filtroCiudad.addEventListener('input', aplicarFiltros);
+        filtroBarrio.addEventListener('input', aplicarFiltros);
+        filtroSuperior.addEventListener('input', aplicarFiltros);
 
         btnSiguiente.addEventListener('click', function() {
             let accionSeleccionada = selectAccion.value; // 1 = Reasignación Sup, 2 = Cambio Rol
