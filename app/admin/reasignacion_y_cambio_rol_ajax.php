@@ -181,6 +181,14 @@ if ($op == 'ejecutar_accion') {
                 $cod_coord = intval($row_full['cod_coordinador']);
                 $cod_asesor = intval($row_full['cod_asesor']);
 
+                if($nuevo_valor == '20') { 
+                    $cod_lider = 0; $cod_coord = 0; $cod_asesor = 0;
+                } else if($nuevo_valor == '21') { 
+                    $cod_coord = 0; $cod_asesor = 0;
+                } else if($nuevo_valor == '22') { 
+                    $cod_asesor = 0;
+                }
+
                 $sql_autoincremento = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = (SELECT database()) AND TABLE_NAME = 'tbl15_administrador'";
                 $exec_auto = mysqli_query($conectar, $sql_autoincremento);
                 $datos_auto = mysqli_fetch_assoc($exec_auto);
@@ -216,9 +224,25 @@ if ($op == 'ejecutar_accion') {
                 
                 $sql_existe = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '$nuevo_valor' AND (cod_administrador = '$cod_padre' OR cod_administrador_padre_multirol = '$cod_padre') AND cod_estado != '0'";
                 $q_existe = mysqli_query($conectar, $sql_existe);
+                $id_asociar = 0;
+                
                 if (mysqli_num_rows($q_existe) == 0) {
                     mysqli_query($conectar, $sql_insert);
+                    $id_asociar = mysqli_insert_id($conectar);
                     mysqli_query($conectar, "UPDATE tbl15_administrador SET cod_estado_multirol = '1' WHERE cod_administrador = '$cod_usuario_afectado' OR cod_administrador = '$cod_padre'");
+                } else {
+                    $row_existente = mysqli_fetch_assoc($q_existe);
+                    $id_asociar = $row_existente['cod_administrador'];
+                }
+
+                if ($id_asociar > 0) {
+                    if ($nuevo_valor == '20') {
+                        mysqli_query($conectar, "UPDATE tbl15_administrador SET cod_lider = '$id_asociar' WHERE cod_administrador = '$cod_usuario_afectado'");
+                    } else if ($nuevo_valor == '21') {
+                        mysqli_query($conectar, "UPDATE tbl15_administrador SET cod_coordinador = '$id_asociar' WHERE cod_administrador = '$cod_usuario_afectado'");
+                    } else if ($nuevo_valor == '22') {
+                        mysqli_query($conectar, "UPDATE tbl15_administrador SET cod_asesor = '$id_asociar' WHERE cod_administrador = '$cod_usuario_afectado'");
+                    }
                 }
             }
             // Insertar en el historial
