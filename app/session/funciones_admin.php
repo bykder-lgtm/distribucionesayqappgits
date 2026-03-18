@@ -13,6 +13,9 @@ function conexiones($usuario, $clave) {
 	$buscar_usuario = "SELECT cod_administrador, cuenta, contrasena, cod_seguridad, cod_tipo_historia_clinica, nombres, apellidos, nombre_sexo, url_pag_redirec_ini_sesion, cod_estado_activacion_usuario, cod_estado_multirol, cod_administrador_padre_multirol 
 	FROM tbl15_administrador WHERE cuenta = '$usuario' AND contrasena = '$clave'";
 	$ejecutar_sql = mysqli_query($conectar2, $buscar_usuario);
+	if (!$ejecutar_sql) {
+		die("ERROR SQL (Falta actualizar Base de Datos Remota): " . mysqli_error($conectar2));
+	}
 	$datax = mysqli_fetch_assoc($ejecutar_sql);
 
 	$cod_seguridad_sec                  = $datax['cod_seguridad'];
