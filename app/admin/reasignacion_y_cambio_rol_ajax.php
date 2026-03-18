@@ -26,13 +26,16 @@ if ($op == 'cargar_usuarios') {
     $col_superior = $jerarquia['col_superior'];
 
     // Para obtener el nombre del superior, hacemos JOIN si es reasignacion
-    $sql = "SELECT a.cod_administrador, a.nombres, a.apellidos, a.nombres_apellidos_tercero, a.cedula, a.identificacion_tercero, a.{$col_superior}, s.nombre_seguridad ";
-    
-    if($cod_tipo_reasignacion_usuario == 1) { $sql .= ", sup.nombres as sup_nomb, sup.apellidos as sup_ape, sup.nombres_apellidos_tercero as sup_nom_terc, sup.cedula as sup_cedula, sup.identificacion_tercero as sup_identificacion_tercero "; }
+    $sql = "SELECT a.cod_administrador, a.nombres, a.apellidos, a.nombres_apellidos_tercero, a.cedula, a.identificacion_tercero, a.{$col_superior}, s.nombre_seguridad, a.departamento, a.ciudad, a.barrio_tercero ";
+    $sql .= ", lid.nombres as lid_nom, lid.apellidos as lid_ape, lid.nombres_apellidos_tercero as lid_nom_terc ";
+    $sql .= ", coord.nombres as coord_nom, coord.apellidos as coord_ape, coord.nombres_apellidos_tercero as coord_nom_terc ";
+    $sql .= ", ase.nombres as ase_nom, ase.apellidos as ase_ape, ase.nombres_apellidos_tercero as ase_nom_terc ";
     $sql .= " FROM tbl15_administrador a LEFT JOIN tbl15_seguridad s ON a.cod_seguridad = s.cod_seguridad ";
-    if($cod_tipo_reasignacion_usuario == 1) { $sql .= "LEFT JOIN tbl15_administrador sup ON a.{$col_superior} = sup.cod_administrador "; }
+    $sql .= "LEFT JOIN tbl15_administrador lid ON a.cod_lider = lid.cod_administrador And a.cod_lider != 0 ";
+    $sql .= "LEFT JOIN tbl15_administrador coord ON a.cod_coordinador = coord.cod_administrador And a.cod_coordinador != 0 ";
+    $sql .= "LEFT JOIN tbl15_administrador ase ON a.cod_asesor = ase.cod_administrador And a.cod_asesor != 0 ";
     $sql .= "WHERE a.cod_seguridad = '$cod_seguridad' AND a.cod_estado != '0' ORDER BY a.nombres_apellidos_tercero ASC";
-    
+
     $res = mysqli_query($conectar, $sql);
     $data = [];
     if($res) {
@@ -41,19 +44,33 @@ if ($op == 'cargar_usuarios') {
             if(empty($nombre_completo)) $nombre_completo = $row['nombres_apellidos_tercero'];
             $cedula = !empty($row['cedula']) ? $row['cedula'] : $row['identificacion_tercero'];
             
-            $item = ['cod_administrador' => $row['cod_administrador'], 'nombre_completo' => $nombre_completo, 'cedula' => $cedula, 'nombre_rol' => $row['nombre_seguridad']];
+            $item = [
+                'cod_administrador' => $row['cod_administrador'], 
+                'nombre_completo' => $nombre_completo, 
+                'cedula' => $cedula, 
+                'nombre_rol' => $row['nombre_seguridad'],
+                'departamento' => !empty($row['departamento']) ? $row['departamento'] : 'No registrado',
+                'ciudad' => !empty($row['ciudad']) ? $row['ciudad'] : 'No registrado',
+                'barrio' => !empty($row['barrio_tercero']) ? $row['barrio_tercero'] : 'No registrado',
+                'superiores' => []
+            ];
 
-            if($cod_tipo_reasignacion_usuario == 1) {
-                if(!empty($row[$col_superior]) && $row[$col_superior] != '0') {
-                    $nom_sup = trim($row['sup_nomb'] . ' ' . $row['sup_ape']);
-                    if(empty($nom_sup)) $nom_sup = $row['sup_nom_terc'];
-                    $item['nombre_superior'] = $nom_sup;
-                    $item['cedula_superior'] = !empty($row['sup_cedula']) ? $row['sup_cedula'] : $row['sup_identificacion_tercero'];
-                } else {
-                    $item['nombre_superior'] = 'Sin Asignar';
-                    $item['cedula_superior'] = '';
-                }
+            if (!empty($row['lid_nom']) || !empty($row['lid_nom_terc'])) {
+                $nom = trim($row['lid_nom'] . ' ' . $row['lid_ape']);
+                if(empty($nom)) $nom = $row['lid_nom_terc'];
+                $item['superiores'][] = ['rol' => 'LÍDER', 'nombre' => $nom];
             }
+            if (!empty($row['coord_nom']) || !empty($row['coord_nom_terc'])) {
+                $nom = trim($row['coord_nom'] . ' ' . $row['coord_ape']);
+                if(empty($nom)) $nom = $row['coord_nom_terc'];
+                $item['superiores'][] = ['rol' => 'COORDINADOR', 'nombre' => $nom];
+            }
+            if (!empty($row['ase_nom']) || !empty($row['ase_nom_terc'])) {
+                $nom = trim($row['ase_nom'] . ' ' . $row['ase_ape']);
+                if(empty($nom)) $nom = $row['ase_nom_terc'];
+                $item['superiores'][] = ['rol' => 'ASESOR', 'nombre' => $nom];
+            }
+
             $data[] = $item;
         }
     }

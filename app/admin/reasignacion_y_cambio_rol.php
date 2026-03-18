@@ -177,12 +177,12 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
                         </th>
                         <th scope="col">ID</th>
                         <th scope="col">Usuario</th>
-                        <th scope="col" id="th_estado_actual">Superior/Rol Actual</th>
+                        <th scope="col">Ubicación</th>
+                        <th scope="col">Rol Actual</th>
+                        <th scope="col">Superior Jerárquico</th>
                     </tr>
                 </thead>
-                <tbody id="tbody_usuarios">
-                    <!-- Rellenado por AJAX -->
-                </tbody>
+                <tbody id="tbody_usuarios"><!-- Rellenado por AJAX --></tbody>
             </table>
         </div>
         
@@ -249,7 +249,6 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
         const containerRol = document.getElementById('container-rol');
         const containerUsuarios = document.getElementById('container-usuarios');
         const tbodyUsuarios = document.getElementById('tbody_usuarios');
-        const thEstadoActual = document.getElementById('th_estado_actual');
         const btnSiguiente = document.getElementById('btn-siguiente');
         const checkAll = document.getElementById('check-all');
         const buscadorUsuarios = document.getElementById('buscador-usuarios');
@@ -276,30 +275,39 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
                     Swal.close();
                     if(response.success) {
                         tbodyUsuarios.innerHTML = '';
-                        if(accion === '1') { thEstadoActual.innerText = 'Superior Actual'; } else { thEstadoActual.innerText = 'Rol Actual'; }
-
+                        
                         if(response.data.length === 0) {
-                            tbodyUsuarios.innerHTML = '<tr><td colspan="4" class="text-center">No se encontraron usuarios activos para este rol.</td></tr>';
+                            tbodyUsuarios.innerHTML = '<tr><td colspan="6" class="text-center">No se encontraron usuarios activos para este rol.</td></tr>';
                         } else {
                             response.data.forEach(user => {
-                                let infoActualHtml = '';
-                                if(accion === '1') {
-                                    if(user.nombre_superior && user.nombre_superior !== 'Sin Asignar') {
-                                        infoActualHtml = `
-                                            <div class="fw-bold text-primary">${user.nombre_superior}</div>
-                                            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 2px;">
-                                                <i class="fa-solid fa-id-card"></i> ${user.cedula_superior || 'Sin Cédula Registrada'}
+                                let superiorHtml = '';
+                                if(user.superiores && user.superiores.length > 0) {
+                                    user.superiores.forEach((sup, index) => {
+                                        let border = (index < user.superiores.length - 1) ? 'border-bottom: 1px solid rgba(139, 92, 246, 0.2); margin-bottom: 6px; padding-bottom: 6px;' : '';
+                                        superiorHtml += `
+                                            <div style="${border}">
+                                                <div class="fw-bold text-primary" style="font-size: 0.9rem;">${sup.nombre}</div>
+                                                <div style="font-size: 0.75rem; background: rgba(139, 92, 246, 0.2); padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 2px; color: #a78bfa;">
+                                                    <i class="fa-solid fa-sitemap"></i> ${sup.rol}
+                                                </div>
                                             </div>
                                         `;
-                                    } else {
-                                        infoActualHtml = `<span class="badge bg-danger">Sin Asignar</span>`;
-                                    }
+                                    });
                                 } else {
-                                    let nom = user.nombre_rol || 'Sin Rol';
-                                    infoActualHtml = `<span class="badge bg-primary">${nom}</span>`;
+                                    superiorHtml = `<span class="badge bg-danger">Sin Superiores</span>`;
                                 }
+                                
+                                let rolHtml = `<span class="badge bg-primary">${user.nombre_rol || 'Sin Rol'}</span>`;
+
+                                let ubicacionHtml = `
+                                    <div style="font-size: 0.9rem;">
+                                        <div><span style="color: #a78bfa; font-weight: 600;">Dep:</span> ${user.departamento}</div>
+                                        <div><span style="color: #a78bfa; font-weight: 600;">Mun:</span> ${user.ciudad}</div>
+                                        <div><span style="color: #a78bfa; font-weight: 600;">Barrio:</span> ${user.barrio}</div>
+                                    </div>
+                                `;
+
                                 let tr = document.createElement('tr');
-                                let labelEstado = (accion === '1') ? 'Superior Actual' : 'Rol Actual';
                                 tr.innerHTML = `
                                     <td class="text-center" data-label="Seleccionar">
                                         <input class="form-check-input chk-item" type="checkbox" value="${user.cod_administrador}">
@@ -313,7 +321,9 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
                                             </div>
                                         </div>
                                     </td>
-                                    <td data-label="${labelEstado}">${infoActualHtml}</td>
+                                    <td data-label="Ubicación">${ubicacionHtml}</td>
+                                    <td data-label="Rol Actual">${rolHtml}</td>
+                                    <td data-label="Superior Jerárquico">${superiorHtml}</td>
                                 `;
                                 tbodyUsuarios.appendChild(tr);
                             });
