@@ -338,7 +338,7 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
                                             <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6); margin-top: 2px;">
                                                 <i class="fa-solid fa-id-card"></i> ${user.cedula || 'Sin Cédula Registrada'}
                                             </div>
-                                            ${user.es_multirol ? '<div style="margin-top: 4px;"><span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);"><i class="fa-solid fa-layer-group"></i> Multi-Rol</span></div>' : ''}
+                                            ${user.es_multirol && user.roles_multi ? `<div style="margin-top: 4px;"><span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.4);"><i class="fa-solid fa-layer-group"></i> Roles: ${user.roles_multi.join(', ')}</span></div>` : ''}
                                         </div>
                                     </td>
                                     <td data-label="Ubicación">${ubicacionHtml}</td>

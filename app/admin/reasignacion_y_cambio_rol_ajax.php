@@ -26,7 +26,7 @@ if ($op == 'cargar_usuarios') {
     $col_superior = $jerarquia['col_superior'];
 
     // Para obtener el nombre del superior, hacemos JOIN si es reasignacion
-    $sql = "SELECT a.cod_administrador, a.cod_estado_multirol, a.nombres, a.apellidos, a.nombres_apellidos_tercero, a.cedula, a.identificacion_tercero, a.{$col_superior}, s.nombre_seguridad, a.departamento, a.ciudad, a.barrio_tercero ";
+    $sql = "SELECT a.cod_administrador, a.cod_estado_multirol, a.cod_administrador_padre_multirol, a.nombres, a.apellidos, a.nombres_apellidos_tercero, a.cedula, a.identificacion_tercero, a.{$col_superior}, s.nombre_seguridad, a.departamento, a.ciudad, a.barrio_tercero ";
     $sql .= ", lid.nombres as lid_nom, lid.apellidos as lid_ape, lid.nombres_apellidos_tercero as lid_nom_terc ";
     $sql .= ", coord.nombres as coord_nom, coord.apellidos as coord_ape, coord.nombres_apellidos_tercero as coord_nom_terc ";
     $sql .= ", ase.nombres as ase_nom, ase.apellidos as ase_ape, ase.nombres_apellidos_tercero as ase_nom_terc ";
@@ -43,13 +43,24 @@ if ($op == 'cargar_usuarios') {
             $nombre_completo = trim($row['nombres'] . ' ' . $row['apellidos']);
             if(empty($nombre_completo)) $nombre_completo = $row['nombres_apellidos_tercero'];
             $cedula = !empty($row['cedula']) ? $row['cedula'] : $row['identificacion_tercero'];
+            $es_multirol = (isset($row['cod_estado_multirol']) && $row['cod_estado_multirol'] == '1');
+            $roles_multi = [];
+            if ($es_multirol) {
+                $id_padre = (!empty($row['cod_administrador_padre_multirol']) && $row['cod_administrador_padre_multirol'] != 0) ? $row['cod_administrador_padre_multirol'] : $row['cod_administrador'];
+                $s_mul = "SELECT DISTINCT s.nombre_seguridad FROM tbl15_administrador a JOIN tbl15_seguridad s ON a.cod_seguridad = s.cod_seguridad WHERE (a.cod_administrador = '$id_padre' OR a.cod_administrador_padre_multirol = '$id_padre') AND a.cod_estado != '0'";
+                $r_mul = mysqli_query($conectar, $s_mul);
+                while($rm = mysqli_fetch_assoc($r_mul)){
+                    $roles_multi[] = $rm['nombre_seguridad'];
+                }
+            }
             
             $item = [
                 'cod_administrador' => $row['cod_administrador'], 
                 'nombre_completo' => $nombre_completo, 
                 'cedula' => $cedula, 
                 'nombre_rol' => $row['nombre_seguridad'],
-                'es_multirol' => (isset($row['cod_estado_multirol']) && $row['cod_estado_multirol'] == '1'),
+                'es_multirol' => $es_multirol,
+                'roles_multi' => $roles_multi,
                 'departamento' => !empty($row['departamento']) ? $row['departamento'] : 'No registrado',
                 'ciudad' => !empty($row['ciudad']) ? $row['ciudad'] : 'No registrado',
                 'barrio' => !empty($row['barrio_tercero']) ? $row['barrio_tercero'] : 'No registrado',
