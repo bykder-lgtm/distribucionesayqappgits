@@ -15,7 +15,7 @@ $cod_admin_padre_actual = isset($_SESSION['cod_administrador_padre_multirol']) ?
 $cod_admin_actual = isset($_SESSION['cod_administrador']) ? $_SESSION['cod_administrador'] : 0;
 
 // Validar permiso cruzado (comprobar que la cuenta solicitada sea hija de la misma raíz o sea la misma raíz)
-if (empty($cod_admin_padre_actual) || $cod_admin_padre_actual == 0) { $cod_admin_padre_actual = $cod_admin_actual; // El padre soy yo (si es cuenta original multirol) }
+if (empty($cod_admin_padre_actual) || $cod_admin_padre_actual == 0) { $cod_admin_padre_actual = $cod_admin_actual; } // El padre soy yo (si es cuenta original multirol)
 
 $buscar_usuario = "SELECT cod_administrador, cuenta, cod_seguridad, cod_tipo_historia_clinica, nombres, apellidos, nombre_sexo, url_pag_redirec_ini_sesion, cod_estado_activacion_usuario, cod_estado_multirol, cod_administrador_padre_multirol 
 FROM tbl15_administrador WHERE cod_administrador = '$cod_admin_destino' 
