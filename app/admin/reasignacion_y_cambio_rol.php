@@ -492,11 +492,7 @@ while($row = mysqli_fetch_assoc($res_motivos)) { $opciones_motivos .= '<option v
                 url: 'reasignacion_y_cambio_rol_ajax.php', type: 'POST', dataType: 'json', data: { op: 'ejecutar_accion', cod_accion: cod_accion, ids_usuarios: arrayIds, nuevo_valor: datos.nuevo_valor, motivo: datos.motivo, descripcion: datos.descripcion },
                 success: function(resp) {
                     Swal.close();
-                    if(resp.success) { 
-                        Swal.fire({ icon: 'success', title: '¡Operación Exitosa!', text: resp.message, confirmButtonText: 'Aceptar', showConfirmButton: true }).then(() => { cargarUsuarios(); }); 
-                    } else { 
-                        Swal.fire('Error', resp.message || 'Fallo en la operación', 'error'); 
-                    }
+                    if(resp.success) { Swal.fire({ icon: 'success', title: '¡Operación Exitosa!', text: resp.message, confirmButtonText: 'Aceptar', showConfirmButton: true }).then(() => { cargarUsuarios(); }); } else { Swal.fire('Error', resp.message || 'Fallo en la operación', 'error'); }
                 },
                 error: function() { 
                     Swal.close();

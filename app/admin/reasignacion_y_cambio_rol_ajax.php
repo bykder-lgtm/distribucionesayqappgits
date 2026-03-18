@@ -147,13 +147,79 @@ if ($op == 'ejecutar_accion') {
                 $cod_rol_anterior = $cod_rol_actual > 0 ? $cod_rol_actual : 'NULL';
                 $cod_rol_nuevo = $nuevo_valor > 0 ? $nuevo_valor : 'NULL';
                 
+                // Obtener datos totales del perfil origen a clonar
+                $sql_full = "SELECT * FROM tbl15_administrador WHERE cod_administrador = '$cod_usuario_afectado'";
+                $res_full = mysqli_query($conectar, $sql_full);
+                $row_full = mysqli_fetch_assoc($res_full);
+
+                // Determinar el Cod Padre
+                $cod_padre = (!empty($row_full['cod_administrador_padre_multirol']) && $row_full['cod_administrador_padre_multirol'] != 0) ? $row_full['cod_administrador_padre_multirol'] : $cod_usuario_afectado;
+                
                 // Obtener url_pag_redirec_ini_sesion dinamica
                 $sql_url_seg = "SELECT url_pag_redirec_ini_sesion FROM tbl15_seguridad WHERE cod_seguridad = '$nuevo_valor'";
                 $res_url_seg = mysqli_query($conectar, $sql_url_seg);
                 $url_nueva = '';
                 if($res_url_seg && $row_url = mysqli_fetch_assoc($res_url_seg)){ $url_nueva = $row_url['url_pag_redirec_ini_sesion']; }
-                // Realizar el UPDATE
-                mysqli_query($conectar, "UPDATE tbl15_administrador SET cod_seguridad = '$nuevo_valor', url_pag_redirec_ini_sesion = '$url_nueva' WHERE cod_administrador = '$cod_usuario_afectado'");
+
+                $nombre_tipo_tercero_nuevo = '';
+                $cod_tipo_tercero_bd = '0';
+                if ($nuevo_valor == '20') { $nombre_tipo_tercero_nuevo = 'LIDER'; }
+                elseif ($nuevo_valor == '21') { $nombre_tipo_tercero_nuevo = 'COORDINADOR'; }
+                elseif ($nuevo_valor == '22') { $nombre_tipo_tercero_nuevo = 'ASESOR'; }
+                elseif ($nuevo_valor == '2') { $nombre_tipo_tercero_nuevo = 'VENDEDOR'; $cod_tipo_tercero_bd = '2'; }
+                elseif ($nuevo_valor == '23') { $nombre_tipo_tercero_nuevo = 'ALIADO_ESTRATEGICO'; }
+                
+                $cedula = mysqli_real_escape_string($conectar, $row_full['cedula']);
+                $nombres = mysqli_real_escape_string($conectar, $row_full['nombres']);
+                $apellidos = mysqli_real_escape_string($conectar, $row_full['apellidos']);
+                $nombres_apellidos = mysqli_real_escape_string($conectar, $row_full['nombres_apellidos_tercero']);
+                $correo = mysqli_real_escape_string($conectar, $row_full['correo']);
+                $telefono = mysqli_real_escape_string($conectar, $row_full['telefono']);
+                $contrasena = mysqli_real_escape_string($conectar, $row_full['contrasena']);
+                $fecha_cre = date("Y-m-d H:i:s");
+                $cod_lider = intval($row_full['cod_lider']);
+                $cod_coord = intval($row_full['cod_coordinador']);
+                $cod_asesor = intval($row_full['cod_asesor']);
+
+                $sql_autoincremento = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = (SELECT database()) AND TABLE_NAME = 'tbl15_administrador'";
+                $exec_auto = mysqli_query($conectar, $sql_autoincremento);
+                $datos_auto = mysqli_fetch_assoc($exec_auto);
+                $nuevo_cod_admin = $datos_auto['AUTO_INCREMENT'];
+                $cuenta = $cedula . '-' . $nuevo_cod_admin;
+                $creador_cuenta = $cod_usuario_responsable;
+
+                $n_tipo_ident = mysqli_real_escape_string($conectar, $row_full['nombre_tipo_identificacion']);
+                $ident_tercero = mysqli_real_escape_string($conectar, $row_full['identificacion_tercero']);
+                $dig_tercero = mysqli_real_escape_string($conectar, $row_full['digito_tercero']);
+                $nom1 = mysqli_real_escape_string($conectar, $row_full['nombre1_tercero']);
+                $nom2 = mysqli_real_escape_string($conectar, $row_full['nombre2_tercero']);
+                $ape1 = mysqli_real_escape_string($conectar, $row_full['apellido1_tercero']);
+                $ape2 = mysqli_real_escape_string($conectar, $row_full['apellido2_tercero']);
+                $dir_tercero = mysqli_real_escape_string($conectar, $row_full['direccion_tercero']);
+                $tel1_tercero = mysqli_real_escape_string($conectar, $row_full['telefono1_tercero']);
+                $corr_tercero = mysqli_real_escape_string($conectar, $row_full['correo_tercero']);
+                $barr_tercero = mysqli_real_escape_string($conectar, $row_full['barrio_tercero']);
+                $n_tipo_cliente = mysqli_real_escape_string($conectar, $row_full['nombre_tipo_cliente']);
+                $n_tipo_regimen = mysqli_real_escape_string($conectar, $row_full['nombre_tipo_regimen']);
+                $n_tipo_impuesto = mysqli_real_escape_string($conectar, $row_full['nombre_tipo_impuesto']);
+
+                $sql_insert = "INSERT INTO tbl15_administrador (cedula, nombres, apellidos, nombres_apellidos_tercero, cuenta, correo, telefono, contrasena, 
+                cod_tipo_tercero, nombre_tipo_tercero, url_pag_redirec_ini_sesion, cod_seguridad, 
+                cod_estado_multirol, cod_administrador_padre_multirol, cod_lider, cod_coordinador, cod_asesor, cod_estado, cod_estado_activacion_usuario, fecha_creacion, 
+                nombre_tipo_identificacion, identificacion_tercero, digito_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, 
+                direccion_tercero, telefono1_tercero, correo_tercero, barrio_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, creador) 
+                VALUES ('$cedula', '$nombres', '$apellidos', '$nombres_apellidos', '$cuenta', '$correo', '$telefono', '$contrasena',
+                '$cod_tipo_tercero_bd', '$nombre_tipo_tercero_nuevo', '$url_nueva', '$nuevo_valor',
+                '1', '$cod_padre', '$cod_lider', '$cod_coord', '$cod_asesor', '1', '1', '$fecha_cre', 
+                '$n_tipo_ident', '$ident_tercero', '$dig_tercero', '$nom1', '$nom2', '$ape1', '$ape2', 
+                '$dir_tercero', '$tel1_tercero', '$corr_tercero', '$barr_tercero', '$n_tipo_cliente', '$n_tipo_regimen', '$n_tipo_impuesto', '$creador_cuenta')";
+                
+                $sql_existe = "SELECT cod_administrador FROM tbl15_administrador WHERE cod_seguridad = '$nuevo_valor' AND (cod_administrador = '$cod_padre' OR cod_administrador_padre_multirol = '$cod_padre') AND cod_estado != '0'";
+                $q_existe = mysqli_query($conectar, $sql_existe);
+                if (mysqli_num_rows($q_existe) == 0) {
+                    mysqli_query($conectar, $sql_insert);
+                    mysqli_query($conectar, "UPDATE tbl15_administrador SET cod_estado_multirol = '1' WHERE cod_administrador = '$cod_usuario_afectado' OR cod_administrador = '$cod_padre'");
+                }
             }
             // Insertar en el historial
             $sql_historial = "INSERT INTO tbl15_historial_reasignacion_superior_gerarquico_cambio_rol (
