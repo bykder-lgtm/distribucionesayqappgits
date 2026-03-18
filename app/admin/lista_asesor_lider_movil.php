@@ -895,8 +895,7 @@ function filtrar(busqueda) {
     if (busqueda.length > 2 || busqueda.length === 0) { 
         const urlParams = new URLSearchParams(window.location.search);
         const cod_coordinador = urlParams.get('cod_coordinador') || '';
-        window.location.href = 'lista_asesor_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + 
-                             '&cod_coordinador=' + encodeURIComponent(cod_coordinador); 
+        window.location.href = 'lista_asesor_lider_movil.php?busqueda=' + encodeURIComponent(busqueda) + '&cod_coordinador=' + encodeURIComponent(cod_coordinador); 
     } 
 }
 
@@ -928,7 +927,6 @@ function abrirModalEditar(datos) {
     document.getElementById('telefono1_edit').value = datos.telefono;
     document.getElementById('cod_coordinador_edit').value = datos.cod_coordinador;
     document.getElementById('cod_lider_edit').value = datos.cod_lider;
-    
     document.getElementById('modalEditarAsesor').style.display = 'flex';
 }
 
@@ -941,41 +939,18 @@ function editarAsesor(e) {
     const form = document.getElementById('formEditarAsesor');
     const formData = new FormData(form);
 
-    Swal.fire({
-        title: 'Actualizando Asesor...',
-        text: 'Por favor espere',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); },
-        background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-    });
-
+    Swal.fire({ title: 'Actualizando Asesor...', text: 'Por favor espere', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
     $.ajax({
-        url: 'proceso_editar_asesor_lider_movil_ajax.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: 'json',
+        url: 'proceso_editar_asesor_lider_movil_ajax.php', type: 'POST', data: formData, contentType: false, processData: false, dataType: 'json',
         success: function(response) {
             if (response.status === 'success') {
-                Swal.fire({
-                    icon: 'success', title: '¡Actualización Exitosa!', text: response.message,
-                    background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' }
-                }).then(() => {
-                    location.reload();
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualización Exitosa!', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); });
             } else {
-                Swal.fire({
-                    icon: 'error', title: 'Error', text: response.message,
-                    background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
-            Swal.fire({
-                icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor',
-                background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -987,23 +962,10 @@ function registrarAsesor(e) {
     const form = document.getElementById('formRegistroAsesor');
     const formData = new FormData(form);
 
-    Swal.fire({
-        title: 'Registrando Asesor...',
-        text: 'Por favor espere',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); },
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Registrando Asesor...', text: 'Por favor espere', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
     $.ajax({
-        url: 'reg_asesor_modal_lider_movil_ajax_reg.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: 'json',
+        url: 'reg_asesor_modal_lider_movil_ajax_reg.php', type: 'POST', data: formData, contentType: false, processData: false, dataType: 'json',
         success: function(response) {
             if (response.status === 'success') {
                 Swal.fire({
@@ -1018,15 +980,7 @@ function registrarAsesor(e) {
                         location.reload();
                     } else if (result.isDenied) {
                         // Email Notification (AJAX PHPMailer)
-                        Swal.fire({
-                            title: 'Enviando Correo...',
-                            text: 'Por favor espere',
-                            allowOutsideClick: false,
-                            didOpen: () => { Swal.showLoading(); },
-                            background: '#1a1f2e',
-                            color: 'white',
-                            customClass: { container: 'swal-high-zindex' }
-                        });
+                        Swal.fire({ title: 'Enviando Correo...', text: 'Por favor espere', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
                         const emailData = new FormData();
                         emailData.append('email_destino', formData.get('correo_tercero'));
@@ -1035,48 +989,16 @@ function registrarAsesor(e) {
                         emailData.append('contrasena', formData.get('identificacion_tercero')); // Enviamos la cédula como contraseña inicial visible
 
                         $.ajax({
-                            url: 'enviar_email_bienvenida_asesor.php',
-                            type: 'POST',
-                            data: emailData,
-                            contentType: false,
-                            processData: false,
-                            dataType: 'json',
+                            url: 'enviar_email_bienvenida_asesor.php', type: 'POST', data: emailData, contentType: false, processData: false, dataType: 'json',
                             success: function(emailResponse) {
                                 if (emailResponse.success) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: '¡Correo Enviado!',
-                                        text: emailResponse.message,
-                                        background: '#1a1f2e',
-                                        color: 'white',
-                                        confirmButtonColor: '#8b5cf6',
-                                        customClass: { container: 'swal-high-zindex' }
-                                    }).then(() => {
-                                        cerrarModalRegistro();
-                                        location.reload();
-                                    });
+                                    Swal.fire({ icon: 'success', title: '¡Correo Enviado!', text: emailResponse.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' } });
                                 } else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error al Enviar',
-                                        text: emailResponse.message,
-                                        background: '#1a1f2e',
-                                        color: 'white',
-                                        confirmButtonColor: '#ef4444',
-                                        customClass: { container: 'swal-high-zindex' }
-                                    });
+                                    Swal.fire({ icon: 'error', title: 'Error al Enviar', text: emailResponse.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
                                 }
                             },
                             error: function() {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error de Conexión',
-                                    text: 'No se pudo conectar con el servidor de correo',
-                                    background: '#1a1f2e',
-                                    color: 'white',
-                                    confirmButtonColor: '#ef4444',
-                                    customClass: { container: 'swal-high-zindex' }
-                                });
+                                Swal.fire({ icon: 'error', title: 'Error de Conexión', text: 'No se pudo conectar con el servidor de correo', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
                             }
                         });
                     } else {
@@ -1085,69 +1007,26 @@ function registrarAsesor(e) {
                     }
                 });
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.message,
-                    background: '#1a1f2e',
-                    color: 'white',
-                    confirmButtonColor: '#ef4444',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de Conexión',
-                text: 'No se pudo conectar con el servidor',
-                background: '#1a1f2e',
-                color: 'white',
-                confirmButtonColor: '#ef4444',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de Conexión', text: 'No se pudo conectar con el servidor', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
 
 function archivarEntidad(codAdmin, nombre, tipoEntidad) {
     Swal.fire({
-        title: '¿Archivar ' + tipoEntidad + '?',
-        text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6e7881',
-        confirmButtonText: 'Sí, archivar',
-        cancelButtonText: 'Cancelar',
-        background: '#1a1f2e',
-        color: 'white'
+        title: '¿Archivar ' + tipoEntidad + '?', text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6e7881', confirmButtonText: 'Sí, archivar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Archivando...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); },
-                background: '#1a1f2e',
-                color: 'white'
-            });
-
+            Swal.fire({ title: 'Archivando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
             $.ajax({
-                url: 'proceso_archivar_entidad_lider_movil_ajax.php',
-                type: 'POST',
-                data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad },
-                dataType: 'json',
+                url: 'proceso_archivar_entidad_lider_movil_ajax.php', type: 'POST', data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Archivado!',
-                            text: response.message,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            background: '#1a1f2e',
-                            color: 'white'
-                        }).then(() => { location.reload(); });
+                        Swal.fire({ icon: 'success', title: '¡Archivado!', text: response.message, timer: 2000, timerProgressBar: true, background: '#1a1f2e', color: 'white' }).then(() => { location.reload(); });
                     } else {
                         Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });
                     }
@@ -1163,49 +1042,29 @@ function archivarEntidad(codAdmin, nombre, tipoEntidad) {
 // Close modal when clicking outside
 window.onclick = function(event) {
     const modal = document.getElementById('modalRegistroAsesor');
-    if (event.target == modal) {
-        cerrarModalRegistro();
-    }
+    if (event.target == modal) { cerrarModalRegistro(); }
 }
 </script>
 
+<?php
+// Construir las opciones dinamicas segun el nivel
+$opciones_roles_html = '<option value="">Seleccione el nuevo rol...</option>';
+if ($cod_seguridad == '1' || $cod_seguridad == '20') { $opciones_roles_html .= '<option value="8">Coordinador</option>'; }
+if ($cod_seguridad == '1' || $cod_seguridad == '20' || $cod_seguridad == '21') { $opciones_roles_html .= '<option value="9">Asesor</option>'; }
+if ($cod_seguridad == '1' || $cod_seguridad == '20' || $cod_seguridad == '21' || $cod_seguridad == '22') { $opciones_roles_html .= '<option value="13">Aliado Estratégico</option>'; }
+if ($cod_seguridad == '1' || $cod_seguridad == '20' || $cod_seguridad == '21' || $cod_seguridad == '22' || $cod_seguridad == '23') { $opciones_roles_html .= '<option value="10">Vendedor</option>'; }
+?>
 <script>
-// Funciones JS para Cuentas Multi-Rol (Exclusivo Líder)
-function abrirModalMultirol(cod_administrador, nombre_empleado) {
-    let opcionesRoles = `
-        <select id="swal-multi-rol" class="swal2-input" style="max-width: 100%; font-size: 15px;">
-            <option value="">Seleccione el nuevo rol...</option>
-            <option value="9">Asesor</option>
-            <option value="8">Coordinador</option>
-            <option value="7">Líder</option>
-            <option value="10">Vendedor</option>
-        </select>
-    `;
+// Funciones JS para Cuentas Multi-Rol
+window.abrirModalMultirol = function(cod_administrador, nombre_empleado) {
+    let opcionesRoles = `<select id="swal-multi-rol" class="swal2-input" style="max-width: 100%; font-size: 15px;"><?php echo $opciones_roles_html; ?></select>`;
 
     Swal.fire({
-        title: 'Roles de ' + nombre_empleado,
-        html: `
-            <div style="text-align: left; font-size: 14px; margin-bottom: 15px;">
-                <p>Aquí puedes crear un nuevo perfil de rol para este usuario conservando sus accesos y cuenta vinculada.</p>
-                <br>
-                <b>Asignar nueva función:</b>
-                ${opcionesRoles}
-            </div>
-            <div id="loading-roles-box" style="margin-top:20px; text-align:center;">
-                <i class="fa fa-spinner fa-spin fa-2x" style="color:#8b5cf6;"></i><br><small>Consultando red...</small>
-            </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: '<i class="fa fa-plus"></i> Crear Perfil',
-        cancelButtonText: 'Cerrar',
-        confirmButtonColor: '#8b5cf6',
+        title: 'Roles de ' + nombre_empleado, html: `<div style="text-align: left; font-size: 14px; margin-bottom: 15px;"><p>Aquí puedes crear un nuevo perfil de rol para este usuario conservando sus accesos y cuenta vinculada.</p><br><b>Asignar nueva función:</b>${opcionesRoles}</div><div id="loading-roles-box" style="margin-top:20px; text-align:center;"><i class="fa fa-spinner fa-spin fa-2x" style="color:#8b5cf6;"></i><br><small>Consultando red...</small></div>`, showCancelButton: true, confirmButtonText: '<i class="fa fa-plus"></i> Crear Perfil', cancelButtonText: 'Cerrar', confirmButtonColor: '#8b5cf6',
         didOpen: () => {
             // Revisar qué roles ya tiene asignados e imprimir una lista en la parte superior
             $.ajax({
-                url: '../admin/obtener_perfiles_multirol_por_admin_ajax.php',
-                type: 'POST',
-                data: { cod_administrador: cod_administrador },
-                dataType: 'json',
+                url: '../admin/obtener_perfiles_multirol_por_admin_ajax.php', type: 'POST', data: { cod_administrador: cod_administrador }, dataType: 'json',
                 success: function(res) {
                     let box = document.getElementById('loading-roles-box');
                     if(res.status === 'success') {
@@ -1227,9 +1086,7 @@ function abrirModalMultirol(cod_administrador, nombre_empleado) {
         },
         preConfirm: () => {
             const nuevo_rol = document.getElementById('swal-multi-rol').value;
-            if (!nuevo_rol) {
-                Swal.showValidationMessage('Por favor selecciona un rol a crear.');
-            }
+            if (!nuevo_rol) { Swal.showValidationMessage('Por favor selecciona un rol a crear.'); }
             return { cod_tipo_tercero: nuevo_rol }
         }
     }).then((result) => {
@@ -1237,25 +1094,11 @@ function abrirModalMultirol(cod_administrador, nombre_empleado) {
             Swal.fire({ title: 'Creando cuenta secundaria...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
             
             $.ajax({
-                url: '../admin/crear_perfil_multirol_ajax.php',
-                type: 'POST',
-                data: { 
-                    cod_administrador_origen: cod_administrador,
-                    cod_tipo_tercero_nuevo: result.value.cod_tipo_tercero
-                },
-                dataType: 'json',
+                url: '../admin/crear_perfil_multirol_ajax.php', type: 'POST', data: { cod_administrador_origen: cod_administrador, cod_tipo_tercero_nuevo: result.value.cod_tipo_tercero },dataType: 'json',
                 success: function(res) {
-                    if (res.status === 'success') {
-                        Swal.fire('¡Éxito!', res.message, 'success').then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire('Error', res.message, 'error');
-                    }
+                    if (res.status === 'success') { Swal.fire('¡Éxito!', res.message, 'success').then(() => { location.reload(); }); } else { Swal.fire('Error', res.message, 'error'); }
                 },
-                error: function() {
-                    Swal.fire('Fallo del Servidor', 'Ocurrió un error en la conexión al intentar clonar el perfil.', 'error');
-                }
+                error: function() { Swal.fire('Fallo del Servidor', 'Ocurrió un error en la conexión al intentar clonar el perfil.', 'error'); }
             });
         }
     });

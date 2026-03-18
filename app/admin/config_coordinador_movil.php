@@ -455,7 +455,7 @@ $total_notificaciones                                           = isset($datos_n
     <div class="menu-section animate-in delay-3">
         <div class="menu-section-title">Sesión</div>
         <div class="menu-list">
-            <a href="../session/salir_visitante_intern.php?token=<?php echo $token ?>" class="menu-item" onclick="return confirmarCerrarSesion()">
+            <a href="../session/salir_visitante_intern.php?token=<?php echo $token ?>" class="menu-item">
                 <div class="menu-item-icon red">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </div>
@@ -479,17 +479,7 @@ $total_notificaciones                                           = isset($datos_n
 <!-- Bottom Navigation -->
 <?php include_once("../menu/05_modulo_menu_coordinador_movil.php"); ?>
 
-<script>
-function confirmarCerrarSesion() {
-    Swal.fire({
-        title: '¿Cerrar sesión?', text: '¿Estás seguro de que quieres salir?', icon: 'question', showCancelButton: true, confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280', confirmButtonText: 'Sí, salir', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
-    }).then((result) => {
-        if (result.isConfirmed) { window.location.href = '../session/salir_visitante_intern.php'; }
-    });
-    return false;
-}
-</script>
+
 
 <!-- ====================== SISTEMA DE NOTIFICACIONES ====================== -->
 <style>
