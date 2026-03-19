@@ -27,7 +27,6 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
     $cod_asesor                                                         = isset($_POST['cod_asesor']) ? intval($_POST['cod_asesor']) : 0;
     $cod_lider                                                          = isset($_POST['cod_lider']) ? intval($_POST['cod_lider']) : 0;
     $cod_coordinador                                                    = isset($_POST['cod_coordinador']) ? intval($_POST['cod_coordinador']) : 0;
-    $cod_tipo_aliado                                                    = isset($_POST['cod_tipo_aliado']) ? intval($_POST['cod_tipo_aliado']) : 0;
     
     // MISSING FIELDS
     $nombres_apellidos_tercero                                          = isset($_POST['nombres_apellidos_tercero']) ? trim(addslashes($_POST['nombres_apellidos_tercero'])) : ($nombre1_tercero . ' ' . $apellido1_tercero);
@@ -69,7 +68,7 @@ if (isset($_POST['cod_administrador']) && isset($_POST['action']) && $_POST['act
         nombre_tipo_cliente = '$nombre_tipo_cliente', cod_tipo_sector = '$cod_tipo_sector', nit_razon_social = '$nit_razon_social', nombre_razon_social = UPPER('$nombre_razon_social'), 
         cod_departamento = '$cod_departamento', cod_municipio = '$cod_municipio', direccion_tercero = UPPER('$direccion_tercero'), barrio_tercero = UPPER('$barrio_tercero'),
         nombre_tipo_identificacion = '$nombre_tipo_identificacion',
-        cod_asesor = '$cod_asesor', cod_lider = '$cod_lider', cod_coordinador = '$cod_coordinador', cod_tipo_aliado = '$cod_tipo_aliado'";
+        cod_asesor = '$cod_asesor', cod_lider = '$cod_lider', cod_coordinador = '$cod_coordinador'";
         
         // Si se debe cambiar el usuario, agregarlo a la consulta
         if (!empty($nuevo_usuario)) { $sql_update .= ", cuenta = '$nuevo_usuario'"; }

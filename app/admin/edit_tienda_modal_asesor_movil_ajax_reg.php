@@ -20,6 +20,7 @@ $barrio_tercero = isset($_POST['barrio_tercero']) ? mysqli_real_escape_string($c
 $correo_tercero = isset($_POST['correo_tercero']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['correo_tercero']))) : '';
 
 // Nuevos campos de información del negocio
+$cod_tipo_aliado = isset($_POST['cod_tipo_aliado']) ? intval($_POST['cod_tipo_aliado']) : 0;
 $cod_tipo_sector = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
 $existe_rues = isset($_POST['existe_rues']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['existe_rues']))) : '';
 $venta_presencial = isset($_POST['venta_presencial']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['venta_presencial']))) : '';
@@ -83,6 +84,7 @@ $campos_update[] = "telefono1_tercero = '$telefono1_tercero'";
 $campos_update[] = "direccion_tercero = UPPER('$direccion_tercero')";
 $campos_update[] = "barrio_tercero = UPPER('$barrio_tercero')";
 $campos_update[] = "correo_tercero = '$correo_tercero'";
+$campos_update[] = "cod_tipo_aliado = '$cod_tipo_aliado'";
 $campos_update[] = "cod_tipo_sector = '$cod_tipo_sector'";
 $campos_update[] = "existe_rues = '$existe_rues'";
 $campos_update[] = "venta_presencial = '$venta_presencial'";

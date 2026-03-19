@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 header('Content-Type: application/json; charset=UTF-8');
 include_once('../conexiones/conexione.php'); 
 include_once('../admin/class_php/funcion_cryptor_descryptor_class.php');
@@ -30,6 +30,7 @@ $cod_municipio = isset($_POST['cod_municipio']) ? intval($_POST['cod_municipio']
 $barrio_tercero = isset($_POST['barrio_tercero']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['barrio_tercero']))) : '';
 
 // Nuevos campos de información del negocio
+$cod_tipo_aliado = isset($_POST['cod_tipo_aliado']) ? intval($_POST['cod_tipo_aliado']) : 0;
 $cod_tipo_sector = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
 $existe_rues = isset($_POST['existe_rues']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['existe_rues']))) : '';
 $venta_presencial = isset($_POST['venta_presencial']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['venta_presencial']))) : '';
@@ -55,6 +56,7 @@ correo_representante = '$correo_representante',
 cod_departamento = '$cod_departamento', 
 cod_municipio = '$cod_municipio', 
 barrio_tercero = UPPER('$barrio_tercero'),
+cod_tipo_aliado = '$cod_tipo_aliado',
 cod_tipo_sector = '$cod_tipo_sector',
 existe_rues = '$existe_rues',
 venta_presencial = '$venta_presencial',

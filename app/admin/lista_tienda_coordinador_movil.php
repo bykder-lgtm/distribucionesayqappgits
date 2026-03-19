@@ -1054,6 +1054,9 @@ $resultado_aliados = mysqli_query($conectar, $sql_aliados);
 // Consulta de tipos de sector para el formulario de registro de tienda
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
+// Consulta de tipos de aliado
+$sql_tipo_aliado = "SELECT cod_tipo_aliado, nombre_tipo_aliado FROM tbl15_tipo_aliado WHERE cod_estado = '1' ORDER BY cod_tipo_aliado ASC";
+$res_tipo_aliado = mysqli_query($conectar, $sql_tipo_aliado);
 ?>
 <main class="page-container">
     <!-- Header -->
@@ -1378,6 +1381,17 @@ $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
                             if (isset($res_tipo_sector)) { mysqli_data_seek($res_tipo_sector, 0); }
                             while ($tipo_sector = mysqli_fetch_assoc($res_tipo_sector)): ?>
                             <option value="<?php echo $tipo_sector['cod_tipo_sector']; ?>" title="<?php echo htmlspecialchars($tipo_sector['descripcion_tipo_sector']); ?>"><?php echo $tipo_sector['nombre_tipo_sector']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Aliado *</label>
+                        <select class="form-select" name="cod_tipo_aliado" id="cod_tipo_aliado" required>
+                            <option value="">-- Seleccione --</option>
+                            <?php 
+                            if (isset($res_tipo_aliado)) { mysqli_data_seek($res_tipo_aliado, 0); }
+                            while ($tipo_aliado = mysqli_fetch_assoc($res_tipo_aliado)): ?>
+                            <option value="<?php echo $tipo_aliado['cod_tipo_aliado']; ?>"><?php echo $tipo_aliado['nombre_tipo_aliado']; ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
@@ -1933,6 +1947,7 @@ function editarTienda(codTienda) {
                 document.getElementById('ubicacion_gps_tienda').value = t.ubicacion_gps_tienda;
                 
                 // Nuevos campos de información del negocio
+                if (document.getElementById('cod_tipo_aliado')) document.getElementById('cod_tipo_aliado').value = t.cod_tipo_aliado || '';
                 if (document.getElementById('cod_tipo_sector')) document.getElementById('cod_tipo_sector').value = t.cod_tipo_sector || '';
                 if (document.getElementById('existe_rues')) document.getElementById('existe_rues').value = t.existe_rues || '';
                 if (document.getElementById('venta_presencial')) document.getElementById('venta_presencial').value = t.venta_presencial || '';

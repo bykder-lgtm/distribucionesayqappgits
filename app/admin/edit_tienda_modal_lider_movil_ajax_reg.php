@@ -90,6 +90,7 @@ $barrio_tercero = isset($_POST['barrio_tercero']) ? mysqli_real_escape_string($c
 // La jerarquía se deriva del aliado estratégico en la tabla administrador, no se guarda en tienda
 
 // Nuevos campos de información del negocio
+$cod_tipo_aliado = isset($_POST['cod_tipo_aliado']) ? intval($_POST['cod_tipo_aliado']) : 0;
 $cod_tipo_sector = isset($_POST['cod_tipo_sector']) ? intval($_POST['cod_tipo_sector']) : 0;
 $existe_rues = isset($_POST['existe_rues']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['existe_rues']))) : '';
 $venta_presencial = isset($_POST['venta_presencial']) ? mysqli_real_escape_string($conectar, trim(addslashes($_POST['venta_presencial']))) : '';
@@ -115,6 +116,7 @@ correo_representante = '$correo_representante',
 cod_departamento = '$cod_departamento', 
 cod_municipio = '$cod_municipio', 
 barrio_tercero = UPPER('$barrio_tercero'),
+cod_tipo_aliado = '$cod_tipo_aliado',
 cod_tipo_sector = '$cod_tipo_sector',
 existe_rues = '$existe_rues',
 venta_presencial = '$venta_presencial',

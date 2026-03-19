@@ -1201,6 +1201,9 @@ $resultado_asesores = mysqli_query($conectar, $sql_asesores);
 // Consulta de tipos de sector para el formulario de registro de tienda
 $sql_tipo_sector = "SELECT cod_tipo_sector, nombre_tipo_sector, descripcion_tipo_sector FROM tbl15_tipo_sector WHERE cod_estado = '1' ORDER BY cod_tipo_sector ASC";
 $res_tipo_sector = mysqli_query($conectar, $sql_tipo_sector);
+// Consulta de tipos de aliado
+$sql_tipo_aliado = "SELECT cod_tipo_aliado, nombre_tipo_aliado FROM tbl15_tipo_aliado WHERE cod_estado = '1' ORDER BY cod_tipo_aliado ASC";
+$res_tipo_aliado = mysqli_query($conectar, $sql_tipo_aliado);
 
 $sql_cat_prod = "SELECT cod_categoria, nombre_categoria FROM tbl15_categoria WHERE cod_estado = '1' ORDER BY nombre_categoria ASC";
 $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
@@ -1546,6 +1549,17 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                         </select>
                     </div>
                     <div class="form-group">
+                        <label class="form-label">Tipo de Aliado *</label>
+                        <select class="form-select" name="cod_tipo_aliado" id="cod_tipo_aliado" required>
+                            <option value="">-- Seleccione --</option>
+                            <?php 
+                            if (isset($res_tipo_aliado)) { mysqli_data_seek($res_tipo_aliado, 0); }
+                            while ($tipo_aliado = mysqli_fetch_assoc($res_tipo_aliado)): ?>
+                            <option value="<?php echo $tipo_aliado['cod_tipo_aliado']; ?>"><?php echo $tipo_aliado['nombre_tipo_aliado']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">¿Existe en RUES?</label>
                         <select class="form-select" name="existe_rues" id="existe_rues">
                             <option value="">-- Seleccione --</option>
@@ -1802,6 +1816,17 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
                             if (isset($res_tipo_sector)) { mysqli_data_seek($res_tipo_sector, 0); }
                             while ($tipo_sector = mysqli_fetch_assoc($res_tipo_sector)): ?>
                             <option value="<?php echo $tipo_sector['cod_tipo_sector']; ?>" title="<?php echo htmlspecialchars($tipo_sector['descripcion_tipo_sector']); ?>"><?php echo $tipo_sector['nombre_tipo_sector']; ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Aliado *</label>
+                        <select class="form-select" name="cod_tipo_aliado" id="edit_cod_tipo_aliado" required>
+                            <option value="">-- Seleccione --</option>
+                            <?php 
+                            if (isset($res_tipo_aliado)) { mysqli_data_seek($res_tipo_aliado, 0); }
+                            while ($tipo_aliado = mysqli_fetch_assoc($res_tipo_aliado)): ?>
+                            <option value="<?php echo $tipo_aliado['cod_tipo_aliado']; ?>"><?php echo $tipo_aliado['nombre_tipo_aliado']; ?></option>
                             <?php endwhile; ?>
                         </select>
                     </div>
@@ -2654,6 +2679,7 @@ function editarTienda(codTienda) {
                 
                 $('#edit_cod_aliado_estrategico').trigger('change.select2'); // Actualizar visualmente Select2 sin disparar onchange completo si es posible
 
+                if (document.getElementById('edit_cod_tipo_aliado')) document.getElementById('edit_cod_tipo_aliado').value = t.cod_tipo_aliado || '';
                 if (document.getElementById('edit_cod_tipo_sector')) $('#edit_cod_tipo_sector').val(t.cod_tipo_sector || '').trigger('change');
                 if (document.getElementById('edit_existe_rues')) $('#edit_existe_rues').val(t.existe_rues || '').trigger('change');
                 if (document.getElementById('edit_venta_presencial')) $('#edit_venta_presencial').val(t.venta_presencial || '').trigger('change');
