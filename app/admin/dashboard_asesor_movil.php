@@ -598,8 +598,37 @@ for ($i = 5; $i >= 0; $i--) {
 }
 
 // Últimas tiendas registradas
-$sql_ultimas_tiendas = "SELECT cod_tienda, nombre_tienda, fecha_creacion, abrev_tienda FROM tbl15_tienda WHERE cod_administrador = '$cod_administrador' AND cod_estado != '0' ORDER BY fecha_creacion DESC LIMIT 5";
+$sql_ultimas_tiendas = "SELECT t.cod_tienda, t.nombre_tienda, t.fecha_creacion, t.abrev_tienda, ta.nombre_tipo_aliado, ta.color_tipo_aliado FROM tbl15_tienda t LEFT JOIN tbl15_tipo_aliado ta ON t.cod_tipo_aliado = ta.cod_tipo_aliado WHERE t.cod_administrador = '$cod_administrador' AND t.cod_estado != '0' ORDER BY t.fecha_creacion DESC LIMIT 5";
 $resultado_ultimas_tiendas = mysqli_query($conectar, $sql_ultimas_tiendas);
+
+// Estados de tiendas por tipo de aliado - Asesor
+$sql_estados_aliado = "SELECT ta.nombre_tipo_aliado, ta.color_tipo_aliado, COUNT(t.cod_tienda) as cantidad 
+FROM tbl15_tienda t 
+LEFT JOIN tbl15_tipo_aliado ta ON t.cod_tipo_aliado = ta.cod_tipo_aliado 
+WHERE t.cod_administrador = '$cod_administrador' AND t.cod_estado != '0' 
+GROUP BY ta.cod_tipo_aliado, ta.nombre_tipo_aliado, ta.color_tipo_aliado 
+ORDER BY cantidad DESC";
+$resultado_estados = mysqli_query($conectar, $sql_estados_aliado);
+
+$estados_data = [];
+$total_tiendas_estados = 0;
+if ($resultado_estados) {
+    while ($row = mysqli_fetch_assoc($resultado_estados)) {
+        $nombre = !empty($row['nombre_tipo_aliado']) ? $row['nombre_tipo_aliado'] : 'Sin Asignar';
+        $color = !empty($row['color_tipo_aliado']) ? $row['color_tipo_aliado'] : '#10b981';
+        $cantidad = (int)$row['cantidad'];
+        $estados_data[] = ['nombre' => $nombre, 'color' => $color, 'cantidad' => $cantidad];
+        $total_tiendas_estados += $cantidad;
+    }
+}
+
+// Tiendas en zona de peligro (Dormido, Inactivo) - Asesor
+$sql_tiendas_peligro = "SELECT t.cod_tienda, t.nombre_tienda, t.fecha_creacion, t.abrev_tienda, ta.nombre_tipo_aliado, ta.color_tipo_aliado 
+FROM tbl15_tienda t 
+INNER JOIN tbl15_tipo_aliado ta ON t.cod_tipo_aliado = ta.cod_tipo_aliado 
+WHERE t.cod_administrador = '$cod_administrador' AND t.cod_estado != '0' AND ta.nombre_tipo_aliado IN ('Dormido', 'Inactivo') 
+ORDER BY t.fecha_creacion DESC LIMIT 10";
+$resultado_tiendas_peligro = mysqli_query($conectar, $sql_tiendas_peligro);
 
 // Nombre del mes en español
 $meses_esp = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -710,6 +739,58 @@ $anio = date('Y');
     </div>
     -->
 
+    <!-- Resumen Estado Tiendas -->
+    <div class="chart-card animate-in delay-2" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%); border: 1px solid rgba(16, 185, 129, 0.2);">
+        <div class="chart-header" style="border-bottom: 1px solid rgba(16, 185, 129, 0.1); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+            <div class="chart-title" style="display: flex; align-items: center; gap: 0.5rem; color: #10b981; font-size: 0.95rem; font-weight: 700;">
+                <i class="fa-solid fa-chart-pie"></i>
+                Estado de Tiendas por Tipo
+            </div>
+        </div>
+        
+        <!-- Barra de progreso segmentada -->
+        <div style="display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin-bottom: 1.25rem; background: rgba(255,255,255,0.05); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+            <?php 
+            if ($total_tiendas_estados > 0) {
+                foreach ($estados_data as $estado) {
+                    $porcentaje = ($estado['cantidad'] / $total_tiendas_estados) * 100;
+                    echo '<div style="width: ' . $porcentaje . '%; background: ' . htmlspecialchars($estado['color']) . '; transition: width 1s ease-in-out;" title="' . htmlspecialchars($estado['nombre']) . ': ' . $estado['cantidad'] . '"></div>';
+                }
+            } else {
+                echo '<div style="width: 100%; background: rgba(255,255,255,0.1);"></div>';
+            }
+            ?>
+        </div>
+        
+        <!-- Leyenda en Grid -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
+            <?php 
+            if (!empty($estados_data)):
+                foreach ($estados_data as $estado): 
+                $porcentaje = $total_tiendas_estados > 0 ? round(($estado['cantidad'] / $total_tiendas_estados) * 100, 1) : 0;
+            ?>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s ease;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; overflow: hidden;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background: <?php echo htmlspecialchars($estado['color']); ?>; flex-shrink: 0; box-shadow: 0 0 5px <?php echo htmlspecialchars($estado['color']); ?>;"></span>
+                    <span style="font-size: 0.75rem; color: rgba(255,255,255,0.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;"><?php echo htmlspecialchars($estado['nombre']); ?></span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                    <span style="font-size: 0.85rem; font-weight: 700; color: white;"><?php echo $estado['cantidad']; ?></span>
+                    <span style="font-size: 0.65rem; color: rgba(255,255,255,0.45); font-weight: 600;"><?php echo $porcentaje; ?>%</span>
+                </div>
+            </div>
+            <?php 
+                endforeach; 
+            else:
+            ?>
+            <div style="grid-column: span 2; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.8rem; padding: 1.5rem; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+                <i class="fa-solid fa-chart-pie" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block; opacity: 0.5;"></i>
+                No hay datos disponibles
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <!-- Últimas Tiendas -->
     <div class="activity-card animate-in">
         <div class="chart-header">
@@ -723,13 +804,20 @@ $anio = date('Y');
         if (mysqli_num_rows($resultado_ultimas_tiendas) > 0):
             while ($tienda = mysqli_fetch_assoc($resultado_ultimas_tiendas)): 
                 $fecha_tienda = date('d M Y', strtotime($tienda['fecha_creacion']));
+                $color_aliado = !empty($tienda['color_tipo_aliado']) ? $tienda['color_tipo_aliado'] : '#10b981';
+                $nombre_aliado = !empty($tienda['nombre_tipo_aliado']) ? $tienda['nombre_tipo_aliado'] : 'Sin Asignar';
         ?>
         <div class="activity-item">
-            <div class="activity-icon new">
+            <div class="activity-icon new" style="background: <?php echo $color_aliado; ?>;">
                 <i class="fa-solid fa-store"></i>
             </div>
             <div class="activity-content">
-                <div class="activity-title"><?php echo ucwords(strtolower($tienda['nombre_tienda'])); ?></div>
+                <div class="activity-title" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span><?php echo ucwords(strtolower($tienda['nombre_tienda'])); ?></span>
+                    <span style="font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 10px; background: <?php echo $color_aliado; ?>20; color: <?php echo $color_aliado; ?>; border: 1px solid <?php echo $color_aliado; ?>;">
+                        <?php echo htmlspecialchars($nombre_aliado); ?>
+                    </span>
+                </div>
                 <div class="activity-desc"><?php echo $tienda['abrev_tienda']; ?></div>
             </div>
             <div class="activity-time"><?php echo $fecha_tienda; ?></div>
@@ -741,6 +829,48 @@ $anio = date('Y');
         <div style="text-align: center; padding: 2rem;">
             <i class="fa-solid fa-inbox" style="font-size: 2rem; color: rgba(255,255,255,0.3);"></i>
             <p style="color: rgba(255,255,255,0.5); margin-top: 0.5rem;">No hay tiendas registradas</p>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Tiendas en Zona de Peligro -->
+    <div class="activity-card animate-in delay-3" style="border-color: rgba(239, 68, 68, 0.3);">
+        <div class="chart-header">
+            <div class="chart-title" style="color: #ef4444;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Zonas de Peligro
+            </div>
+        </div>
+        
+        <?php 
+        if ($resultado_tiendas_peligro && mysqli_num_rows($resultado_tiendas_peligro) > 0):
+            while ($tienda_peligro = mysqli_fetch_assoc($resultado_tiendas_peligro)): 
+                $fecha_tienda = date('d M Y', strtotime($tienda_peligro['fecha_creacion']));
+                $color_aliado = !empty($tienda_peligro['color_tipo_aliado']) ? $tienda_peligro['color_tipo_aliado'] : '#ef4444';
+                $nombre_aliado = !empty($tienda_peligro['nombre_tipo_aliado']) ? $tienda_peligro['nombre_tipo_aliado'] : 'Peligro';
+        ?>
+        <div class="activity-item" style="border-left: 3px solid <?php echo $color_aliado; ?>; padding-left: 10px;">
+            <div class="activity-icon" style="background: <?php echo $color_aliado; ?>20; color: <?php echo $color_aliado; ?>;">
+                <i class="fa-solid fa-store-slash"></i>
+            </div>
+            <div class="activity-content">
+                <div class="activity-title" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="color: rgba(255,255,255,0.9);"><?php echo ucwords(strtolower($tienda_peligro['nombre_tienda'])); ?></span>
+                    <span style="font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 10px; background: <?php echo $color_aliado; ?>20; color: <?php echo $color_aliado; ?>; border: 1px solid <?php echo $color_aliado; ?>; font-weight: 700;">
+                        <?php echo htmlspecialchars($nombre_aliado); ?>
+                    </span>
+                </div>
+                <div class="activity-desc" style="color: rgba(255,255,255,0.5);"><?php echo $tienda_peligro['abrev_tienda']; ?></div>
+            </div>
+            <div class="activity-time"><?php echo $fecha_tienda; ?></div>
+        </div>
+        <?php 
+            endwhile;
+        else:
+        ?>
+        <div style="text-align: center; padding: 2rem;">
+            <i class="fa-solid fa-shield-check" style="font-size: 2rem; color: #34d399; opacity: 0.6;"></i>
+            <p style="color: rgba(255,255,255,0.6); margin-top: 0.5rem;">No hay tiendas en zona de peligro</p>
         </div>
         <?php endif; ?>
     </div>

@@ -1159,12 +1159,13 @@ $total_registros = $fila_conteo['total'];
 $total_paginas = ceil($total_registros / $registros_por_pagina);
 // Consulta principal adaptada para paginación
 $sql_tiendas = "SELECT t.*, a.nombres_apellidos_tercero as nombre_aliado, 
-d.nombre_departamento, m.nombre_municipio,
+d.nombre_departamento, m.nombre_municipio, ta.nombre_tipo_aliado, ta.color_tipo_aliado,
 (SELECT COUNT(*) FROM tbl15_info_factura_venta WHERE cod_tienda = t.cod_tienda AND nombre_estado_factura = 'ABIERTA') as creditos_activos 
 FROM tbl15_tienda t 
 LEFT JOIN tbl15_administrador a ON t.cod_aliado_estrategico = a.cod_administrador 
 LEFT JOIN tbl15_departamento d ON t.cod_departamento = d.cod_departamento
 LEFT JOIN tbl15_municipio m ON t.cod_municipio = m.cod_municipio AND t.cod_departamento = m.cod_departamento
+LEFT JOIN tbl15_tipo_aliado ta ON t.cod_tipo_aliado = ta.cod_tipo_aliado
 WHERE t.cod_aliado_estrategico IN ($subquery_aliados_lider) AND t.cod_estado != '0'";
 if (!empty($busqueda)) { $sql_tiendas .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%' OR t.cod_tienda LIKE '$busqueda')"; }
 if ($cod_departamento_filtro > 0) { $sql_tiendas .= " AND t.cod_departamento = '$cod_departamento_filtro'"; }
@@ -1186,6 +1187,33 @@ $sql_con_gps = "SELECT COUNT(*) as total FROM tbl15_tienda WHERE cod_aliado_estr
 $resultado_con_gps = mysqli_query($conectar, $sql_con_gps);
 $tiendas_con_gps = 0;
 if ($resultado_con_gps) { $datos_con_gps = mysqli_fetch_assoc($resultado_con_gps); $tiendas_con_gps = isset($datos_con_gps['total']) ? intval($datos_con_gps['total']) : 0; }
+
+// Estados de tiendas por tipo de aliado
+$sql_estados_aliado_lista = "SELECT ta.nombre_tipo_aliado, ta.color_tipo_aliado, COUNT(t.cod_tienda) as cantidad 
+FROM tbl15_tienda t 
+LEFT JOIN tbl15_tipo_aliado ta ON t.cod_tipo_aliado = ta.cod_tipo_aliado 
+WHERE t.cod_aliado_estrategico IN ($subquery_aliados_lider) AND t.cod_estado != '0'";
+if (!empty($busqueda)) { $sql_estados_aliado_lista .= " AND (t.nombre_tienda LIKE '%$busqueda%' OR t.identificacion_tercero LIKE '%$busqueda%' OR t.nombre1_tercero LIKE '%$busqueda%' OR t.cod_tienda LIKE '$busqueda')"; }
+if ($cod_departamento_filtro > 0) { $sql_estados_aliado_lista .= " AND t.cod_departamento = '$cod_departamento_filtro'"; }
+if ($cod_municipio_filtro > 0) { $sql_estados_aliado_lista .= " AND t.cod_municipio = '$cod_municipio_filtro'"; }
+if (!empty($barrio_filtro)) { $sql_estados_aliado_lista .= " AND t.barrio_tercero LIKE '%$barrio_filtro%'"; }
+if ($has_gps_filtro === 'si') { $sql_estados_aliado_lista .= " AND t.ubicacion_gps_tienda IS NOT NULL AND t.ubicacion_gps_tienda != ''"; }
+else if ($has_gps_filtro === 'no') { $sql_estados_aliado_lista .= " AND (t.ubicacion_gps_tienda IS NULL OR t.ubicacion_gps_tienda = '')"; }
+$sql_estados_aliado_lista .= " GROUP BY ta.cod_tipo_aliado, ta.nombre_tipo_aliado, ta.color_tipo_aliado ORDER BY cantidad DESC";
+
+$resultado_estados_lista = mysqli_query($conectar, $sql_estados_aliado_lista);
+$estados_data_lista = [];
+$total_tiendas_estados_lista = 0;
+if ($resultado_estados_lista) {
+    while ($row = mysqli_fetch_assoc($resultado_estados_lista)) {
+        $nombre = !empty($row['nombre_tipo_aliado']) ? $row['nombre_tipo_aliado'] : 'Sin Asignar';
+        $color = !empty($row['color_tipo_aliado']) ? $row['color_tipo_aliado'] : '#8b5cf6';
+        $cantidad = (int)$row['cantidad'];
+        $estados_data_lista[] = ['nombre' => $nombre, 'color' => $color, 'cantidad' => $cantidad];
+        $total_tiendas_estados_lista += $cantidad;
+    }
+}
+
 // Obtener aliados estratégicos para el select (cod_seguridad = 23)
 $sql_aliados = "SELECT cod_administrador, cedula, nombres, apellidos, nombres_apellidos_tercero, comision_ptj FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $resultado_aliados = mysqli_query($conectar, $sql_aliados);
@@ -1276,6 +1304,54 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
             <button class="btn-apply-filters" onclick="applyAdvancedFilters()">Aplicar Filtros</button>
         </div>
     </div>
+    <!-- Resumen Estado Tiendas -->
+    <div class="animate-in delay-1" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(139, 92, 246, 0.02) 100%); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 16px; padding: 1rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; color: #8b5cf6; font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;">
+            <i class="fa-solid fa-chart-pie"></i>
+            Estado de Tiendas por Tipo
+        </div>
+        
+        <!-- Barra de progreso segmentada -->
+        <div style="display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin-bottom: 1rem; background: rgba(255,255,255,0.05); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+            <?php 
+            if ($total_tiendas_estados_lista > 0) {
+                foreach ($estados_data_lista as $estado) {
+                    $porcentaje = ($estado['cantidad'] / $total_tiendas_estados_lista) * 100;
+                    echo '<div style="width: ' . $porcentaje . '%; background: ' . htmlspecialchars($estado['color']) . ';" title="' . htmlspecialchars($estado['nombre']) . ': ' . $estado['cantidad'] . '"></div>';
+                }
+            } else {
+                echo '<div style="width: 100%; background: rgba(255,255,255,0.1);"></div>';
+            }
+            ?>
+        </div>
+        
+        <!-- Leyenda en Grid -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+            <?php 
+            if (!empty($estados_data_lista)):
+                foreach ($estados_data_lista as $estado): 
+                $porcentaje = $total_tiendas_estados_lista > 0 ? round(($estado['cantidad'] / $total_tiendas_estados_lista) * 100, 1) : 0;
+            ?>
+            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 0.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; overflow: hidden;">
+                    <span style="width: 10px; height: 10px; border-radius: 50%; background: <?php echo htmlspecialchars($estado['color']); ?>; flex-shrink: 0; box-shadow: 0 0 4px <?php echo htmlspecialchars($estado['color']); ?>;"></span>
+                    <span style="font-size: 0.7rem; color: rgba(255,255,255,0.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500;"><?php echo htmlspecialchars($estado['nombre']); ?></span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: white;"><?php echo $estado['cantidad']; ?></span>
+                </div>
+            </div>
+            <?php 
+                endforeach; 
+            else:
+            ?>
+            <div style="grid-column: span 2; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.75rem; padding: 1rem; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.1);">
+                No hay datos disponibles
+            </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <!-- Add Button -->
     <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;" class="animate-in delay-1">
         <button class="add-button" style="margin-bottom: 0; flex: 1;" onclick="abrirModalRegistro('normal')"><i class="fa-solid fa-plus"></i>Tienda Normal</button>
@@ -1306,7 +1382,14 @@ $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
             <div class="store-card animate-in delay-2">
                 <div class="store-card-header">
                     <div class="store-info" style="min-width: 0; flex: 1;">
-                        <div class="store-name" style="word-break: break-word; line-height: 1.3; font-size: 1.05rem;"><?php echo ucwords(strtolower($tienda['nombre_tienda'])); ?></div>
+                        <div class="store-name" style="word-break: break-word; line-height: 1.3; font-size: 1.05rem; display:flex; align-items:center; gap:0.5rem; flex-wrap: wrap;">
+                            <span><?php echo ucwords(strtolower($tienda['nombre_tienda'])); ?></span>
+                            <?php if(!empty($tienda['nombre_tipo_aliado'])): ?>
+                            <span style="font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 10px; background: <?php echo htmlspecialchars($tienda['color_tipo_aliado']); ?>20; color: <?php echo htmlspecialchars($tienda['color_tipo_aliado']); ?>; border: 1px solid <?php echo htmlspecialchars($tienda['color_tipo_aliado']); ?>;">
+                                <?php echo htmlspecialchars($tienda['nombre_tipo_aliado']); ?>
+                            </span>
+                            <?php endif; ?>
+                        </div>
                         <div class="store-nit" style="font-size: 0.75rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                             <span>NIT: <?php echo $tienda['identificacion_tercero']; ?></span>
                             <?php if(!empty($tienda['fecha_creacion'])): ?>
