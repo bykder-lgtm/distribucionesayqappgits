@@ -359,6 +359,30 @@ body {
     </div>
 </div>
 
+<!-- Modal Actualizar Estado -->
+<div class="modal-overlay" id="modalActualizarEstado">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-person-walking-arrow-right"></i> Actualizar Estado</h2>
+            <button type="button" class="modal-close" onclick="cerrarModalActualizarEstado()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <form id="formActualizarEstado" onsubmit="guardarEstadoTarea(event)">
+                <input type="hidden" id="estado_cod_tarea" value="">
+                
+                <div class="form-group">
+                    <label class="form-label">Nuevo Estado</label>
+                    <select class="form-select" id="estado_nuevo_estado" required>
+                        <!-- Opciones generadas por JS -->
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-submit">Aceptar y Actualizar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Bottom Menu -->
 <?php include_once("../menu/05_modulo_menu_lider_movil.php"); ?>
 
@@ -449,16 +473,34 @@ function moverTarea(cod_tarea, estado_actual) {
         if(e !== estado_actual) { optionsHtml += `<option value="${e}">${e}</option>`; }
     });
     
-    Swal.fire({
-        title: 'Actualizar Estado', html: `<select id="swal-nuevo-estado" class="swal2-select" style="width:100%;">${optionsHtml}</select>`, background: '#1a1f2e', color: '#fff', showCancelButton: true, confirmButtonText: 'Actualizar',
-        preConfirm: () => { return document.getElementById('swal-nuevo-estado').value; }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({title: 'Actualizando...', didOpen: () => { Swal.showLoading(); }});
-            // Simulated AJAX
-            setTimeout(() => {
-                Swal.fire('Listo', 'Estado actualizado', 'success').then(() => location.reload());
-            }, 500);
+    document.getElementById('estado_cod_tarea').value = cod_tarea;
+    document.getElementById('estado_nuevo_estado').innerHTML = optionsHtml;
+    document.getElementById('modalActualizarEstado').classList.add('show');
+}
+
+function cerrarModalActualizarEstado() {
+    document.getElementById('modalActualizarEstado').classList.remove('show');
+}
+
+function guardarEstadoTarea(event) {
+    event.preventDefault();
+    const cod_tarea = document.getElementById('estado_cod_tarea').value;
+    const nuevo_estado = document.getElementById('estado_nuevo_estado').value;
+
+    cerrarModalActualizarEstado();
+    Swal.fire({title: 'Actualizando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+    
+    $.ajax({
+        type: 'POST', url: 'actualizar_estado_tarea_ajax_reg.php', data: { cod_tarea: cod_tarea, nuevo_estado: nuevo_estado }, dataType: 'json',
+        success: function(response){
+            if(response.afectado === 'SI'){
+                Swal.fire('Listo', response.mensaje, 'success').then(() => location.reload());
+            } else {
+                Swal.fire('Error', response.mensaje, 'error');
+            }
+        },
+        error: function(err){
+            Swal.fire('Error', 'Hubo un error de conexión con el servidor.', 'error');
         }
     });
 }
