@@ -18,7 +18,7 @@ FROM tbl15_tarea t
 LEFT JOIN tbl15_administrador a ON t.cod_administrador_asignado = a.cod_administrador 
 LEFT JOIN tbl15_administrador c ON t.cod_administrador_creador = c.cod_administrador 
 WHERE t.cod_estado = '1' AND (t.cod_administrador_asignado = '$cod_administrador' OR t.cod_administrador_creador = '$cod_administrador') 
-ORDER BY t.fecha_modificacion DESC";
+ORDER BY t.orden_tarea ASC, t.fecha_modificacion DESC";
 $resultado_tareas = mysqli_query($conectar, $sql_tareas);
 
 // Obtener administradores externos para asignación (como Coordinador, asignar a quienes estén debajo)
@@ -47,6 +47,7 @@ if ($resultado_tareas) {
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="../js/jquery-3.2.1.min_visitante.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <!-- Select2 CDN -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -177,6 +178,10 @@ body { background-color: var(--bg-dark); color: white; font-family: 'Inter', san
     <p style="color:rgba(255,255,255,0.6); font-size:0.85rem; margin-top:5px;">Sincroniza y gestiona las operaciones</p>
 </div>
 
+<div style="padding: 0 1rem; margin-top: 1rem;">
+    <input type="text" id="buscadorTareas" class="form-input" placeholder="Buscar tarea por título o descripción..." onkeyup="ejecutarFiltros()" style="width: 100%; max-width: 400px; padding: 0.5rem 1rem;">
+</div>
+
 <div class="tabs-container">
     <button class="tab-btn active" onclick="filtrarTareas('mis_tareas', this)"><i class="fa-solid fa-user-check"></i> Mis Tareas</button>
     <button class="tab-btn" onclick="filtrarTareas('delegadas', this)"><i class="fa-solid fa-users"></i> Delegadas a Otros</button>
@@ -185,12 +190,12 @@ body { background-color: var(--bg-dark); color: white; font-family: 'Inter', san
 <!-- Kanban Board -->
 <div class="kanban-board">
     <?php foreach($opciones_estado as $estado) { ?>
-        <div class="kanban-column">
+        <div class="kanban-column <?php echo ($estado == 'EN PROGRESO') ? 'col-en-progreso' : ''; ?>" data-estado="<?php echo $estado; ?>">
             <div class="column-header">
                 <?php echo $estado; ?>
                 <span class="column-badge"><?php echo count($tareas_agrupadas[$estado]); ?></span>
             </div>
-            <div class="column-body">
+            <div class="column-body sortable-list" data-estado="<?php echo $estado; ?>">
                 <?php if(empty($tareas_agrupadas[$estado])) { ?>
                     <div style="text-align:center; padding: 2rem; color:rgba(255,255,255,0.3); font-size:0.8rem;">
                         Sin tareas
@@ -206,7 +211,7 @@ body { background-color: var(--bg-dark); color: white; font-family: 'Inter', san
                         $nom_asig = !empty($t['nombre_asignado']) ? explode(' ', $t['nombre_asignado'])[0] : 'N/A';
                         $nom_crea = !empty($t['nombre_creador']) ? explode(' ', $t['nombre_creador'])[0] : 'N/A';
                 ?>
-                <div class="task-card filter-<?php echo $filtro_clase; ?>" onclick="verTarea(<?php echo $t['cod_tarea']; ?>)">
+                <div class="task-card filter-<?php echo $filtro_clase; ?>" data-id="<?php echo $t['cod_tarea']; ?>" data-texto="<?php echo strtolower(htmlspecialchars($t['nombre_tarea'].' '.$t['descripcion_tarea'])); ?>" onclick="verTarea(<?php echo $t['cod_tarea']; ?>)">
                     <div style="display:flex; justify-content:space-between; margin-bottom:0.8rem;">
                         <span class="task-tag <?php echo $clase_tipo; ?>"><i class="fa-solid fa-tag"></i> <?php echo $t['nombre_tipo_tarea']; ?></span>
                         <span class="task-priority <?php echo $clase_prio; ?>" title="Prioridad: <?php echo $t['nombre_prioridad_tarea']; ?>"><i class="fa-solid fa-flag"></i></span>
@@ -220,9 +225,22 @@ body { background-color: var(--bg-dark); color: white; font-family: 'Inter', san
                         <div class="badge-user-assoc"><i class="fa-solid fa-arrow-left"></i> <span>De: <b><?php echo ucwords(strtolower($nom_crea)); ?></b></span></div>
                     <?php } ?>
 
+                    <?php if($t['story_points_tarea'] > 0 || ($t['fecha_entrega_tarea'] && $t['fecha_entrega_tarea'] != '0000-00-00 00:00:00')) { ?>
+                    <div style="display:flex; gap: 0.5rem; margin-top: 0.5rem;">
+                        <?php if($t['story_points_tarea'] > 0) { ?><span style="font-size:0.65rem; background:rgba(255,255,255,0.1); padding:0.2rem 0.4rem; border-radius:4px;"><i class="fa-solid fa-star" style="color:#facc15;"></i> <?php echo $t['story_points_tarea']; ?> SP</span><?php } ?>
+                        <?php 
+                        if($t['fecha_entrega_tarea'] && $t['fecha_entrega_tarea'] != '0000-00-00 00:00:00') {
+                            $is_late = (strtotime($t['fecha_entrega_tarea']) < time() && $estado != 'TERMINADO');
+                            $color_date = $is_late ? '#ef4444' : 'rgba(255,255,255,0.5)';
+                        ?>
+                        <span style="font-size:0.65rem; color:<?php echo $color_date; ?>;"><i class="fa-solid fa-hourglass-end"></i> <?php echo date('d M', strtotime($t['fecha_entrega_tarea'])); ?></span>
+                        <?php } ?>
+                    </div>
+                    <?php } ?>
+                    
                     <div class="task-footer">
-                        <span style="font-size:0.7rem; color:rgba(255,255,255,0.5);"><i class="fa-solid fa-calendar"></i> <?php echo date('d M', strtotime($t['fecha_creacion'])); ?></span>
-                        <button onclick="event.stopPropagation(); moverTarea(<?php echo $t['cod_tarea']; ?>, '<?php echo $t['nombre_estado_tarea']; ?>')" style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; border-radius:8px; padding:0.3rem 0.6rem; font-size:0.7rem; cursor:pointer;"><i class="fa-solid fa-arrow-right"></i> Mover</button>
+                        <span style="font-size:0.7rem; color:rgba(255,255,255,0.5);"><i class="fa-solid fa-calendar-plus"></i> <?php echo date('d M', strtotime($t['fecha_creacion'])); ?></span>
+                        <button style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; border-radius:8px; padding:0.3rem 0.6rem; font-size:0.7rem; cursor:pointer;" onclick="event.stopPropagation(); moverTarea(<?php echo $t['cod_tarea']; ?>,'<?php echo $t['nombre_estado_tarea']; ?>')">Mover <i class="fa-solid fa-person-walking-arrow-right"></i></button>
                     </div>
                 </div>
                 <?php } } ?>
@@ -260,6 +278,20 @@ body { background-color: var(--bg-dark); color: white; font-family: 'Inter', san
                         <option value="BUG">Bug</option>
                         <option value="EPICA">Épica</option>
                     </select>
+                </div>
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Story Points</label>
+                        <input type="number" class="form-input" id="tarea_puntos" placeholder="0" min="0">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label">Fecha Límite</label>
+                        <input type="date" class="form-input" id="tarea_fecha_entrega">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Criterios de Aceptación</label>
+                    <textarea class="form-textarea" id="tarea_criterios" placeholder="Criterios para considerar terminada la tarea..."></textarea>
                 </div>
                 <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                     <div class="form-group" style="margin: 0;">
@@ -324,17 +356,87 @@ body { background-color: var(--bg-dark); color: white; font-family: 'Inter', san
     </div>
 </div>
 
+<!-- Modal Vista Detalles Tarea -->
+<div class="modal-overlay" id="modalDetalleTarea">
+    <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-ticket"></i> Detalles de la Tarea</h2>
+            <button type="button" class="modal-close" onclick="cerrarModalDetalle()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+            <h3 id="det_titulo" style="color:var(--theme-color); margin-top:0;"></h3>
+            <div style="display:flex; gap:10px; margin-bottom:15px;" id="det_badges"></div>
+            
+            <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px; margin-bottom:1rem;">
+                <h4 style="margin:0 0 10px 0; font-size:0.9rem; color:#818cf8;">Descripción</h4>
+                <div id="det_desc" style="font-size:0.85rem; color:#ccc;"></div>
+            </div>
+            
+            <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px; margin-bottom:1rem;">
+                <h4 style="margin:0 0 10px 0; font-size:0.9rem; color:#818cf8;">Criterios de Aceptación</h4>
+                <div id="det_criterios" style="font-size:0.85rem; color:#ccc;"></div>
+            </div>
+            
+            <hr style="border-color:rgba(255,255,255,0.1); margin: 15px 0;">
+            <h4 style="margin:0 0 10px 0; font-size:0.9rem;"><i class="fa-regular fa-comments"></i> Bitácora / Comentarios</h4>
+            
+            <div id="det_comentarios" style="max-height: 200px; overflow-y:auto; margin-bottom:1rem; display:flex; flex-direction:column; gap:10px;">
+            </div>
+            
+            <form id="formComentario" onsubmit="guardarComentario(event)">
+                <input type="hidden" id="com_cod_tarea" value="">
+                <textarea class="form-textarea" id="com_texto" placeholder="Escribe un comentario..." required style="min-height: 60px;"></textarea>
+                <button type="submit" class="btn-submit" style="padding:0.7rem; font-size:0.9rem;"><i class="fa-solid fa-paper-plane"></i> Enviar Comentario</button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Bottom Menu -->
 <?php include_once("../menu/05_modulo_menu_coordinador_movil.php"); ?>
 
 <script>
 // Funcionalidad espejo para UI
+var currentFiltroTipo = 'mis_tareas';
+
 $(document).ready(function() {
     $('#tarea_asignado').select2({
         dropdownParent: $('#modalNuevaTarea'),
         placeholder: "Buscar usuario...",
         width: '100%'
     });
+    
+    // SortableJS initialization
+    document.querySelectorAll('.sortable-list').forEach(function(list) {
+        new Sortable(list, {
+            group: 'kanban', // set both lists to same group
+            animation: 150,
+            onEnd: function (evt) {
+                var itemEl = evt.item;  // dragged HTMLElement
+                var toList = evt.to;    // target list
+                var nuevoEstado = toList.getAttribute('data-estado');
+                
+                // Get all items in the target column to sort them
+                var orden = [];
+                toList.querySelectorAll('.task-card').forEach(function(card) {
+                    if(card.style.display !== 'none') {
+                        orden.push(card.getAttribute('data-id'));
+                    }
+                });
+                
+                // Update via AJAX
+                $.ajax({
+                    url: 'actualizar_orden_estado_tarea_ajax.php',
+                    type: 'POST',
+                    data: { estado: nuevoEstado, orden: orden },
+                    success: function(res) {
+                        actualizarContadoresYWIP();
+                    }
+                });
+            },
+        });
+    });
+
     // Correr filtro inicial de Mis Tareas
     filtrarTareas('mis_tareas', document.querySelector('.tab-btn.active'));
 });
@@ -344,22 +446,54 @@ function filtrarTareas(tipo, btn) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     }
+    currentFiltroTipo = tipo;
+    ejecutarFiltros();
+}
+
+function ejecutarFiltros() {
+    let searchTxt = document.getElementById('buscadorTareas') ? document.getElementById('buscadorTareas').value.toLowerCase() : '';
     
     document.querySelectorAll('.task-card').forEach(card => {
-        if (card.classList.contains('filter-' + tipo)) {
+        let matchTab = card.classList.contains('filter-' + currentFiltroTipo);
+        let matchText = true;
+        
+        if(searchTxt.length > 0) {
+            let cardText = card.getAttribute('data-texto') || '';
+            if(cardText.indexOf(searchTxt) === -1) matchText = false;
+        }
+        
+        if (matchTab && matchText) {
             card.style.display = 'block';
         } else {
             card.style.display = 'none';
         }
     });
+    
+    actualizarContadoresYWIP();
+}
 
-    // Actualizar contadores por columna
+function actualizarContadoresYWIP() {
     document.querySelectorAll('.kanban-column').forEach(col => {
         let count = 0;
         col.querySelectorAll('.task-card').forEach(card => {
             if (card.style.display === 'block') count++;
         });
         col.querySelector('.column-badge').innerText = count;
+        
+        // Alerta Limite WIP en EN PROGRESO (ej. Max 3)
+        if(col.getAttribute('data-estado') === 'EN PROGRESO') {
+            if(count > 3) {
+                col.style.borderColor = '#ef4444';
+                col.style.boxShadow = '0 0 10px rgba(239,68,68,0.3)';
+                col.querySelector('.column-badge').style.color = 'white';
+                col.querySelector('.column-badge').style.background = '#ef4444';
+            } else {
+                col.style.borderColor = '';
+                col.style.boxShadow = '';
+                col.querySelector('.column-badge').style.color = '';
+                col.querySelector('.column-badge').style.background = '';
+            }
+        }
     });
 }
 
@@ -392,10 +526,14 @@ function guardarTarea(event) {
     const asignado = document.getElementById('tarea_asignado').value;
     const prio = document.getElementById('tarea_prio').value;
 
+    const puntos = document.getElementById('tarea_puntos').value;
+    const entrega = document.getElementById('tarea_fecha_entrega').value;
+    const criterios = document.getElementById('tarea_criterios').value;
+
     Swal.fire({title: 'Guardando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
     
     $.ajax({
-        type: 'POST', url: 'guardar_tarea_ajax_reg.php', data: { titulo: titulo, descripcion: desc, tipo: tipo, tipo_asignacion: asignacion, asignado: asignado, prioridad: prio }, dataType: 'json',
+        type: 'POST', url: 'guardar_tarea_ajax_reg.php', data: { titulo: titulo, descripcion: desc, tipo: tipo, tipo_asignacion: asignacion, asignado: asignado, prioridad: prio, puntos: puntos, fecha_entrega: entrega, criterios: criterios }, dataType: 'json',
         success: function(response){
             if(response.afectado === 'SI'){
                 cerrarModalNuevaTarea();
@@ -447,6 +585,61 @@ function guardarEstadoTarea(event) {
         },
         error: function(err){
             Swal.fire('Error', 'Hubo un error de conexión con el servidor.', 'error');
+        }
+    });
+}
+
+function cerrarModalDetalle() {
+    document.getElementById('modalDetalleTarea').classList.remove('show');
+}
+
+function verTarea(cod_tarea) {
+    Swal.fire({title: 'Cargando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+    $.ajax({
+        type: 'POST', url: 'get_detalle_tarea_ajax.php', data: { cod_tarea: cod_tarea }, dataType: 'json',
+        success: function(r){
+            Swal.close();
+            if(r.encontrado === 'SI'){
+                document.getElementById('det_titulo').innerText = r.tarea.nombre_tarea;
+                document.getElementById('det_desc').innerText = r.tarea.descripcion_tarea || 'Sin descripción';
+                document.getElementById('det_criterios').innerText = r.tarea.criterios_aceptacion_tarea || 'Sin criterios definidos';
+                
+                let b_html = `<span class="task-tag" style="background:rgba(255,255,255,0.1);">${r.tarea.nombre_estado_tarea}</span>`;
+                if(r.tarea.story_points_tarea > 0) b_html += `<span class="task-tag" style="background:rgba(255,255,255,0.1); color:#facc15;"><i class="fa-solid fa-star"></i> ${r.tarea.story_points_tarea} SP</span>`;
+                document.getElementById('det_badges').innerHTML = b_html;
+                
+                let c_html = '';
+                r.comentarios.forEach(c => {
+                    c_html += `<div style="background:rgba(0,0,0,0.2); padding:0.8rem; border-radius:8px;">
+                        <strong style="color:var(--theme-color); font-size:0.8rem;">${c.autor}</strong>
+                        <span style="font-size:0.7rem; color:gray; float:right;">${c.fecha_creacion}</span>
+                        <div style="font-size:0.85rem; margin-top:5px;">${c.comentario_texto}</div>
+                    </div>`;
+                });
+                if(c_html === '') c_html = '<span style="font-size:0.8rem; color:gray;">No hay comentarios.</span>';
+                document.getElementById('det_comentarios').innerHTML = c_html;
+                document.getElementById('com_cod_tarea').value = cod_tarea;
+                
+                document.getElementById('modalDetalleTarea').classList.add('show');
+            }
+        }
+    });
+}
+
+function guardarComentario(e) {
+    e.preventDefault();
+    const cod = document.getElementById('com_cod_tarea').value;
+    const txt = document.getElementById('com_texto').value;
+    Swal.fire({title: 'Guardando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+    $.ajax({
+        type: 'POST', url: 'guardar_comentario_tarea_ajax_reg.php', data: { cod_tarea: cod, comentario: txt }, dataType: 'json',
+        success: function(r){
+            if(r.afectado === 'SI'){
+                document.getElementById('com_texto').value = '';
+                verTarea(cod); // recargar para ver comentario
+            } else {
+                Swal.fire('Error', r.mensaje, 'error');
+            }
         }
     });
 }

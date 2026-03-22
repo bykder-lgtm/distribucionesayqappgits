@@ -7,7 +7,6 @@ include ("../session/funciones_admin.php");
 if (verificar_usuario()){ } else { header("Location:../index.php"); exit; }
 
 $cuenta_actual                 = DAXCRYPTOR::descriptardax($_SESSION['usuario_cryp']);
-
 // Obtener quien lo esta creando
 $sql_user = "SELECT cod_administrador FROM tbl15_administrador WHERE cuenta = '$cuenta_actual' AND cod_estado != '0'";
 $res_user = mysqli_query($conectar, $sql_user);
@@ -23,6 +22,19 @@ if(isset($_POST['titulo'])) {
     $nombre_tipo_tarea              = isset($_POST['tipo']) ? strtoupper(trim(addslashes($_POST['tipo']))) : 'TAREA';
     $nombre_prioridad_tarea         = isset($_POST['prioridad']) ? strtoupper(trim(addslashes($_POST['prioridad']))) : 'MEDIA';
     $nombre_tipo_asignacion_tarea   = isset($_POST['tipo_asignacion']) ? strtoupper(trim(addslashes($_POST['tipo_asignacion']))) : 'PROPIA';
+    
+    $criterios_aceptacion_tarea     = isset($_POST['criterios']) ? trim(addslashes($_POST['criterios'])) : '';
+    $story_points_tarea             = isset($_POST['puntos']) ? intval($_POST['puntos']) : 0;
+    
+    $fecha_entrega_raw              = isset($_POST['fecha_entrega']) ? trim($_POST['fecha_entrega']) : '';
+    if ($fecha_entrega_raw != '') {
+        $fecha_entrega_tarea = date("Y-m-d H:i:s", strtotime($fecha_entrega_raw));
+    } else {
+        $fecha_entrega_tarea = date("Y-m-d 23:59:59", strtotime('+7 days')); // default a una semana
+    }
+    
+    $fecha_finalizacion_tarea       = "0000-00-00 00:00:00";
+    $orden_tarea                    = 0;
     
     // Obtener asignado segun tipo de asignacion
     if ($nombre_tipo_asignacion_tarea == 'EXTERNO' && isset($_POST['asignado']) && $_POST['asignado'] != '') {
@@ -47,12 +59,11 @@ if(isset($_POST['titulo'])) {
     if($nombre_tarea != '') {
         
         $sql_insert = "INSERT INTO tbl15_tarea (nombre_tarea, descripcion_tarea, nombre_estado_tarea, nombre_tipo_tarea, nombre_prioridad_tarea, 
-        nombre_tipo_asignacion_tarea, cod_estado_tarea, cod_tipo_tarea, cod_prioridad_tarea, cod_administrador_asignado, cod_administrador_creador, 
+        nombre_tipo_asignacion_tarea, criterios_aceptacion_tarea, story_points_tarea, orden_tarea, fecha_entrega_tarea, fecha_finalizacion_tarea, cod_estado_tarea, cod_tipo_tarea, cod_prioridad_tarea, cod_administrador_asignado, cod_administrador_creador, 
         fecha_creacion, fecha_modificacion $cod_estado_str) 
         VALUES ('$nombre_tarea', '$descripcion_tarea', '$nombre_estado_tarea', '$nombre_tipo_tarea', '$nombre_prioridad_tarea', 
-        '$nombre_tipo_asignacion_tarea', '$cod_estado_tarea', '$cod_tipo_tarea', '$cod_prioridad_tarea', '$cod_administrador_asignado', '$cod_administrador_creador', 
+        '$nombre_tipo_asignacion_tarea', '$criterios_aceptacion_tarea', '$story_points_tarea', '$orden_tarea', '$fecha_entrega_tarea', '$fecha_finalizacion_tarea', '$cod_estado_tarea', '$cod_tipo_tarea', '$cod_prioridad_tarea', '$cod_administrador_asignado', '$cod_administrador_creador', 
         '$fecha_creacion', '$fecha_modificacion' $val_estado_str)";
-
         $resultado = mysqli_query($conectar, $sql_insert);
         
         if($resultado) {
