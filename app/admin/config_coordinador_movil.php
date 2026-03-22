@@ -345,6 +345,17 @@ $total_notificaciones                                           = isset($datos_n
                 </div>
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>
+
+            <a href="lista_tarea_coordinador_movil.php" class="menu-item">
+                <div class="menu-item-icon purple">
+                    <i class="fa-solid fa-code-branch"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Mis Tareas (Scrum)</div>
+                    <div class="menu-item-desc">Tablero ágil y Kanban</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
             
             <a href="lista_tienda_coordinador_movil.php" class="menu-item">
                 <div class="menu-item-icon blue">

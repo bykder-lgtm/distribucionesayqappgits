@@ -345,7 +345,17 @@ $total_notificaciones = isset($datos_notif['total']) ? $datos_notif['total'] : 0
                 <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
             </a>
 
-            <a href="directorio_global_lider_movil.php" class="menu-item">
+            <a href="lista_tarea_lider_movil.php" class="menu-item">
+                <div class="menu-item-icon orange">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div class="menu-item-content">
+                    <div class="menu-item-title">Mis Tareas (Scrum)</div>
+                    <div class="menu-item-desc">Tablero ágil y Kanban</div>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-item-arrow"></i>
+            </a>
+              <a href="directorio_global_lider_movil.php" class="menu-item">
                 <div class="menu-item-icon blue">
                     <i class="fa-solid fa-users"></i>
                 </div>
