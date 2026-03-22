@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set("America/Bogota");
 $conexion_servidor3              = "localhost";
 $base_datos3                     = "distribucionesayqapp";
 $conexion_usuario3               = "dataeditaxe";
