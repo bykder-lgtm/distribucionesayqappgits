@@ -595,6 +595,10 @@ $res_lideres = mysqli_query($conectar, $sql_lideres);
 // Consulta de aliados para asignar vendedores
 $sql_aliados = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_seguridad = '23' AND cod_estado_activacion_usuario = '1' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_aliados = mysqli_query($conectar, $sql_aliados);
+
+// Consulta de tipos de vendedor
+$sql_tipo_vendedor = "SELECT codigo_tipo_vendedor, nombre_tipo_vendedor FROM tbl15_tipo_vendedor WHERE cod_estado = '1' ORDER BY codigo_tipo_vendedor ASC";
+$res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
 ?>
 
     <!-- Header -->
@@ -785,8 +789,13 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                     <div style="grid-column: 1 / -1;">
                         <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Tipo Vendedor *</label>
                         <select name="codigo_tipo_vendedor" id="codigo_tipo_vendedor" class="form-input" required style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
-                            <option value="0" style="color: black;">NORMAL (Planta)</option>
-                            <option value="1" style="color: black;">FREELANCER</option>
+                            <option value="" style="color: black;">Seleccionar...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_vendedor, 0);
+                            while ($tv = mysqli_fetch_assoc($res_tipo_vendedor)): 
+                            ?>
+                            <option value="<?php echo $tv['codigo_tipo_vendedor']; ?>" style="color: black;"><?php echo $tv['nombre_tipo_vendedor']; ?></option>
+                            <?php endwhile; ?>
                         </select>
                     </div>
 
@@ -868,8 +877,13 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                     <div style="grid-column: 1 / -1;">
                         <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Tipo Vendedor *</label>
                         <select name="codigo_tipo_vendedor_edit" id="codigo_tipo_vendedor_edit" class="form-input" required style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
-                            <option value="0" style="color: black;">NORMAL (Planta)</option>
-                            <option value="1" style="color: black;">FREELANCER</option>
+                            <option value="" style="color: black;">Seleccionar...</option>
+                            <?php 
+                            mysqli_data_seek($res_tipo_vendedor, 0);
+                            while ($tv = mysqli_fetch_assoc($res_tipo_vendedor)): 
+                            ?>
+                            <option value="<?php echo $tv['codigo_tipo_vendedor']; ?>" style="color: black;"><?php echo $tv['nombre_tipo_vendedor']; ?></option>
+                            <?php endwhile; ?>
                         </select>
                     </div>
 

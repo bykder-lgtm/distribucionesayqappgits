@@ -333,6 +333,10 @@ if ($resultado) {
 // Aliados para el registro
 $sql_aliados = "SELECT cod_administrador, nombres_apellidos_tercero FROM tbl15_administrador WHERE cod_coordinador = '$cod_administrador' AND cod_seguridad = '23' AND cod_estado != '0' ORDER BY nombres_apellidos_tercero ASC";
 $res_aliados = mysqli_query($conectar, $sql_aliados);
+
+// Tipos de vendedor
+$sql_tipo_vendedor = "SELECT codigo_tipo_vendedor, nombre_tipo_vendedor FROM tbl15_tipo_vendedor WHERE cod_estado = '1' ORDER BY codigo_tipo_vendedor ASC";
+$res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
 ?>
 
 <?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
@@ -438,8 +442,13 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                 <div class="form-group">
                     <label class="form-label">Tipo Vendedor *</label>
                     <select class="form-select" name="codigo_tipo_vendedor" id="modal_codigo_tipo_vendedor" required>
-                        <option value="0">NORMAL (Planta)</option>
-                        <option value="1">FREELANCER</option>
+                        <option value="">Seleccionar...</option>
+                        <?php 
+                        mysqli_data_seek($res_tipo_vendedor, 0);
+                        while ($tv = mysqli_fetch_assoc($res_tipo_vendedor)): 
+                        ?>
+                        <option value="<?php echo $tv['codigo_tipo_vendedor']; ?>"><?php echo $tv['nombre_tipo_vendedor']; ?></option>
+                        <?php endwhile; ?>
                     </select>
                 </div>
 
