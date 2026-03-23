@@ -568,7 +568,7 @@ $total_registros_global = $fila_conteo['total'];
 $total_paginas = ceil($total_registros_global / $registros_por_pagina);
 
 // Consulta de vendedores (cod_seguridad = '25' para vendedores)
-$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.cod_tienda, a.cod_aliado_estrategico,
+$sql = "SELECT a.cod_administrador, a.cedula, a.nombres, a.apellidos, a.cuenta, a.correo, a.telefono, a.nombres_apellidos_tercero, a.cod_estado_activacion_usuario, a.fecha_creacion, a.codigo_tipo_vendedor, a.cod_tienda, a.cod_aliado_estrategico,
 (SELECT nombre_tienda FROM tbl15_tienda WHERE cod_tienda = a.cod_tienda) as nombre_tienda
 FROM tbl15_administrador a INNER JOIN tbl15_tienda t ON a.cod_tienda = t.cod_tienda
 WHERE a.cod_seguridad = '2' AND a.cod_estado != '0' AND a.cod_estado_activacion_usuario != '3' AND t.cod_estado != '0'";
@@ -782,6 +782,14 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                         </select>
                     </div>
 
+                    <div style="grid-column: 1 / -1;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Tipo Vendedor *</label>
+                        <select name="codigo_tipo_vendedor" id="codigo_tipo_vendedor" class="form-input" required style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                            <option value="0" style="color: black;">NORMAL (Planta)</option>
+                            <option value="1" style="color: black;">FREELANCER</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <div style="margin-top: 1.5rem;">
@@ -857,6 +865,14 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                         </select>
                     </div>
 
+                    <div style="grid-column: 1 / -1;">
+                        <label style="color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">Tipo Vendedor *</label>
+                        <select name="codigo_tipo_vendedor_edit" id="codigo_tipo_vendedor_edit" class="form-input" required style="width: 100%; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); color: white; padding: 0.75rem; border-radius: 12px; font-size: 0.9rem;">
+                            <option value="0" style="color: black;">NORMAL (Planta)</option>
+                            <option value="1" style="color: black;">FREELANCER</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <div style="margin-top: 1.5rem;">
@@ -913,6 +929,7 @@ function abrirModalEditar(datos) {
     document.getElementById('telefono1_edit').value = datos.telefono;
     document.getElementById('cod_aliado_edit').value = datos.cod_aliado_estrategico;
     document.getElementById('cod_lider_edit').value = datos.cod_lider;
+    document.getElementById('codigo_tipo_vendedor_edit').value = datos.codigo_tipo_vendedor || 0;
     
     document.getElementById('modalEditarAsesor').style.display = 'flex';
 }

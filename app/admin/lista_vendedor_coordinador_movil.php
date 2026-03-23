@@ -304,7 +304,7 @@ $filtro_estado = isset($_GET['filtro_estado']) ? mysqli_real_escape_string($cone
 // Consulta de vendedores asignados a los aliados de este coordinador
 $sql = "SELECT v.cod_administrador, v.cedula, v.nombres, v.apellidos, v.cuenta, v.correo, v.telefono,
 v.nombres_apellidos_tercero, v.cod_estado_activacion_usuario, v.identificacion_tercero, v.nombre1_tercero, v.apellido1_tercero, v.telefono1_tercero, v.correo_tercero,
-v.direccion_tercero, v.cod_vendedor, v.cod_aliado_estrategico, v.fecha, v.fecha_hora, t.nombre_tienda, t.cod_tienda,
+v.direccion_tercero, v.cod_vendedor, v.cod_aliado_estrategico, v.fecha, v.fecha_hora, v.codigo_tipo_vendedor, t.nombre_tienda, t.cod_tienda,
 a.nombres_apellidos_tercero AS nombre_aliado 
 FROM tbl15_administrador v 
 INNER JOIN tbl15_tienda t ON v.cod_vendedor = t.cod_tienda 
@@ -435,6 +435,14 @@ $res_aliados = mysqli_query($conectar, $sql_aliados);
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label">Tipo Vendedor *</label>
+                    <select class="form-select" name="codigo_tipo_vendedor" id="modal_codigo_tipo_vendedor" required>
+                        <option value="0">NORMAL (Planta)</option>
+                        <option value="1">FREELANCER</option>
+                    </select>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Identificación *</label>
@@ -493,6 +501,7 @@ function abrirModalRegistro() {
     document.getElementById('btnSubmit').textContent = 'Registrar Vendedor';
     document.getElementById('formVendedor').reset();
     document.getElementById('cod_administrador_edit').value = '';
+    document.getElementById('modal_codigo_tipo_vendedor').value = '0';
     document.getElementById('group_estado').style.display = 'none';
     document.getElementById('modalVendedor').classList.add('show');
 }
@@ -512,6 +521,7 @@ function editarVendedor(data) {
     document.getElementById('modal_apellidos').value = data.apellido1_tercero;
     document.getElementById('modal_correo').value = data.correo_tercero;
     document.getElementById('modal_estado').value = data.cod_estado_activacion_usuario;
+    document.getElementById('modal_codigo_tipo_vendedor').value = data.codigo_tipo_vendedor || 0;
     document.getElementById('group_estado').style.display = 'block';
     
     document.getElementById('modalVendedor').classList.add('show');
