@@ -40,7 +40,7 @@ body {
 .page-container {
     padding: 1rem;
     padding-bottom: 100px;
-    max-width: 600px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -435,6 +435,7 @@ $total_notificaciones                                           = isset($datos_n
     </div>
 
     <!-- Menu Vistas -->
+<!--
     <div class="menu-section animate-in delay-3">
         <div class="menu-section-title">Cambiar Vista</div>
         <div class="menu-list">
@@ -450,7 +451,7 @@ $total_notificaciones                                           = isset($datos_n
             </a>
         </div>
     </div>
-
+-->
     <!-- Menu Sesión -->
     <div class="menu-section animate-in delay-3">
         <div class="menu-section-title">Sesión</div>
