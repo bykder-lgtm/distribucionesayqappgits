@@ -21,6 +21,7 @@ try {
     $apellido1_tercero_post                                             = isset($_POST['apellido1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['apellido1_tercero'])) : '';
     $telefono1_tercero                                                  = isset($_POST['telefono1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['telefono1_tercero'])) : '';
     $correo_tercero                                                     = isset($_POST['correo_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['correo_tercero'])) : '';
+    $codigo_tipo_vendedor                                               = isset($_POST['codigo_tipo_vendedor']) ? intval($_POST['codigo_tipo_vendedor']) : 0;
     // Validar campos requeridos
     if ($cod_tienda <= 0) { echo json_encode(array('success' => false, 'message' => 'Código de tienda inválido', 'mensaje' => 'Código de tienda inválido')); exit; }
     if (empty($identificacion_tercero)) { echo json_encode(array('success' => false, 'message' => 'La identificación es obligatoria', 'mensaje' => 'La identificación es obligatoria')); exit; }
@@ -97,12 +98,12 @@ try {
     nombres_apellidos_tercero, cod_tipo_tercero, nombre_tipo_tercero, nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, nombre_tipo_identificacion,
     cod_seguridad, cod_estado_activacion_usuario, fecha, fecha_hora, creador, cedula, nombres, apellidos, 
     correo, telefono, cuenta, contrasena, cod_vendedor, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, 
-    cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico, cod_estado) 
+    cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico, cod_estado, codigo_tipo_vendedor) 
     VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero',
     UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$nombre_tipo_identificacion',
     '$cod_seguridad', '$cod_estado_activacion_usuario', '$fecha', '$fecha_hora', '$cuenta_actual', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'),
     '$correo_tercero', '$telefono1_tercero', '$cuenta', '$contrasena', '$cod_tienda', '$url_pag_redirec_ini_sesion', '$cod_caja_virtual', '$cod_caja', '$nombre_maquina',
-    '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico', '1')";
+    '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico', '1', '$codigo_tipo_vendedor')";
     if (mysqli_query($conectar, $sql_insert)) {
         $cod_administrador_insertado = mysqli_insert_id($conectar);
         $msg = 'Vendedor registrado correctamente. Credenciales: Usuario: ' . $cuenta . ' / Contraseña: ' . $identificacion_tercero;

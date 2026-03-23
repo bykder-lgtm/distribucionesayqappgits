@@ -997,14 +997,14 @@ function editarVendedor(e) {
 }
 
 // AJAX Registration
-function registrarAsesor(e) {
+function registrarVendedor(e) {
     e.preventDefault();
     
-    const form = document.getElementById('formRegistroAsesor');
+    const form = document.getElementById('formRegistroVendedor');
     const formData = new FormData(form);
 
     Swal.fire({
-        title: 'Registrando Asesor...',
+        title: 'Registrando Vendedor...',
         text: 'Por favor espere',
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); },

@@ -1235,6 +1235,10 @@ $res_tipo_aliado = mysqli_query($conectar, $sql_tipo_aliado);
 
 $sql_cat_prod = "SELECT cod_categoria, nombre_categoria FROM tbl15_categoria WHERE cod_estado = '1' ORDER BY nombre_categoria ASC";
 $res_cat_prod = mysqli_query($conectar, $sql_cat_prod);
+
+// Tipos de vendedor
+$sql_tipo_vendedor = "SELECT codigo_tipo_vendedor, nombre_tipo_vendedor FROM tbl15_tipo_vendedor WHERE cod_estado = '1' ORDER BY codigo_tipo_vendedor ASC";
+$res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
 ?>
 <main class="page-container">
     <!-- Header -->
@@ -3763,6 +3767,22 @@ function enviarPorCorreo() {
                 </div>
 
                 <div class="form-row">
+                    <div class="form-group" style="width: 100%;">
+                        <label class="form-label">Tipo de Vendedor *</label>
+                        <select class="form-select" name="codigo_tipo_vendedor" id="vend_tipo" required>
+                            <option value="">Seleccionar...</option>
+                            <?php 
+                            if(isset($res_tipo_vendedor)) {
+                                mysqli_data_seek($res_tipo_vendedor, 0);
+                                while ($tv = mysqli_fetch_assoc($res_tipo_vendedor)): 
+                            ?>
+                            <option value="<?php echo $tv['codigo_tipo_vendedor']; ?>"><?php echo $tv['nombre_tipo_vendedor']; ?></option>
+                            <?php endwhile; } ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
                     <div class="form-group">
                         <label class="form-label">Identificación (CC) *</label>
                         <input type="text" class="form-input" id="vend_identificacion" name="identificacion_tercero" placeholder="Cédula de ciudadanía" required>
@@ -5065,9 +5085,24 @@ function archivarTienda(codTienda, nombre) {
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label class="form-label">Correo *</label>
-                    <input type="email" class="form-input" name="correo_tercero" id="vendedor_correo" placeholder="correo@email.com" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Correo *</label>
+                        <input type="email" class="form-input" name="correo_tercero" id="vendedor_correo" placeholder="correo@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo de Vendedor *</label>
+                        <select class="form-select" name="codigo_tipo_vendedor" id="vendedor_tipo" required>
+                            <option value="">Seleccionar...</option>
+                            <?php 
+                            if(isset($res_tipo_vendedor)) {
+                                mysqli_data_seek($res_tipo_vendedor, 0);
+                                while ($tv = mysqli_fetch_assoc($res_tipo_vendedor)): 
+                            ?>
+                            <option value="<?php echo $tv['codigo_tipo_vendedor']; ?>"><?php echo $tv['nombre_tipo_vendedor']; ?></option>
+                            <?php endwhile; } ?>
+                        </select>
+                    </div>
                 </div>
                 
                 <button type="button" class="reg-submit-btn vendedor-theme" onclick="ejecutarRegistroVendedor()"><i class="fa-solid fa-user-plus"></i> Registrar Vendedor</button>
