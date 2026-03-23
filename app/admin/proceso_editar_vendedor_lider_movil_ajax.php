@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correo                 = isset($_POST['correo_edit']) ? trim(addslashes($_POST['correo_edit'])) : '';
     $telefono               = isset($_POST['telefono1_edit']) ? trim(addslashes($_POST['telefono1_edit'])) : '';
     $cod_aliado_edit        = isset($_POST['cod_aliado_edit']) ? intval($_POST['cod_aliado_edit']) : 0;
+    $codigo_tipo_vendedor_edit = isset($_POST['codigo_tipo_vendedor_edit']) ? intval($_POST['codigo_tipo_vendedor_edit']) : 0;
     // Validar campos obligatorios
     if (empty($cod_administrador_edit) || empty($cedula) || empty($nombres) || empty($apellidos) || empty($correo) || empty($telefono) || empty($cod_aliado_edit)) { echo json_encode(['status' => 'error', 'message' => 'Por favor complete todos los campos obligatorios.']); exit; }
     // Obtener información del aliado para asignar jerarquía
@@ -27,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Preparar nombres completos
     $nombres_apellidos_tercero = trim("$nombres $apellidos");
     // Actualizar Vendedor
-    $sql_update = "UPDATE tbl15_administrador SET cedula = '$cedula', identificacion_tercero = '$cedula', nombres = UPPER('$nombres'), apellidos = UPPER('$apellidos'),
+    $sql_update = "UPDATE tbl15_administrador SET codigo_tipo_vendedor = '$codigo_tipo_vendedor_edit', cedula = '$cedula', identificacion_tercero = '$cedula', nombres = UPPER('$nombres'), apellidos = UPPER('$apellidos'),
     nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'), correo = '$correo', correo_tercero = '$correo',  telefono = '$telefono', telefono1_tercero = '$telefono', 
     cod_aliado_estrategico = '$cod_aliado_edit', cod_asesor = '$cod_asesor', cod_coordinador = '$cod_coordinador', cod_lider = '$cod_lider'
     WHERE cod_administrador = '$cod_administrador_edit' AND cod_seguridad = '2'";

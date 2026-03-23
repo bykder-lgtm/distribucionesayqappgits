@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefono                                                           = isset($_POST['telefono1_tercero']) ? trim(addslashes($_POST['telefono1_tercero'])) : '';
     $sexo                                                               = isset($_POST['nombre_sexo']) ? trim(addslashes($_POST['nombre_sexo'])) : 'O';
     $cod_aliado                                                         = isset($_POST['cod_aliado']) ? intval($_POST['cod_aliado']) : 0;
+    $codigo_tipo_vendedor                                               = isset($_POST['codigo_tipo_vendedor']) ? intval($_POST['codigo_tipo_vendedor']) : 0;
     $direccion                                                          = isset($_POST['direccion_tercero']) ? trim(addslashes($_POST['direccion_tercero'])) : '';
     $barrio                                                             = isset($_POST['barrio_tercero']) ? trim(addslashes($_POST['barrio_tercero'])) : '';
     $cod_departamento                                                   = isset($_POST['cod_departamento']) ? intval($_POST['cod_departamento']) : 0;
@@ -61,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cod_estado_activacion_usuario                                      = 1; // Activo por defecto para vendedores según requerimientos previos
     $url_pag_redirec_ini_sesion                                         = '../index.php';
     // Insertar Nuevo Vendedor
-    $sql_insert = "INSERT INTO tbl15_administrador (cedula, nombres, apellidos, nombre_sexo, cuenta, contrasena, correo, telefono, cod_seguridad, nombre_tipo_tercero, nombre_tipo_identificacion, identificacion_tercero, 
+    $sql_insert = "INSERT INTO tbl15_administrador (codigo_tipo_vendedor, cedula, nombres, apellidos, nombre_sexo, cuenta, contrasena, correo, telefono, cod_seguridad, nombre_tipo_tercero, nombre_tipo_identificacion, identificacion_tercero, 
     nombres_apellidos_tercero, digito_tercero, nombre1_tercero, nombre2_tercero, apellido1_tercero, apellido2_tercero, telefono1_tercero, correo_tercero, 
     nombre_tipo_cliente, nombre_tipo_regimen, nombre_tipo_impuesto, cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico,
     cod_estado_activacion_usuario, cod_estado, fecha_creacion, url_pag_redirec_ini_sesion, direccion_tercero, barrio_tercero, cod_departamento, cod_municipio) 
-    VALUES ('$identificacion', UPPER('$nombres'), UPPER('$apellidos'), '$sexo', '$cuenta', '$contrasena', '$correo', '$telefono', '$cod_seguridad', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', '$identificacion', 
+    VALUES ('$codigo_tipo_vendedor', '$identificacion', UPPER('$nombres'), UPPER('$apellidos'), '$sexo', '$cuenta', '$contrasena', '$correo', '$telefono', '$cod_seguridad', '$nombre_tipo_tercero', '$nombre_tipo_identificacion', '$identificacion', 
     UPPER('$nombres_apellidos_tercero'), '', UPPER('$nombre1'), UPPER('$nombre2'), UPPER('$apellido1'), UPPER('$apellido2'), '$telefono', '$correo', 
     '$nombre_tipo_cliente', '$nombre_tipo_regimen', '$nombre_tipo_impuesto', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado', 
     '$cod_estado_activacion_usuario', '1', '$fecha_creacion', '$url_pag_redirec_ini_sesion', UPPER('$direccion'), UPPER('$barrio'), '$cod_departamento', '$cod_municipio')";

@@ -18,6 +18,7 @@ try {
     // ==================== OBTENER DATOS DEL FORMULARIO ====================
     $cod_tienda                                                         = isset($_POST['cod_tienda']) ? intval($_POST['cod_tienda']) : 0;
     $cod_aliado_estrategico                                             = isset($_POST['cod_aliado_estrategico']) ? intval($_POST['cod_aliado_estrategico']) : 0;
+    $codigo_tipo_vendedor                                               = isset($_POST['codigo_tipo_vendedor']) ? intval($_POST['codigo_tipo_vendedor']) : 0;
     $identificacion_tercero                                             = isset($_POST['identificacion_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['identificacion_tercero'])) : '';
     $nombre1_tercero                                                    = isset($_POST['nombre1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['nombre1_tercero'])) : '';
     $apellido1_tercero                                                  = isset($_POST['apellido1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['apellido1_tercero'])) : '';
@@ -84,13 +85,13 @@ try {
     nombre_tipo_impuesto, nombre_tipo_identificacion, cod_seguridad, cod_estado_activacion_usuario, cod_estado, 
     fecha, fecha_hora, creador, cedula, nombres, apellidos, correo, telefono, cuenta, contrasena, 
     cod_vendedor, url_pag_redirec_ini_sesion, cod_caja_virtual, cod_caja, nombre_maquina, 
-    cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico, fecha_creacion) 
+    cod_lider, cod_coordinador, cod_asesor, cod_aliado_estrategico, fecha_creacion, codigo_tipo_vendedor) 
     VALUES ('$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), '$telefono1_tercero', '$correo_tercero', UPPER('$direccion_tercero'), UPPER('$barrio_tercero'), '$cod_departamento', '$cod_municipio',
     UPPER('$nombres_apellidos_tercero'), '$cod_tipo_tercero', '$nombre_tipo_tercero', '$nombre_tipo_cliente', '$nombre_tipo_regimen', 
     '$nombre_tipo_impuesto', '$nombre_tipo_identificacion', '$cod_seguridad', '$cod_estado_activacion_usuario', '1', 
     '$fecha', '$fecha_hora', '$cuenta_actual', '$identificacion_tercero', UPPER('$nombre1_tercero'), UPPER('$apellido1_tercero'), 
     '$correo_tercero', '$telefono1_tercero', '$cuenta', '$contrasena', '$cod_tienda', '$url_pag_redirec_ini_sesion', 
-    '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico', '".date('Y-m-d H:i:s')."')";
+    '$cod_caja_virtual', '$cod_caja', '$nombre_maquina', '$cod_lider', '$cod_coordinador', '$cod_asesor', '$cod_aliado_estrategico', '".date('Y-m-d H:i:s')."', '$codigo_tipo_vendedor')";
     if (mysqli_query($conectar, $sql_insert)) {
         $cod_administrador_insertado = mysqli_insert_id($conectar);
         echo json_encode(array('success' => true, 'message' => 'Vendedor registrado correctamente', 'cod_administrador' => $cod_administrador_insertado, 'nombre_completo' => strtoupper($nombres_apellidos_tercero), 'usuario' => $cuenta, 'contrasena_inicial' => $identificacion_tercero));

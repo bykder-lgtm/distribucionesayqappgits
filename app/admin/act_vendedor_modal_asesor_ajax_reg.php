@@ -12,6 +12,7 @@ $fecha_hora                                                         = date("H:i:
 try {
     // ==================== OBTENER DATOS DEL FORMULARIO ====================
     $cod_administrador                                                  = isset($_POST['cod_administrador']) ? intval($_POST['cod_administrador']) : 0;
+    $codigo_tipo_vendedor                                               = isset($_POST['codigo_tipo_vendedor']) ? intval($_POST['codigo_tipo_vendedor']) : 0;
     $identificacion_tercero                                             = isset($_POST['identificacion_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['identificacion_tercero'])) : '';
     $nombre1_tercero                                                    = isset($_POST['nombre1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['nombre1_tercero'])) : '';
     $apellido1_tercero                                                  = isset($_POST['apellido1_tercero']) ? mysqli_real_escape_string($conectar, trim($_POST['apellido1_tercero'])) : '';
@@ -36,7 +37,7 @@ try {
     if (!$result_verificar || mysqli_num_rows($result_verificar) == 0) { echo json_encode(array('success' => false, 'message' => 'El vendedor no existe o no es válido')); exit; }
     // ==================== ACTUALIZAR VENDEDOR ====================
     $sql_update = "UPDATE tbl15_administrador SET 
-        identificacion_tercero = '$identificacion_tercero', cedula = '$identificacion_tercero', nombre1_tercero = UPPER('$nombre1_tercero'), nombres = UPPER('$nombre1_tercero'),
+        codigo_tipo_vendedor = '$codigo_tipo_vendedor', identificacion_tercero = '$identificacion_tercero', cedula = '$identificacion_tercero', nombre1_tercero = UPPER('$nombre1_tercero'), nombres = UPPER('$nombre1_tercero'),
         apellido1_tercero = UPPER('$apellido1_tercero'), apellidos = UPPER('$apellido1_tercero'), nombres_apellidos_tercero = UPPER('$nombres_apellidos_tercero'),
         telefono1_tercero = '$telefono1_tercero', telefono = '$telefono1_tercero', correo_tercero = '$correo_tercero', correo = '$correo_tercero',
         direccion_tercero = UPPER('$direccion_tercero'), barrio_tercero = UPPER('$barrio_tercero'), 
