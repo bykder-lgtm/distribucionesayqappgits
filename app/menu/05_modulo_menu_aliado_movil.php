@@ -47,15 +47,9 @@ function esMenuActivo($paginas) {
     <a href="../admin/simulador_credito_aliado_movil_libre.php" id="simulador_credito" class="menu-item-modern <?php echo esMenuActivo('simulador_credito'); ?>">
       <div class="icon-container-menu"><i class="fa fa-calculator custom-icon-menu"></i><span class="menu-label">Simular</span></div>
     </a>
-<!--
-    <a href="#" id="registrar_cliente" onclick="obtener_datos_tercero_factura_venta_modal();" data-toggle="modal" data-target=".abrir_registrar_datos_tercero_factura_venta_movil_aliado_estrategico" class="menu-item-modern">
-      <div class="icon-container-menu"><i class="fa fa-user-plus custom-icon-menu"></i><span class="menu-label">Reg Cliente</span></div>
+    <a href="../admin/lista_promotora_aliado_movil.php" id="lista_promotora" class="menu-item-modern <?php echo esMenuActivo('lista_promotora'); ?>">
+      <div class="icon-container-menu"><i class="fa fa-users custom-icon-menu"></i><span class="menu-label">Promotoras</span></div>
     </a>
-
-    <a href="../admin/lista_catalogo_productos_aliado_movil.php" id="lista_catalogo" class="menu-item-modern <?php echo esMenuActivo(['lista_catalogo', 'catalogo_producto']); ?>">
-      <div class="icon-container-menu"><i class="fa fa-th-large custom-icon-menu"></i><span class="menu-label">Catálogo</span></div>
-    </a>
--->
     <a href="../admin/lista_info_factura_venta_siscredito_visitante_intern_aliado_movil.php" id="lista_creditos" class="menu-item-modern <?php echo esMenuActivo(['lista_info_factura', 'factura_venta_siscredito']); ?>">
       <div class="icon-container-menu"><i class="fa fa-credit-card custom-icon-menu"></i><span class="menu-label">Creditos</span></div>
     </a>

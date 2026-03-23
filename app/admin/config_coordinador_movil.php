@@ -139,68 +139,55 @@ body {
 }
 
 .menu-list {
-    background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 16px;
-    overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
 }
 
 .menu-item {
+    background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 16px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 1rem 1.25rem;
-    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    justify-content: center;
+    padding: 1.5rem 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-}
-
-.menu-item:last-child {
-    border-bottom: none;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .menu-item:hover {
-    background: rgba(99, 102, 241, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.5);
+    background: linear-gradient(135deg, #1f2536 0%, #111823 100%);
 }
 
 .menu-item-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 1rem;
-    font-size: 1.1rem;
+    margin: 0 auto 1rem auto;
+    font-size: 1.8rem;
 }
 
-.menu-item-icon.green {
-    background: rgba(99, 102, 241, 0.2);
-    color: #6366f1;
-}
-
-.menu-item-icon.blue {
-    background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
-}
-
-.menu-item-icon.purple {
-    background: rgba(139, 92, 246, 0.2);
-    color: #8b5cf6;
-}
-
-.menu-item-icon.orange {
-    background: rgba(245, 158, 11, 0.2);
-    color: #f59e0b;
-}
-
-.menu-item-icon.red {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-}
+.menu-item-icon.green { background: rgba(99, 102, 241, 0.15); color: #6366f1; }
+.menu-item-icon.blue { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+.menu-item-icon.purple { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+.menu-item-icon.orange { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.menu-item-icon.red { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
 .menu-item-content {
-    flex: 1;
+    flex: none;
+    width: 100%;
 }
 
 .menu-item-title {
@@ -211,23 +198,25 @@ body {
 
 .menu-item-desc {
     color: rgba(255,255,255,0.5);
-    font-size: 0.8rem;
-    margin-top: 0.15rem;
+    font-size: 0.75rem;
+    margin-top: 0.3rem;
+    line-height: 1.2;
 }
 
 .menu-item-arrow {
-    color: rgba(255,255,255,0.3);
-    font-size: 0.9rem;
+    display: none;
 }
 
 .menu-item-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
     font-size: 0.7rem;
     font-weight: 700;
     padding: 0.25rem 0.5rem;
     border-radius: 10px;
-    margin-right: 0.5rem;
 }
 
 /* Version Info */
