@@ -24,7 +24,7 @@ $pagina_local           = $_SERVER['PHP_SELF'];
 </head>
 <body>
 <?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
-<?php include_once("../admin/01_modulo_encabezado_superior_visitante_intern_movil.php"); ?>
+<?php // Removido el 01_modulo_encabezado_superior_visitante_intern_movil.php porque generaba variables indefinidas en el home ?>
 
 <main class="container py-4 mb-5">
     <div class="dashboard-header animate-in">

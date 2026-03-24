@@ -8,8 +8,10 @@ if (!verificar_usuario()) { echo json_encode(array('success' => false, 'message'
 $cod_tienda = isset($_GET['cod_tienda']) ? intval($_GET['cod_tienda']) : 0;
 if ($cod_tienda <= 0) { echo json_encode(array('success' => false, 'message' => 'Código de tienda inválido')); exit; }
 // En este sistema, cod_vendedor en tbl15_administrador se usa para vincular el vendedor (cod_seguridad=2) con una tienda
-$sql = "SELECT cod_administrador, nombres_apellidos_tercero, cuenta, telefono1_tercero, url_img_foto_prof_min FROM tbl15_administrador WHERE cod_seguridad = '2' AND 
-cod_vendedor = '$cod_tienda' ORDER BY nombres_apellidos_tercero ASC";
+$sql = "SELECT a.cod_administrador, a.nombres_apellidos_tercero, a.cuenta, a.telefono1_tercero, a.url_img_foto_prof_min, t.nombre_tipo_vendedor 
+FROM tbl15_administrador a 
+LEFT JOIN tbl15_tipo_vendedor t ON a.codigo_tipo_vendedor = t.codigo_tipo_vendedor 
+WHERE a.cod_seguridad = '2' AND a.cod_vendedor = '$cod_tienda' ORDER BY a.nombres_apellidos_tercero ASC";
 $resultado = mysqli_query($conectar, $sql);
 $vendedores = array();
 

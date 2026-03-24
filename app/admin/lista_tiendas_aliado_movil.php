@@ -3708,6 +3708,7 @@ function verVendedoresTienda(codTienda, nombreTienda) {
                     var html = '';
                     response.vendedores.forEach(function(v) {
                         var nombre = (v.nombres_apellidos_tercero || '').toLowerCase().replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+                        var tipoVend = v.nombre_tipo_vendedor ? v.nombre_tipo_vendedor : 'NORMAL';
                         html += '<div class="modal-list-item">';
                         html += '    <div class="item-img-container">';
                         if (v.url_img_foto_prof_min) {
@@ -3722,6 +3723,7 @@ function verVendedoresTienda(codTienda, nombreTienda) {
                         if (v.telefono1_tercero) {
                             html += '        <span class="item-sub-text"><i class="fas fa-phone"></i> ' + v.telefono1_tercero + '</span>';
                         }
+                        html += '        <span class="item-sub-text" style="color:#8b5cf6; font-weight:bold; margin-top:3px;"><i class="fa-solid fa-user-tag"></i> ' + tipoVend + '</span>';
                         html += '    </div>';
                         html += '    <div><span class="item-badge">Activo</span></div>';
                         html += '</div>';

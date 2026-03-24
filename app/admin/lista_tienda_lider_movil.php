@@ -1436,7 +1436,7 @@ $res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
                         <span class="store-stat-number"><?php echo $total_productos_tienda; ?></span>
                         <span class="store-stat-label">Productos</span>
                     </div>
-                    <div class="store-stat-item">
+                    <div class="store-stat-item" onclick="verVendedoresTienda(<?php echo $tienda['cod_tienda']; ?>, '<?php echo htmlspecialchars(addslashes($tienda['nombre_tienda']), ENT_QUOTES); ?>')" style="cursor: pointer;">
                         <span class="store-stat-number"><?php echo $total_vendedores_tienda; ?></span>
                         <span class="store-stat-label">Vendedores</span>
                     </div>
@@ -3033,6 +3033,42 @@ function abrirRegistroVendedorDirecto(codTienda, nombreTienda) {
     document.getElementById('vendedorNombreTienda').textContent = nombreTienda;
     document.getElementById('formRegistroVendedor').reset();
     document.getElementById('modalRegistroVendedor').classList.add('show');
+}
+
+function verVendedoresTienda(codTienda, nombreTienda) {
+    document.getElementById('verVendedoresNombreTienda').textContent = nombreTienda;
+    var list = document.getElementById('verVendedoresList');
+    list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;"><i class="fa fa-spinner fa-spin fa-2x"></i><br>Cargando vendedores...</div>';
+    document.getElementById('modalVerVendedores').classList.add('show');
+    
+    $.ajax({
+        url: 'obtener_vendedores_por_tienda_ajax.php', type: 'POST', data: { cod_tienda: codTienda }, dataType: 'json',
+        success: function(response) {
+            list.innerHTML = '';
+            if (response.success && response.vendedores && response.vendedores.length > 0) {
+                var html = '';
+                response.vendedores.forEach(function(v) {
+                    var tipoVend = v.tipo_vendedor ? v.tipo_vendedor : 'NORMAL';
+                    html += '<div style="display:flex; align-items:center; background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px; margin-bottom:1rem; border:1px solid rgba(139,92,246,0.3);">' +
+                        '<div style="width:40px;height:40px;border-radius:10px;background:rgba(139,92,246,0.2);color:#8b5cf6;display:flex;align-items:center;justify-content:center;margin-right:1rem;font-size:1.2rem;"><i class="fa-solid fa-user-tag"></i></div>' +
+                        '<div style="flex:1;">' +
+                            '<h5 style="margin:0;color:white;font-size:1rem;">' + v.nombres_apellidos_tercero + '</h5>' +
+                            '<span style="font-size:0.8rem;color:rgba(255,255,255,0.7);">CC: ' + v.identificacion_tercero + (v.cuenta ? ' | Usr: ' + v.cuenta : '') + '</span>' +
+                            '<div style="margin-top:4px;"><span style="font-size:0.7rem;padding:2px 6px;border-radius:6px;background:rgba(139,92,246,0.2);color:#8b5cf6;border:1px solid #8b5cf6;">TIPO: ' + tipoVend + '</span></div>' +
+                        '</div>' +
+                    '</div>';
+                });
+                list.innerHTML = html;
+            } else {
+                list.innerHTML = '<div style="text-align:center; padding:2rem; opacity:0.5;">No hay vendedores registrados en esta tienda</div>';
+            }
+        },
+        error: function() { list.innerHTML = '<div style="text-align:center; padding:2rem; color:#ef4444;">Error al cargar los vendedores</div>'; }
+    });
+}
+
+function cerrarModalVerVendedores() {
+    document.getElementById('modalVerVendedores').classList.remove('show');
 }
 
 function abrirRegistroProductoDirecto(codTienda, nombreTienda) {
@@ -5041,6 +5077,30 @@ function archivarTienda(codTienda, nombre) {
         <div class="confirm-footer">
             <button class="confirm-skip-btn" onclick="cerrarConfirmacionYRecargar()">
                 <i class="fa-solid fa-arrow-right"></i> Finalizar y volver a la lista
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ver Vendedores -->
+<div class="reg-modal-overlay" id="modalVerVendedores">
+    <div class="reg-modal-container">
+        <div class="reg-modal-header vendedor-theme">
+            <h2><i class="fa-solid fa-users"></i> Vendedores de la Tienda</h2>
+            <button class="modal-close" onclick="cerrarModalVerVendedores()"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <div class="reg-modal-body">
+            <div class="reg-tienda-badge">
+                <i class="fa-solid fa-store"></i>
+                Tienda: <strong id="verVendedoresNombreTienda"></strong>
+            </div>
+            <div style="margin-top: 1rem; max-height: 60vh; overflow-y: auto; padding-right: 5px;">
+                <div id="verVendedoresList"></div>
+            </div>
+        </div>
+        <div class="reg-modal-footer">
+            <button class="reg-footer-btn back-btn" style="flex: 1;" onclick="cerrarModalVerVendedores()">
+                <i class="fa-solid fa-times"></i> Cerrar
             </button>
         </div>
     </div>

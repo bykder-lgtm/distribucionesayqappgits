@@ -20,12 +20,25 @@ if ($cod_tienda > 0) {
         
         // Consultar vendedores de tbl15_administrador
         // Filtrar por cod_seguridad = '2' (vendedores) y cod_vendedor = '$cod_tienda'
-        $consulta_sql = "SELECT cod_administrador, nombres_apellidos_tercero, identificacion_tercero, telefono1_tercero, correo_tercero 
-        FROM tbl15_administrador WHERE cod_seguridad = '2' AND cod_vendedor = '$cod_tienda' AND cod_estado_activacion_usuario = '1' ORDER BY nombres_apellidos_tercero ASC";
+        $consulta_sql = "SELECT a.cod_administrador, a.nombres_apellidos_tercero, a.identificacion_tercero, a.telefono1_tercero, a.correo_tercero, tv.nombre_tipo_vendedor 
+        FROM tbl15_administrador a 
+        LEFT JOIN tbl15_tipo_vendedor tv ON a.codigo_tipo_vendedor = tv.codigo_tipo_vendedor
+        WHERE a.cod_seguridad = '2' AND a.cod_vendedor = '$cod_tienda' AND a.cod_estado_activacion_usuario = '1' AND a.cod_estado != '0' ORDER BY a.nombres_apellidos_tercero ASC";
         $consulta = mysqli_query($conectar, $consulta_sql);
         
         if ($consulta) {
-            while ($row = mysqli_fetch_assoc($consulta)) { $response['vendedores'][] = array('cod_vendedor' => $row['cod_administrador'], 'cuenta' => $row['identificacion_tercero'], 'nombres' => $row['nombres_apellidos_tercero'], 'apellidos' => '', 'cod_administrador' => $row['cod_administrador'], 'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'], 'identificacion_tercero' => $row['identificacion_tercero']); }
+            while ($row = mysqli_fetch_assoc($consulta)) { 
+                $response['vendedores'][] = array(
+                    'cod_vendedor' => $row['cod_administrador'], 
+                    'cuenta' => $row['identificacion_tercero'], 
+                    'nombres' => $row['nombres_apellidos_tercero'], 
+                    'apellidos' => '', 
+                    'cod_administrador' => $row['cod_administrador'], 
+                    'nombres_apellidos_tercero' => $row['nombres_apellidos_tercero'], 
+                    'identificacion_tercero' => $row['identificacion_tercero'],
+                    'tipo_vendedor' => !empty($row['nombre_tipo_vendedor']) ? $row['nombre_tipo_vendedor'] : 'NORMAL'
+                ); 
+            }
             $response['success'] = true;
         }
     }

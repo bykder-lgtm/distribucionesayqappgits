@@ -3551,11 +3551,13 @@ function verVendedoresTienda(codTienda, nombreTienda) {
             if (response.success && response.vendedores && response.vendedores.length > 0) {
                 var html = '';
                 response.vendedores.forEach(function(v) {
+                    var tipoVend = v.tipo_vendedor ? v.tipo_vendedor : 'NORMAL';
                     html += '<div class="item-registrado existente">' +
                         '<div class="item-registrado-icon vendedor-existente-bg"><i class="fa-solid fa-user-check"></i></div>' +
                         '<div class="item-registrado-info">' +
                             '<h5>' + v.nombres_apellidos_tercero + '</h5>' +
                             '<span>CC: ' + v.identificacion_tercero + (v.cuenta ? ' | Usuario: ' + v.cuenta : '') + '</span>' +
+                            '<div style="margin-top:4px;"><span style="font-size:0.7rem;padding:2px 6px;border-radius:6px;background:rgba(139,92,246,0.1);color:#8b5cf6;border:1px solid rgba(139,92,246,0.5);">TIPO: ' + tipoVend + '</span></div>' +
                         '</div>' +
                     '</div>';
                 });
