@@ -500,9 +500,7 @@ function filtrar() {
     var val = document.getElementById('searchInput').value;
     var est = document.getElementById('filtroEstado').value;
     clearTimeout(window.searchTimeout);
-    window.searchTimeout = setTimeout(function() {
-        window.location.href = 'lista_vendedor_coordinador_movil.php?busqueda=' + encodeURIComponent(val) + '&filtro_estado=' + est;
-    }, 500);
+    window.searchTimeout = setTimeout(function() { window.location.href = 'lista_vendedor_coordinador_movil.php?busqueda=' + encodeURIComponent(val) + '&filtro_estado=' + est; }, 500);
 }
 
 function abrirModalRegistro() {
@@ -539,16 +537,11 @@ function editarVendedor(data) {
 function cargarTiendas(codAliado, selected = '') {
     if (!codAliado) return;
     $.ajax({
-        url: '../admin/obtener_tiendas_por_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_aliado_estrategico: codAliado },
-        dataType: 'json',
+        url: '../admin/obtener_tiendas_por_aliado_ajax.php', type: 'POST', data: { cod_aliado_estrategico: codAliado }, dataType: 'json',
         success: function(resp) {
             var html = '<option value="">Seleccione tienda...</option>';
             if (resp.success && resp.tiendas) {
-                resp.tiendas.forEach(t => {
-                    html += `<option value="${t.cod_tienda}" ${t.cod_tienda == selected ? 'selected' : ''}>${t.nombre_tienda || t.nombre1_tercero}</option>`;
-                });
+                resp.tiendas.forEach(t => { html += `<option value="${t.cod_tienda}" ${t.cod_tienda == selected ? 'selected' : ''}>${t.nombre_tienda || t.nombre1_tercero}</option>`; });
             }
             $('#modal_cod_tienda').html(html);
         }
@@ -566,12 +559,7 @@ $('#formVendedor').on('submit', function(e) {
     Swal.fire({ title: 'Procesando...', didOpen: () => { Swal.showLoading() }, background: '#1a1f2e', color: 'white' });
     
     $.ajax({
-        url: url,
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: url, type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(resp) {
             if (resp.success) {
                 Swal.fire({ icon: 'success', title: '¡Éxito!', text: resp.message, background: '#1a1f2e', color: 'white' }).then(() => { location.reload(); });
@@ -595,19 +583,13 @@ function verDetalle(v) {
                 <p><strong>Usuario:</strong> ${v.cuenta}</p>
                 <p><strong>Estado:</strong> ${v.cod_estado_activacion_usuario == '1' ? 'Activo' : 'Inactivo'}</p>
             </div>
-        `,
-        confirmButtonText: 'Cerrar',
-        confirmButtonColor: '#6366f1',
-        background: '#1a1f2e',
-        color: 'white'
+        `, confirmButtonText: 'Cerrar', confirmButtonColor: '#6366f1', background: '#1a1f2e', color: 'white'
     });
 }
 
 function ucwords(str) {
     if (!str) return '';
-    return str.toLowerCase().replace(/\b[a-z]/g, function(letter) {
-        return letter.toUpperCase();
-    });
+    return str.toLowerCase().replace(/\b[a-z]/g, function(letter) { return letter.toUpperCase(); });
 }
 
 // Cerrar modal al click fuera

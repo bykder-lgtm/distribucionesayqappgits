@@ -714,6 +714,22 @@ if (isset($cod_administrador) && !empty($cod_administrador)) {
                 </form>
             </div>
         </div>
+
+        <!-- Card: Seguridad -->
+        <div class="perfil-card" id="cardSeguridad">
+            <div class="perfil-card-header">
+                <div class="perfil-card-header-left"><i class="fa fa-shield-alt"></i><h3>Seguridad</h3></div>
+            </div>
+            <div class="view-mode">
+                <div class="info-row" style="margin-bottom: 0; padding-bottom: 0; border: none;">
+                    <span class="info-label">Contraseña</span>
+                    <span class="info-value">********</span>
+                </div>
+                <div class="btn-group-perfil" style="margin-top: 1rem;">
+                    <button type="button" class="btn-perfil btn-perfil-primary" onclick="window.location.href='cambiar_contrasena_vendedor_movil.php'"><i class="fa fa-key"></i> Cambiar Contraseña</button>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

@@ -114,26 +114,18 @@ $res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
     <?php if ($total_vendedores > 0): ?>
         <?php foreach ($vendedores_array as $vendedor): ?>
             <?php
-            $nombre_completo = !empty($vendedor['nombres_apellidos_tercero']) 
-                ? ucwords(strtolower($vendedor['nombres_apellidos_tercero']))
-                : ucwords(strtolower(trim($vendedor['nombres'] . ' ' . $vendedor['apellidos'])));
-            
+            $nombre_completo = !empty($vendedor['nombres_apellidos_tercero']) ? ucwords(strtolower($vendedor['nombres_apellidos_tercero'])) : ucwords(strtolower(trim($vendedor['nombres'] . ' ' . $vendedor['apellidos'])));
             // Estado
             $estado = $vendedor['cod_estado_activacion_usuario'];
             $estado_class = ($estado == '1') ? 'active' : 'inactive';
             $estado_texto = ($estado == '1') ? 'Activo' : 'Inactivo';
-            
             // Tienda
             $nombre_tienda = !empty($vendedor['nombre_tienda']) ? ucwords(strtolower($vendedor['nombre_tienda'])) : 'Sin tienda';
-            
             // Aliado
             $nombre_aliado = !empty($vendedor['nombre_aliado']) ? ucwords(strtolower($vendedor['nombre_aliado'])) : 'N/A';
-            
             // Fecha
             $fecha_creacion = '';
-            if (!empty($vendedor['fecha'])) {
-                $fecha_creacion = date('d/m/Y', strtotime($vendedor['fecha']));
-            }
+            if (!empty($vendedor['fecha'])) { $fecha_creacion = date('d/m/Y', strtotime($vendedor['fecha'])); }
             
             // Datos para JSON (para los modales)
             $vendedor_safe = $vendedor;
@@ -182,12 +174,8 @@ $res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
                 </div>
                 
                 <div class="vendor-actions">
-                    <button class="action-btn primary" onclick='abrirModalEditar(<?php echo $data_json; ?>)'>
-                        <i class="fa-solid fa-edit"></i> Editar
-                    </button>
-                    <button class="action-btn secondary" onclick='abrirModalDetalle(<?php echo $data_json; ?>)'>
-                        <i class="fa-solid fa-eye"></i> Detalle
-                    </button>
+                    <button class="action-btn primary" onclick='abrirModalEditar(<?php echo $data_json; ?>)'><i class="fa-solid fa-edit"></i> Editar</button>
+                    <button class="action-btn secondary" onclick='abrirModalDetalle(<?php echo $data_json; ?>)'><i class="fa-solid fa-eye"></i> Detalle</button>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -211,9 +199,7 @@ $res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
         <div class="modal-body">
             <form id="formRegistro" enctype="multipart/form-data">
                 
-                <div class="form-section-title">
-                    <i class="fa-solid fa-handshake"></i> Asociación
-                </div>
+                <div class="form-section-title"><i class="fa-solid fa-handshake"></i> Asociación</div>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -234,9 +220,7 @@ $res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
                     
                     <div class="form-group">
                         <label class="form-label">Tienda *</label>
-                        <select class="form-select" id="reg_cod_tienda" name="cod_tienda" required>
-                            <option value="">Primero seleccione un aliado</option>
-                        </select>
+                        <select class="form-select" id="reg_cod_tienda" name="cod_tienda" required><option value="">Primero seleccione un aliado</option></select>
                     </div>
                 </div>
 
@@ -255,9 +239,7 @@ $res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
                     </div>
                 </div>
                 
-                <div class="form-section-title">
-                    <i class="fa-solid fa-user"></i> Datos Personales
-                </div>
+                <div class="form-section-title"><i class="fa-solid fa-user"></i> Datos Personales</div>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -315,7 +297,6 @@ $res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
         </div>
     </div>
 </div>
-
 <!-- ======================== MODAL EDITAR VENDEDOR ======================== -->
 <div class="modal-overlay" id="modalEditar">
     <div class="modal-content">
@@ -432,7 +413,6 @@ $res_tipo_vendedor = mysqli_query($conectar, $sql_tipo_vendedor);
         </div>
     </div>
 </div>
-
 <!-- ======================== MODAL DETALLE VENDEDOR ======================== -->
 <div class="modal-overlay" id="modalDetalle">
     <div class="modal-content" style="max-width: 500px;">
@@ -598,9 +578,7 @@ function abrirModalDetalle(data) {
     document.getElementById('modalDetalle').classList.add('show');
 }
 
-function cerrarModalDetalle() { 
-    document.getElementById('modalDetalle').classList.remove('show'); 
-}
+function cerrarModalDetalle() { document.getElementById('modalDetalle').classList.remove('show'); }
 
 function cerrarModalConfirmacion() {
     document.getElementById('modalConfirmacion').classList.remove('show');
@@ -626,10 +604,7 @@ function cargarTiendasPorAliado(codAliado) {
     $select.html('<option value="">Cargando tiendas...</option>');
     
     $.ajax({
-        url: '../admin/obtener_tiendas_por_aliado_ajax.php',
-        type: 'POST',
-        data: { cod_aliado_estrategico: codAliado },
-        dataType: 'json',
+        url: '../admin/obtener_tiendas_por_aliado_ajax.php', type: 'POST', data: { cod_aliado_estrategico: codAliado }, dataType: 'json',
         success: function(response) {
             $select.html('<option value="">Seleccione una tienda...</option>');
             if (response.success && response.tiendas && response.tiendas.length > 0) {
@@ -676,10 +651,7 @@ $(document).on('blur', '#reg_identificacion', function() {
     var codTienda = $('#reg_cod_tienda').val();
     
     $.ajax({
-        url: '../admin/verificar_vendedor_existente_ajax.php',
-        type: 'POST',
-        data: { identificacion: identificacion, cod_tienda: codTienda },
-        dataType: 'json',
+        url: '../admin/verificar_vendedor_existente_ajax.php', type: 'POST', data: { identificacion: identificacion, cod_tienda: codTienda }, dataType: 'json',
         success: function(response) {
             if (response.existe) {
                 inputField.css('border-color', '#ef4444');
@@ -712,16 +684,9 @@ $('#formRegistro').on('submit', function(e) {
     }
     
     var formData = new FormData(this);
-    
     Swal.fire({ title: 'Registrando vendedor...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-    
     $.ajax({
-        url: '../admin/reg_vendedor_modal_asesor_ajax_reg.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
+        url: '../admin/reg_vendedor_modal_asesor_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',
         success: function(resp) {
             Swal.close();
             if (resp.success) {
@@ -746,17 +711,9 @@ $('#formRegistro').on('submit', function(e) {
 $('#formEditar').on('submit', function(e) {
     e.preventDefault();
     var formData = new FormData(this);
-    
     Swal.fire({ title: 'Actualizando...', didOpen: () => { Swal.showLoading() }, allowOutsideClick: false, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
-    
     $.ajax({
-        url: '../admin/act_vendedor_modal_asesor_ajax_reg.php',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        dataType: 'json',
-        success: function(resp) {
+        url: '../admin/act_vendedor_modal_asesor_ajax_reg.php', type: 'POST', data: formData, processData: false, contentType: false, dataType: 'json',        success: function(resp) {
             Swal.close();
             if (resp.success) {
                 cerrarModalEditar();
@@ -801,10 +758,7 @@ function enviarRecuperacionPassword() {
             Swal.fire({ title: 'Generando y enviando...', showConfirmButton: false, allowOutsideClick: false, background: '#1a1f2e', color: 'white', didOpen: () => { Swal.showLoading(); }, customClass: { container: 'swal-high-zindex' } });
             
             $.ajax({
-                url: '../admin/enviar_correo_recuperar_password_aliado_email_ajax.php',
-                type: 'POST',
-                data: { cod_administrador: codAdministrador, correo: correo, nombre_aliado: nombre },
-                dataType: 'json',
+                url: '../admin/enviar_correo_recuperar_password_aliado_email_ajax.php', type: 'POST', data: { cod_administrador: codAdministrador, correo: correo, nombre_aliado: nombre }, dataType: 'json',
                 success: function(response) {
                     Swal.close();
                     if (response.success) {
@@ -825,17 +779,10 @@ function enviarRecuperacionPassword() {
 }
 
 // ==================== CLOSE MODALS ON OVERLAY CLICK ====================
-$('.modal-overlay').on('click', function(e) {
-    if (e.target === this) $(this).removeClass('show');
-});
-
-document.getElementById('modalConfirmacion').addEventListener('click', function(e) {
-    if (e.target === this) cerrarModalConfirmacion();
-});
-
+$('.modal-overlay').on('click', function(e) { if (e.target === this) $(this).removeClass('show'); });
+document.getElementById('modalConfirmacion').addEventListener('click', function(e) { if (e.target === this) cerrarModalConfirmacion(); });
 // ==================== NOTIFICATIONS ====================
 var notificationCheckInterval = null;
-
 $(document).ready(function() {
     cargarNotificaciones();
     notificationCheckInterval = setInterval(cargarNotificaciones, 30000);
@@ -843,12 +790,8 @@ $(document).ready(function() {
 
 function cargarNotificaciones() {
     $.ajax({
-        url: '../admin/obtener_notificaciones_ajax.php',
-        type: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.success) actualizarUINotificaciones(response.notificaciones, response.count);
-        }
+        url: '../admin/obtener_notificaciones_ajax.php', type: 'GET', dataType: 'json',
+        success: function(response) { if (response.success) actualizarUINotificaciones(response.notificaciones, response.count); }
     });
 }
 
@@ -890,10 +833,7 @@ $(document).on('click', function(e) {
 
 function marcarNotificacionLeida(codNotificacion, element) {
     $.ajax({
-        url: '../admin/marcar_notificacion_leida_ajax.php',
-        type: 'POST',
-        data: { cod_notificacion: codNotificacion },
-        dataType: 'json',
+        url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { cod_notificacion: codNotificacion }, dataType: 'json',
         success: function(response) {
             if (response.success) $(element).fadeOut(300, function() { $(this).remove(); cargarNotificaciones(); });
         }
@@ -902,19 +842,11 @@ function marcarNotificacionLeida(codNotificacion, element) {
 
 function marcarTodasLeidas() {
     Swal.fire({
-        title: '¿Marcar todas como leídas?',
-        text: 'Se marcarán todas las notificaciones pendientes como leídas',
-        icon: 'question', showCancelButton: true,
-        confirmButtonColor: '#f59e0b', cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, marcar todas', cancelButtonText: 'Cancelar',
-        background: '#1a1f2e', color: 'white'
+        title: '¿Marcar todas como leídas?', text: 'Se marcarán todas las notificaciones pendientes como leídas', icon: 'question', showCancelButton: true, confirmButtonColor: '#f59e0b', cancelButtonColor: '#6c757d', confirmButtonText: 'Sí, marcar todas', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../admin/marcar_notificacion_leida_ajax.php',
-                type: 'POST',
-                data: { marcar_todas: 'si' },
-                dataType: 'json',
+                url: '../admin/marcar_notificacion_leida_ajax.php', type: 'POST', data: { marcar_todas: 'si' }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
                         cargarNotificaciones();

@@ -26,6 +26,7 @@
                             <li class="nav-item"><a class="nav-link" href="../admin/lista_info_factura_venta_siscredito_visitante_intern_aliado_movil.php" target="_blank">Modelo Gets</a></li>
                             <li class="nav-item"><a class="nav-link" href="../admin/lista_producto_adm_tick.php" target="_blank">Admin 1</a></li>
                             <li class="nav-item"><a class="nav-link" href="../admin/index.php" target="_blank">Admin 2</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../admin/cambiar_contrasena_revisor_movil.php">Cambiar Contraseña</a></li>
                             <li class="nav-item"><a class="nav-link" href="../session/salir_visitante_intern.php?token=<?php echo $token ?>&pagina_salir=<?php echo $pagina_salir_visitante ?>">Salir</a></li>
                         </ul>
                     </ul>
