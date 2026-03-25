@@ -26,523 +26,8 @@ $cod_base_caja          = "1";
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<style>
-/* ============================================ */
-/* LISTA COORDINADORES LIDER - TEMA PÚRPURA/VIOLETA */
-/* ============================================ */
+<style><?php include_once("../estilo_css/estilo_lista_coordinador_lider.css"); ?></style>
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0d1117 100%);
-    min-height: 100vh;
-    overflow-x: hidden;
-}
-
-/* SweetAlert z-index fix para que aparezca encima de modales */
-.swal-high-zindex {
-    z-index: 99999 !important;
-}
-
-.page-container {
-    padding: 1rem;
-    padding-bottom: 100px;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-}
-
-/* Header */
-.page-header {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
-    border-radius: 20px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
-}
-
-.page-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -20%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    border-radius: 50%;
-}
-
-.page-header h1 {
-    color: white;
-    font-size: 1.75rem;
-    font-weight: 800;
-    margin-bottom: 0.5rem;
-    position: relative;
-    z-index: 1;
-}
-
-.page-header p {
-    color: rgba(255,255,255,0.8);
-    font-size: 0.95rem;
-    position: relative;
-    z-index: 1;
-}
-
-.header-stats {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    position: relative;
-    z-index: 1;
-}
-
-.header-stat {
-    background: rgba(255,255,255,0.15);
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-}
-
-.header-stat-value {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: white;
-}
-
-.header-stat-label {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.8);
-    margin-top: 0.25rem;
-}
-
-/* Search Bar */
-.search-bar {
-    background: rgba(139, 92, 246, 0.1);
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    border-radius: 15px;
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-.search-bar i {
-    color: #8b5cf6;
-    font-size: 1.1rem;
-}
-
-.search-bar input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: white;
-    font-size: 0.95rem;
-    width: 100%;
-}
-
-.search-bar input::placeholder {
-    color: rgba(255,255,255,0.4);
-}
-
-/* Add Button */
-.add-btn {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    color: white;
-    border: none;
-    padding: 0.9rem 1.5rem;
-    border-radius: 15px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.add-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
-}
-
-/* Coordinadores List */
-.coordinadores-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-/* Coordinador Card */
-.coordinador-card {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%);
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    border-radius: 20px;
-    padding: 1.25rem;
-    transition: all 0.3s ease;
-}
-
-.coordinador-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 35px rgba(139, 92, 246, 0.25);
-    border-color: rgba(139, 92, 246, 0.4);
-}
-
-.coordinador-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-}
-
-.coordinador-avatar {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: white;
-    font-weight: 700;
-    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
-}
-
-.coordinador-info {
-    flex: 1;
-    margin-left: 1rem;
-}
-
-.coordinador-name {
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-}
-
-.coordinador-role {
-    color: rgba(255,255,255,0.6);
-    font-size: 0.85rem;
-    background: rgba(139, 92, 246, 0.2);
-    padding: 0.25rem 0.75rem;
-    border-radius: 8px;
-    display: inline-block;
-    font-weight: 600;
-}
-
-.coordinador-status {
-    padding: 0.35rem 0.85rem;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.status-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-.status-pending { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-.status-inactive { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-
-/* Coordinador Details */
-.coordinador-details {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-.detail-item {
-    background: rgba(0,0,0,0.2);
-    padding: 0.75rem;
-    border-radius: 10px;
-}
-
-.detail-label {
-    color: rgba(255,255,255,0.5);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.25rem;
-    display: block;
-    font-weight: 600;
-}
-
-.detail-value {
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-/* Coordinador Stats */
-.coordinador-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(139, 92, 246, 0.2);
-}
-
-.stat-item {
-    text-align: center;
-    background: rgba(139, 92, 246, 0.1);
-    padding: 0.75rem;
-    border-radius: 10px;
-}
-
-.stat-value {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #8b5cf6;
-    display: block;
-}
-
-.stat-label {
-    color: rgba(255,255,255,0.6);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 0.25rem;
-}
-
-/* Actions */
-.coordinador-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.action-btn {
-    flex: 1;
-    min-width: calc(50% - 0.25rem);
-    padding: 0.75rem;
-    border: none;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.action-btn.view {
-    background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
-}
-
-.action-btn.edit {
-    background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
-}
-
-.action-btn.archive {
-    background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.1);
-}
-
-.action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 3rem 1.5rem;
-    background: rgba(139, 92, 246, 0.05);
-    border: 2px dashed rgba(139, 92, 246, 0.2);
-    border-radius: 20px;
-    margin: 2rem 0;
-}
-
-.empty-state i {
-    font-size: 4rem;
-    color: rgba(139, 92, 246, 0.3);
-    margin-bottom: 1rem;
-}
-
-.empty-state h3 {
-    color: white;
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.empty-state p {
-    color: rgba(255,255,255,0.5);
-    font-size: 0.95rem;
-}
-
-/* Bottom Navigation */
-.bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-    border-top: 1px solid rgba(139, 92, 246, 0.2);
-    display: flex;
-    justify-content: space-around;
-    padding: 0.75rem 0;
-    z-index: 1000;
-    backdrop-filter: blur(20px);
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: rgba(255,255,255,0.5);
-    transition: all 0.3s ease;
-    padding: 0.5rem 1rem;
-    border-radius: 12px;
-}
-
-.nav-item:hover, .nav-item.active {
-    color: #8b5cf6;
-    text-decoration: none;
-}
-
-.nav-item.active {
-    background: rgba(139, 92, 246, 0.1);
-}
-
-.nav-item i {
-    font-size: 1.25rem;
-    margin-bottom: 0.25rem;
-}
-
-.nav-item span {
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-in {
-    animation: fadeIn 0.6s ease-out;
-}
-
-.delay-1 { animation-delay: 0.1s; }
-.delay-2 { animation-delay: 0.2s; }
-.delay-3 { animation-delay: 0.3s; }
-
-/* Responsive */
-@media (max-width: 768px) {
-    .page-container {
-        padding: 0.75rem;
-        padding-bottom: 80px;
-    }
-    
-    .page-header h1 {
-        font-size: 1.5rem;
-    }
-    
-    .coordinador-details {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-    }
-    
-    .coordinador-stats {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .page-container {
-        padding: 0.5rem;
-        padding-bottom: 70px;
-    }
-    
-    .page-header {
-        padding: 1.25rem;
-        border-radius: 15px;
-    }
-    
-    .page-header h1 {
-        font-size: 1.35rem;
-    }
-    
-    .coordinador-actions {
-        flex-direction: row;
-        flex-wrap: nowrap; /* Force them to stay side-by-side */
-    }
-    
-    .action-btn {
-        min-width: 0; 
-        flex: 1;
-        padding: 0.6rem 0.25rem;
-        font-size: 0.75rem; /* Slightly smaller to fit text */
-        gap: 0.25rem;
-    }
-
-    .action-btn i {
-        font-size: 0.85rem;
-    }
-}
-/* Pagination Styles */
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-}
-
-.pagination-btn {
-    background: rgba(139, 92, 246, 0.1);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    color: white;
-    padding: 0.5rem 0.85rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.pagination-btn:hover {
-    background: rgba(139, 92, 246, 0.3);
-    border-color: #8b5cf6;
-    color: white;
-}
-
-.pagination-btn.active {
-    background: #8b5cf6;
-    border-color: #8b5cf6;
-    color: white;
-}
-
-.pagination-btn.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-</style>
 </head>
 <body>
 <?php include_once("../admin/01_modulo_header_top_movil.php"); ?>
@@ -927,13 +412,7 @@ function editarCoordinador(e) {
     const form = document.getElementById('formEditarCoordinador');
     const formData = new FormData(form);
 
-    Swal.fire({
-        title: 'Actualizando Coordinador...',
-        text: 'Por favor espere',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); },
-        background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Actualizando Coordinador...', text: 'Por favor espere',  allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
     $.ajax({
         url: 'proceso_editar_coordinador_lider_movil_ajax.php',
@@ -944,24 +423,13 @@ function editarCoordinador(e) {
         dataType: 'json',
         success: function(response) {
             if (response.status === 'success') {
-                Swal.fire({
-                    icon: 'success', title: '¡Actualización Exitosa!', text: response.message,
-                    background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' }
-                }).then(() => {
-                    location.reload();
-                });
+                Swal.fire({ icon: 'success', title: '¡Actualización Exitosa!', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#10b981', customClass: { container: 'swal-high-zindex' } }).then(() => { location.reload(); });
             } else {
-                Swal.fire({
-                    icon: 'error', title: 'Error', text: response.message,
-                    background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function() {
-            Swal.fire({
-                icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor',
-                background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor',  background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -973,23 +441,10 @@ function registrarCoordinador(e) {
     const form = document.getElementById('formRegistroCoordinador');
     const formData = new FormData(form);
 
-    Swal.fire({
-        title: 'Registrando Coordinador...',
-        text: 'Por favor espere',
-        allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); },
-        background: '#1a1f2e',
-        color: 'white',
-        customClass: { container: 'swal-high-zindex' }
-    });
+    Swal.fire({ title: 'Registrando Coordinador...', text: 'Por favor espere', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
     $.ajax({
-        url: 'reg_coordinador_modal_lider_movil_ajax_reg.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: 'json',
+        url: 'reg_coordinador_modal_lider_movil_ajax_reg.php', type: 'POST', data: formData, contentType: false, processData: false, dataType: 'json',
         success: function(response) {
             if (response.status === 'success') {
                 Swal.fire({
@@ -1004,15 +459,7 @@ function registrarCoordinador(e) {
                         location.reload();
                     } else if (result.isDenied) {
                         // Email Notification (AJAX PHPMailer)
-                        Swal.fire({
-                            title: 'Enviando Correo...',
-                            text: 'Por favor espere',
-                            allowOutsideClick: false,
-                            didOpen: () => { Swal.showLoading(); },
-                            background: '#1a1f2e',
-                            color: 'white',
-                            customClass: { container: 'swal-high-zindex' }
-                        });
+                        Swal.fire({ title: 'Enviando Correo...', text: 'Por favor espere', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white', customClass: { container: 'swal-high-zindex' } });
 
                         const emailData = new FormData();
                         emailData.append('email_destino', formData.get('correo_tercero'));
@@ -1021,48 +468,16 @@ function registrarCoordinador(e) {
                         emailData.append('contrasena', formData.get('identificacion_tercero'));
 
                         $.ajax({
-                            url: 'enviar_email_bienvenida_asesor.php',
-                            type: 'POST',
-                            data: emailData,
-                            contentType: false,
-                            processData: false,
-                            dataType: 'json',
+                            url: 'enviar_email_bienvenida_asesor.php', type: 'POST', data: emailData, contentType: false, processData: false, dataType: 'json',
                             success: function(emailResponse) {
                                 if (emailResponse.success) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: '¡Correo Enviado!',
-                                        text: emailResponse.message,
-                                        background: '#1a1f2e',
-                                        color: 'white',
-                                        confirmButtonColor: '#8b5cf6',
-                                        customClass: { container: 'swal-high-zindex' }
-                                    }).then(() => {
-                                        cerrarModalRegistro();
-                                        location.reload();
-                                    });
+                                    Swal.fire({ icon: 'success', title: '¡Correo Enviado!', text: emailResponse.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#8b5cf6', customClass: { container: 'swal-high-zindex' } }).then(() => { cerrarModalRegistro(); location.reload(); });
                                 } else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error al Enviar',
-                                        text: emailResponse.message,
-                                        background: '#1a1f2e',
-                                        color: 'white',
-                                        confirmButtonColor: '#ef4444',
-                                        customClass: { container: 'swal-high-zindex' }
-                                    });
+                                    Swal.fire({ icon: 'error', title: 'Error al Enviar', text: emailResponse.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
                                 }
                             },
                             error: function() {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error de Conexión',
-                                    text: 'No se pudo conectar con el servidor de correo',
-                                    background: '#1a1f2e',
-                                    color: 'white',
-                                    confirmButtonColor: '#ef4444',
-                                    customClass: { container: 'swal-high-zindex' }
-                                });
+                                Swal.fire({ icon: 'error', title: 'Error de Conexión', text: 'No se pudo conectar con el servidor de correo', background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
                             }
                         });
                     } else {
@@ -1071,28 +486,12 @@ function registrarCoordinador(e) {
                     }
                 });
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.message,
-                    background: '#1a1f2e',
-                    color: 'white',
-                    confirmButtonColor: '#ef4444',
-                    customClass: { container: 'swal-high-zindex' }
-                });
+                Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
             }
         },
         error: function(xhr, status, error) {
             console.log('Error Response:', xhr.responseText);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de conexión',
-                text: 'No se pudo conectar con el servidor. Línea de error: ' + error,
-                background: '#1a1f2e',
-                color: 'white',
-                confirmButtonColor: '#ef4444',
-                customClass: { container: 'swal-high-zindex' }
-            });
+            Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo conectar con el servidor. Línea de error: ' + error, background: '#1a1f2e', color: 'white', confirmButtonColor: '#ef4444', customClass: { container: 'swal-high-zindex' } });
         }
     });
 }
@@ -1137,9 +536,7 @@ function abrirModalStats(cod_coordinador, tipo) {
     modal.style.display = 'flex';
 
     $.ajax({
-        url: 'get_stats_detalles_coordinador_ajax.php',
-        type: 'POST',
-        data: { cod_coordinador: cod_coordinador, tipo: tipo },
+        url: 'get_stats_detalles_coordinador_ajax.php', type: 'POST', data: { cod_coordinador: cod_coordinador, tipo: tipo },
         success: function(response) {
             content.innerHTML = response;
         },
@@ -1156,41 +553,17 @@ function abrirModalStats(cod_coordinador, tipo) {
 
 function archivarEntidad(codAdmin, nombre, tipoEntidad) {
     Swal.fire({
-        title: '¿Archivar ' + tipoEntidad + '?',
-        text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6e7881',
-        confirmButtonText: 'Sí, archivar',
-        cancelButtonText: 'Cancelar',
-        background: '#1a1f2e',
-        color: 'white'
+        title: '¿Archivar ' + tipoEntidad + '?', text: '¿Estás seguro de que deseas archivar a ' + nombre + '? Esta acción cambiará el estado de la cuenta a ARCHIVADO.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#6e7881', confirmButtonText: 'Sí, archivar', cancelButtonText: 'Cancelar', background: '#1a1f2e', color: 'white'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                title: 'Archivando...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); },
-                background: '#1a1f2e',
-                color: 'white'
-            });
+            Swal.fire({ title: 'Archivando...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }, background: '#1a1f2e', color: 'white' });
 
             $.ajax({
-                url: 'proceso_archivar_entidad_lider_movil_ajax.php',
-                type: 'POST',
-                data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad },
-                dataType: 'json',
+                url: 'proceso_archivar_entidad_lider_movil_ajax.php', type: 'POST', data: { cod_administrador: codAdmin, tipo_entidad: tipoEntidad }, dataType: 'json',
                 success: function(response) {
                     if (response.success) {
                         Swal.fire({
-                            icon: 'success',
-                            title: '¡Archivado!',
-                            text: response.message,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            background: '#1a1f2e',
-                            color: 'white'
+                            icon: 'success', title: '¡Archivado!', text: response.message, timer: 2000, timerProgressBar: true, background: '#1a1f2e', color: 'white'
                         }).then(() => { location.reload(); });
                     } else {
                         Swal.fire({ icon: 'error', title: 'Error', text: response.message, background: '#1a1f2e', color: 'white' });

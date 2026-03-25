@@ -2,8 +2,8 @@
 date_default_timezone_set("America/Bogota");
 $conexion_servidor               = "localhost";
 $base_datos                      = "distribucionesayqapp";
-$conexion_usuario                = "dataeditaxe";
-$conexion_contrasena_descrip     = "editaxe951";
+$conexion_usuario                = "usuario";
+$conexion_contrasena_descrip     = "usuario123";
 
 $clave                           = stripslashes($conexion_contrasena_descrip);
 $clave                           = strip_tags($clave);

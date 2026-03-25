@@ -1,0 +1,379 @@
+/* Estilos para el acordeón */
+.acordeon-simulador {
+    border-radius: 12px;
+    overflow: hidden;
+}
+.acordeon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.3s ease;
+}
+.acordeon-header:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+.acordeon-header h3 {
+    margin: 0;
+    flex: 1;
+}
+.acordeon-icon {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+    color: #667eea;
+}
+.acordeon-icon.rotated {
+    transform: rotate(180deg);
+}
+.acordeon-content {
+    padding-top: 1rem;
+    animation: slideDown 0.3s ease;
+}
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+    .resultado-header-simulador {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 0 0 20px 20px;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    .resultado-header-simulador h1 {
+        font-size: 1.3rem;
+        font-weight: 800;
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .info-producto-card-simulador {
+        background: white;
+        border-radius: 15px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .info-producto-card-simulador h3 {
+        font-size: 1.1rem;
+        color: #2d3748;
+        margin: 0 0 0.75rem 0;
+        font-weight: 700;
+    }
+    .info-item-simulador {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f7fafc;
+    }
+    .info-item-simulador:last-child {
+        border-bottom: none;
+    }
+    .info-item-simulador i {
+        color: #667eea;
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+    .info-item-simulador .label {
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 0.85rem;
+    }
+    .info-item-simulador .value {
+        font-weight: 700;
+        color: #2d3748;
+        font-size: 0.95rem;
+        margin-left: auto;
+    }
+    .entidades-grid-simulador {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    .entidad-card-simulador {
+        background: white;
+        border-radius: 12px;
+        padding: 0.75rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .entidad-card-simulador::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .entidad-card-simulador:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    @media (min-width: 768px) {
+        .entidades-grid-simulador {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+    }
+    @media (min-width: 992px) {
+        .entidades-grid-simulador {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    .entidad-logo-simulador {
+        text-align: center;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        background: #f7fafc;
+        border-radius: 8px;
+    }
+    .entidad-logo-simulador img {
+        max-width: 100%;
+        height: auto;
+        max-height: 50px;
+        object-fit: contain;
+    }
+    .descuento-badge-simulador {
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 15px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 2px 4px rgba(72, 187, 120, 0.3);
+    }
+    .descuento-badge-simulador i {
+        margin-right: 0.2rem;
+        font-size: 0.6rem;
+    }
+    .descuento-badge-simulador_vacio {
+        background: linear-gradient(135deg, #ffffffff 0%, #ffffffff 100%);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 15px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        box-shadow: 0 2px 4px rgba(255, 255, 255, 0.0);
+    }
+    .descuento-badge-simulador_vacio i {
+        margin-right: 0.2rem;
+        font-size: 0.6rem;
+    }
+    .valor-credito-simulador {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+    .cuotas-selector-simulador {
+        background: #f7fafc;
+        padding: 0.5rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+    .cuotas-selector-simulador label {
+        display: block;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.35rem;
+        font-size: 0.7rem;
+    }
+    .cuotas-selector-simulador select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        background: white;
+        transition: all 0.3s ease;
+    }
+    .cuotas-selector-simulador select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+    }
+    .cuota-resultado-simulador {
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        padding: 0.5rem;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    .cuota-resultado-simulador .label {
+        font-size: 0.65rem;
+        color: #4a5568;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 0.15rem;
+    }
+    .cuota-resultado-simulador .valor {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #667eea;
+    }
+    .resultado_url_pagina_web_consulta_simulador {
+        text-align: center;
+        padding: 0.15rem;
+        min-height: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.15rem;
+    }
+    .resultado_url_pagina_web_consulta_simulador .label {
+        width: 100%;
+    }
+    .resultado_url_pagina_web_consulta_simulador a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+    .resultado_url_pagina_web_consulta_simulador a:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+    .btn-solicitar-simulador {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.65rem 0.5rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 3px 8px rgba(102, 126, 234, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        margin-top: auto;
+    }
+    .btn-solicitar-simulador:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+    }
+    .btn-solicitar-simulador i {
+        font-size: 0.7rem;
+    }
+    .loading-cuota-simulador {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+    }
+    .loading-cuota-simulador img {
+        width: 30px;
+        height: 30px;
+    }
+    .no-resultados-simulador {
+        text-align: center;
+        padding: 3rem 1.5rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .no-resultados-simulador i {
+        font-size: 4rem;
+        color: #cbd5e0;
+        margin-bottom: 1rem;
+    }
+    .no-resultados-simulador h3 {
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+    @media (max-width: 576px) {
+        .resultado-header-simulador h1 {
+            font-size: 1.1rem;
+        }
+        .entidades-grid-simulador {
+            gap: 0.5rem;
+        }
+        .entidad-card-simulador {
+            padding: 0.6rem;
+        }
+        .valor-credito-simulador {
+            font-size: 0.95rem;
+        }
+        .cuota-resultado-simulador .valor {
+            font-size: 1rem;
+        }
+        .btn-solicitar-simulador {
+            font-size: 0.7rem;
+            padding: 0.6rem 0.4rem;
+        }
+    }
+    @media (min-width: 1200px) {
+        .entidades-grid-simulador {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+    /* Animación para mensajes de verificación */
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    /* Estilos para inputs y selects en fondo púrpura */
+    #productoModal::placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    #productoModal:focus {
+        background: rgba(255, 255, 255, 0.25) !important;
+        border-color: rgba(255, 255, 255, 0.5) !important;
+        color: white !important;
+        outline: none !important;
+    }
+    #cod_categoria:focus {
+        background: rgba(255, 255, 255, 0.25) !important;
+        border-color: rgba(255, 255, 255, 0.5) !important;
+        outline: none !important;
+    }
+    #cod_categoria option {
+        background: #764ba2 !important;
+        color: white !important;
+    }
+    /* Responsive para grid de resumen */
+    @media (max-width: 768px) {
+        .credito-resumen-modal-solicitud {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+    @media (max-width: 576px) {
+        .credito-resumen-modal-solicitud {
+            grid-template-columns: 1fr !important;
+        }
+    }

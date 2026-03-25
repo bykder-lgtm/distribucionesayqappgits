@@ -27,6 +27,11 @@
 <li class=""><a href="../admin/lista_producto_lider_diseno_vertical.php"><i class="fa fa-boxes-stacked"></i> Lista de Productos</a></li>
 <li class=""><a href="../admin/parametrizacion_cuota_entidad_crediticia_lider_movil.php"><i class="fa fa-sliders"></i> Parametrización Cuotas</a></li>
 <li class=""><a href="../admin/lista_usuario_archivado.php"><i class="fa fa-box-archive"></i> Usuarios Archivados</a></li>
+<li class="active"><a href="#menuConfig" data-toggle="collapse" aria-expanded="false"><i class="fa fa-gears"></i> CONFIG <span class="fa fa-chevron-down"></span></a>
+    <ul class="nav child_menu collapse" id="menuConfig">
+        <li class=""><a href="../admin/parametrizacion_ptj_gestor_operador_credito_lider.php"><i class="fa fa-percent"></i> % Gestor Operador Crédito</a></li>
+    </ul>
+</li>
                 </ul>
             </div>
         </div><!-- /sidebar menu -->

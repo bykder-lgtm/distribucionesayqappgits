@@ -38,77 +38,8 @@ $cod_base_caja          = "1";
 <?php include_once("../admin/03_modulo_css_visitante_intern_movil.php"); ?>
 <script src="../js/jquery-3.2.1.min_visitante.js"></script>
 
-<style>
-/* Estilos para los botones de navegación */
-.nav-buttons-container {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-}
+<style><?php include_once("../estilo_css/estilo_lista_credito_aliado.css"); ?></style>
 
-.btn-nav-filtro {
-    flex: 1;
-    min-width: 100px;
-    padding: 0.6rem 1rem;
-    border: none;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    text-align: center;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
-
-.btn-nav-abierta {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-}
-
-.btn-nav-abierta:hover {
-    background: linear-gradient(135deg, #059669 0%, #047857 100%);
-    transform: translateY(-2px);
-    color: white;
-    text-decoration: none;
-}
-
-.btn-nav-cerrada {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    color: white;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-}
-
-.btn-nav-cerrada:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    transform: translateY(-2px);
-    color: white;
-    text-decoration: none;
-}
-
-.btn-nav-comprobantes {
-    background: linear-gradient(135deg, #9333ea 0%, #f97316 100%);
-    color: white;
-    box-shadow: 0 4px 15px rgba(147, 51, 234, 0.3);
-}
-
-.btn-nav-comprobantes:hover {
-    background: linear-gradient(135deg, #7c3aed 0%, #ea580c 100%);
-    transform: translateY(-2px);
-    color: white;
-    text-decoration: none;
-}
-
-.btn-nav-filtro.active {
-    transform: scale(1.02);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-</style>
 </head>
 <body>
 <?php include_once("../admin/01_modulo_encabezado_superior_visitante_intern_movil.php"); ?>

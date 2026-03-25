@@ -1,0 +1,400 @@
+/* ===================== ESTILOS PÁGINA DE PERFIL ===================== */
+.perfil-container {
+    padding: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+}
+
+.page-header-perfil {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, rgba(65, 105, 225, 0.2) 0%, rgba(0, 212, 255, 0.1) 100%);
+    border-bottom: 1px solid rgba(65, 105, 225, 0.3);
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+}
+
+.page-header-perfil h2 {
+    color: white;
+    margin: 0;
+    font-size: 1.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.page-header-perfil h2 i {
+    color: #00d4ff;
+    font-size: 1.5rem;
+}
+
+/* Avatar y nombre principal */
+.perfil-avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #1a1d3a 0%, #0a0e27 100%);
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(65, 105, 225, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-container {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4169e1 0%, #5b7ce6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 4px solid rgba(0, 212, 255, 0.5);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+.avatar-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-img i {
+    font-size: 3rem;
+    color: white;
+}
+
+.avatar-edit-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00d4ff 0%, #5b7ce6 100%);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.avatar-edit-btn:hover {
+    transform: scale(1.1);
+}
+
+.perfil-nombre-principal {
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    text-align: center;
+}
+
+.perfil-id-badge {
+    background: rgba(0, 212, 255, 0.2);
+    color: #00d4ff;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Cards de información */
+.perfil-card {
+    background: linear-gradient(135deg, #1a1d3a 0%, #0a0e27 100%);
+    border: 1px solid rgba(65, 105, 225, 0.3);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(65, 105, 225, 0.2);
+}
+
+.perfil-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(65, 105, 225, 0.3);
+}
+
+.perfil-card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.perfil-card-header i {
+    font-size: 1.25rem;
+    color: #00d4ff;
+}
+
+.perfil-card-header h3 {
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-edit-section {
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #00d4ff;
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.btn-edit-section:hover {
+    background: rgba(0, 212, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Campos de información (modo visualización) */
+.info-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.info-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.35rem;
+}
+
+.info-value {
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.info-value.empty {
+    color: rgba(255, 255, 255, 0.3);
+    font-style: italic;
+}
+
+/* Formularios de edición */
+.form-group-perfil {
+    margin-bottom: 1.25rem;
+}
+
+.form-group-perfil label {
+    display: block;
+    color: #00d4ff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.form-group-perfil input,
+.form-group-perfil select,
+.form-group-perfil textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(65, 105, 225, 0.3);
+    border-radius: 10px;
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-group-perfil input:focus,
+.form-group-perfil select:focus,
+.form-group-perfil textarea:focus {
+    outline: none;
+    border-color: #00d4ff;
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.15);
+}
+
+.form-group-perfil input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.form-group-perfil select option {
+    background: #1a1d3a;
+    color: white;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 500px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Botones */
+.btn-perfil {
+    width: 100%;
+    padding: 0.95rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-perfil-primary {
+    background: linear-gradient(135deg, #00d4ff 0%, #5b7ce6 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+}
+
+.btn-perfil-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+}
+
+.btn-perfil-primary:disabled {
+    background: rgba(255, 255, 255, 0.2);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-perfil-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-perfil-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-group-perfil {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.btn-group-perfil .btn-perfil {
+    flex: 1;
+}
+
+/* Alertas */
+.alert-perfil {
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert-perfil.success {
+    background: rgba(72, 187, 120, 0.2);
+    border: 1px solid #48bb78;
+    color: #48bb78;
+}
+
+.alert-perfil.error {
+    background: rgba(255, 111, 0, 0.2);
+    border: 1px solid #ff6f00;
+    color: #ff6f00;
+}
+
+/* Modo visualización vs edición */
+.view-mode {
+    display: block;
+}
+
+.edit-mode {
+    display: none;
+}
+
+.perfil-card.editing .view-mode {
+    display: none;
+}
+
+.perfil-card.editing .edit-mode {
+    display: block;
+}
+
+/* Input de foto oculto */
+.input-foto-hidden {
+    display: none;
+}
+
+/* Animación de carga */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loading-spinner {
+    text-align: center;
+    color: white;
+}
+
+.loading-spinner i {
+    font-size: 3rem;
+    color: #00d4ff;
+    margin-bottom: 1rem;
+}
+
+.loading-spinner p {
+    font-size: 1rem;
+    margin: 0;
+}
