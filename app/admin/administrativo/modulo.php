@@ -1,50 +1,62 @@
 <?php
+/**
+ * app/admin/administrativo/modulo.php
+ * Router de módulos administrativos - Phase 2 DayQ
+ */
 require_once __DIR__ . '/bootstrap.php';
-$m = isset($_GET['m']) ? preg_replace('/[^a-z_]/', '', $_GET['m']) : 'medio_pago';
-$titles = [
-	'medio_pago' => 'Medio de pago',
-	'cuenta' => 'Cuenta',
-	'movimiento_cuenta' => 'Movimiento de cuenta',
-	'gasto' => 'Gasto',
-	'proveedor' => 'Proveedor',
-	'cliente' => 'Cliente',
-	'compra' => 'Compra',
-	'obligacion_financiera' => 'Obligación financiera',
-];
-$dayq_page_title = isset($titles[$m]) ? $titles[$m] : 'Módulo';
-include __DIR__ . '/layout_header.php';
 
-function dayq_options_cuentas(mysqli $con) {
-	$r = $con->query('SELECT id, codigo, nombre FROM cuenta WHERE activo=1 ORDER BY codigo');
-	$o = '';
-	while ($r && ($row = $r->fetch_assoc())) {
-		$o .= '<option value="' . (int) $row['id'] . '">' . htmlspecialchars($row['codigo'] . ' — ' . $row['nombre'], ENT_QUOTES, 'UTF-8') . '</option>';
-	}
-	return $o;
+$modulo = dayq_get_str('m', 'dashboard');
+$modulo = preg_replace('/[^a-z_]/', '', $modulo);
+$m = $modulo; // Alias para compatibilidad con módulos Phase 1
+
+// Mapeo de módulos disponibles
+$modulos_disponibles = [
+    'dashboard' => 'Dashboard',
+    'creditos_lista' => 'Créditos',
+    'credito_detalle' => 'Detalle de Crédito',
+    'liquidacion' => 'Liquidación',
+    'liquidaciones' => 'Liquidaciones',
+    'anulaciones' => 'Anulaciones',
+    'tesoreria' => 'Tesorería',
+    'reportes' => 'Reportes',
+    'comercios' => 'Comercios',
+    'comercio_detalle' => 'Detalle de Comercio',
+    'clientes' => 'Clientes',
+    'cliente_detalle' => 'Detalle de Cliente',
+    'habilitadores' => 'Habilitadores',
+    'habilitador_detalle' => 'Detalle de Habilitador',
+    'configuracion' => 'Configuración',
+    'pagos_comercios' => 'Pagos Comercios',
+    'pagos_habilitadores' => 'Pagos Habilitadores',
+    'prestamos' => 'Préstamos Empleados',
+    'documentos' => 'Documentos',
+    'gastos' => 'Gastos Operativos',
+];
+
+// Módulos Phase 1 (inline en este archivo)
+$modulos_fase1 = ['medio_pago', 'cuenta', 'movimiento_cuenta', 'gasto', 'proveedor', 'cliente', 'compra', 'obligacion_financiera'];
+
+// Incluir módulo solicitado si existe
+if (isset($modulos_disponibles[$modulo])) {
+    $archivo_modulo = __DIR__ . '/' . $modulo . '.php';
+    if (file_exists($archivo_modulo)) {
+        include $archivo_modulo;
+        return; // Los módulos Phase 2 manejan su propio header/footer
+    } elseif (!in_array($modulo, $modulos_fase1, true)) {
+        // Si no existe el archivo y no es Phase 1, mostrar error
+        echo '<div style="background: var(--bg); color: var(--text); padding: 40px; text-align: center;">';
+        echo '<h2>Módulo no disponible</h2>';
+        echo '<p>El módulo "' . htmlspecialchars($modulo) . '" no está disponible en este momento.</p>';
+        echo '<a href="?m=dashboard" style="color: var(--accent); text-decoration: none;">← Volver al Dashboard</a>';
+        echo '</div>';
+    }
+    // Si es Phase 1, no hacemos nada aquí - se procesa inline abajo
 }
-function dayq_options_medios(mysqli $con) {
-	$r = $con->query('SELECT id, codigo, nombre FROM medio_pago WHERE activo=1 ORDER BY codigo');
-	$o = '';
-	while ($r && ($row = $r->fetch_assoc())) {
-		$o .= '<option value="' . (int) $row['id'] . '">' . htmlspecialchars($row['codigo'], ENT_QUOTES, 'UTF-8') . '</option>';
-	}
-	return $o;
-}
-function dayq_options_proveedores(mysqli $con) {
-	$r = $con->query('SELECT id, nombre FROM proveedor WHERE activo=1 ORDER BY nombre');
-	$o = '';
-	while ($r && ($row = $r->fetch_assoc())) {
-		$o .= '<option value="' . (int) $row['id'] . '">' . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . '</option>';
-	}
-	return $o;
-}
-function dayq_options_clientes(mysqli $con) {
-	$r = $con->query('SELECT id, nombre FROM cliente WHERE activo=1 ORDER BY nombre');
-	$o = '';
-	while ($r && ($row = $r->fetch_assoc())) {
-		$o .= '<option value="' . (int) $row['id'] . '">' . htmlspecialchars($row['nombre'], ENT_QUOTES, 'UTF-8') . '</option>';
-	}
-	return $o;
+
+// Para módulos Phase 1: incluir header antes del contenido inline
+if (in_array($m, $modulos_fase1, true)) {
+    $dayq_page_title = isset($modulos_disponibles[$modulo]) ? $modulos_disponibles[$modulo] : 'Módulo';
+    include __DIR__ . '/layout_header.php';
 }
 
 /** Query string para modulo.php: conserva módulo, filtros y paginación. */

@@ -11,3 +11,7 @@ function dayq_post($key, $default = '') {
 function dayq_get_int($key, $default = 0) {
 	return isset($_GET[$key]) ? (int) $_GET[$key] : $default;
 }
+
+function dayq_get_str($key, $default = '') {
+	return isset($_GET[$key]) ? trim((string) $_GET[$key]) : $default;
+}
