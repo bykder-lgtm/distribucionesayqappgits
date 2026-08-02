@@ -248,6 +248,7 @@ if ($r_ctas) {
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-file-invoice-dollar"></i> Gastos Operativos</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('gastos')" title="Guía de gastos operativos"><i class="fa-solid fa-circle-question"></i></button>
     <div class="dayq-topbar-actions" style="flex-wrap: wrap; gap: 6px;">
       <input type="text" id="buscar" placeholder="Buscar gasto..." value="<?php echo htmlspecialchars($buscar); ?>"
         style="padding: 8px 12px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px; min-width: 140px;">
@@ -483,7 +484,7 @@ if ($r_ctas) {
     ?>
 
     <div class="dayq-table-wrap">
-      <table class="dayq-table">
+      <table class="dayq-table" id="tabla-gastos-principal">
         <thead>
           <tr>
             <th>Fecha</th>
@@ -623,7 +624,7 @@ if ($r_ctas) {
       }
       ?>
       <div style="display: flex; align-items: center; gap: 20px;">
-        <svg width="120" height="120" viewBox="0 0 120 120">
+        <svg width="120" height="120" viewBox="0 0 120 120" style="cursor: pointer;">
           <circle cx="60" cy="60" r="45" fill="none" stroke="#2a3350" stroke-width="18"/>
           <?php
           $circ = 2 * M_PI * 45;
@@ -634,10 +635,13 @@ if ($r_ctas) {
             $pct = $total_monto > 0 ? (float)$d['total_monto'] / $total_monto : 0;
             $dash = $pct * $circ;
             $color = $colores[$di % count($colores)];
+            $tooltip = htmlspecialchars(($d['cuenta_nombre'] ?: 'General') . ': $' . number_format((float)$d['total_monto'], 0) . ' (' . round($pct*100, 1) . '%)');
           ?>
           <circle cx="60" cy="60" r="45" fill="none" stroke="<?php echo $color; ?>" stroke-width="18"
             stroke-dasharray="<?php echo round($dash, 1); ?> <?php echo round($circ - $dash, 1); ?>"
-            stroke-dashoffset="-<?php echo round($offset_donut, 1); ?>" transform="rotate(-90 60 60)"/>
+            stroke-dashoffset="-<?php echo round($offset_donut, 1); ?>" transform="rotate(-90 60 60)"
+            onmouseover="this.setAttribute('stroke-width', '22')" onmouseout="this.setAttribute('stroke-width', '18')"
+            title="<?php echo $tooltip; ?>"/>
           <?php
             $offset_donut += $dash;
             $di++;
@@ -687,6 +691,85 @@ if ($r_ctas) {
           <?php echo $pct_ingresos; ?>%
         </div>
         <div style="font-size: 10px; color: var(--text3);">De ingresos destinados a gastos</div>
+      </div>
+    </div>
+  </div>
+  <?php endif; ?>
+  <!-- TABLA DE DESGLOSE POR SUBCATEGORÍA -->
+  <?php if ($total_gastos > 0): 
+    $gastos_cat = $db_service->getGastosAgrupadosPorCategoria($fecha_desde, $fecha_hasta);
+    $variacion_mensual = $db_service->getGastosVariacionMensual(6);
+    $mes_anterior = count($variacion_mensual) > 1 ? (float)$variacion_mensual[count($variacion_mensual)-2]['total_monto'] : 0;
+    $variacion_pct = $mes_anterior > 0 ? round((($total_monto - $mes_anterior) / $mes_anterior) * 100, 1) : 0;
+  ?>
+  <div class="dayq-section" style="margin-top: 16px;">
+    <h3 class="dayq-section-title"><i class="fa-solid fa-layer-group"></i> Desglose por Subcategoría</h3>
+    <div class="dayq-table-wrap">
+      <table class="dayq-table" style="font-size: 11px;">
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th>Subcategoría</th>
+            <th style="text-align: center;">Cantidad</th>
+            <th style="text-align: right;">Monto</th>
+            <th style="text-align: right;">% del Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php 
+          $cat_actual = '';
+          $total_cat_monto = 0;
+          $total_cat_cant = 0;
+          foreach ($gastos_cat as $gc): 
+            $pct_item = $total_monto > 0 ? round(((float)$gc['total_monto'] / $total_monto) * 100, 1) : 0;
+            if ($cat_actual !== '' && $cat_actual !== $gc['categoria']):
+          ?>
+            <tr style="background: rgba(79,142,247,0.05); font-weight: 600;">
+              <td colspan="2" style="color: var(--accent);">Total <?php echo $cat_actual; ?></td>
+              <td style="text-align: center;"><?php echo $total_cat_cant; ?></td>
+              <td style="text-align: right; color: var(--accent);">$<?php echo dayq_formato_moneda($total_cat_monto); ?></td>
+              <td style="text-align: right;"><?php echo $total_monto > 0 ? round(($total_cat_monto / $total_monto) * 100, 1) : 0; ?>%</td>
+            </tr>
+          <?php $total_cat_monto = 0; $total_cat_cant = 0; endif; ?>
+            <tr>
+              <td><span class="chip" style="font-size: 10px;"><?php echo $gc['categoria']; ?></span></td>
+              <td><?php echo htmlspecialchars($gc['subcategoria']); ?></td>
+              <td style="text-align: center;"><?php echo $gc['cantidad']; ?></td>
+              <td style="text-align: right; font-weight: 600;">$<?php echo dayq_formato_moneda($gc['total_monto']); ?></td>
+              <td style="text-align: right; color: var(--text3);"><?php echo $pct_item; ?>%</td>
+            </tr>
+          <?php $cat_actual = $gc['categoria']; $total_cat_monto += (float)$gc['total_monto']; $total_cat_cant += (int)$gc['cantidad']; endforeach; ?>
+          <?php if ($cat_actual !== ''): ?>
+            <tr style="background: rgba(79,142,247,0.05); font-weight: 600;">
+              <td colspan="2" style="color: var(--accent);">Total <?php echo $cat_actual; ?></td>
+              <td style="text-align: center;"><?php echo $total_cat_cant; ?></td>
+              <td style="text-align: right; color: var(--accent);">$<?php echo dayq_formato_moneda($total_cat_monto); ?></td>
+              <td style="text-align: right;"><?php echo $total_monto > 0 ? round(($total_cat_monto / $total_monto) * 100, 1) : 0; ?>%</td>
+            </tr>
+          <?php endif; ?>
+        </tbody>
+        <tfoot>
+          <tr style="font-weight: 700; border-top: 2px solid var(--border);">
+            <td colspan="2">Total General</td>
+            <td style="text-align: center;"><?php echo $total_gastos; ?></td>
+            <td style="text-align: right; color: var(--red);">$<?php echo dayq_formato_moneda($total_monto); ?></td>
+            <td style="text-align: right;">100%</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    
+    <!-- Variación Mensual -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding: 12px 16px; background: var(--card2); border-radius: 8px;">
+      <div>
+        <strong style="font-size: 12px;">Variación vs Mes Anterior</strong>
+        <span style="color: var(--text3); font-size: 11px; margin-left: 8px;">
+          Mes anterior: $<?php echo dayq_formato_moneda($mes_anterior); ?>
+        </span>
+      </div>
+      <div style="font-size: 18px; font-weight: 700; color: <?php echo $variacion_pct <= 0 ? 'var(--green)' : 'var(--red)'; ?>; font-family: 'DM Mono', monospace;">
+        <?php echo $variacion_pct >= 0 ? '+' : ''; ?><?php echo $variacion_pct; ?>%
+        <span style="font-size: 12px; font-weight: 400;">vs mes anterior</span>
       </div>
     </div>
   </div>
@@ -786,6 +869,25 @@ function buscarGastos() {
   if (anulado === '1') url += '&anulado=1';
   window.location.href = url;
 }
+
+// Inicializar filtros de tabla
+document.addEventListener('DOMContentLoaded', function() {
+    var tables = document.querySelectorAll('.dayq-table');
+    if (tables.length > 0 && typeof initFiltrosTabla === 'function') {
+        initFiltrosTabla(tables[0].id || 'tabla-gastos', {
+            tipos: {
+                0: 'date',    // Fecha
+                1: 'select',  // Categoría
+                2: 'text',    // Subcategoría
+                3: 'text',    // Descripción
+                5: 'text'     // Valor
+            },
+            opciones: {
+                1: ['Operativos', 'Ingresos', 'Financieros']
+            }
+        });
+    }
+});
 </script>
 
 <?php include __DIR__ . '/layout_footer.php'; ?>

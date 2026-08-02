@@ -13,6 +13,7 @@ include __DIR__ . '/layout_header.php';
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-gear"></i> Configuración</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('configuracion')" title="Guía de configuración"><i class="fa-solid fa-circle-question"></i></button>
   </div>
 
   <!-- TABS -->

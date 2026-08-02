@@ -20,6 +20,7 @@ include __DIR__ . '/layout_header.php';
 
 <!-- MODULE TOPBAR -->
 <div class="module-topbar">    <div class="module-topbar-title"><i class="fa-solid fa-chart-line"></i> Dashboard Ejecutivo</div>
+  <button class="dayq-help-btn" onclick="showModuleGuide('dashboard')" title="Guía del Dashboard"><i class="fa-solid fa-circle-question"></i></button>
   <div class="module-topbar-actions">
     <div class="chip"><i class="fa-regular fa-calendar"></i> Hoy, <?php echo date('d') . ' de ' . str_replace(array('January','February','March','April','May','June','July','August','September','October','November','December'), array('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'), date('F')) . ' de ' . date('Y'); ?></div>
     <input type="date" id="fecha_desde" value="<?php echo $fecha_desde; ?>" style="padding:6px 10px;background:var(--card2);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:11px;">
@@ -42,6 +43,10 @@ include __DIR__ . '/layout_header.php';
   $kpi_valor_fin = $db_service->getValorFinanciado($fecha_desde, $fecha_hasta);
   $kpi_flujo = $db_service->getFlujoCajaHoy($fecha_hasta);
   $saldo_tes = $db_service->getSaldoTesoreria($fecha_hasta);
+  $kpi_cartera = $db_service->getCarteraPorCobrar($fecha_hasta);
+  $kpi_util_mes = $db_service->getUtilidadAcumuladaMes($fecha_hasta);
+  $kpi_relacion = $db_service->getRelacionIngresosGastos($fecha_hasta);
+  $kpi_saldo_banc = $db_service->getSaldoBancarioTotal();
   ?>
 
   <div class="kpi-grid">
@@ -62,24 +67,33 @@ include __DIR__ . '/layout_header.php';
     </div>
 
     <div class="kpi-card">
-      <div class="kpi-label">Utilidad Bruta (Día)</div>
-      <div class="kpi-value">$<?php echo dayq_formato_moneda($kpi_valor_fin); ?></div>
-      <div class="kpi-delta up">↑ 9.4%</div>
-      <div class="kpi-sub">Margen: <?php echo $kpi_valor_fin > 0 ? '7.0' : '0'; ?>%</div>
+      <div class="kpi-label">Cartera por Cobrar</div>
+      <div class="kpi-value" style="color: var(--accent);">$<?php echo dayq_formato_moneda(isset($kpi_cartera['saldo_pendiente']) ? $kpi_cartera['saldo_pendiente'] : 0); ?></div>
+      <div class="kpi-delta up">↑ <?php echo isset($kpi_cartera['creditos_pendientes']) ? $kpi_cartera['creditos_pendientes'] : 0; ?> créditos</div>
+      <div class="kpi-sub">Pendiente de cobro</div>
     </div>
 
     <div class="kpi-card">
-      <div class="kpi-label">Por Pagar Habilitadores</div>
-      <div class="kpi-value">$<?php echo dayq_formato_moneda($saldo_tes['salidas']); ?></div>
-      <div class="kpi-delta down">↓ <?php echo $saldo_tes['entradas'] > 0 ? round(($saldo_tes['salidas'] / $saldo_tes['entradas']) * 100, 1) : 0; ?>%</div>
-      <div class="kpi-sub">Vencidos: $<?php echo dayq_formato_moneda($saldo_tes['salidas'] * 0.05); ?></div>
+      <div class="kpi-label">Saldo Bancario</div>
+      <div class="kpi-value">$<?php echo dayq_formato_moneda($kpi_saldo_banc); ?></div>
+      <div class="kpi-delta up">En cuentas</div>
+      <div class="kpi-sub">Total bancos</div>
     </div>
 
     <div class="kpi-card">
-      <div class="kpi-label">Por Cobrar Habilitadores</div>
-      <div class="kpi-value">$<?php echo dayq_formato_moneda($saldo_tes['entradas']); ?></div>
-      <div class="kpi-delta up">↑ <?php echo $saldo_tes['saldo'] > 0 ? round(($saldo_tes['entradas'] / max($saldo_tes['saldo'], 1)) * 100, 1) : 0; ?>%</div>
-      <div class="kpi-sub">Vencidos: $<?php echo dayq_formato_moneda($saldo_tes['entradas'] * 0.08); ?></div>
+      <div class="kpi-label">Utilidad Acumulada (Mes)</div>
+      <div class="kpi-value" style="color: var(--green);">$<?php echo dayq_formato_moneda($kpi_util_mes); ?></div>
+      <div class="kpi-delta up">Estimada 30%</div>
+      <div class="kpi-sub">Margen proyectado</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Relación Gasto/Ingreso</div>
+      <div class="kpi-value" style="color: var(--yellow);"><?php echo $kpi_relacion['relacion']; ?>%</div>
+      <div class="kpi-delta <?php echo $kpi_relacion['relacion'] < 30 ? 'up' : 'down'; ?>">
+        <?php echo $kpi_relacion['relacion'] < 30 ? '✓ Eficiente' : '⚠ Alto';
+      ?></div>
+      <div class="kpi-sub">Gastos: $<?php echo dayq_formato_moneda($kpi_relacion['gastos']); ?></div>
     </div>
   </div>
 
@@ -136,13 +150,13 @@ include __DIR__ . '/layout_header.php';
 
     <!-- Bar: Utilidad -->
     <?php
-    $util_data = $db_service->getUtilidadPorHabilitador($fecha_desde, $fecha_hasta);
+    $util_data = $db_service->getUtilidadPorLinea($fecha_desde, $fecha_hasta);
     $util_items = $util_data['items'];
     $max_util = $util_data['max_utilidad'];
     $colores_bar = array('#4f8ef7', '#6c5ce7', '#00c896', '#f7c948', '#ff8c42', '#a78bfa');
     ?>
     <div class="card">
-      <div class="card-title">Utilidad por habilitador (Últimos 6 meses)</div>
+      <div class="card-title">Utilidad por Línea (Últimos 6 meses)</div>
       <div class="bar-chart">
         <?php foreach ($util_items as $bi => $bar):
           $altura = $max_util > 0 ? round(($bar['utilidad'] / $max_util) * 100) : 0;
@@ -206,7 +220,8 @@ include __DIR__ . '/layout_header.php';
       COUNT(DISTINCT ifv.cod_info_factura_venta) AS creditos_pend,
       COALESCE(SUM(cc.monto_deuda - cc.abonado), 0) AS pendiente
     FROM tbl15_entidad_crediticia ec
-    JOIN tbl15_info_factura_venta ifv ON ifv.cod_tercero = ec.cod_entidad_crediticia
+    JOIN tbl15_operador_credito oc ON oc.cod_entidad_crediticia = ec.cod_entidad_crediticia
+    JOIN tbl15_info_factura_venta ifv ON ifv.cod_operador_credito = oc.cod_operador_credito
     LEFT JOIN tbl15_cuentas_cobrar cc ON cc.cod_info_factura_venta = ifv.cod_info_factura_venta
     WHERE ifv.nombre_estado_factura NOT IN ('ANULADA', 'CERRADA')
     AND (cc.monto_deuda - cc.abonado) > 0
@@ -304,7 +319,7 @@ include __DIR__ . '/layout_header.php';
     <div class="card">
       <div class="card-title">Rentabilidad por Línea <span style="font-size:10px;font-weight:400;color:var(--text3);">(mes actual)</span></div>
       <?php
-      $util_mes = $db_service->getUtilidadPorHabilitador($fecha_mes_inicio, $fecha_hoy);
+      $util_mes = $db_service->getUtilidadPorLinea($fecha_mes_inicio, $fecha_hoy);
       $util_items_mes = $util_mes['items'];
       ?>
       <div class="dayq-table-wrap">
@@ -538,7 +553,7 @@ include __DIR__ . '/layout_header.php';
         <?php if (count($creditos) > 0): ?>
           <?php foreach ($creditos as $cred): ?>
             <tr>
-              <td style="color:var(--accent);">#<?php echo $cred['cod_factura']; ?></td>
+              <td style="color:var(--accent);"><strong>#<?php echo (int)$cred['cod_info_factura_venta']; ?></strong><?php if (!empty($cred['cod_factura']) && $cred['cod_factura'] !== '0'): ?> <small style="color:var(--text3);font-weight:400;">/ F:<?php echo $cred['cod_factura']; ?></small><?php endif; ?></td>
               <td><?php echo htmlspecialchars(isset($cred['cliente']) ? $cred['cliente'] : '-'); ?></td>
               <td><?php echo htmlspecialchars(isset($cred['comercio']) ? $cred['comercio'] : '-'); ?></td>
               <td><?php echo htmlspecialchars(isset($cred['linea']) ? $cred['linea'] : '-'); ?></td>
@@ -559,8 +574,8 @@ include __DIR__ . '/layout_header.php';
     <?php if ($total_paginas > 1): ?>
       <div class="pagination">
         <?php if ($pagina > 1): ?>
-          <a href="?m=dashboard&page=1">&laquo;</a>
-          <a href="?m=dashboard&page=<?php echo $pagina - 1; ?>">&lsaquo;</a>
+          <a href="?m=dashboard&page=1" title="Primera página">&laquo;</a>
+          <a href="?m=dashboard&page=<?php echo $pagina - 1; ?>" title="Página anterior">&lsaquo;</a>
         <?php endif; ?>
         <?php $inicio = max(1, $pagina - 2); $fin = min($total_paginas, $pagina + 2); ?>
         <?php for ($i = $inicio; $i <= $fin; $i++): ?>
@@ -571,8 +586,8 @@ include __DIR__ . '/layout_header.php';
           <?php endif; ?>
         <?php endfor; ?>
         <?php if ($pagina < $total_paginas): ?>
-          <a href="?m=dashboard&page=<?php echo $pagina + 1; ?>">&rsaquo;</a>
-          <a href="?m=dashboard&page=<?php echo $total_paginas; ?>">&raquo;</a>
+          <a href="?m=dashboard&page=<?php echo $pagina + 1; ?>" title="Página siguiente">&rsaquo;</a>
+          <a href="?m=dashboard&page=<?php echo $total_paginas; ?>" title="Última página">&raquo;</a>
         <?php endif; ?>
       </div>
     <?php endif; ?>

@@ -23,6 +23,7 @@ $filtro_estado = dayq_get_str('estado', ''); // pagado, pendiente, vencido
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-money-bill-transfer"></i> Pagos a Comercios</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('pagos_comercios')" title="Guía de pagos a comercios"><i class="fa-solid fa-circle-question"></i></button>
     <div class="dayq-topbar-actions">
       <input type="text" id="buscar" placeholder="Buscar comercio o crédito..." value="<?php echo htmlspecialchars($buscar); ?>"
         style="padding: 8px 12px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px; min-width: 160px;">
@@ -30,7 +31,47 @@ $filtro_estado = dayq_get_str('estado', ''); // pagado, pendiente, vencido
         style="padding: 8px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
       <input type="date" id="fecha_hasta" value="<?php echo $fecha_hasta; ?>"
         style="padding: 8px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
-      <button class="dayq-btn dayq-btn-primary" onclick="buscarPagos()"><i class="fa-solid fa-search"></i> Filtrar</button>
+      <button class="dayq-btn dayq-btn-primary" onclick="buscarPagos()"><i class="fa-solid fa-search"></i> Buscar</button>
+      <button class="dayq-btn" style="background: var(--accent); color: white; border: none;" onclick="abrirModalBanco()"><i class="fa-solid fa-building-columns"></i> Asignar Banco</button>
+    </div>
+  </div>
+
+  <!-- MODAL ASIGNAR BANCO -->
+  <div id="modalAsignarBanco" class="dayq-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; align-items: center; justify-content: center;">
+    <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 420px; max-width: 95%; padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="margin: 0; font-size: 15px;"><i class="fa-solid fa-building-columns"></i> Asignar Cuenta Bancaria</h3>
+        <button onclick="cerrarModalBanco()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text3);" title="Cerrar">&times;</button>
+      </div>
+      <form method="POST" action="reg_dayq.php">
+        <input type="hidden" name="entity" value="asignar_banco">
+        <input type="hidden" name="redirect" value="pagos_comercios">
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11px; color: var(--text3); font-weight: 600; display: block; margin-bottom: 4px;">ID del Movimiento</label>
+          <input type="number" name="cod_movimiento" id="asignar_mov_id" min="1" readonly required style="width: 100%; padding: 9px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 14px; font-weight: 700;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 11px; color: var(--text3); font-weight: 600; display: block; margin-bottom: 4px;">Cuenta Bancaria</label>
+          <select name="cod_banco_cuenta" style="width: 100%; padding: 9px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px;">
+            <option value="0">Sin asignar</option>
+            <?php
+            $bancos_sel = $db_service->getCuentasBancarias();
+            if ($bancos_sel['success'] && count($bancos_sel['items']) > 0):
+              foreach ($bancos_sel['items'] as $b):
+            ?>
+            <option value="<?php echo $b['cod_banco_cuenta']; ?>">
+              <?php echo htmlspecialchars($b['nombre_banco_cuenta']); ?> - <?php echo htmlspecialchars($b['numero_banco_cuenta']); ?>
+            </option>
+            <?php endforeach; endif; ?>
+          </select>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" onclick="cerrarModalBanco()" class="dayq-btn" style="padding: 8px 16px;">Cancelar</button>
+          <button type="submit" class="dayq-btn dayq-btn-primary" style="padding: 8px 20px;">
+            <i class="fa-solid fa-check"></i> Asignar
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -107,12 +148,15 @@ $filtro_estado = dayq_get_str('estado', ''); // pagado, pendiente, vencido
         mc.fecha_ymd_movimiento_caja,
         mc.fecha_hora_movimiento_caja,
         mc.nombre_puc,
+        mc.cod_banco_cuenta,
         t.nombres_apellidos_tercero AS tercero_nombre,
         ifv.cod_factura,
-        ifv.cod_info_factura_venta
+        ifv.cod_info_factura_venta,
+        bc.nombre_banco_cuenta AS banco_nombre
       FROM tbl15_movimiento_caja mc
       LEFT JOIN tbl15_tercero t ON t.cod_tercero = mc.cod_tercero
       LEFT JOIN tbl15_info_factura_venta ifv ON ifv.cod_tercero = mc.cod_tercero
+      LEFT JOIN tbl15_banco_cuenta bc ON bc.cod_banco_cuenta = mc.cod_banco_cuenta
       $where
       ORDER BY mc.fecha_ymd_movimiento_caja DESC, mc.fecha_hora_movimiento_caja DESC
       LIMIT $offset, $por_pagina";
@@ -134,6 +178,7 @@ $filtro_estado = dayq_get_str('estado', ''); // pagado, pendiente, vencido
             <th>Comercio / Tercero</th>
             <th>Crédito Relacionado</th>
             <th>Concepto</th>
+            <th>Cuenta Bancaria</th>
             <th style="text-align: right;">Valor</th>
             <th style="text-align: center;">Estado</th>
           </tr>
@@ -157,7 +202,7 @@ $filtro_estado = dayq_get_str('estado', ''); // pagado, pendiente, vencido
               <td>
                 <?php if (isset($p['cod_factura'])): ?>
                   <a href="?m=credito_detalle&id=<?php echo $p['cod_info_factura_venta']; ?>" style="font-family: monospace; color: var(--accent);">
-                    #<?php echo $p['cod_factura']; ?>
+                    <strong>#<?php echo (int)$p['cod_info_factura_venta']; ?></strong><?php if (!empty($p['cod_factura']) && $p['cod_factura'] !== '0'): ?> <small style="color:var(--text3);font-weight:400;">/ F:<?php echo $p['cod_factura']; ?></small><?php endif; ?>
                   </a>
                 <?php else: ?>
                   <span style="color: var(--text3);">—</span>
@@ -165,6 +210,13 @@ $filtro_estado = dayq_get_str('estado', ''); // pagado, pendiente, vencido
               </td>
               <td style="font-size: 11px; max-width: 200px;">
                 <?php echo htmlspecialchars($p['descripcion_movimiento'] ?: ($p['nombre_puc'] ?: '-')); ?>
+              </td>
+              <td style="font-size: 11px;">
+                <?php if (!empty($p['banco_nombre'])): ?>
+                  <span class="badge badge-blue" style="font-size: 10px;"><?php echo htmlspecialchars($p['banco_nombre']); ?></span>
+                <?php else: ?>
+                  <span style="color: var(--text3);">—</span>
+                <?php endif; ?>
               </td>
               <td style="text-align: right; font-weight: 600; color: var(--red);">
                 $<?php echo dayq_formato_moneda($p['total_creditos']); ?>
@@ -180,7 +232,7 @@ $filtro_estado = dayq_get_str('estado', ''); // pagado, pendiente, vencido
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="6" style="text-align: center; padding: 40px; color: var(--text3);">
+              <td colspan="7" style="text-align: center; padding: 40px; color: var(--text3);">
                 <i class="fa-solid fa-receipt" style="font-size: 28px; display: block; margin-bottom: 8px; opacity: 0.4;"></i>
                 No hay pagos a comercios registrados en el período seleccionado
               </td>
@@ -228,6 +280,20 @@ $filtro_estado = dayq_get_str('estado', ''); // pagado, pendiente, vencido
 </div>
 
 <script>
+function abrirModalBanco(movId) {
+  document.getElementById('asignar_mov_id').value = movId || '';
+  document.getElementById('modalAsignarBanco').style.display = 'flex';
+}
+
+function cerrarModalBanco() {
+  document.getElementById('modalAsignarBanco').style.display = 'none';
+}
+
+document.addEventListener('click', function(e) {
+  var modal = document.getElementById('modalAsignarBanco');
+  if (e.target === modal) cerrarModalBanco();
+});
+
 function buscarPagos() {
   const buscar = document.getElementById('buscar').value;
   const desde = document.getElementById('fecha_desde').value;
@@ -238,6 +304,28 @@ function buscarPagos() {
   if (hasta) url += '&fecha_hasta=' + hasta;
   window.location.href = url;
 }
+</script>
+
+<script>
+// Inicializar filtros de tabla
+document.addEventListener('DOMContentLoaded', function() {
+    var tables = document.querySelectorAll('.dayq-table');
+    if (tables.length > 0 && typeof initFiltrosTabla === 'function') {
+        initFiltrosTabla(tables[0].id || 'tabla-pagos-comercios', {
+            tipos: {
+                0: 'date',    // Fecha
+                1: 'text',    // Comercio / Tercero
+                2: 'text',    // Crédito Relacionado
+                3: 'text',    // Concepto
+                4: 'text',    // Valor
+                5: 'select'   // Estado
+            },
+            opciones: {
+                5: ['Pagado', 'Pendiente']
+            }
+        });
+    }
+});
 </script>
 
 <?php include __DIR__ . '/layout_footer.php'; ?>

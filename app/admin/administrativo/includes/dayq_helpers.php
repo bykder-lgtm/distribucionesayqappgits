@@ -1,4 +1,15 @@
 <?php
+/**
+ * dayq_helpers.php - Funciones helper de uso general para el módulo administrativo
+ *
+ * Funcionalidades:
+ * - Escape seguro de strings para MySQL (dayq_e)
+ * - Captura segura de variables POST (dayq_post)
+ * - Captura segura de variables GET como entero (dayq_get_int)
+ * - Captura segura de variables GET como string (dayq_get_str)
+ *
+ * @see changelog/CAMBIOS_20260724.md
+ */
 
 function dayq_e(mysqli $con, $s) {
 	return mysqli_real_escape_string($con, (string) $s);

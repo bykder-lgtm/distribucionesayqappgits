@@ -62,6 +62,286 @@ function dayq_try_delete_or_redirect(mysqli $conectar, $modulo, $tabla, $id, $la
 $entity = dayq_post('entity');
 $action = dayq_post('action', 'save');
 
+if ($entity === 'habilitador') {
+	$id = (int) dayq_post('id');
+	$action = dayq_post('action', 'save');
+	
+	if ($action === 'delete' && $id > 0) {
+		require_once __DIR__ . '/includes/dayq_db_service.php';
+		$db = new DayqDbService($conectar);
+		if ($db->desactivarHabilitador($id)) {
+			dayq_redirect_mod('habilitadores', 'Habilitador desactivado correctamente');
+		}
+		dayq_redirect_mod('habilitadores', '', 'No se pudo desactivar el habilitador');
+	}
+	
+	if ($action === 'activate' && $id > 0) {
+		require_once __DIR__ . '/includes/dayq_db_service.php';
+		$db = new DayqDbService($conectar);
+		if ($db->activarHabilitador($id)) {
+			dayq_redirect_mod('habilitadores', 'Habilitador reactivado correctamente');
+		}
+		dayq_redirect_mod('habilitadores', '', 'No se pudo reactivar el habilitador');
+	}
+	
+	$nombre = dayq_post('nombre');
+	$nit = dayq_post('nit');
+	$telefono = dayq_post('telefono');
+	$correo = dayq_post('correo');
+	$contacto = dayq_post('nombre_contacto');
+	$interes = (float) dayq_post('interes_ptj');
+	$comision = (float) dayq_post('comision_ptj');
+	$estado = (int) dayq_post('cod_estado', '1');
+	
+	if ($nombre === '') {
+		dayq_redirect_mod('habilitadores', '', 'El nombre del habilitador es obligatorio');
+	}
+	
+	require_once __DIR__ . '/includes/dayq_db_service.php';
+	$db = new DayqDbService($conectar);
+	
+	if ($id > 0) {
+		$datos = [
+			'nombre' => $nombre,
+			'nit' => $nit,
+			'telefono' => $telefono,
+			'correo' => $correo,
+			'nombre_contacto' => $contacto,
+			'interes_ptj' => $interes,
+			'comision_ptj' => $comision,
+			'cod_estado' => $estado
+		];
+		if ($db->actualizarHabilitador($id, $datos)) {
+			dayq_redirect_mod('habilitadores', 'Habilitador actualizado correctamente');
+		}
+		dayq_redirect_mod('habilitadores', '', 'No se pudo actualizar el habilitador');
+	} else {
+		$datos = [
+			'nombre' => $nombre,
+			'nit' => $nit,
+			'telefono' => $telefono,
+			'correo' => $correo,
+			'nombre_contacto' => $contacto,
+			'interes_ptj' => $interes,
+			'comision_ptj' => $comision
+		];
+		$nuevo_id = $db->crearHabilitador($datos);
+		if ($nuevo_id > 0) {
+			dayq_redirect_mod('habilitadores', 'Habilitador creado correctamente');
+		}
+		dayq_redirect_mod('habilitadores', '', 'No se pudo crear el habilitador');
+	}
+}
+
+if ($entity === 'cliente') {
+	$id = (int) dayq_post('id');
+	$action = dayq_post('action', 'save');
+	$redirect = dayq_post('redirect', '');
+	
+	$nombre = dayq_post('nombre');
+	$telefono = dayq_post('telefono');
+	$correo = dayq_post('correo');
+	$direccion = dayq_post('direccion');
+	
+	if ($nombre === '') {
+		dayq_redirect_mod('clientes', '', 'El nombre del cliente es obligatorio');
+	}
+	
+	require_once __DIR__ . '/includes/dayq_db_service.php';
+	$db = new DayqDbService($conectar);
+	
+	if ($db->actualizarCliente($id, [
+		'nombre' => $nombre,
+		'telefono' => $telefono,
+		'correo' => $correo,
+		'direccion' => $direccion
+	])) {
+		if ($redirect !== '') {
+			dayq_redirect_raw($redirect, 'Cliente actualizado correctamente');
+		}
+		dayq_redirect_mod('clientes', 'Cliente actualizado correctamente');
+	}
+	if ($redirect !== '') {
+		dayq_redirect_raw($redirect, '', 'No se pudo actualizar el cliente');
+	}
+	dayq_redirect_mod('clientes', '', 'No se pudo actualizar el cliente');
+}
+
+if ($entity === 'estado_credito') {
+	$id = (int) dayq_post('id');
+	$nuevo_estado = dayq_post('nuevo_estado');
+	$redirect = dayq_post('redirect');
+	$modulos_validos = ['creditos_lista', 'anulaciones'];
+	if (in_array($redirect, $modulos_validos, true)) {
+		$redirect_url = 'modulo.php?m=' . $redirect;
+	} else {
+		$redirect_url = 'modulo.php?m=credito_detalle&id=' . $id;
+	}
+	
+	if ($id <= 0 || $nuevo_estado === '') {
+		header('Location: ' . $redirect_url . '&err=' . rawurlencode('Datos inválidos'));
+		exit;
+	}
+	
+	require_once __DIR__ . '/includes/dayq_db_service.php';
+	$db = new DayqDbService($conectar);
+	
+	if ($db->cambiarEstadoCredito($id, $nuevo_estado)) {
+		// Registrar en historial (nota de observación)
+		$admin_id = isset($_SESSION['cod_administrador']) ? (int)$_SESSION['cod_administrador'] : 0;
+		$cuenta = isset($_SESSION['cuenta_actual']) ? dayq_e($conectar, $_SESSION['cuenta_actual']) : '';
+		$texto_nota = dayq_e($conectar, 'Cambio de estado automático: → ' . $nuevo_estado);
+		$fecha_ymd = date('Y-m-d');
+		$fecha_hora = date('H:i:s');
+		$fecha_creacion = date('Y-m-d H:i:s');
+		$conectar->query("INSERT INTO tbl15_nota_observacion 
+			(cod_info_factura_venta, nombre_nota_observacion, cuenta, cod_administrador, 
+			 fecha_ymd, fecha_hora, fecha_creacion, cod_tipo_nota_observacion, 
+			 codigo_estado_revision, cod_posicion, active)
+			VALUES (
+				$id, '$texto_nota', '$cuenta', $admin_id,
+				'$fecha_ymd', '$fecha_hora', '$fecha_creacion', 1,
+				1, 0, 1
+			)");
+		header('Location: ' . $redirect_url . '&msg=' . rawurlencode('Estado actualizado correctamente'));
+	} else {
+		header('Location: ' . $redirect_url . '&err=' . rawurlencode('No se pudo actualizar el estado. Verifique que la transición sea válida.'));
+	}
+	exit;
+}
+
+function dayq_redirect_raw($url, $msg = '', $err = '') {
+	$q = 'modulo.php?' . $url;
+	if ($msg !== '') {
+		$q .= '&msg=' . rawurlencode($msg);
+	}
+	if ($err !== '') {
+		$q .= '&err=' . rawurlencode($err);
+	}
+	header('Location: ' . $q);
+	exit;
+}
+
+if ($entity === 'prestamo') {
+	$id = (int) dayq_post('id');
+	$action = dayq_post('action', 'save');
+	
+	if ($action === 'anular' && $id > 0) {
+		$motivo = dayq_post('motivo', 'Anulación manual');
+		require_once __DIR__ . '/includes/dayq_db_service.php';
+		$db = new DayqDbService($conectar);
+		if ($db->anularPrestamo($id, $motivo)) {
+			dayq_redirect_mod('prestamos', 'Préstamo anulado correctamente');
+		}
+		dayq_redirect_mod('prestamos', '', 'No se pudo anular el préstamo');
+	}
+	
+	$cod_empleado = (int) dayq_post('cod_empleado');
+	$monto = (float) dayq_post('monto_prestamo');
+	$num_cuotas = (int) dayq_post('numero_cuotas', 1);
+	$interes = (float) dayq_post('interes_ptj', 0);
+	$metodo_pago = (int) dayq_post('cod_metodo_pago', 1);
+	$notas = dayq_post('notas');
+	$cod_admin = isset($_SESSION['cod_administrador']) ? (int) $_SESSION['cod_administrador'] : 0;
+	
+	if ($cod_empleado <= 0 || $monto <= 0) {
+		dayq_redirect_raw('m=prestamos&accion=crear', '', 'Datos inválidos: empleado y monto requeridos');
+	}
+	
+	require_once __DIR__ . '/includes/dayq_db_service.php';
+	$db = new DayqDbService($conectar);
+	
+	$nuevo_id = $db->crearPrestamo([
+		'cod_empleado' => $cod_empleado,
+		'monto_prestamo' => $monto,
+		'numero_cuotas' => $num_cuotas,
+		'interes_ptj' => $interes,
+		'cod_metodo_pago' => $metodo_pago,
+		'notas' => $notas,
+		'cod_admin_crea' => $cod_admin
+	]);
+	
+	if ($nuevo_id > 0) {
+		dayq_redirect_raw('m=prestamos&accion=detalle&id=' . $nuevo_id, 'Préstamo creado correctamente');
+	}
+	dayq_redirect_raw('m=prestamos&accion=crear', '', 'Error al crear el préstamo');
+}
+
+if ($entity === 'pago_cuota') {
+	$id = (int) dayq_post('id');
+	$id_prestamo = (int) dayq_post('cod_prestamo', 0);
+	$cod_admin = isset($_SESSION['cod_administrador']) ? (int) $_SESSION['cod_administrador'] : 0;
+	
+	if ($id <= 0) {
+		$url = $id_prestamo > 0 ? 'm=prestamos&accion=detalle&id=' . $id_prestamo : 'm=prestamos';
+		dayq_redirect_raw($url, '', 'ID de cuota inválido');
+	}
+	
+	require_once __DIR__ . '/includes/dayq_db_service.php';
+	$db = new DayqDbService($conectar);
+	
+	$result = $db->registrarPagoCuota($id, [
+		'fecha_pago' => date('Y-m-d H:i:s'),
+		'cod_tipo_forma_pago' => (int) dayq_post('cod_tipo_forma_pago', 1),
+		'cod_banco_cuenta' => (int) dayq_post('cod_banco_cuenta', 0),
+		'cod_admin_pago' => $cod_admin
+	]);
+	
+	$url = $id_prestamo > 0 ? 'm=prestamos&accion=detalle&id=' . $id_prestamo : 'm=prestamos';
+	if ($result) {
+		dayq_redirect_raw($url, 'Pago registrado correctamente');
+	}
+	dayq_redirect_raw($url, '', 'No se pudo registrar el pago');
+}
+
+if ($entity === 'asignar_banco') {
+	$cod_mov = (int) dayq_post('cod_movimiento');
+	$cod_banco = (int) dayq_post('cod_banco_cuenta');
+	$redirect = dayq_post('redirect', 'pagos_habilitadores');
+	
+	if ($cod_mov <= 0) {
+		dayq_redirect_mod($redirect, '', 'ID de movimiento inválido');
+	}
+	
+	require_once __DIR__ . '/includes/dayq_db_service.php';
+	$db = new DayqDbService($conectar);
+	
+	if ($db->asignarBancoMovimiento($cod_mov, $cod_banco)) {
+		dayq_redirect_mod($redirect, 'Cuenta bancaria asignada correctamente');
+	}
+	dayq_redirect_mod($redirect, '', 'No se pudo asignar la cuenta bancaria');
+}
+
+if ($entity === 'anulacion') {
+	$id = (int) dayq_post('id');
+	$motivo = dayq_post('motivo');
+	$tipo = dayq_post('tipo_anulacion', 'ANTES_APROBACION');
+	$penalidad = (float) dayq_post('penalidad', 0);
+	$perdida = (float) dayq_post('perdida_total', 0);
+	$cod_admin = isset($_SESSION['cod_administrador']) ? (int) $_SESSION['cod_administrador'] : 0;
+	
+	if ($id <= 0 || $motivo === '') {
+		$err = $id <= 0 ? 'ID de crédito inválido' : 'El motivo es obligatorio';
+		dayq_redirect_mod('anulaciones', '', $err);
+	}
+	
+	require_once __DIR__ . '/includes/dayq_db_service.php';
+	$db = new DayqDbService($conectar);
+	
+	$anulacion_id = $db->registrarAnulacion($id, [
+		'motivo' => $motivo,
+		'tipo_anulacion' => $tipo,
+		'penalidad' => $penalidad,
+		'perdida_total' => $perdida,
+		'cod_admin' => $cod_admin
+	]);
+	
+	if ($anulacion_id > 0) {
+		dayq_redirect_mod('anulaciones', 'Anulación registrada correctamente');
+	}
+	dayq_redirect_mod('anulaciones', '', 'No se pudo registrar la anulación');
+}
+
 if ($entity === 'medio_pago') {
 	$id = (int) dayq_post('id');
 	if ($action === 'delete' && $id > 0) {

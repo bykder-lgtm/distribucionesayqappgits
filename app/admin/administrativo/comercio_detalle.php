@@ -76,7 +76,7 @@ $total_paginas = $creditos_data['total_paginas'];
       <tbody>
         <?php foreach ($creditos as $cred): ?>
         <tr>
-          <td>#<?php echo $cred['cod_factura']; ?></td>
+          <td><strong>#<?php echo (int)$cred['cod_info_factura_venta']; ?></strong><?php if (!empty($cred['cod_factura']) && $cred['cod_factura'] !== '0'): ?> <small style="color:var(--text3);font-weight:400;">/ F:<?php echo $cred['cod_factura']; ?></small><?php endif; ?></td>
           <td><?php echo htmlspecialchars(isset($cred['cliente']) ? $cred['cliente'] : '-'); ?></td>
           <td><?php echo htmlspecialchars(isset($cred['linea']) ? $cred['linea'] : '-'); ?></td>
           <td>$<?php echo dayq_formato_moneda(isset($cred['valor']) ? $cred['valor'] : 0); ?></td>

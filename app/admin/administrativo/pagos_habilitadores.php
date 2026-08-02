@@ -1,7 +1,7 @@
 <?php
 /**
  * app/admin/administrativo/pagos_habilitadores.php
- * Pagos a Habilitadores - Gestión de pagos recibidos de entidades crediticias
+ * Pagos de Habilitadores - Gestión de pagos recibidos de entidades crediticias
  * Datos desde tbl15_movimiento_caja (entradas/débitos de habilitadores) + tbl15_cuentas_cobrar
  */
 require_once __DIR__ . '/bootstrap.php';
@@ -10,7 +10,7 @@ require_once __DIR__ . '/includes/dayq_utilidades.php';
 
 $db_service = new DayqDbService($conectar);
 
-$dayq_page_title = 'Pagos Habilitadores';
+$dayq_page_title = 'Pagos de Habilitadores';
 include __DIR__ . '/layout_header.php';
 
 $pagina = dayq_get_int('page', 1);
@@ -21,7 +21,8 @@ $buscar = dayq_get_str('buscar', '');
 
 <div class="dayq-container">
   <div class="dayq-topbar">
-    <h1 class="dayq-topbar-title"><i class="fa-solid fa-building-columns"></i> Pagos a Habilitadores</h1>
+    <h1 class="dayq-topbar-title"><i class="fa-solid fa-building-columns"></i> Pagos de Habilitadores</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('pagos_habilitadores')" title="Guía de pagos de habilitadores"><i class="fa-solid fa-circle-question"></i></button>
     <div class="dayq-topbar-actions">
       <input type="text" id="buscar" placeholder="Buscar habilitador o lote..." value="<?php echo htmlspecialchars($buscar); ?>"
         style="padding: 8px 12px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px; min-width: 160px;">
@@ -29,7 +30,47 @@ $buscar = dayq_get_str('buscar', '');
         style="padding: 8px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
       <input type="date" id="fecha_hasta" value="<?php echo $fecha_hasta; ?>"
         style="padding: 8px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
-      <button class="dayq-btn dayq-btn-primary" onclick="buscarPagos()"><i class="fa-solid fa-search"></i> Filtrar</button>
+      <button class="dayq-btn dayq-btn-primary" onclick="buscarPagos()"><i class="fa-solid fa-search"></i> Buscar</button>
+      <button class="dayq-btn" style="background: var(--accent); color: white; border: none;" onclick="abrirModalBanco()"><i class="fa-solid fa-building-columns"></i> Asignar Banco</button>
+    </div>
+  </div>
+
+  <!-- MODAL ASIGNAR BANCO -->
+  <div id="modalAsignarBanco" class="dayq-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001; align-items: center; justify-content: center;">
+    <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 420px; max-width: 95%; padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="margin: 0; font-size: 15px;"><i class="fa-solid fa-building-columns"></i> Asignar Cuenta Bancaria</h3>
+        <button onclick="cerrarModalBanco()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text3);" title="Cerrar">&times;</button>
+      </div>
+      <form method="POST" action="reg_dayq.php">
+        <input type="hidden" name="entity" value="asignar_banco">
+        <input type="hidden" name="redirect" value="pagos_habilitadores">
+        <div style="margin-bottom: 12px;">
+          <label style="font-size: 11px; color: var(--text3); font-weight: 600; display: block; margin-bottom: 4px;">ID del Movimiento</label>
+          <input type="number" name="cod_movimiento" id="asignar_mov_id" min="1" readonly required style="width: 100%; padding: 9px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 14px; font-weight: 700;">
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 11px; color: var(--text3); font-weight: 600; display: block; margin-bottom: 4px;">Cuenta Bancaria</label>
+          <select name="cod_banco_cuenta" style="width: 100%; padding: 9px; background: var(--card2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px;">
+            <option value="0">Sin asignar</option>
+            <?php
+            $bancos_sel = $db_service->getCuentasBancarias();
+            if ($bancos_sel['success'] && count($bancos_sel['items']) > 0):
+              foreach ($bancos_sel['items'] as $b):
+            ?>
+            <option value="<?php echo $b['cod_banco_cuenta']; ?>">
+              <?php echo htmlspecialchars($b['nombre_banco_cuenta']); ?> - <?php echo htmlspecialchars($b['numero_banco_cuenta']); ?>
+            </option>
+            <?php endforeach; endif; ?>
+          </select>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" onclick="cerrarModalBanco()" class="dayq-btn" style="padding: 8px 16px;">Cancelar</button>
+          <button type="submit" class="dayq-btn dayq-btn-primary" style="padding: 8px 20px;">
+            <i class="fa-solid fa-check"></i> Asignar
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -51,10 +92,6 @@ $buscar = dayq_get_str('buscar', '');
 
   // Cobrado hoy
   $hoy_sql = date('Y-m-d');
-  $r_hoy = $db_service->query("SELECT COALESCE(SUM(total_debitos), 0) AS cobrado_hoy 
-    FROM tbl15_movimiento_caja 
-    WHERE total_debitos > 0 AND DATE(fecha_ymd_movimiento_caja) = '$hoy_sql'");
-  $cobrado_hoy = $r_hoy ? (float)$r_hoy->fetch_assoc()['cobrado_hoy'] : 0;
 
   // Pendiente por cobrar desde cuentas_cobrar
   $r_pend = $db_service->query("SELECT COALESCE(SUM(cc.monto_deuda - cc.abonado), 0) AS pendiente_total
@@ -62,6 +99,11 @@ $buscar = dayq_get_str('buscar', '');
     JOIN tbl15_info_factura_venta ifv ON ifv.cod_info_factura_venta = cc.cod_info_factura_venta
     WHERE ifv.nombre_estado_factura NOT IN ('ANULADA', 'CERRADA')");
   $pendiente_total = $r_pend ? (float)$r_pend->fetch_assoc()['pendiente_total'] : 0;
+  $promedio_dias = $db_service->getPromedioDiasPago();
+  $hab_atrasados = $db_service->getHabilitadoresConAtraso();
+  $total_atraso = 0;
+  foreach ($hab_atrasados as $ha) { $total_atraso += (float)$ha['monto_atrasado']; }
+  $cobrado_hoy_kpi = $db_service->getPagosRecibidosHoy($hoy_sql);
   ?>
   <div class="kpi-grid" style="margin-bottom: 24px;">
     <div class="kpi-card">
@@ -76,13 +118,23 @@ $buscar = dayq_get_str('buscar', '');
     </div>
     <div class="kpi-card">
       <div class="kpi-label"><i class="fa-regular fa-calendar"></i> Cobrado Hoy</div>
-      <div class="kpi-value">$<?php echo dayq_formato_moneda($cobrado_hoy); ?></div>
+      <div class="kpi-value">$<?php echo dayq_formato_moneda($cobrado_hoy_kpi); ?></div>
       <div class="kpi-sub"><?php echo dayq_formato_fecha($hoy_sql); ?></div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label"><i class="fa-solid fa-hourglass-half"></i> Pendiente x Cobrar</div>
       <div class="kpi-value">$<?php echo dayq_formato_moneda($pendiente_total); ?></div>
       <div class="kpi-sub">De cuentas activas</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><i class="fa-solid fa-clock"></i> Promedio Pago</div>
+      <div class="kpi-value" style="color: var(--accent);"><?php echo $promedio_dias; ?> días</div>
+      <div class="kpi-sub">Desde creación crédito</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><i class="fa-solid fa-triangle-exclamation"></i> Con Atraso</div>
+      <div class="kpi-value" style="color: var(--red);"><?php echo count($hab_atrasados); ?></div>
+      <div class="kpi-sub">$<?php echo dayq_formato_moneda($total_atraso); ?> > 60 días</div>
     </div>
   </div>
 
@@ -115,10 +167,13 @@ $buscar = dayq_get_str('buscar', '');
         mc.fecha_ymd_movimiento_caja,
         mc.fecha_hora_movimiento_caja,
         mc.nombre_puc,
+        mc.cod_banco_cuenta,
         ec.nombre_entidad_crediticia AS habilitador_nombre,
-        ec.cod_entidad_crediticia AS habilitador_id
+        ec.cod_entidad_crediticia AS habilitador_id,
+        bc.nombre_banco_cuenta AS banco_nombre
       FROM tbl15_movimiento_caja mc
       LEFT JOIN tbl15_entidad_crediticia ec ON ec.cod_entidad_crediticia = mc.cod_tercero
+      LEFT JOIN tbl15_banco_cuenta bc ON bc.cod_banco_cuenta = mc.cod_banco_cuenta
       $where
       ORDER BY mc.fecha_ymd_movimiento_caja DESC, mc.fecha_hora_movimiento_caja DESC
       LIMIT $offset, $por_pagina";
@@ -132,13 +187,13 @@ $buscar = dayq_get_str('buscar', '');
     }
     ?>
 
-    <div class="dayq-table-wrap">
-      <table class="dayq-table">
+    <div class="dayq-table-wrap">        <table class="dayq-table" id="tabla-pagos-hab">
         <thead>
           <tr>
             <th>Fecha</th>
             <th>Habilitador</th>
             <th>Lote / Concepto</th>
+            <th>Cuenta Bancaria</th>
             <th style="text-align: right;">Valor</th>
             <th style="text-align: center;">Estado</th>
             <th style="text-align: center;">Acciones</th>
@@ -166,6 +221,13 @@ $buscar = dayq_get_str('buscar', '');
               <td style="font-size: 11px; max-width: 220px;">
                 <?php echo htmlspecialchars($p['descripcion_movimiento'] ?: ($p['nombre_puc'] ?: '-')); ?>
               </td>
+              <td style="font-size: 11px;">
+                <?php if (!empty($p['banco_nombre'])): ?>
+                  <span class="badge badge-blue" style="font-size: 10px;"><?php echo htmlspecialchars($p['banco_nombre']); ?></span>
+                <?php else: ?>
+                  <span style="color: var(--text3);">—</span>
+                <?php endif; ?>
+              </td>
               <td style="text-align: right; font-weight: 600; color: var(--green);">
                 $<?php echo dayq_formato_moneda($p['total_debitos']); ?>
               </td>
@@ -179,7 +241,12 @@ $buscar = dayq_get_str('buscar', '');
                 <?php endif; ?>
               </td>
               <td style="text-align: center;">
-                <a href="?m=tesoreria&tab=movimientos&fecha_desde=<?php echo date('Y-m-d', strtotime($p['fecha_ymd_movimiento_caja'] . ' - 1 day')); ?>&fecha_hasta=<?php echo $p['fecha_ymd_movimiento_caja']; ?>" class="dayq-btn" style="padding: 4px 8px; font-size: 10px;">
+                <?php if (empty($p['cod_banco_cuenta'])): ?>
+                  <button onclick="abrirModalBanco(<?php echo $p['cod_movimiento_caja']; ?>)" class="dayq-btn" style="padding: 4px 8px; font-size: 10px;" title="Asignar cuenta bancaria">
+                    <i class="fa-solid fa-building-columns"></i>
+                  </button>
+                <?php endif; ?>
+                <a href="?m=tesoreria&tab=movimientos&fecha_desde=<?php echo date('Y-m-d', strtotime($p['fecha_ymd_movimiento_caja'] . ' - 1 day')); ?>&fecha_hasta=<?php echo $p['fecha_ymd_movimiento_caja']; ?>" class="dayq-btn" style="padding: 4px 8px; font-size: 10px;" title="Ver en tesorería">
                   <i class="fa-solid fa-eye"></i>
                 </a>
               </td>
@@ -187,7 +254,7 @@ $buscar = dayq_get_str('buscar', '');
             <?php endforeach; ?>
           <?php else: ?>
             <tr>
-              <td colspan="6" style="text-align: center; padding: 40px; color: var(--text3);">
+              <td colspan="7" style="text-align: center; padding: 40px; color: var(--text3);">
                 <i class="fa-solid fa-building-columns" style="font-size: 28px; display: block; margin-bottom: 8px; opacity: 0.4;"></i>
                 No hay pagos de habilitadores registrados en el período seleccionado
               </td>
@@ -201,7 +268,7 @@ $buscar = dayq_get_str('buscar', '');
     <?php if ($total_pagos > 0): ?>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding: 12px 16px; background: var(--card2); border-radius: 8px;">
       <div>
-        <strong style="font-size: 12px;">Total Cobrado a Habilitadores</strong>
+        <strong style="font-size: 12px;">Total Cobrado de Habilitadores</strong>
         <span style="color: var(--text3); font-size: 11px; margin-left: 8px;">Período</span>
       </div>
       <div style="font-size: 20px; font-weight: 700; color: var(--green); font-family: 'DM Mono', monospace;">
@@ -238,6 +305,20 @@ $buscar = dayq_get_str('buscar', '');
 </div>
 
 <script>
+function abrirModalBanco(movId) {
+  document.getElementById('asignar_mov_id').value = movId || '';
+  document.getElementById('modalAsignarBanco').style.display = 'flex';
+}
+
+function cerrarModalBanco() {
+  document.getElementById('modalAsignarBanco').style.display = 'none';
+}
+
+document.addEventListener('click', function(e) {
+  var modal = document.getElementById('modalAsignarBanco');
+  if (e.target === modal) cerrarModalBanco();
+});
+
 function buscarPagos() {
   const buscar = document.getElementById('buscar').value;
   const desde = document.getElementById('fecha_desde').value;
@@ -248,6 +329,26 @@ function buscarPagos() {
   if (hasta) url += '&fecha_hasta=' + hasta;
   window.location.href = url;
 }
+
+// Inicializar filtros de tabla
+document.addEventListener('DOMContentLoaded', function() {
+    var tables = document.querySelectorAll('.dayq-table');
+    if (tables.length > 0 && typeof initFiltrosTabla === 'function') {
+        initFiltrosTabla(tables[0].id || 'tabla-pagos-hab', {
+            tipos: {
+                0: 'date',    // Fecha
+                1: 'text',    // Habilitador
+                2: 'text',    // Lote / Concepto
+                3: 'text',    // Cuenta Bancaria
+                4: 'text',    // Valor
+                5: 'select'   // Estado
+            },
+            opciones: {
+                5: ['Recibido', 'Hoy', 'Pendiente']
+            }
+        });
+    }
+});
 </script>
 
 <?php include __DIR__ . '/layout_footer.php'; ?>

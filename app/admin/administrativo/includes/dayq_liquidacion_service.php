@@ -38,9 +38,11 @@ class DayqLiquidacionService {
         $interes_ptj = (float)(isset($row['interes_ptj']) ? $row['interes_ptj'] : 0);
         $recargo = ($valor_contado * $interes_ptj) / 100;
         $valor_financiado = $valor_contado + $recargo;
+        $valor_credito = (float)(isset($row['monto_deuda']) ? $row['monto_deuda'] : 0);
         
         return [
             'valor_contado' => $valor_contado,
+            'valor_credito' => $valor_credito,
             'interes_ptj' => $interes_ptj,
             'recargo' => $recargo,
             'valor_financiado' => $valor_financiado,
@@ -66,7 +68,8 @@ class DayqLiquidacionService {
                     ec.comision_ptj
                 FROM tbl15_info_factura_venta ifv
                 LEFT JOIN tbl15_cuentas_cobrar cc ON cc.cod_info_factura_venta = ifv.cod_info_factura_venta
-                LEFT JOIN tbl15_entidad_crediticia ec ON ec.cod_entidad_crediticia = ifv.cod_tercero
+                LEFT JOIN tbl15_operador_credito oc ON oc.cod_operador_credito = ifv.cod_operador_credito
+                LEFT JOIN tbl15_entidad_crediticia ec ON ec.cod_entidad_crediticia = oc.cod_entidad_crediticia
                 WHERE ifv.cod_info_factura_venta = $cod";
         
         $r = $this->con->query($sql);
@@ -125,7 +128,8 @@ class DayqLiquidacionService {
                     ec.aval_ptj
                 FROM tbl15_info_factura_venta ifv
                 LEFT JOIN tbl15_cuentas_cobrar cc ON cc.cod_info_factura_venta = ifv.cod_info_factura_venta
-                LEFT JOIN tbl15_entidad_crediticia ec ON ec.cod_entidad_crediticia = ifv.cod_tercero
+                LEFT JOIN tbl15_operador_credito oc ON oc.cod_operador_credito = ifv.cod_operador_credito
+                LEFT JOIN tbl15_entidad_crediticia ec ON ec.cod_entidad_crediticia = oc.cod_entidad_crediticia
                 WHERE ifv.cod_info_factura_venta = $cod";
         
         $r = $this->con->query($sql);

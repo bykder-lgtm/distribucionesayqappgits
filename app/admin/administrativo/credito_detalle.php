@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && dayq_post('action') === 'guardar_no
 
 $nota_guardada = isset($_GET['nota_ok']) && $_GET['nota_ok'] === '1';
 
-$dayq_page_title = 'Detalle de Crédito #' . $credito['cod_factura'];
+$dayq_page_title = 'Detalle de Crédito #' . (int)$credito['cod_info_factura_venta'] . (!empty($credito['cod_factura']) && $credito['cod_factura'] !== '0' ? ' / F:' . $credito['cod_factura'] : '');
 include __DIR__ . '/layout_header.php';
 
 $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) : 'resumen';
@@ -72,17 +72,18 @@ $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) 
     <div class="dayq-topbar-left">
       <a href="?m=creditos_lista" class="dayq-btn" style="margin-right:12px;">← Volver</a>
       <h1 class="dayq-topbar-title">
-        Crédito #<?php echo $credito['cod_factura']; ?>
+        Crédito #<?php echo (int)$credito['cod_info_factura_venta']; ?><?php if (!empty($credito['cod_factura']) && $credito['cod_factura'] !== '0'): ?> <small style="color: var(--text3); font-weight: 400;">/ F:<?php echo htmlspecialchars($credito['cod_factura']); ?></small><?php endif; ?>
         <span class="badge <?php echo dayq_get_estado_clase($credito['nombre_estado_factura']); ?>">
           <?php echo dayq_get_estado_texto($credito['nombre_estado_factura']); ?>
         </span>
       </h1>
+      <button class="dayq-help-btn" onclick="showModuleGuide('credito_detalle')" title="Guía del detalle de crédito"><i class="fa-solid fa-circle-question"></i></button>
     </div>
   </div>
 
   <!-- Breadcrumb de habilitador -->
   <div style="padding: 8px 0 12px; font-size: 12px; color: var(--text3); display: flex; gap: 6px; align-items: center;">
-    <span class="chip"><?php echo htmlspecialchars(isset($credito['cod_factura']) ? 'CR-' . $credito['cod_factura'] : '-'); ?></span>
+    <span class="chip"><?php echo 'CR-' . (int)$credito['cod_info_factura_venta']; ?><?php if (!empty($credito['cod_factura']) && $credito['cod_factura'] !== '0'): ?> / F:<?php echo htmlspecialchars($credito['cod_factura']); ?><?php endif; ?></span>
     <span style="color: var(--text3);">/</span>
     <span class="chip"><?php echo htmlspecialchars(isset($credito['nombre_entidad_crediticia']) ? $credito['nombre_entidad_crediticia'] : '-'); ?></span>
     <?php if (isset($credito['nombre_tienda'])): ?>
@@ -179,12 +180,35 @@ $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) 
           <div class="fin-summary-sub"><?php echo isset($credito['numero_cuota']) ? $credito['numero_cuota'] . ' cuotas' : '-'; ?></div>
         </div>
       </div>
+
+      <!-- Debug: Referencias del crédito -->
+      <div style="margin-top: 14px; padding: 8px 14px; background: var(--card2); border-radius: 6px; border: 1px solid var(--border); font-size: 11px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <span style="color: var(--text3); text-transform: uppercase; font-weight: 700; letter-spacing: 0.4px; font-size: 9px;">🔍 Depuración:</span>
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--text3);">N° Factura:</span>
+          <code style="font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; color: var(--accent); background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 4px;">
+            <?php echo htmlspecialchars(!empty($credito['cod_factura']) && $credito['cod_factura'] !== '0' ? $credito['cod_factura'] : '-'); ?>
+          </code>
+        </span>
+        <span style="color: var(--text3);">|</span>
+        <span style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--text3);">ID Interno (cod_info_factura_venta):</span>
+          <code style="font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; color: var(--text); background: rgba(0,0,0,0.06); padding: 2px 8px; border-radius: 4px;">
+            <?php echo (int)$cod_credito; ?>
+          </code>
+        </span>
+        <?php if ($credito['cod_cuentas_cobrar']): ?>
+          <span class="badge badge-success" style="font-size: 9px;">✔️ Liquidable</span>
+        <?php else: ?>
+          <span class="badge badge-danger" style="font-size: 9px;">❌ Sin cuentas por cobrar</span>
+        <?php endif; ?>
+      </div>
     </div>
 
     <!-- Acciones rápidas -->
     <div class="dayq-section" style="margin-top: 12px;">
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <a href="?m=liquidacion&accion=calcular&cod_credito=<?php echo $cod_credito; ?>" class="dayq-btn dayq-btn-primary"><i class="fa-solid fa-calculator"></i> Liquidar</a>
+        <a href="?m=liquidaciones&cod_credito=<?php echo $cod_credito; ?>" class="dayq-btn dayq-btn-primary"><i class="fa-solid fa-calculator"></i> Liquidar</a>
         <a href="?m=anulaciones&accion=calcular&cod_credito=<?php echo $cod_credito; ?>" class="dayq-btn" style="background:rgba(255,94,122,0.15);color:var(--red);border-color:rgba(255,94,122,0.3);"><i class="fa-solid fa-ban"></i> Anular</a>
       </div>
     </div>
@@ -197,10 +221,6 @@ $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) 
       <div class="dayq-grid-2">
         <div style="background: var(--card2); padding: 16px; border-radius: 8px;">
           <table class="detail-table">
-            <tr>
-              <td class="detail-label">Fecha de Radicación</td>
-              <td class="detail-val"><?php echo dayq_formato_fecha_hora(isset($credito['fecha_creacion']) ? $credito['fecha_creacion'] : ''); ?></td>
-            </tr>
             <tr>
               <td class="detail-label">Fecha de Radicación</td>
               <td class="detail-val"><?php echo dayq_formato_fecha_hora(isset($credito['fecha_creacion']) ? $credito['fecha_creacion'] : ''); ?></td>
@@ -247,6 +267,38 @@ $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) 
           </table>
         </div>
       </div>
+
+      <!-- Cambio de estado -->
+      <?php if (isset($credito['nombre_estado_factura']) && $credito['nombre_estado_factura'] !== 'ANULADA'): ?>
+      <div style="margin-top: 16px; padding: 16px; background: var(--card2); border-radius: 8px; border: 1px solid var(--border);">
+        <h4 style="font-size: 12px; font-weight: 600; margin-bottom: 10px; color: var(--text);">
+          <i class="fa-solid fa-arrows-rotate"></i> Cambiar Estado del Crédito
+        </h4>
+        <form method="POST" action="reg_dayq.php" style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+          <input type="hidden" name="entity" value="estado_credito">
+          <input type="hidden" name="id" value="<?php echo $cod_credito; ?>">
+          <input type="hidden" name="redirect" value="credito_detalle">
+          <div>
+            <label style="font-size: 10px; color: var(--text3); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 4px;">Nuevo Estado</label>
+            <select name="nuevo_estado" style="padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
+              <?php
+              $est_actual = $credito['nombre_estado_factura'];
+              $opts = [];
+              if ($est_actual === 'ABIERTA') $opts = ['PENDIENTE', 'APROBADA', 'CERRADA'];
+              elseif ($est_actual === 'PENDIENTE') $opts = ['ABIERTA', 'APROBADA', 'CERRADA'];
+              elseif ($est_actual === 'APROBADA') $opts = ['ABIERTA', 'CERRADA'];
+              elseif ($est_actual === 'CERRADA') $opts = ['ABIERTA'];
+              foreach ($opts as $opt): ?>
+                <option value="<?php echo $opt; ?>"><?php echo dayq_get_estado_texto($opt); ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <button type="submit" class="dayq-btn dayq-btn-primary" style="padding: 8px 16px;" onclick="return confirm('¿Está seguro de cambiar el estado del crédito a ' + this.form.nuevo_estado.options[this.form.nuevo_estado.selectedIndex].text + '?')">
+            <i class="fa-solid fa-check"></i> Cambiar Estado
+          </button>
+        </form>
+      </div>
+      <?php endif; ?>
     </div>
   </div>
 
@@ -263,9 +315,9 @@ $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) 
             <div class="voucher-block" style="display: flex; align-items: center; gap: 12px; background: var(--card2); padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border);">
               <div style="font-size: 24px;">📄</div>
               <div style="flex: 1;">
-                <div style="font-weight: 600; font-size: 12px;"><?php echo htmlspecialchars($archivo['archivo_adjunto_nombre']); ?></div>
+                <div style="font-weight: 600; font-size: 12px;"><?php echo htmlspecialchars($archivo['nombre_archivo_adjunto']); ?></div>
                 <div style="font-size: 10px; color: var(--text3);">
-                  <?php echo htmlspecialchars(isset($archivo['archivo_adjunto_tipo']) ? $archivo['archivo_adjunto_tipo'] : 'Documento'); ?>
+                  <?php echo htmlspecialchars(isset($archivo['tipo_archivo']) ? $archivo['tipo_archivo'] : 'Documento'); ?>
                   · <?php echo dayq_formato_fecha_hora($archivo['fecha_creacion']); ?>
                 </div>
               </div>
@@ -479,7 +531,7 @@ $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) 
           <div style="flex: 1; background: var(--card2); padding: 10px 14px; border-radius: 6px;">
             <div style="font-size: 11px; font-weight: 600; color: var(--accent);">Crédito Creado</div>
             <div style="font-size: 11px; color: var(--text3);">
-              <span style="color: var(--text);">#<?php echo $credito['cod_factura']; ?></span>
+              <span style="color: var(--text);">#<?php echo (int)$credito['cod_info_factura_venta']; ?><?php if (!empty($credito['cod_factura']) && $credito['cod_factura'] !== '0'): ?> / F:<?php echo htmlspecialchars($credito['cod_factura']); ?><?php endif; ?></span>
               · Valor: $<?php echo dayq_formato_moneda($valor_contado); ?>
             </div>
             <div style="font-size: 10px; color: var(--text3); margin-top: 2px;">

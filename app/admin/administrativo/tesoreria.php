@@ -21,6 +21,7 @@ $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) 
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-coins"></i> Tesorería</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('tesoreria')" title="Guía de tesorería"><i class="fa-solid fa-circle-question"></i></button>
     <div class="dayq-topbar-actions">
       <input type="date" id="fecha_desde" value="<?php echo $fecha_desde; ?>" style="padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
       <input type="date" id="fecha_hasta" value="<?php echo $fecha_hasta; ?>" style="padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
@@ -87,13 +88,11 @@ $tab_activo = isset($_GET['tab']) ? preg_replace('/[^a-z_]/', '', $_GET['tab']) 
     $por_pagina = 15;
     $total_paginas = ceil($total_registros / $por_pagina);
     $movimientos = $db_service->getMovimientosCajaPaginados($pagina, $por_pagina, $fecha_desde, $fecha_hasta);
-    ?>
-
-    <div class="dayq-table-wrap"><table class="dayq-table">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Concepto</th>
+    ?><div class="dayq-table-wrap"><table class="dayq-table" id="tabla-tesoreria-principal">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Concepto</th>
           <th>Tipo</th>
           <th>Entrada</th>
           <th>Salida</th>
@@ -308,6 +307,23 @@ function actualizarTesoreria() {
   var tab = m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : 'movimientos';
   window.location.href = '?m=tesoreria&tab=' + encodeURIComponent(tab) + '&fecha_desde=' + encodeURIComponent(desde) + '&fecha_hasta=' + encodeURIComponent(hasta);
 }
+// Inicializar filtros de tabla
+document.addEventListener('DOMContentLoaded', function() {
+    var tables = document.querySelectorAll('.dayq-table');
+    if (tables.length > 0 && typeof initFiltrosTabla === 'function') {
+        initFiltrosTabla(tables[0].id || 'tabla-tesoreria', {
+            tipos: {
+                0: 'date',    // Fecha
+                1: 'text',    // Concepto
+                2: 'text',    // Cuenta
+                4: 'select'   // Tipo
+            },
+            opciones: {
+                4: ['INGRESO', 'SALIDA']
+            }
+        });
+    }
+});
 </script>
 
 <?php include __DIR__ . '/layout_footer.php'; ?>

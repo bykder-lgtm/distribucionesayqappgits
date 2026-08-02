@@ -2,6 +2,22 @@
 /**
  * app/admin/administrativo/liquidacion.php
  * Módulo de Liquidación - Cálculo de márgenes y comparativos
+ *
+ * Funcionalidades:
+ * - Búsqueda de créditos por ID para liquidar
+ * - Cálculo de liquidación comercial (Cliente) e interna (Flexitech)
+ * - Validación de margen mínimo (15%)
+ * - Vista comparativa lado a lado
+ *
+ * Tablas principales:
+ * - tbl15_info_factura_venta
+ * - tbl15_cuentas_cobrar
+ *
+ * Dependencias:
+ * - dayq_db_service.php
+ * - dayq_liquidacion_service.php
+ *
+ * @see changelog/CAMBIOS_20260724.md
  */
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/includes/dayq_db_service.php';
@@ -35,6 +51,7 @@ $fecha_hasta = isset($_GET['fecha_hasta']) && $_GET['fecha_hasta'] !== '' ? dayq
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-file-invoice-dollar"></i> Liquidación de Créditos</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('liquidaciones')" title="Guía de liquidaciones"><i class="fa-solid fa-circle-question"></i></button>
   </div>
 
   <!-- BUSCADOR -->
@@ -59,6 +76,10 @@ $fecha_hasta = isset($_GET['fecha_hasta']) && $_GET['fecha_hasta'] !== '' ? dayq
             <tr style="border-bottom: 1px solid var(--border);">
               <td style="padding: 6px; color: var(--text3);">Valor Contado:</td>
               <td style="padding: 6px; text-align: right; font-weight: 600;">$<?php echo dayq_formato_moneda($liquidacion_especifica['comercial']['valor_contado']); ?></td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border);">
+              <td style="padding: 6px; color: var(--text3);">Valor Crédito:</td>
+              <td style="padding: 6px; text-align: right; font-weight: 600;">$<?php echo dayq_formato_moneda($liquidacion_especifica['comercial']['valor_credito']); ?></td>
             </tr>
             <tr style="border-bottom: 1px solid var(--border);">
               <td style="padding: 6px; color: var(--text3);">Interés Aplicado:</td>
@@ -125,7 +146,8 @@ $fecha_hasta = isset($_GET['fecha_hasta']) && $_GET['fecha_hasta'] !== '' ? dayq
     </div>
   <?php endif; ?>
 
-  <!-- LISTADO DE CRÉDITOS PARA LIQUIDAR -->
+  <!-- LISTADO DE CRÉDITOS PARA LIQUIDAR (solo cuando NO se está calculando una liquidación específica) -->
+  <?php if (!$liquidacion_especifica): ?>
   <div class="dayq-section">
     <h3 class="dayq-section-title">Créditos Disponibles para Liquidación</h3>
     <?php
@@ -152,7 +174,7 @@ $fecha_hasta = isset($_GET['fecha_hasta']) && $_GET['fecha_hasta'] !== '' ? dayq
         <?php if (count($creditos) > 0): ?>
           <?php foreach ($creditos as $cred): ?>
             <tr>
-              <td>#<?php echo $cred['cod_factura']; ?></td>
+              <td><strong>#<?php echo (int)$cred['cod_info_factura_venta']; ?></strong><?php if (!empty($cred['cod_factura']) && $cred['cod_factura'] !== '0'): ?> <small style="color:var(--text3);font-weight:400;">/ F:<?php echo $cred['cod_factura']; ?></small><?php endif; ?></td>
               <td><?php echo htmlspecialchars(isset($cred['cliente']) ? $cred['cliente'] : '-'); ?></td>
               <td><?php echo htmlspecialchars(isset($cred['comercio']) ? $cred['comercio'] : '-'); ?></td>
               <td><?php echo htmlspecialchars(isset($cred['linea']) ? $cred['linea'] : '-'); ?></td>
@@ -163,7 +185,7 @@ $fecha_hasta = isset($_GET['fecha_hasta']) && $_GET['fecha_hasta'] !== '' ? dayq
                 <?php echo dayq_get_estado_texto($cred['nombre_estado_factura']); ?>
               </span></td>
               <td>
-                <a href="?m=liquidacion&accion=calcular&cod_credito=<?php echo $cred['cod_info_factura_venta']; ?>" class="dayq-btn"><i class="fa-solid fa-calculator"></i> Liquidar</a>
+                <a href="?m=liquidaciones&cod_credito=<?php echo $cred['cod_info_factura_venta']; ?>" class="dayq-btn"><i class="fa-solid fa-calculator"></i> Liquidar</a>
               </td>
             </tr>
           <?php endforeach; ?>
@@ -204,6 +226,7 @@ $fecha_hasta = isset($_GET['fecha_hasta']) && $_GET['fecha_hasta'] !== '' ? dayq
       </div>
     <?php endif; ?>
   </div>
+  <?php endif; ?>
 </div>
 
 <script>

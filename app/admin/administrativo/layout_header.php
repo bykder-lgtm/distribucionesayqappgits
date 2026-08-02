@@ -1,4 +1,17 @@
 <?php
+/**
+ * Layout Header - Portal Administrativo DAyQ
+ * 
+ * Header común para todas las páginas del módulo administrativo.
+ * Incluye estilos CSS, sidebar de navegación y componentes UI.
+ *
+ * Funcionalidades:
+ * - Estilos globales con tema oscuro
+ * - Mensajes flash con auto-ocultamiento
+ * - Sidebar de navegación
+ *
+ * @see changelog/CAMBIOS_20260724.md
+ */
 if (!isset($dayq_page_title)) {
 	$dayq_page_title = 'Portal administrativo';
 }
@@ -14,7 +27,32 @@ if (!isset($dayq_page_title)) {
 	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" rel="stylesheet">
 	<link href="../../estilo_css/portal_administrativo.css" rel="stylesheet">
-	<link href="./css/style.css?v=3" rel="stylesheet">
+	<link href="./css/style.css?v=5" rel="stylesheet">
+	<style>
+	/* Botón de ayuda contextual (REQ 11) */
+	.dayq-help-btn {
+		margin-left: 8px;
+		width: 32px;
+		height: 32px;
+		border-radius: 8px;
+		background: rgba(79,142,247,0.1);
+		border: 1px solid rgba(79,142,247,0.2);
+		color: #4f8ef7;
+		cursor: pointer;
+		font-size: 14px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		transition: all 0.15s;
+	}
+	.dayq-help-btn:hover {
+		background: rgba(79,142,247,0.2);
+		border-color: #4f8ef7;
+	}
+	</style>
+	<script src="./js/filtros_tabla.js"></script>
+	<script src="./js/guias_modulos.js"></script>
 </head>
 <body class="dayq-adm-app">
 <div class="dayq-adm-shell">

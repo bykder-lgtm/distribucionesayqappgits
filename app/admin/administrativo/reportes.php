@@ -20,6 +20,7 @@ $fecha_hasta = dayq_get_str('fecha_hasta', date('Y-m-d'));
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-chart-bar"></i> Reportes y Análisis</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('reportes')" title="Guía de reportes"><i class="fa-solid fa-circle-question"></i></button>
     <div class="dayq-topbar-actions">
       <input type="date" id="fecha_desde" value="<?php echo $fecha_desde; ?>" style="padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
       <input type="date" id="fecha_hasta" value="<?php echo $fecha_hasta; ?>" style="padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
@@ -47,8 +48,8 @@ $fecha_hasta = dayq_get_str('fecha_hasta', date('Y-m-d'));
       $kpi_valor = $db_service->getValorFinanciado($fecha_desde, $fecha_hasta);
       $saldo = $db_service->getSaldoTesoreria();
       
-      // Obtener datos de rentabilidad por habilitador
-      $rentabilidad_data = $db_service->getUtilidadPorHabilitador($fecha_desde, $fecha_hasta);
+      // Obtener datos de rentabilidad por línea
+      $rentabilidad_data = $db_service->getUtilidadPorLinea($fecha_desde, $fecha_hasta);
       $rentabilidad_items = $rentabilidad_data['items'];
       $total_utilidad = 0;
 foreach ($rentabilidad_items as $item) {
@@ -75,18 +76,18 @@ foreach ($rentabilidad_items as $item) {
         </div>
       </div>
 
-      <!-- Tabla de Rentabilidad por Habilitador -->
+      <!-- Tabla de Rentabilidad por Línea -->
       <div style="background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px;">
         <div style="padding: 10px 14px; border-bottom: 1px solid var(--border);">
-          <span style="font-size: 12px; font-weight: 700;">Rentabilidad por Habilitador</span>
+          <span style="font-size: 12px; font-weight: 700;">Rentabilidad por Línea</span>
         </div>
         <div class="dayq-table-wrap">
           <table class="dayq-table" style="font-size: 11px;">
             <thead>
               <tr>
-                <th>Habilitador</th>
+                <th>Línea</th>
                 <th style="text-align: right;">Ventas (Cliente paga)</th>
-                <th style="text-align: right;">Costo Habilit.</th>
+                <th style="text-align: right;">Costo Línea</th>
                 <th style="text-align: right;">Utilidad Bruta</th>
                 <th style="text-align: right;">Gastos Asoc.</th>
                 <th style="text-align: right;">Utilidad Neta</th>
@@ -150,7 +151,7 @@ foreach ($rentabilidad_items as $item) {
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
         <div style="background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
           <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text3); margin-bottom: 14px;">
-            <i class="fa-solid fa-chart-pie"></i> Distribución de Utilidad Neta
+            <i class="fa-solid fa-chart-pie"></i> Distribución de Utilidad por Línea
           </div>
           <div style="display: flex; align-items: center; gap: 20px;">
             <svg width="120" height="120" viewBox="0 0 120 120">
@@ -339,7 +340,8 @@ foreach ($rentabilidad_items as $item) {
           SUM(cc.abonado) as abonado,
           SUM(cc.monto_deuda - cc.abonado) as pendiente
         FROM tbl15_entidad_crediticia ec
-        LEFT JOIN tbl15_info_factura_venta ifv ON ec.cod_entidad_crediticia = ifv.cod_entidad_crediticia
+        LEFT JOIN tbl15_operador_credito oc ON oc.cod_entidad_crediticia = ec.cod_entidad_crediticia
+        LEFT JOIN tbl15_info_factura_venta ifv ON ifv.cod_operador_credito = oc.cod_operador_credito
         LEFT JOIN tbl15_cuentas_cobrar cc ON ifv.cod_info_factura_venta = cc.cod_info_factura_venta
         WHERE ifv.fecha_creacion BETWEEN '$fecha_desde' AND '$fecha_hasta'
         GROUP BY ec.cod_entidad_crediticia

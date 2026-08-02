@@ -36,6 +36,7 @@ $fecha_hasta = dayq_get_str('fecha_hasta', date('Y-m-d'));
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-ban"></i> Anulaciones de Crédito</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('anulaciones')" title="Guía del módulo de anulaciones"><i class="fa-solid fa-circle-question"></i></button>
     <div class="dayq-topbar-actions">
       <input type="date" id="fecha_desde" value="<?php echo $fecha_desde; ?>" style="padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
       <input type="date" id="fecha_hasta" value="<?php echo $fecha_hasta; ?>" style="padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text);">
@@ -184,21 +185,38 @@ $fecha_hasta = dayq_get_str('fecha_hasta', date('Y-m-d'));
         </p>
       </div>
 
-      <!-- Responsable y observaciones (editable) -->
-      <div style="margin-top: 12px; display: flex; gap: 16px; background: var(--card2); padding: 14px; border-radius: 8px;">
-        <div style="flex: 1;">
-          <label style="font-size: 10px; color: var(--text3); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 4px;">Responsable</label>
-          <input type="text" value="Administrador" style="width: 100%; padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
+      <!-- Formulario de confirmación de anulación -->
+      <form method="POST" action="reg_dayq.php">
+        <input type="hidden" name="entity" value="anulacion">
+        <input type="hidden" name="id" value="<?php echo $cod_credito; ?>">
+        <input type="hidden" name="penalidad" value="<?php echo $impacto_anulacion['penalidad']; ?>">
+        <input type="hidden" name="perdida_total" value="<?php echo $impacto_anulacion['perdida_total']; ?>">
+        <div style="margin-top: 12px; display: flex; gap: 16px; background: var(--card2); padding: 14px; border-radius: 8px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 200px;">
+            <label style="font-size: 10px; color: var(--text3); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 4px;">Tipo de Anulación</label>
+            <select name="tipo_anulacion" style="width: 100%; padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
+              <option value="ANTES_APROBACION">Antes de aprobación</option>
+              <option value="DESPUES_APROBACION">Después de aprobación</option>
+              <option value="PERDIDA_TOTAL">Pérdida total</option>
+            </select>
+          </div>
+          <div style="flex: 2; min-width: 300px;">
+            <label style="font-size: 10px; color: var(--text3); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 4px;">Motivo de la Anulación *</label>
+            <textarea name="motivo" required placeholder="Describa el motivo de la anulación..." style="width: 100%; padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px; min-height: 40px; resize: vertical;"></textarea>
+          </div>
         </div>
-        <div style="flex: 2;">
-          <label style="font-size: 10px; color: var(--text3); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 4px;">Observaciones</label>
-          <input type="text" placeholder="Motivo de la anulación..." style="width: 100%; padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
+        <div style="margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px;">
+          <a href="?m=anulaciones" class="dayq-btn" style="padding: 8px 16px;">Cancelar</a>
+          <button type="submit" class="dayq-btn" style="padding: 8px 20px; background: var(--red); color: white; border: none;" onclick="return confirm('⚠️ ¿Está seguro de anular este crédito? Se generará una pérdida de $<?php echo dayq_formato_moneda($impacto_anulacion['perdida_total']); ?>. Esta acción no se puede deshacer.')">
+            <i class="fa-solid fa-ban"></i> Confirmar Anulación
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   <?php endif; ?>
 
-  <!-- LISTADO DE CRÉDITOS ANULADOS / DISPONIBLES -->
+  <!-- LISTADO DE CRÉDITOS ANULADOS / DISPONIBLES (solo cuando NO se está calculando una anulación específica) -->
+  <?php if (!$impacto_anulacion): ?>
   <div class="dayq-section">
     <h3 class="dayq-section-title">
       <?php echo $impacto_anulacion ? 'Créditos Disponibles para Anulación' : 'Historial de Anulaciones y Créditos'; ?>
@@ -211,7 +229,7 @@ $fecha_hasta = dayq_get_str('fecha_hasta', date('Y-m-d'));
     ?>
 
     <div class="dayq-table-wrap">
-      <table class="dayq-table">
+      <table class="dayq-table" id="tabla-anulaciones-principal">
         <thead>
           <tr>
             <th>ID</th>
@@ -228,7 +246,7 @@ $fecha_hasta = dayq_get_str('fecha_hasta', date('Y-m-d'));
           <?php if (count($creditos) > 0): ?>
             <?php foreach ($creditos as $cred): ?>
               <tr>
-                <td><span style="color: var(--accent); font-weight: 600;">#<?php echo $cred['cod_factura']; ?></span></td>
+                <td><span style="color: var(--accent); font-weight: 600;">#<?php echo (int)$cred['cod_info_factura_venta']; ?><?php if (!empty($cred['cod_factura']) && $cred['cod_factura'] !== '0'): ?> <small style="color:var(--text3);font-weight:400;">/ F:<?php echo $cred['cod_factura']; ?></small><?php endif; ?></span></td>
                 <td><?php echo htmlspecialchars(isset($cred['cliente']) ? $cred['cliente'] : '-'); ?></td>
                 <td><?php echo htmlspecialchars(isset($cred['comercio']) ? $cred['comercio'] : '-'); ?></td>
                 <td><strong>$<?php echo dayq_formato_moneda(isset($cred['valor']) ? $cred['valor'] : 0); ?></strong></td>
@@ -292,6 +310,7 @@ $fecha_hasta = dayq_get_str('fecha_hasta', date('Y-m-d'));
       </div>
     <?php endif; ?>
   </div>
+  <?php endif; ?>
 </div>
 
 <script>
@@ -300,6 +319,24 @@ function actualizarFiltros() {
   const hasta = document.getElementById('fecha_hasta').value;
   window.location.href = '?m=anulaciones&fecha_desde=' + desde + '&fecha_hasta=' + hasta;
 }
+// Inicializar filtros de tabla
+document.addEventListener('DOMContentLoaded', function() {
+    var tables = document.querySelectorAll('.dayq-table');
+    if (tables.length > 0 && typeof initFiltrosTabla === 'function') {
+        initFiltrosTabla(tables[0].id || 'tabla-anulaciones', {
+            tipos: {
+                0: 'text',    // ID
+                1: 'text',    // Cliente
+                2: 'text',    // Comercio
+                3: 'text',    // Valor Fin.
+                6: 'select'   // Estado
+            },
+            opciones: {
+                6: ['ANULADA', 'ABIERTA', 'PENDIENTE', 'APROBADA', 'CERRADA']
+            }
+        });
+    }
+});
 </script>
 
 <?php include __DIR__ . '/layout_footer.php'; ?>

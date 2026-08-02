@@ -1,7 +1,16 @@
 <?php
 /**
  * app/admin/administrativo/comercios.php
- * Módulo de Comercios - Gestión de puntos de venta
+ * Módulo de Comercios - Gestión de puntos de venta (tiendas) afiliados
+ *
+ * Funcionalidades:
+ * - Listado paginado con búsqueda por nombre
+ * - Acceso a detalle de comercio con créditos asociados
+ *
+ * Tablas principales:
+ * - tbl15_tienda
+ *
+ * @see changelog/CAMBIOS_20260724.md
  */
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/includes/dayq_db_service.php';
@@ -19,6 +28,7 @@ $buscar = dayq_get_str('buscar', '');
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-store"></i> Comercios / Puntos de Venta</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('comercios')" title="Guía del módulo de comercios"><i class="fa-solid fa-circle-question"></i></button>
     <div class="dayq-topbar-actions">
       <div class="dayq-topbar-filter">
         <input type="text" id="buscar" placeholder="Buscar comercio..." value="<?php echo htmlspecialchars($buscar); ?>" style="padding: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px;">
@@ -78,8 +88,8 @@ $buscar = dayq_get_str('buscar', '');
     <?php if ($total_paginas > 1): ?>
       <div class="dayq-pagination">
         <?php if ($pagina > 1): ?>
-          <a href="?m=comercios&page=1">&laquo;</a>
-          <a href="?m=comercios&page=<?php echo $pagina - 1; ?>">&lsaquo;</a>
+          <a href="?m=comercios&page=1" title="Primera página">&laquo;</a>
+          <a href="?m=comercios&page=<?php echo $pagina - 1; ?>" title="Página anterior">&lsaquo;</a>
         <?php endif; ?>
 
         <?php 
@@ -95,8 +105,8 @@ $buscar = dayq_get_str('buscar', '');
         <?php endfor; ?>
 
         <?php if ($pagina < $total_paginas): ?>
-          <a href="?m=comercios&page=<?php echo $pagina + 1; ?>">&rsaquo;</a>
-          <a href="?m=comercios&page=<?php echo $total_paginas; ?>">&raquo;</a>
+          <a href="?m=comercios&page=<?php echo $pagina + 1; ?>" title="Página siguiente">&rsaquo;</a>
+          <a href="?m=comercios&page=<?php echo $total_paginas; ?>" title="Última página">&raquo;</a>
         <?php endif; ?>
       </div>
     <?php endif; ?>
@@ -108,6 +118,23 @@ function buscarComercios() {
   const buscar = document.getElementById('buscar').value;
   window.location.href = '?m=comercios&buscar=' + encodeURIComponent(buscar);
 }
+</script>
+
+<script>
+// Inicializar filtros de tabla
+document.addEventListener('DOMContentLoaded', function() {
+    var tables = document.querySelectorAll('.dayq-table');
+    if (tables.length > 0 && typeof initFiltrosTabla === 'function') {
+        initFiltrosTabla(tables[0].id || 'tabla-comercios', {
+            tipos: {
+                0: 'text',  // Nombre
+                1: 'text',  // NIT
+                2: 'text',  // Dirección
+                3: 'text'   // Teléfono
+            }
+        });
+    }
+});
 </script>
 
 <?php include __DIR__ . '/layout_footer.php'; ?>

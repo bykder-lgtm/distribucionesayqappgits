@@ -23,15 +23,22 @@ $pagina = dayq_get_int('page', 1);
 // Obtener datos de liquidación si se seleccionó un crédito
 $liquidacion_data = null;
 $credito_seleccionado = null;
+$error_liquidacion = '';
 if ($cod_credito > 0) {
     $credito_seleccionado = $db_service->getCreditoDetalle($cod_credito);
-    if ($credito_seleccionado && $credito_seleccionado['cod_cuentas_cobrar']) {
+    if (!$credito_seleccionado) {
+        $error_liquidacion = 'No se encontró un crédito con el ID ingresado';
+    } elseif (!$credito_seleccionado['cod_cuentas_cobrar']) {
+        $error_liquidacion = 'El crédito no tiene información de cuentas por cobrar para liquidar';
+    } else {
         $comparativo = $liq_service->getComparativoLiquidacion(
             $credito_seleccionado['cod_cuentas_cobrar'],
             $cod_credito
         );
         if ($comparativo) {
             $liquidacion_data = $comparativo;
+        } else {
+            $error_liquidacion = 'No se pudo calcular la liquidación. Verifique los datos del crédito.';
         }
     }
 }
@@ -40,6 +47,7 @@ if ($cod_credito > 0) {
 <div class="dayq-container">
   <div class="dayq-topbar">
     <h1 class="dayq-topbar-title"><i class="fa-solid fa-file-invoice-dollar"></i> Liquidaciones</h1>
+    <button class="dayq-help-btn" onclick="showModuleGuide('liquidaciones')" title="Guía de liquidaciones"><i class="fa-solid fa-circle-question"></i></button>
     <div class="dayq-topbar-actions">
       <input type="text" id="buscar" placeholder="Buscar crédito (ID)..."
         value="<?php echo htmlspecialchars($buscar); ?>"
@@ -52,6 +60,52 @@ if ($cod_credito > 0) {
       </button>
     </div>
   </div>
+
+  <!-- MENSAJES FLASH -->
+  <?php if (isset($_GET['err']) && $_GET['err'] !== ''): ?>
+    <div class="dayq-alert dayq-alert-danger"><?php echo htmlspecialchars($_GET['err']); ?></div>
+  <?php endif; ?>
+  <?php if ($error_liquidacion !== ''): ?>
+    <?php if ($error_liquidacion === 'El crédito no tiene información de cuentas por cobrar para liquidar' && $credito_seleccionado): ?>
+      <!-- Mensaje profesional para crédito sin cuentas por cobrar -->
+      <div style="background: var(--card2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 16px;">
+        <div style="display: flex; align-items: stretch;">
+          <div style="width: 6px; background: linear-gradient(180deg, #f59e0b, #ef4444); flex-shrink: 0;"></div>
+          <div style="flex: 1; padding: 20px;">
+            <div style="display: flex; align-items: flex-start; gap: 14px;">
+              <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(245,158,11,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 18px; color: #f59e0b;"></i>
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <h4 style="margin: 0 0 4px; font-size: 14px; font-weight: 700; color: var(--text);">
+                  Crédito sin registros contables
+                </h4>
+                <p style="margin: 0 0 8px; font-size: 12px; color: var(--text2); line-height: 1.5;">
+                  El crédito <strong>#<?php echo (int)$credito_seleccionado['cod_info_factura_venta']; ?></strong>
+                  (<?php echo htmlspecialchars(isset($credito_seleccionado['nombres_apellidos_tercero']) ? $credito_seleccionado['nombres_apellidos_tercero'] : 'Cliente desconocido'); ?>)
+                  no tiene cuentas por cobrar asociadas. Esto puede ocurrir si el crédito fue creado
+                  sin el flujo completo de activación financiera.
+                </p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <a href="?m=liquidaciones" class="dayq-btn" style="padding: 7px 14px; font-size: 11px;">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al listado
+                  </a>
+                  <a href="?m=credito_detalle&id=<?php echo (int)$credito_seleccionado['cod_info_factura_venta']; ?>" class="dayq-btn" style="padding: 7px 14px; font-size: 11px;">
+                    <i class="fa-solid fa-eye"></i> Ver detalle del crédito
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <?php else: ?>
+      <!-- Otros errores: alerta simple -->
+      <div class="dayq-alert dayq-alert-danger">
+        <i class="fa-solid fa-exclamation-triangle"></i> <?php echo htmlspecialchars($error_liquidacion); ?>
+      </div>
+    <?php endif; ?>
+  <?php endif; ?>
 
   <!-- TABS -->
   <div class="dayq-section" style="padding: 0; border: none;">
@@ -88,8 +142,12 @@ if ($cod_credito > 0) {
           <div style="background: var(--card2); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
             <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
               <tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding: 10px 0; color: var(--text3);">Valor Contado</td>
+                <td style="padding: 10px 0; color: var(--text3);">Valor Contado <span style="color: var(--text3); font-size: 10px;">(base sin interés)</span></td>
                 <td style="padding: 10px 0; text-align: right; font-weight: 600;">$<?php echo dayq_formato_moneda($liquidacion_data['comercial']['valor_contado']); ?></td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border);">
+                <td style="padding: 10px 0; color: var(--text3);">Valor Crédito <span style="color: var(--text3); font-size: 10px;">(monto registrado)</span></td>
+                <td style="padding: 10px 0; text-align: right; font-weight: 600;">$<?php echo dayq_formato_moneda($liquidacion_data['comercial']['valor_credito']); ?></td>
               </tr>
               <tr style="border-bottom: 1px solid var(--border);">
                 <td style="padding: 10px 0; color: var(--text3);">Recargo Administrativo (<?php echo dayq_formato_porcentaje($liquidacion_data['comercial']['interes_ptj']); ?>)</td>
@@ -247,7 +305,7 @@ if ($cod_credito > 0) {
               <strong style="color: <?php echo $liquidacion_data['margen_cumple_minimo'] ? 'var(--green)' : 'var(--red)'; ?>;">
                 <i class="fa-solid <?php echo $liquidacion_data['margen_cumple_minimo'] ? 'fa-circle-check' : 'fa-circle-xmark'; ?>" style="margin-right: 4px;"></i>
                 <?php echo $liquidacion_data['margen_cumple_minimo'] ? 'Esta operación cumple' : 'Esta operación NO cumple'; ?> 
-                con el margen mínimo establecido (5.00%).
+                con el margen mínimo establecido (15.00%).
               </strong>
             </div>
           </div>
@@ -258,18 +316,102 @@ if ($cod_credito > 0) {
   <?php else: ?>
     <!-- Estado vacío: no hay crédito seleccionado -->
     <div class="dayq-section">
-      <div style="text-align: center; padding: 60px 20px; color: var(--text3);">
-        <i class="fa-solid fa-calculator" style="font-size: 48px; display: block; margin-bottom: 16px; opacity: 0.3;"></i>
-        <h3 style="font-size: 16px; color: var(--text); margin-bottom: 8px;">Selecciona un Crédito</h3>
-        <p style="font-size: 12px; margin-bottom: 16px;">
-          Ingresa el ID del crédito o búscalo en el listado para ver su liquidación
+      <div style="text-align: center; padding: 40px 20px 24px; color: var(--text3);">
+        <i class="fa-solid fa-calculator" style="font-size: 40px; display: block; margin-bottom: 12px; opacity: 0.3;"></i>
+        <h3 style="font-size: 15px; color: var(--text); margin-bottom: 4px;">Selecciona un Crédito</h3>
+        <p style="font-size: 12px; margin-bottom: 8px;">
+          Ingresa el ID del crédito arriba o selecciona uno del listado
         </p>
-        <a href="?m=creditos_lista" class="dayq-btn dayq-btn-primary">
-          <i class="fa-solid fa-list"></i> Ver Listado de Créditos
-        </a>
+      </div>
+
+      <!-- Listado de créditos disponibles -->
+      <?php
+      $tabla_creditos = $db_service->getCreditosTable($pagina, 10, null, null, $buscar);
+      $creditos_disponibles = $tabla_creditos['items'];
+      $total_paginas_liq = $tabla_creditos['total_paginas'];
+      ?>
+      <div style="border-top: 1px solid var(--border); padding-top: 16px;">
+        <h4 style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text3); margin-bottom: 12px;">
+          <i class="fa-solid fa-list"></i> Créditos disponibles
+          <?php if ($buscar): ?>
+            <span style="color: var(--accent); font-weight: 600;">para &quot;<?php echo htmlspecialchars($buscar); ?>&quot;</span>
+          <?php endif; ?>
+        </h4>
+        <?php if (count($creditos_disponibles) > 0): ?>
+          <div class="dayq-table-wrap" style="max-height: 360px; overflow-y: auto;">
+            <table class="dayq-table" style="font-size: 11px;">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente</th>
+                  <th>Línea</th>
+                  <th style="text-align: right;">Valor</th>
+                  <th>Estado</th>
+                  <th style="text-align: center;">Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php foreach ($creditos_disponibles as $cred): ?>
+                  <tr>
+                    <td><strong>#<?php echo (int)$cred['cod_info_factura_venta']; ?></strong><?php if (!empty($cred['cod_factura']) && $cred['cod_factura'] !== '0'): ?> <small style="color:var(--text3);font-weight:400;">/ F:<?php echo $cred['cod_factura']; ?></small><?php endif; ?></td>
+                    <td><?php echo htmlspecialchars(isset($cred['cliente']) ? $cred['cliente'] : '-'); ?></td>
+                    <td><span class="badge badge-info"><?php echo htmlspecialchars(isset($cred['linea']) ? $cred['linea'] : '-'); ?></span></td>
+                    <td style="text-align: right; font-weight: 600;">$<?php echo dayq_formato_moneda(isset($cred['valor']) ? $cred['valor'] : 0); ?></td>
+                    <td><span class="badge <?php echo dayq_get_estado_clase($cred['nombre_estado_factura']); ?>"><?php echo dayq_get_estado_texto($cred['nombre_estado_factura']); ?></span></td>
+                    <td style="text-align: center;">
+                      <a href="?m=liquidaciones&cod_credito=<?php echo $cred['cod_info_factura_venta']; ?>" class="dayq-btn" style="padding: 4px 10px; font-size: 10px;">
+                        <i class="fa-solid fa-calculator"></i> Liquidar
+                      </a>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              </tbody>
+            </table>
+          </div>
+          <?php if ($total_paginas_liq > 1): ?>
+            <div class="dayq-pagination" style="margin-top: 12px;">
+              <?php
+              $liq_inicio = max(1, $pagina - 2);
+              $liq_fin = min($total_paginas_liq, $pagina + 2);
+              for ($i = $liq_inicio; $i <= $liq_fin; $i++):
+              ?>
+                <?php if ($i === $pagina): ?>
+                  <span class="active"><?php echo $i; ?></span>
+                <?php else: ?>
+                  <a href="?m=liquidaciones&page=<?php echo $i; ?>&buscar=<?php echo urlencode($buscar); ?>"><?php echo $i; ?></a>
+                <?php endif; ?>
+              <?php endfor; ?>
+            </div>
+          <?php endif; ?>
+        <?php else: ?>
+          <div style="text-align: center; padding: 24px; color: var(--text3);">
+            <i class="fa-solid fa-inbox" style="font-size: 20px; display: block; margin-bottom: 6px;"></i>
+            <?php if ($buscar): ?>
+              No se encontraron créditos con &quot;<?php echo htmlspecialchars($buscar); ?>&quot;
+            <?php else: ?>
+              No hay créditos disponibles para liquidar
+            <?php endif; ?>
+          </div>
+        <?php endif; ?>
       </div>
     </div>
   <?php endif; ?>
+</div>
+
+<!-- Modal de error profesional: ID requerido -->
+<div id="modalErrorLiquidacion" class="dayq-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 1000; align-items: center; justify-content: center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; width: 380px; max-width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.4); text-align: center;" onclick="event.stopPropagation()">
+    <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(239,68,68,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 24px; color: var(--red);">
+      <i class="fa-solid fa-circle-exclamation"></i>
+    </div>
+    <h3 style="margin: 0 0 6px; font-size: 15px; font-weight: 700; color: var(--text);">ID de Crédito Requerido</h3>
+    <p style="margin: 0 0 20px; font-size: 13px; color: var(--text2); line-height: 1.5;">
+      Por favor ingresa un ID de crédito para calcular su liquidación.
+    </p>
+    <button type="button" class="dayq-btn dayq-btn-primary" onclick="document.getElementById('modalErrorLiquidacion').style.display='none'; document.getElementById('cod_credito_input').focus();" style="margin: 0 auto;">
+      <i class="fa-solid fa-check"></i> Entendido
+    </button>
+  </div>
 </div>
 
 <script>
@@ -286,7 +428,7 @@ function buscarLiquidacion() {
   } else if (q) {
     window.location.href = '?m=liquidaciones&buscar=' + encodeURIComponent(q);
   } else {
-    alert('Por favor ingresa un ID de crédito');
+    document.getElementById('modalErrorLiquidacion').style.display = 'flex';
   }
 }
 </script>

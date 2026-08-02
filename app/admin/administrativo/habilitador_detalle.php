@@ -35,7 +35,14 @@ $total_paginas = $creditos_data['total_paginas'];
     <h1 class="dayq-topbar-title">
       <i class="fa-solid fa-handshake"></i> <?php echo htmlspecialchars($habilitador['nombre_entidad_crediticia']); ?>
     </h1>
-    <a href="?m=habilitadores" class="dayq-btn"><i class="fa-solid fa-arrow-left"></i> Volver a Habilitadores</a>
+    <div style="display: flex; gap: 8px;">
+      <button class="dayq-btn" onclick="window.location.href='reg_dayq.php?entity=habilitador&action=delete&id=<?php echo $cod_habilitador; ?>'" 
+        style="color: var(--red);" 
+        onclick="return confirm('¿Desactivar esta línea de crédito?')">
+        <i class="fa-solid fa-ban"></i> Desactivar
+      </button>
+      <a href="?m=habilitadores" class="dayq-btn"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+    </div>
   </div>
 
   <!-- INFO DEL HABILITADOR -->
@@ -85,7 +92,7 @@ $total_paginas = $creditos_data['total_paginas'];
       <tbody>
         <?php foreach ($creditos as $cred): ?>
         <tr>
-          <td>#<?php echo $cred['cod_factura']; ?></td>
+          <td><strong>#<?php echo (int)$cred['cod_info_factura_venta']; ?></strong><?php if (!empty($cred['cod_factura']) && $cred['cod_factura'] !== '0'): ?> <small style="color:var(--text3);font-weight:400;">/ F:<?php echo $cred['cod_factura']; ?></small><?php endif; ?></td>
           <td><?php echo htmlspecialchars(isset($cred['cliente']) ? $cred['cliente'] : '-'); ?></td>
           <td><?php echo htmlspecialchars(isset($cred['comercio']) ? $cred['comercio'] : '-'); ?></td>
           <td>$<?php echo dayq_formato_moneda(isset($cred['valor']) ? $cred['valor'] : 0); ?></td>

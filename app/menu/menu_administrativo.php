@@ -30,7 +30,7 @@ function dayq_menu_active($mod, $current) {
       <span class="nav-icon"><i class="fa-solid fa-users"></i></span> <span>Clientes</span> <span class="nav-arrow">›</span>
     </a>
     <a class="nav-item<?php echo dayq_menu_active('habilitadores', $current); ?>" href="<?php echo $base; ?>?m=habilitadores">
-      <span class="nav-icon"><i class="fa-solid fa-handshake"></i></span> <span>Habilitadores</span> <span class="nav-arrow">›</span>
+      <span class="nav-icon"><i class="fa-solid fa-handshake"></i></span> <span>Líneas de Crédito</span> <span class="nav-arrow">›</span>
     </a>
     <a class="nav-item<?php echo dayq_menu_active('anulaciones', $current); ?>" href="<?php echo $base; ?>?m=anulaciones">
       <span class="nav-icon"><i class="fa-solid fa-ban"></i></span> <span>Anulaciones</span> <span class="nav-arrow">›</span>
@@ -39,13 +39,13 @@ function dayq_menu_active($mod, $current) {
       <span class="nav-icon"><i class="fa-solid fa-money-bill-transfer"></i></span> <span>Pagos Comercios</span> <span class="nav-arrow">›</span>
     </a>
     <a class="nav-item<?php echo dayq_menu_active('pagos_habilitadores', $current); ?>" href="<?php echo $base; ?>?m=pagos_habilitadores">
-      <span class="nav-icon"><i class="fa-solid fa-building-columns"></i></span> <span>Pagos Habilitadores</span> <span class="nav-arrow">›</span>
+      <span class="nav-icon"><i class="fa-solid fa-building-columns"></i></span> <span>Pagos de Habilitadores</span> <span class="nav-arrow">›</span>
     </a>
     <a class="nav-item<?php echo dayq_menu_active('gastos', $current); ?>" href="<?php echo $base; ?>?m=gastos">
       <span class="nav-icon"><i class="fa-solid fa-file-invoice-dollar"></i></span> <span>Gastos</span>
     </a>
     <a class="nav-item<?php echo dayq_menu_active('prestamos', $current); ?>" href="<?php echo $base; ?>?m=prestamos">
-      <span class="nav-icon"><i class="fa-solid fa-hand-holding-dollar"></i></span> <span>Préstamos Empleados</span> <span class="nav-arrow">›</span>
+      <span class="nav-icon"><i class="fa-solid fa-hand-holding-dollar"></i></span> <span>Préstamo Empleado</span> <span class="nav-arrow">›</span>
     </a>
     <a class="nav-item<?php echo dayq_menu_active('tesoreria', $current); ?>" href="<?php echo $base; ?>?m=tesoreria">
       <span class="nav-icon"><i class="fa-solid fa-coins"></i></span> <span>Tesorería</span> <span class="nav-arrow">›</span>
